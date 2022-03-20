@@ -1,0 +1,9 @@
+.bg {
+    background-color: antiquewhite;
+    display: inline-block;
+    border-style: solid;   
+}
+
+.bg:hover{
+    background: rgb(107, 91, 91);
+}

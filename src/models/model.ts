@@ -16,8 +16,8 @@ export class Project {
 
 
 export class Model {
-    current: number
-    cursor: number
+    current: number = new Date().getDate()
+    cursor: number = this.current
     /**
      * 界面宽度,默认显示7天
      */
