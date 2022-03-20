@@ -27,6 +27,7 @@ export default function () {
   return (
     <div >
       <TimeHeader model={model} width={width}></TimeHeader>
+      <Edge></Edge>
       {
         [...new Array(model.height).keys()].map((v1) => {
           return <div key={v1}>
@@ -38,7 +39,7 @@ export default function () {
           </div>
         })
       }
-      <Edge></Edge>
+
     </div>
   );
 }
