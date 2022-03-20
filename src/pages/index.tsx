@@ -10,7 +10,7 @@ export default function () {
   const [width, setWidth] = useState(window.innerWidth / data.width - 50)
 
   useEffect(() => {
-    window.addEventListener('resize', (e) => {
+    window.addEventListener('resize', () => {
       setWidth(() => {
         return window.innerWidth / data.width - 50
       })
@@ -21,7 +21,7 @@ export default function () {
     <div >
       {
         [...new Array(data.height).keys()].map((v1) => {
-          return <div>
+          return <div key={v1}>
             {
               [...new Array(data.width).keys()].map(v2 => {
                 return <Cell key={v2 + "-" + v1} width={width}>{v2 + "-" + v1}</Cell>
