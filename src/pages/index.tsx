@@ -10,10 +10,10 @@ export default function () {
 
   const Header = () => (<div style={{
     display: 'grid',
-    gridTemplateColumns: `repeat(${model.width}, 1fr)`
+    gridTemplateColumns: `repeat(${model.cols}, 1fr)`
   }}>
     {
-      [...new Array(model.width).keys()].map((v) => {
+      [...new Array(model.cols).keys()].map((v) => {
         return <div key={v}>
           {v}
         </div>
@@ -24,12 +24,12 @@ export default function () {
   const Body = () => (
     <div style={{
       display: 'grid',
-      gridTemplateColumns: `repeat(${model.width}, 1fr)`
+      gridTemplateColumns: `repeat(${model.cols}, 1fr)`
     }}>
       {
-        [...new Array(model.height).keys()].map((v1) => {
-          return [...new Array(model.width).keys()].map(v2 => {
-            return <Node key={v2 + "-" + v1}>{v2 + "-" + v1}</Node>
+        [...new Array(model.rows).keys()].map((v1) => {
+          return [...new Array(model.rows).keys()].map(v2 => {
+            return <Node key={v2 + "-" + v1} id={v1 * v2}>{v2 + "-" + v1}</Node>
           })
         })
       }
@@ -41,7 +41,7 @@ export default function () {
     <div >
       <Header></Header>
       <Edge></Edge>
-      <Body/>
+      <Body />
     </div>
   );
 }
