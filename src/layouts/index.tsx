@@ -1,12 +1,28 @@
 import React from 'react';
-import styles from './index.css';
+import './index.css'
 
 const BasicLayout: React.FC = props => {
   return (
-    <div>
-      <h1 className={styles.title}>Yay! Welcome to umi!</h1>
-      {props.children}
-    </div>
+    <section style={{
+      display: 'grid',
+      gridTemplateColumns: '280px auto',
+      // background: 'pink'
+    }}>
+      <div style={{
+        background: '#1C1C1C'
+      }}>
+        <p style={{
+          color: 'white'
+        }}>
+          hello world
+        </p>
+      </div>
+      <div style={{
+        overflowY:'scroll'
+      }}>
+        {props.children}
+      </div>
+    </section>
   );
 };
 

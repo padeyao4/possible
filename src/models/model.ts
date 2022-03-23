@@ -1,17 +1,25 @@
-export class Action {
-    title: string
-    detail: string
-    start: number
-    end: number
+export class Plan {
+    content: string
+    date: number
     rowIndex: number
+    /**
+     * 用来记录计划完成的情况
+     */
+    record: string
 }
 
 export class Project {
     goal: string
+    /**
+     * 记录最早的计划,(包含)
+     */
     start: number
+    /**
+     * 记录最晚的计划,(不包含)
+     */
     end: number
     color: string
-    actions: Action[]
+    actions: Plan[]
 }
 
 

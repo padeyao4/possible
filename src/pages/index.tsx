@@ -1,7 +1,7 @@
 import Edge from '@/components/Edge';
-import Node from '@/components/Node';
 import React, { useState } from 'react';
 import { Model } from '../models/model';
+import Node from '@/components/Node'
 
 
 export default function () {
@@ -24,12 +24,13 @@ export default function () {
   const Body = () => (
     <div style={{
       display: 'grid',
-      gridTemplateColumns: `repeat(${model.cols}, 1fr)`
+      gridTemplateColumns: `repeat(${model.cols}, 1fr)`,
+      overflowY: "auto"
     }}>
       {
         [...new Array(model.rows).keys()].map((v1) => {
           return [...new Array(model.rows).keys()].map(v2 => {
-            return <Node key={v2 + "-" + v1} id={v1 * v2}>{v2 + "-" + v1}</Node>
+            return <Node key={v2 + "-" + v1} id={v1 * v2}>{v2 + "-" + v1}</Node>;
           })
         })
       }
@@ -39,7 +40,7 @@ export default function () {
 
   return (
     <div >
-      <Header></Header>
+      <Header />
       <Edge></Edge>
       <Body />
     </div>
