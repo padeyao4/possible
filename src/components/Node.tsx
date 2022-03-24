@@ -18,6 +18,7 @@ const Node: FunctionComponent<NodeProps> = (props) => {
                 {/* todo button改掉 */}
             <Button>
                 {/* todo 做具体内容 */}
+                {props.children}
             </Button>
         </Popover>
     );

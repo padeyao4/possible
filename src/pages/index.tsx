@@ -10,7 +10,8 @@ export default function () {
 
   const Header = () => (<div style={{
     display: 'grid',
-    gridTemplateColumns: `repeat(${model.cols}, 1fr)`
+    gridTemplateColumns: `repeat(${model.cols}, 1fr)`,
+    position: "fixed"
   }}>
     {
       [...new Array(model.cols).keys()].map((v) => {
@@ -40,7 +41,7 @@ export default function () {
   return (
     <div >
       <Header />
-      <Edge></Edge>
+      {/* <Edge></Edge> */}
       <Body />
     </div>
   );
