@@ -18,9 +18,13 @@ const BasicLayout: React.FC = props => {
         </p>
       </div>
       <div style={{
-        overflowY:'scroll'
+        overflowY: 'scroll'
       }}>
-        {props.children}
+        <div style={{
+          height: "100vh"
+        }}>
+          {props.children}
+        </div>
       </div>
     </section>
   );

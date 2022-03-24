@@ -24,8 +24,7 @@ export default function () {
   const Body = () => (
     <div style={{
       display: 'grid',
-      gridTemplateColumns: `repeat(${model.cols}, 1fr)`,
-      overflowY: "auto"
+      gridTemplateColumns: `repeat(${model.cols}, 1fr)`
     }}>
       {
         [...new Array(model.rows).keys()].map((v1) => {
