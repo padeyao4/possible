@@ -6,7 +6,6 @@ const BasicLayout: React.FC = props => {
     <section style={{
       display: 'grid',
       gridTemplateColumns: '280px auto',
-      // background: 'pink'
     }}>
       <div style={{
         background: '#1C1C1C'
@@ -18,13 +17,10 @@ const BasicLayout: React.FC = props => {
         </p>
       </div>
       <div style={{
-        overflowY: 'scroll'
+        overflowY:"auto",
+        height:'100vh'
       }}>
-        <div style={{
-          height: "100vh"
-        }}>
-          {props.children}
-        </div>
+        {props.children}
       </div>
     </section>
   );

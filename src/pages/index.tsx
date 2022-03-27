@@ -8,19 +8,27 @@ export default function () {
 
   const [model, setModel] = useState(new Model())
 
-  const Header = () => (<div style={{
-    display: 'grid',
-    gridTemplateColumns: `repeat(${model.cols}, 1fr)`,
-    position: "fixed"
-  }}>
-    {
-      [...new Array(model.cols).keys()].map((v) => {
-        return <div key={v}>
-          {v}
-        </div>
-      })
-    }
-  </div >)
+  const Header = () => (
+    <div style={{
+      position: "sticky",
+      top: 0,
+      zIndex: 99
+    }}>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${model.cols}, 1fr)`,
+        backgroundColor: "skyblue"
+      }}>
+        {
+          [...new Array(model.cols).keys()].map((v) => {
+            return <div key={v}>
+              {v}
+            </div>
+          })
+        }
+      </div >
+    </div>
+  )
 
   const Body = () => (
     <div style={{
@@ -39,7 +47,7 @@ export default function () {
 
 
   return (
-    <div >
+    <div>
       <Header />
       {/* <Edge></Edge> */}
       <Body />
