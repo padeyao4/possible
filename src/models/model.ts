@@ -34,5 +34,5 @@ export class Model {
      * 界面任务数量，高度。默认50个任务并行
      */
     rows: number = 50
-    projects: Project[]
+    projects: Project[] = []
 }

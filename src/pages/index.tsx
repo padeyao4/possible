@@ -1,50 +1,25 @@
+import Body from '@/components/Body';
+import Header from '@/components/Header';
 import Node from '@/components/Node';
-import { Divider } from 'antd';
-import React, { CSSProperties, useState } from 'react';
-import { Model } from '../models/model';
-import styles from './index.less'
+import React, { useState } from 'react';
+import { Model, Project } from '../models/model';
+import styles from './index.less';
 
 
 export default function () {
 
   const [model, setModel] = useState(new Model())
 
-  const Header = () => (
-    <div style={{
-      position: "sticky",
-      top: 0,
-      zIndex: 99
-    }}>
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${model.cols}, 1fr)`,
-        backgroundColor: "skyblue"
-      }}>
-        {
-          [...new Array(model.cols).keys()].map((v) => {
-            return <div key={v}>
-              {v}
-            </div>
-          })
-        }
-      </div >
-    </div>
-  )
-
-  const Body = () => (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: `repeat(${model.cols}, 1fr)`
-    }}>
-      {
-        [...new Array(model.rows).keys()].map((v1) => {
-          return [...new Array(model.rows).keys()].map(v2 => {
-            return <Node key={v2 + "-" + v1} id={v1 * v2}>{v2 + "-" + v1}</Node>;
-          })
-        })
-      }
-    </div>
-  )
+  const handleProjectClick = () => {
+    const project = new Project()
+    project.actions = []
+    project.color = "skyblue"
+    project.start = model.current
+    project.end = model.current
+    project.goal = "新建项目01"
+    model.projects = [...model.projects, project]
+    setModel({ ...model })
+  }
 
 
   return (
@@ -60,12 +35,17 @@ export default function () {
             </div>
           </div>
           <hr className={styles.myHr} />
-          <div>
-            projects
+          <div
+            className={styles.scrollPane}
+          >
+            {model.projects?.map((project, index) => {
+              return <div className={styles.myButton} key={index}>{project.goal}</div>
+            })}
           </div>
+          <hr className={styles.myHr} />
         </div>
         <div >
-          <div className={styles.myButton}>
+          <div className={styles.myButton} onClick={handleProjectClick}>
             新建项目
           </div>
         </div>
@@ -74,8 +54,8 @@ export default function () {
         overflowY: "auto",
         height: '100vh'
       }}>
-        <Header />
-        <Body />
+        <Header model={model} />
+        <Body model={model} />
       </div>
     </section >
   );

@@ -7,3 +7,29 @@ body {
   overflow-y: hidden;
   overflow-x: hidden;
 }
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  width: 6px;
+  background-color: rgba(196, 189, 189, 0.7);
+  -webkit-border-radius: 2em;
+  -moz-border-radius: 2em;
+  border-radius: 2em;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(141, 138, 138, 0.5);
+  background-clip: padding-box;
+  min-height: 28px;
+  -webkit-border-radius: 2em;
+  -moz-border-radius: 2em;
+  border-radius: 2em;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(119, 105, 105);
+}
