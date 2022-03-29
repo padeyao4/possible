@@ -35,4 +35,8 @@ export class Model {
      */
     rows: number = 50
     projects: Project[] = []
+    /**
+     * 项目索引,默认为null
+     */
+    projectIndex: number | null = null
 }

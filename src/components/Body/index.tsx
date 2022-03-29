@@ -1,7 +1,6 @@
 import { Model } from "@/models/model";
-import React from "react";
-import { FunctionComponent } from "react";
-import Node from './Node'
+import React, { FunctionComponent } from "react";
+import Node from '../Node';
 
 interface BodyProps {
     model: Model
@@ -10,10 +9,12 @@ interface BodyProps {
 const Body: FunctionComponent<BodyProps> = (props) => {
     const model = props.model;
 
-    return (<div style={{
-        display: 'grid',
-        gridTemplateColumns: `repeat(${model.cols}, 1fr)`
-    }}>
+    return (<div
+        style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${model.cols}, 1fr)`
+        }}
+    >
         {
             [...new Array(model.rows).keys()].map((v1) => {
                 return [...new Array(model.cols).keys()].map(v2 => {

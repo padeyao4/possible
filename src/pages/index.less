@@ -13,6 +13,7 @@
   height: 40px;
   background: #202020;
   cursor: default;
+  user-select: none;
 }
 
 .myButton:hover {
@@ -25,8 +26,14 @@
   border-top: 1px solid #323232;
 }
 
-// 任务列表滚动条
+// 任务列表滚动面板
 .scrollPane {
   overflow-y: auto;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 120px);
+}
+
+// 任务详情列表滚动面板
+.bodyScrollPane {
+  overflow-y: auto;
+  height: 100vh;
 }
