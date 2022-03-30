@@ -1,28 +1,27 @@
-import { Model } from "@/models/model";
-import React, { FunctionComponent } from "react";
+import { useModel } from 'umi';
 import Node from '../Node';
 
-interface BodyProps {
-    model: Model
-}
+const Body = () => {
+  const { cols, rows } = useModel('data');
 
-const Body: FunctionComponent<BodyProps> = (props) => {
-    const model = props.model;
-
-    return (<div
-        style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${model.cols}, 1fr)`
-        }}
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${cols}, 1fr)`,
+      }}
     >
-        {
-            [...new Array(model.rows).keys()].map((v1) => {
-                return [...new Array(model.cols).keys()].map(v2 => {
-                    return <Node key={v2 + "-" + v1} id={v1 * v2}>{v2 + "-" + v1}</Node>;
-                })
-            })
-        }
-    </div>);
-}
+      {[...new Array(rows).keys()].map((v1) => {
+        return [...new Array(cols).keys()].map((v2) => {
+          return (
+            <Node key={v2 + '-' + v1} id={v1 * v2}>
+              {v2 + '-' + v1}
+            </Node>
+          );
+        });
+      })}
+    </div>
+  );
+};
 
 export default Body;
