@@ -20,6 +20,13 @@ export default function () {
     setModel({ ...model })
   }
 
+  const handleItemClick = (index: number) => {
+    model.projectIndex = index
+    console.log(index)
+    console.log(model.projects[model.projectIndex])
+    setModel({ ...model })
+  }
+
   return (
     <section style={{
       display: 'grid',
@@ -38,7 +45,7 @@ export default function () {
           <hr className={styles.myHr} />
           <div className={styles.scrollPane}>
             {model.projects?.map((project, index) => {
-              return <div className={styles.myButton} key={index}>{project.goal}</div>
+              return <div className={styles.myButton} key={index} onClick={() => handleItemClick(index)}>{project.goal}</div>
             })}
           </div>
           <hr className={styles.myHr} />

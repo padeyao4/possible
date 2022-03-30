@@ -15,10 +15,19 @@ const Header: FunctionComponent<HeaderProps> = (props) => {
         backgroundColor: "skyblue"
     }
 
+    const handleMoveLeft = () => {
+        model.cursor -= 1
+    }
+
+    const handleMoveRight = () => {
+    }
+
     return (
         <div className={styles.header}>
             <div>
-                <button>left</button><button>right</button><div>{model.projectIndex ? model.projects[model.projectIndex] : ""}</div>
+                <button onClick={handleMoveLeft}>left</button>
+                <button onClick={handleMoveRight}>right</button>
+                <div>{model.projectIndex != null ? model.projects[model.projectIndex].goal : ""}</div>
             </div>
             <div style={cssStyle}>
                 {
