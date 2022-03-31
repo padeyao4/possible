@@ -2,7 +2,7 @@ import { useModel } from 'umi';
 import Node from '../Node';
 
 const Body = () => {
-  const { cols, rows } = useModel('data');
+  const { cols, rows } = useModel('constant');
 
   return (
     <div

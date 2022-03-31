@@ -7,7 +7,7 @@ import './index.css';
 import styles from './index.less';
 
 export default function () {
-  const { projects, setProjects, index, setIndex } = useModel('data');
+  const { projects, setProjects, setIndex } = useModel('project');
 
   const handleProjectClick = () => {
     const project = new Project();
