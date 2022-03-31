@@ -2,6 +2,38 @@ html, body, #root {
   height: 100%;
 }
 
-body {
+* {
   margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+::-webkit-scrollbar-track {
+  width: 3px;
+  background-color: #1c1c1c;
+  -webkit-border-radius: 2em;
+  -moz-border-radius: 2em;
+  border-radius: 2em;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #9f9f9f;
+  background-clip: padding-box;
+  min-height: 28px;
+  -webkit-border-radius: 2em;
+  -moz-border-radius: 2em;
+  border-radius: 2em;
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+  width: 6px;
 }

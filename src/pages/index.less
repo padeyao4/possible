@@ -1,7 +1,9 @@
+@import '../theme/variables.less';
+
 .leftSide {
   display: grid;
   grid-template-rows: 1fr auto;
-  background: #202020;
+  background: @projectListBackground;
   color: white;
 }
 
@@ -11,19 +13,19 @@
   align-items: center;
   width: 100%;
   height: 40px;
-  background: #202020;
+  background: @projectListBackground;
   cursor: default;
   user-select: none;
 }
 
 .myButton:hover {
-  background: #323232;
+  background: @hoverBackground;
 }
 
 .myHr {
   height: 1px;
   border: none;
-  border-top: 1px solid #323232;
+  border-top: 1px solid @hoverBackground;
 }
 
 // 任务列表滚动面板
@@ -34,6 +36,27 @@
 
 // 任务详情列表滚动面板
 .bodyScrollPane {
+  padding: 0 @blankOffset;
   overflow-y: auto;
   height: 100vh;
+  background: @appBackground;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  height: @blankOffset;
+  background: @appBackground;
+  z-index: 99;
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  height: @blankOffset;
+  background: @appBackground;
+}
+
+.offset {
+  height: 4px;
 }

@@ -3,7 +3,6 @@ import Header from '@/components/Header';
 import React from 'react';
 import { useModel } from 'umi';
 import { Project } from '../core/model';
-import './index.css';
 import styles from './index.less';
 
 export default function () {
@@ -59,8 +58,11 @@ export default function () {
         </div>
       </div>
       <div className={styles.bodyScrollPane}>
+        <div className={styles.header}></div>
         <Header />
+        <div className={styles.offset}></div>
         <Body />
+        <div className={styles.footer}></div>
       </div>
     </section>
   );
