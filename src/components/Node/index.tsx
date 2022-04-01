@@ -6,7 +6,7 @@ interface NodeProps {
 }
 
 const Node: FunctionComponent<NodeProps> = (props) => {
-  return <div className={styles.base}>{props.children}</div>;
+  return <div className={styles.node}>{props.children}</div>;
 };
 
 export default Node;

@@ -1,16 +1,22 @@
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
 }
 
 * {
   margin: 0;
   padding: 0;
+  /* 全局字体颜色 */
+  color: #cccccc;
 }
 
 body {
   overflow-y: hidden;
   overflow-x: hidden;
 }
+
+/* 滚动条设置 */
 
 ::-webkit-scrollbar {
   width: 3px;
