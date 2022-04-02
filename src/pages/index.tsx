@@ -23,12 +23,7 @@ export default function () {
   };
 
   return (
-    <section
-      style={{
-        display: 'grid',
-        gridTemplateColumns: '280px auto',
-      }}
-    >
+    <section className={styles.main}>
       <div className={styles.leftSide}>
         <div>
           <div>
