@@ -2,7 +2,7 @@ const { app, BrowserWindow } = require('electron');
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 800,
+    width: 1000,
     height: 600,
   });
   // win.loadFile('./dist/index.html') // 打包时使用
