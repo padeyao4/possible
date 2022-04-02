@@ -1,6 +1,10 @@
 {
   "private": true,
+  "main": "main.ts",
+  "homepage": ".",
   "scripts": {
+    "dev": "concurrently \"wait-on http://127.0.0.1:8000/umi.css && yarn electron \" \"cross-env BROWSER=none yarn start \"",
+    "electron": "electron .",
     "start": "umi dev",
     "build": "umi build",
     "postinstall": "umi generate tmp",
@@ -31,9 +35,13 @@
     "@types/react-dom": "^17.0.0",
     "@umijs/preset-react": "1.x",
     "@umijs/test": "^3.5.21",
+    "concurrently": "^7.0.0",
+    "cross-env": "^7.0.3",
+    "electron": "^18.0.1",
     "lint-staged": "^10.0.7",
     "prettier": "^2.2.0",
     "typescript": "^4.1.2",
+    "wait-on": "^6.0.1",
     "yorkie": "^2.0.0"
   }
 }
