@@ -2,9 +2,9 @@ import { CSSProperties } from 'react';
 import { useModel } from 'umi';
 import styles from './index.less';
 import TimeCell from './TimeCell';
+import Title from './Title';
 
 const Header = () => {
-  const { getProjectByIndex } = useModel('project');
   const { cols } = useModel('constant');
 
   const cssStyle: CSSProperties = {
@@ -15,7 +15,7 @@ const Header = () => {
   return (
     <div className={styles.header}>
       <div>
-        <div className={styles.title}>{getProjectByIndex()?.goal}</div>
+        <Title></Title>
       </div>
       <div style={cssStyle}>
         {[...new Array(cols).keys()].map((v) => {
