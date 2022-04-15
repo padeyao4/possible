@@ -57,7 +57,13 @@ export default function () {
         <Header />
         <div className={styles.offset}></div>
         <Body />
-        <div className={styles.footer}></div>
+        <div className={styles.footer}>
+          <button>left</button>
+          <button>回到今天</button>
+          <input type="range" max="100" min="1" defaultValue="50"></input>
+          <button>日期选择</button>
+          <button>right</button>
+        </div>
       </div>
     </section>
   );
