@@ -53,16 +53,20 @@ export default function () {
         </div>
       </div>
       <div className={styles.bodyScrollPane}>
-        <div className={styles.header}></div>
         <Header />
-        <div className={styles.offset}></div>
         <Body />
         <div className={styles.footer}>
-          <button>left</button>
-          <button>回到今天</button>
-          <input type="range" max="100" min="1" defaultValue="50"></input>
-          <button>日期选择</button>
-          <button>right</button>
+          <div>回到今天</div>
+          <div>左</div>
+          <input
+            className={styles.rangeMain}
+            type="range"
+            max="100"
+            min="1"
+            defaultValue="50"
+          ></input>
+          <div>右</div>
+          <div>日期选择</div>
         </div>
       </div>
     </section>
