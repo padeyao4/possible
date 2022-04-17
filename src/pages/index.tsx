@@ -1,6 +1,5 @@
 import Body from '@/components/Body';
 import Header from '@/components/Header';
-import React from 'react';
 import { useModel } from 'umi';
 import { Project } from '../core/model';
 import styles from './index.less';
@@ -25,7 +24,7 @@ export default function () {
 
   return (
     <section className={styles.main}>
-      <div className={styles.leftSide}>
+      <div className={styles.side}>
         <div>
           <div>
             <div className={styles.myButton}>我的一天</div>
@@ -53,19 +52,13 @@ export default function () {
           </div>
         </div>
       </div>
-      <div className={styles.bodyScrollPane}>
+      <div className={styles.content}>
         <Header />
         <Body />
         <div className={styles.footer}>
           <div onClick={today}>回到今天</div>
           <div onClick={yesterday}>左</div>
-          <input
-            className={styles.rangeMain}
-            type="range"
-            max="100"
-            min="1"
-            defaultValue="50"
-          ></input>
+          <input type="range" max="100" min="1" defaultValue="50"></input>
           <div onClick={tomorrow}>右</div>
           <div>日期选择</div>
         </div>
