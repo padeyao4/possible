@@ -18,16 +18,21 @@ interface TimeCellProps {
 }
 
 const TimeCell: FunctionComponent<TimeCellProps> = (props) => {
+  const { current } = useModel('constant');
   const { cursor } = useModel('cusor');
 
   const date = add(cursor, props.idx);
 
-  const week = date.getDay();
+  const getColor = () => {
+    return moment(date).isSame(current, 'days') ? 'skyblue' : '#cccccc';
+  };
 
   return (
     <div className={styles.timeSheet}>
-      <div>周{mapper.get(week)}</div>
-      <div>{moment(date).format('YYYY-MM-DD')}</div>
+      <div style={{ color: getColor() }}>周{mapper.get(date.getDay())}</div>
+      <div style={{ color: getColor() }}>
+        {moment(date).format('YYYY-MM-DD')}
+      </div>
     </div>
   );
 };
