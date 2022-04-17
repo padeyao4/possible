@@ -16,10 +16,15 @@ export default () => {
     setCursor(new Date(cursor));
   }, []);
 
+  const today = useCallback(() => {
+    setCursor(new Date());
+  }, []);
+
   return {
     cursor,
     setCursor,
     yesterday,
     tomorrow,
+    today,
   };
 };

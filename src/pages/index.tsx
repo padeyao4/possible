@@ -7,6 +7,7 @@ import styles from './index.less';
 
 export default function () {
   const { projects, setProjects, setIndex } = useModel('project');
+  const { yesterday, tomorrow, today } = useModel('cusor');
 
   const handleProjectClick = () => {
     const project = new Project();
@@ -56,8 +57,8 @@ export default function () {
         <Header />
         <Body />
         <div className={styles.footer}>
-          <div>回到今天</div>
-          <div>左</div>
+          <div onClick={today}>回到今天</div>
+          <div onClick={yesterday}>左</div>
           <input
             className={styles.rangeMain}
             type="range"
@@ -65,7 +66,7 @@ export default function () {
             min="1"
             defaultValue="50"
           ></input>
-          <div>右</div>
+          <div onClick={tomorrow}>右</div>
           <div>日期选择</div>
         </div>
       </div>
