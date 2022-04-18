@@ -10,9 +10,15 @@
   grid-template-rows: 1fr auto;
   background: @projectListBackground;
   color: white;
+
+  & hr {
+    height: 1px;
+    border: none;
+    border-top: 1px solid @hoverBackground;
+  }
 }
 
-.myButton {
+.button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -25,12 +31,6 @@
   &:hover {
     background: @hoverBackground;
   }
-}
-
-.myHr {
-  height: 1px;
-  border: none;
-  border-top: 1px solid @hoverBackground;
 }
 
 // 任务列表滚动面板
