@@ -5,7 +5,7 @@ import { Project } from '../core/model';
 import './index.less';
 
 export default function () {
-  const { projects, setProjects, setIndex } = useModel('project');
+  const { projects, setProjects, setIndex, index } = useModel('project');
   const { yesterday, tomorrow, today } = useModel('cusor');
 
   const handleProjectClick = () => {
@@ -23,21 +23,27 @@ export default function () {
       <div className="side">
         <div>
           <div>
-            <div className="button" onClick={() => setIndex(-2)}>
+            <div
+              className={`button ${index === -2 && 'active'}`}
+              onClick={() => setIndex(-2)}
+            >
               我的一天
             </div>
-            <div className="button" onClick={() => setIndex(-1)}>
+            <div
+              className={`button ${index === -1 && 'active'}`}
+              onClick={() => setIndex(-1)}
+            >
               任务总览
             </div>
           </div>
           <hr />
-          <div className="scrollPane">
-            {projects.map((project, index) => {
+          <div className="project-list">
+            {projects.map((project, idx) => {
               return (
                 <div
-                  className="button"
-                  key={index}
-                  onClick={() => setIndex(index)}
+                  className={`button ${index === idx && 'active'}`}
+                  key={idx}
+                  onClick={() => setIndex(idx)}
                 >
                   {project.goal}
                 </div>
