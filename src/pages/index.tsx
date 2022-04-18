@@ -18,17 +18,17 @@ export default function () {
     setProjects([...projects, project]);
   };
 
-  const handleItemClick = (index: number) => {
-    setIndex(index);
-  };
-
   return (
     <section className={styles.main}>
       <div className={styles.side}>
         <div>
           <div>
-            <div className={styles.myButton}>我的一天</div>
-            <div className={styles.myButton}>任务总览</div>
+            <div className={styles.myButton} onClick={() => setIndex(-2)}>
+              我的一天
+            </div>
+            <div className={styles.myButton} onClick={() => setIndex(-1)}>
+              任务总览
+            </div>
           </div>
           <hr className={styles.myHr} />
           <div className={styles.scrollPane}>
@@ -37,7 +37,7 @@ export default function () {
                 <div
                   className={styles.myButton}
                   key={index}
-                  onClick={() => handleItemClick(index)}
+                  onClick={() => setIndex(index)}
                 >
                   {project.goal}
                 </div>

@@ -14,7 +14,7 @@ export default () => {
   }, [projects, index]);
 
   const setProjectInfoByIndex = (project: Project) => {
-    if (index === null) return;
+    if (index === null || index < 0) return;
     projects[index] = { ...projects?.[index], ...project };
     setProjects([...projects]);
   };
