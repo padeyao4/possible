@@ -17,7 +17,9 @@ export default () => {
   }, []);
 
   const today = useCallback(() => {
-    setCursor(new Date());
+    const date = new Date();
+    cursor.setDate(date.getDate());
+    setCursor(date);
   }, []);
 
   return {
