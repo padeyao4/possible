@@ -22,20 +22,20 @@ export class Project {
   actions: Plan[];
 }
 
-export class Model {
-  current: number = new Date().getDate();
-  cursor: number = this.current;
-  /**
-   * 界面宽度,默认显示7天
-   */
-  cols: number = 7;
-  /**
-   * 界面任务数量，高度。默认50个任务并行
-   */
-  rows: number = 50;
-  projects: Project[] = [];
-  /**
-   * 项目索引,默认为null
-   */
-  projectIndex: number | null = null;
-}
+// export class Model {
+//   current: number = new Date().getDate();
+//   cursor: number = this.current;
+//   /**
+//    * 界面宽度,默认显示7天
+//    */
+//   cols: number = 7;
+//   /**
+//    * 界面任务数量，高度。默认50个任务并行
+//    */
+//   rows: number = 50;
+//   projects: Project[] = [];
+//   /**
+//    * 项目索引,默认为null
+//    */
+//   projectIndex: number | null = null;
+// }

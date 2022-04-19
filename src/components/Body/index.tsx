@@ -3,6 +3,7 @@ import Node from '../Node';
 
 const Body = () => {
   const { cols, rows } = useModel('constant');
+  const {} = useModel('project');
 
   return (
     <div
