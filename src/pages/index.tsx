@@ -1,16 +1,16 @@
-import Body from '@/components/Body';
-import Header from '@/components/Header';
 import { useModel } from 'umi';
 import { Project } from '../core/model';
+import LifeManage from './LiftManage';
 import './index.less';
+import OneDay from './OneDay';
 
 export default function () {
-  const { projects, setProjects, setIndex, index } = useModel('project');
-  const { yesterday, tomorrow, today } = useModel('cusor');
+  const { item, setItem } = useModel('constant');
+  const { projects, setProjects } = useModel('project');
 
   const handleProjectClick = () => {
     const project = new Project();
-    project.actions = [];
+    project.plans = [];
     project.color = 'skyblue';
     project.start = new Date();
     project.end = new Date();
@@ -24,16 +24,16 @@ export default function () {
         <div>
           <div>
             <div
-              className={`button ${index === -2 && 'active'}`}
-              onClick={() => setIndex(-2)}
+              className={`button ${item === -2 && 'active'}`}
+              onClick={() => setItem(-2)}
             >
               我的一天
             </div>
             <div
-              className={`button ${index === -1 && 'active'}`}
-              onClick={() => setIndex(-1)}
+              className={`button ${item === -1 && 'active'}`}
+              onClick={() => setItem(-1)}
             >
-              任务总览
+              生活规划
             </div>
           </div>
           <hr />
@@ -41,9 +41,9 @@ export default function () {
             {projects.map((project, idx) => {
               return (
                 <div
-                  className={`button ${index === idx && 'active'}`}
+                  className={`button ${item === idx && 'active'}`}
                   key={idx}
-                  onClick={() => setIndex(idx)}
+                  onClick={() => setItem(idx)}
                 >
                   {project.goal}
                 </div>
@@ -59,15 +59,10 @@ export default function () {
         </div>
       </div>
       <div className="content">
-        <Header />
-        <Body />
-        <div className="footer">
-          <div onClick={today}>回到今天</div>
-          <div onClick={yesterday}>左</div>
-          <input type="range" max="100" min="1" defaultValue="50"></input>
-          <div onClick={tomorrow}>右</div>
-          <div>日期选择</div>
-        </div>
+        {item == -2 && <OneDay></OneDay>}
+        {item == -1 && <LifeManage />}
+        {item == 0 && <div>默认内容</div>}
+        {item > 0 && <div>没有内容</div>}
       </div>
     </section>
   );

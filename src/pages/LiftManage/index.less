@@ -1,0 +1,58 @@
+@import '~@/theme/variables.less';
+
+.header {
+  position: sticky;
+  top: 0;
+  height: 40px;
+  background: @appBackground;
+  z-index: 99;
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  height: 40px;
+  background: @appBackground;
+  display: flex;
+  justify-content: space-between;
+
+  > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    padding: auto 5px;
+    user-select: none;
+    min-width: 40px;
+    min-height: 30px;
+    border-radius: 10%;
+
+    &:hover {
+      background: @hoverBackground;
+    }
+  }
+
+  // 设置input range滑动条样式
+  > input[type='range'] {
+    background-size: 50% 3px;
+    margin: auto 0;
+    width: 40%;
+    background: linear-gradient(to right, #ccc 0%, #ccc 100%);
+    outline: none;
+    /*清除系统默认样式*/
+    -webkit-appearance: none;
+    /*横条的高度*/
+    height: 3px;
+
+    &::-webkit-slider-thumb {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background-color: @fontColor;
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.3), 0 3px 5px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      -webkit-appearance: none;
+      border: 0;
+    }
+  }
+}
