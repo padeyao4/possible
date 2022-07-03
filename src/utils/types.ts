@@ -10,7 +10,7 @@ export interface Plan {
 
 export interface Project {
   id: number;
-  goal: string;
+  title: string;
   detail: string;
   /**
    * 记录最早的计划,(包含)
