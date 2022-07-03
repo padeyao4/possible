@@ -1,4 +1,4 @@
-export class Plan {
+export interface Plan {
   id: number;
   content: string;
   date: number;
@@ -8,7 +8,7 @@ export class Plan {
   record: string;
 }
 
-export class Project {
+export interface Project {
   id: number;
   goal: string;
   detail: string;

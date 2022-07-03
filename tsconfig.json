@@ -15,7 +15,7 @@
       "@@/*": ["src/.umi/*"]
     },
     "allowSyntheticDefaultImports": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": true
   },
   "include": [
     "mock/**/*",

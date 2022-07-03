@@ -1,4 +1,4 @@
-import { Project } from '@/core/model';
+import { Project } from '@/core/types';
 import { createRef, FunctionComponent, useEffect, useState } from 'react';
 import { useModel } from 'umi';
 import styles from './index.less';

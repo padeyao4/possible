@@ -1,4 +1,4 @@
-import { Project } from '@/core/model';
+import { Project } from '@/utils/types';
 import { useCallback, useState } from 'react';
 
 export default () => {

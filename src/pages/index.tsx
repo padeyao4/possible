@@ -1,7 +1,7 @@
+import { Project } from '@/utils/types';
 import { useModel } from 'umi';
-import { Project } from '../core/model';
-import LifeManage from './LiftManage';
 import './index.less';
+import LifeManage from './LiftManage';
 import OneDay from './OneDay';
 
 export default function () {
@@ -9,13 +9,16 @@ export default function () {
   const { projects, setProjects } = useModel('project');
 
   const handleProjectClick = () => {
-    const project = new Project();
-    project.plans = [];
-    project.color = 'skyblue';
-    project.start = new Date();
-    project.end = new Date();
-    project.goal = '新建项目' + (projects.length + 1);
-    setProjects([...projects, project]);
+    const p: Project = {
+      id: 1,
+      color: '#777',
+      detail: 'hello world',
+      end: new Date(),
+      goal: 'target',
+      plans: [],
+      start: new Date(),
+    };
+    setProjects([...projects, p]);
   };
 
   return (
@@ -59,6 +62,7 @@ export default function () {
         </div>
       </div>
       <div className="content">
+        {/* todo 是否可以使用link来做 */}
         {item == -2 && <OneDay></OneDay>}
         {item == -1 && <LifeManage />}
         {item == 0 && <div>默认内容</div>}
