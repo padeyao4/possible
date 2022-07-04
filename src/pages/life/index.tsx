@@ -6,7 +6,7 @@ import './index.less';
 function Page() {
   const { yesterday, tomorrow, today } = useModel('cusor');
   return (
-    <>
+    <div className="content">
       <Header />
       <Body />
       <div className="footer">
@@ -16,7 +16,7 @@ function Page() {
         <div onClick={tomorrow}>右</div>
         <div>日期选择</div>
       </div>
-    </>
+    </div>
   );
 }
 
