@@ -1,15 +1,15 @@
 import Body from '@/components/Body';
 import Header from '@/components/Header';
 import { useModel } from 'umi';
-import './index.less';
+import styles from './index.less';
 
 function Page() {
   const { yesterday, tomorrow, today } = useModel('cusor');
   return (
-    <div className="content">
+    <div className={styles.content}>
       <Header />
       <Body />
-      <div className="footer">
+      <div className={styles.footer}>
         <div onClick={today}>回到今天</div>
         <div onClick={yesterday}>左</div>
         <input type="range" max="100" min="1" defaultValue="50"></input>

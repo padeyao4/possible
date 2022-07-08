@@ -39,7 +39,7 @@ const Layout: FunctionComponent<LayoutProps> = (props) => {
             新建项目
           </NavLink>
         </div>
-        <div>{props.children}</div>
+        <div className="content">{props.children}</div>
       </section>
     </>
   );
