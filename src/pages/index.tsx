@@ -1,7 +1,7 @@
-import styles from '../styles/Home.module.css'
-import Content from '../components/content'
+import Content from "@/components/content";
+import styles from './home.module.css';
 
-export default function Home() {
+export default function HomePage() {
   return (
     <div className={styles.main}>
       <div className={styles.side}>
@@ -24,6 +24,5 @@ export default function Home() {
       <div className={styles.content}>
         <Content></Content>
       </div>
-    </div>
-  )
+    </div>)
 }
