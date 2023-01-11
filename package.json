@@ -9,6 +9,7 @@
     "start": "npm run dev"
   },
   "dependencies": {
+    "@antv/layout": "^0.3.13",
     "@antv/x6": "^2.1.4",
     "umi": "^4.0.42"
   },
