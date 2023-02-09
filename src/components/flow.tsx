@@ -1,4 +1,4 @@
-import { Graph } from "@antv/x6";
+import { Graph } from "@antv/G6";
 import { useEffect, useRef } from "react";
 
 const data = {
@@ -53,49 +53,14 @@ export default function Flow() {
     useEffect(() => {
         if (graph != null) return
 
-        // const dagreLayout = new DagreLayout({
-        //     type: 'dagre',
-        //     rankdir: 'LR',
-        //     align: 'UL',
-        //     ranksep: 0,
-        //     nodesep: 0,
-        //     controlPoints: false,
-        // })
-        
-        // const model = dagreLayout.layout(data)
-
         graph = new Graph({
             container: ref.current!,
-            autoResize: true,
-            panning: true,
-            mousewheel: true,
-            grid: {
-                size: 50,
-                visible: true,
-                type: 'mesh'
-            },
-            connecting: {
-                allowMulti: false,
-                anchor: 'midSide',
-            },
-            interacting: {
-                edgeMovable: false,
-                // nodeMovable: false
-            },
-            background: {
-                color: "#F2F7FA",
+            width: 1000,
+            height: 800
+        })
 
-            },
-        })
-        graph.fromJSON(data)
-        graph.getNodes().forEach(node => {
-            node.attr("rect/fill", "#ccc")
-            node.resize(50, 50)
-            console.log(node)
-        })
-        graph.drawGrid({
-
-        })
+        graph.data(data)
+        graph.render()
     }, [])
 
     return (
