@@ -14,6 +14,7 @@ body {
     overflow-x: hidden;
 }
 
+/* 设置css变量 */
 :root {
     --side-list-bg: #202020;
     --app-bg: #1c1c1c;
