@@ -16,12 +16,13 @@
   display: flex;
   justify-content: space-between;
 
-  > div {
+  >div {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: auto;
     padding: auto 5px;
+    -webkit-user-select: none;
     user-select: none;
     min-width: 40px;
     min-height: 30px;
@@ -33,7 +34,7 @@
   }
 
   // 设置input range滑动条样式
-  > input[type='range'] {
+  >input[type='range'] {
     background-size: 50% 3px;
     margin: auto 0;
     width: 40%;
