@@ -1,85 +1,85 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <div class="main">
+    <div class="side">
+      <button>
+        <RouterLink to="home">
+          我的一天
+        </RouterLink>
+      </button>
+      <button>
+        <RouterLink to="about">
+          生活规划
+        </RouterLink>
+      </button>
+      <hr />
+      <div class="project-list">
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+      </div>
+      <button>
+        新建项目
+      </button>
     </div>
-  </header>
-
-  <RouterView />
+    <div>
+      <RouterView></RouterView>
+    </div>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+<script setup>
+import { RouterLink, RouterView } from 'vue-router'
+
+</script>
+
+<style lang="less">
+* {
+  margin: 0;
+  padding: 0;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.main {
+  display: grid;
+  grid-template-columns: 240px auto;
 }
 
-nav {
+.side {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  background: black;
+  color: white;
+
+  & hr {
+    height: 1px;
+    border: none;
+    border-top: 1px solid #323232;
+  }
+}
+
+.active {
+  color: rgb(45, 126, 167);
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
+  height: 40px;
+  background: black;
+  cursor: default;
+  user-select: none;
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+  &:hover {
+    background: gray;
   }
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+.project-list {
+  overflow-y: auto;
+  height: calc(100vh - 120px);
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.content {
+  background-color: black;
+  height: 100vh;
 }
 </style>
