@@ -2,24 +2,26 @@
   <div class="main">
     <div class="side">
       <button>
-        <RouterLink to="home">
+        <RouterLink replace to="/">
           我的一天
         </RouterLink>
       </button>
       <button>
-        <RouterLink to="about">
+        <RouterLink replace to="about">
           生活规划
         </RouterLink>
       </button>
       <hr />
-      <div class="project-list">
-
+      <div class="list">
+        <div v-for="item in store.projects">
+          <button style="width: 100%;height: 40px;">{{ item }}</button>
+        </div>
       </div>
-      <button>
+      <button @click="add_project">
         新建项目
       </button>
     </div>
-    <div>
+    <div class="content">
       <RouterView></RouterView>
     </div>
   </div>
@@ -27,25 +29,25 @@
 
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+import { store } from "./stores/store"
+
+function add_project() {
+  store.projects.push(store.projects.length + 1)
+}
 
 </script>
 
-<style lang="less">
-* {
-  margin: 0;
-  padding: 0;
-}
-
+<style>
 .main {
   display: grid;
+  width: 100vw;
   grid-template-columns: 240px auto;
 }
 
 .side {
   display: grid;
-  grid-template-rows: 1fr auto;
-  background: black;
-  color: white;
+  background: rgb(99, 94, 94);
+  color: rgb(124, 97, 97);
 
   & hr {
     height: 1px;
@@ -64,22 +66,23 @@ import { RouterLink, RouterView } from 'vue-router'
   align-items: center;
   width: 100%;
   height: 40px;
-  background: black;
+  background: rgb(139, 138, 138);
   cursor: default;
   user-select: none;
 
   &:hover {
-    background: gray;
+    background: rgb(160, 84, 84);
   }
 }
 
-.project-list {
+.list {
   overflow-y: auto;
   height: calc(100vh - 120px);
 }
 
 .content {
-  background-color: black;
+  background-color: rgb(73, 57, 57);
+  color: antiquewhite;
   height: 100vh;
 }
 </style>
