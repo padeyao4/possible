@@ -2,12 +2,12 @@
   <div class="main">
     <div class="side">
       <button>
-        <RouterLink replace to="/">
+        <RouterLink to="/">
           我的一天
         </RouterLink>
       </button>
       <button>
-        <RouterLink replace to="about">
+        <RouterLink to="/summery">
           生活规划
         </RouterLink>
       </button>
@@ -68,6 +68,7 @@ function add_project() {
   height: 40px;
   background: rgb(139, 138, 138);
   cursor: default;
+  -webkit-user-select: none;
   user-select: none;
 
   &:hover {
