@@ -11,6 +11,11 @@
           生活规划
         </RouterLink>
       </button>
+      <button>
+        <RouterLink to="/test">
+          test
+        </RouterLink>
+      </button>
       <hr />
       <div class="list">
         <div v-for="item in store.projects">
