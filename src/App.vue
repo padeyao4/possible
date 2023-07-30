@@ -42,7 +42,7 @@ function add_project() {
 
 </script>
 
-<style>
+<style scoped>
 .main {
   display: grid;
   width: 100vw;
