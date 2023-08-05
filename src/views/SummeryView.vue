@@ -15,7 +15,7 @@
 
 <script setup>
 import G6 from '@antv/g6';
-import {onMounted, ref} from 'vue';
+import {onMounted, ref, watchEffect} from 'vue';
 
 let times = []
 for (let i = 0; i < 100; i++) {
@@ -71,9 +71,15 @@ onMounted(() => {
   });
   graph.value.data(data);
   graph.value.render();
-  window.addEventListener("resize", () => {
-    graph.value.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
-  })
+})
+
+watchEffect(() => {
+  if (container.value) {
+    console.log("add event listener")
+    window.addEventListener("resize", () => {
+      graph.value.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
+    })
+  }
 })
 </script>
 

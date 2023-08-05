@@ -19,7 +19,7 @@
       <hr/>
       <div class="list">
         <div v-for="item in store.projects">
-          <button style="width: 100%;height: 40px;">{{ item }}</button>
+          <button class="item">{{ item.name }}</button>
         </div>
       </div>
       <button @click="addProject">
@@ -37,7 +37,7 @@ import {RouterLink, RouterView} from 'vue-router'
 import store from "./store"
 
 function addProject() {
-  store.projects.push(store.projects.length + 1)
+  store.addProject(store.projects.length + 1)
 }
 
 </script>
@@ -64,6 +64,11 @@ function addProject() {
 .list {
   overflow-y: auto;
   height: calc(100vh - 120px);
+
+  .item {
+    width: 100%;
+    height: 40px;
+  }
 }
 
 .content {
