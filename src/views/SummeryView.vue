@@ -35,7 +35,7 @@ const data = {
   nodes: [
     {
       id: 'node',
-      x: 100,
+      x: 2000,
       y: 100,
       type: 'circle',
       style: {
@@ -59,11 +59,11 @@ onMounted(() => {
     modes: {
       default: [{
         type: 'drag-canvas',
-
+        allowDragOnItem: true,
         shouldUpdate: () => {
           let p = graph.value.getPointByCanvas(0, 0)
           // 将画布长度和滚动条绑定
-          header.value.scrollLeft = 400 + p.x
+          header.value.scrollLeft = p.x
           return true
         },
       }]
