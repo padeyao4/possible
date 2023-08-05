@@ -25,8 +25,8 @@ for (let i = 0; i < 100; i++) {
 const header = ref(null)
 
 const handleWheel = (e) => {
-  let ox = header.value.scrollLeft
   let dx = e.deltaY / 5;
+  let ox = header.value.scrollLeft
   header.value.scrollLeft = ox + dx
   graph.value.translate(-dx, 0)
 }
@@ -57,7 +57,16 @@ onMounted(() => {
     width: container.value.clientWidth,
     height: container.value.clientHeight - 8,
     modes: {
-      default: ['drag-canvas']
+      default: [{
+        type: 'drag-canvas',
+
+        shouldUpdate: () => {
+          let p = graph.value.getPointByCanvas(0, 0)
+          // 将画布长度和滚动条绑定
+          header.value.scrollLeft = 400 + p.x
+          return true
+        },
+      }]
     }
   });
   graph.value.data(data);
@@ -103,6 +112,7 @@ onMounted(() => {
 
   .container {
     background-color: cadetblue;
+    height: 100%;
   }
 }
 
