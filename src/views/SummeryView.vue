@@ -5,7 +5,7 @@
         <div class="time-item" v-for="time in times">{{ time }}</div>
       </div>
       <div class="body">
-        <div id="container"></div>
+        <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
       </div>
@@ -22,47 +22,53 @@ for (let i = 0; i < 100; i++) {
   times.push(i)
 }
 
-const header = ref(undefined)
+const header = ref(null)
 
 const handleWheel = (e) => {
   let ox = header.value.scrollLeft
-  header.value.scrollLeft = ox + e.deltaY
+  let dx = e.deltaY / 5;
+  header.value.scrollLeft = ox + dx
+  graph.value.translate(-dx, 0)
 }
 
+const data = {
+  nodes: [
+    {
+      id: 'node',
+      x: 100,
+      y: 100,
+      type: 'circle',
+      style: {
+        fill: '#00FFFF', // 节点填充色
+        stroke: '#FFFF00',  // 节点的描边颜色
+        lineWidth: 1,       // 描边宽度
+      },
+    }
+  ]
+}
+
+const container = ref(null)
+const graph = ref(null)
+
 onMounted(() => {
-  const data = {
-    nodes: [
-      {
-        id: 'node',
-        x: 0,
-        y: 200,
-        type: 'circle',
-        style: {
-          fill: '#00FFFF', // 节点填充色
-          stroke: '#FFFF00',  // 节点的描边颜色
-          lineWidth: 5,       // 描边宽度
-          // ... 其他属性
-        },
-      }
-    ]
-  }
-  const graph = new G6.Graph({
-    container: "container",
-    renderer: 'svg',
-    width: 800,
-    height: 500
+  console.log("render")
+  graph.value = new G6.Graph({
+    container: container.value,
+    width: container.value.clientWidth,
+    height: container.value.clientHeight - 8,
+    modes: {
+      default: ['drag-canvas']
+    }
   });
-
-  graph.data(data);
-
-  graph.render();
-});
-
-
+  graph.value.data(data);
+  graph.value.render();
+  window.addEventListener("resize", () => {
+    graph.value.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
+  })
+})
 </script>
 
 <style scoped>
-
 .main {
   background-color: #9f9f9f;
   overflow: hidden;
@@ -94,6 +100,10 @@ onMounted(() => {
   overflow-y: auto;
   height: calc(100vh - 100px);
   background-color: #2c3e50;
+
+  .container {
+    background-color: cadetblue;
+  }
 }
 
 .footer {

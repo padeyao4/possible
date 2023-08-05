@@ -22,7 +22,7 @@
           <button style="width: 100%;height: 40px;">{{ item }}</button>
         </div>
       </div>
-      <button @click="add_project">
+      <button @click="addProject">
         新建项目
       </button>
     </div>
@@ -36,7 +36,7 @@
 import {RouterLink, RouterView} from 'vue-router'
 import store from "./store"
 
-function add_project() {
+function addProject() {
   store.projects.push(store.projects.length + 1)
 }
 
@@ -60,26 +60,6 @@ function add_project() {
     border-top: 1px solid #323232;
   }
 }
-
-//.active {
-//  color: rgb(45, 126, 167);
-//}
-
-//.button {
-//  display: flex;
-//  justify-content: center;
-//  align-items: center;
-//  width: 100%;
-//  height: 40px;
-//  background: rgb(139, 138, 138);
-//  cursor: default;
-//  -webkit-user-select: none;
-//  user-select: none;
-//
-//  :hover {
-//    background: rgb(160, 84, 84);
-//  }
-//}
 
 .list {
   overflow-y: auto;
