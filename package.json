@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@antv/g6": "^4.8.20",
+    "ant-design-vue": "^4.0.0",
     "vue": "^3.3.4",
     "vue-router": "^4.2.2"
   },

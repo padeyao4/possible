@@ -1,39 +1,51 @@
 <template>
-  <div class="summery-main">
-    <div class="header">
-      <div class="title"></div>
-      <div></div>
-    </div>
-    <div class="body">
-      <div ref="container" id="container"></div>
-    </div>
-    <div class="footer">
+  <div>
+    <div class="main">
+      <div class="header" @wheel="handleWheel" ref="header" id="header">
+        <div class="time-item" v-for="time in times">{{ time }}</div>
+      </div>
+      <div class="body">
+        <div id="container"></div>
+      </div>
+      <div class="footer">
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import G6 from '@antv/g6';
-import {onMounted} from 'vue';
+import {onMounted, ref} from 'vue';
 
-const data = {
-  nodes: [
-    {
-      id: 'node',
-      x: 0,
-      y: 200,
-      type: 'circle',
-      style: {
-        fill: '#00FFFF', // 节点填充色
-        stroke: '#FFFF00',  // 节点的描边颜色
-        lineWidth: 5,       // 描边宽度
-        // ... 其他属性
-      },
-    }
-  ]
+let times = []
+for (let i = 0; i < 100; i++) {
+  times.push(i)
+}
+
+const header = ref(undefined)
+
+const handleWheel = (e) => {
+  let ox = header.value.scrollLeft
+  header.value.scrollLeft = ox + e.deltaY
 }
 
 onMounted(() => {
+  const data = {
+    nodes: [
+      {
+        id: 'node',
+        x: 0,
+        y: 200,
+        type: 'circle',
+        style: {
+          fill: '#00FFFF', // 节点填充色
+          stroke: '#FFFF00',  // 节点的描边颜色
+          lineWidth: 5,       // 描边宽度
+          // ... 其他属性
+        },
+      }
+    ]
+  }
   const graph = new G6.Graph({
     container: "container",
     renderer: 'svg',
@@ -51,8 +63,9 @@ onMounted(() => {
 
 <style scoped>
 
-.summery-main {
+.main {
   background-color: #9f9f9f;
+  overflow: hidden;
 }
 
 .header {
@@ -61,26 +74,19 @@ onMounted(() => {
   z-index: 99;
   -webkit-user-select: none;
   user-select: none;
-}
-
-.title {
+  height: 60px;
   display: flex;
   align-items: center;
-  height: 60px;
-  font-size: large;
-}
+  overflow-x: hidden;
 
-.time-sheet {
-  padding: 10px 0;
-
-  div {
-    overflow: hidden;
+  .time-item {
+    width: 100px;
+    flex-shrink: 0;
+    background-color: #1c1c1c;
+    margin: 0 10px 0 10px;
   }
 }
 
-.time-cell {
-  overflow: hidden;
-}
 
 .body {
   padding: 0 20px;
@@ -103,12 +109,7 @@ onMounted(() => {
     justify-content: center;
     align-items: center;
     margin: auto;
-    //padding: auto 5px;
-    -webkit-user-select: none;
-    user-select: none;
-    min-width: 40px;
-    min-height: 30px;
-    border-radius: 10%;
+  //padding: auto 5px; -webkit-user-select: none; user-select: none; min-width: 40px; min-height: 30px; border-radius: 10%;
 
     &:hover {
       background: wheat;

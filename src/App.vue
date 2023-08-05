@@ -16,7 +16,7 @@
           test
         </RouterLink>
       </button>
-      <hr />
+      <hr/>
       <div class="list">
         <div v-for="item in store.projects">
           <button style="width: 100%;height: 40px;">{{ item }}</button>
@@ -33,8 +33,8 @@
 </template>
 
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import { store } from "./stores/store"
+import {RouterLink, RouterView} from 'vue-router'
+import store from "./store"
 
 function add_project() {
   store.projects.push(store.projects.length + 1)
@@ -46,7 +46,7 @@ function add_project() {
 .main {
   display: grid;
   width: 100vw;
-  grid-template-columns: 240px auto;
+  grid-template-columns: 240px calc( 100vw - 240px );
 }
 
 .side {
@@ -61,25 +61,25 @@ function add_project() {
   }
 }
 
-.active {
-  color: rgb(45, 126, 167);
-}
+//.active {
+//  color: rgb(45, 126, 167);
+//}
 
-.button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 40px;
-  background: rgb(139, 138, 138);
-  cursor: default;
-  -webkit-user-select: none;
-  user-select: none;
-
-  &:hover {
-    background: rgb(160, 84, 84);
-  }
-}
+//.button {
+//  display: flex;
+//  justify-content: center;
+//  align-items: center;
+//  width: 100%;
+//  height: 40px;
+//  background: rgb(139, 138, 138);
+//  cursor: default;
+//  -webkit-user-select: none;
+//  user-select: none;
+//
+//  :hover {
+//    background: rgb(160, 84, 84);
+//  }
+//}
 
 .list {
   overflow-y: auto;
