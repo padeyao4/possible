@@ -2,7 +2,7 @@
   <div>
     <div class="main">
       <div class="header" @wheel="handleWheel" ref="header" id="header">
-        <div class="time-item" v-for="time in times" :key="time" :style="{translate: translateX+'px'}">{{ time }}</div>
+        <div class="time-item" v-for="time in times" :key="time" :style="{translate: relationX+'px'}">{{ time }}</div>
       </div>
       <div class="body">
         <div id="container" ref="container" class="container"></div>
@@ -15,21 +15,60 @@
 
 <script setup>
 import G6 from '@antv/g6';
-import {onMounted, ref, watchEffect} from 'vue';
+import {computed, onMounted, ref, watch} from 'vue';
 
+const header = ref(null)
 const times = ref([])
-for (let i = 0; i < 100; i++) {
-  times.value.push(i)
-}
 
 const translateX = ref(0)
 
+const relationX = computed(() => {
+  return translateX.value % 120 - 120
+})
 
-const header = ref(null)
+const timeCols = 20;
+
+function initTimesArr() {
+  for (let i = 0; i < timeCols; i++) {
+    times.value.push(i)
+  }
+}
+
+initTimesArr()
+
+function moveRight(n = 1) {
+  for (let i = 0; i < n; i++) {
+    times.value.unshift(times.value.at(0) - 1)
+    times.value.pop()
+  }
+}
+
+function moveLeft(n = 1) {
+  for (let i = 0; i < n; i++) {
+    times.value.shift()
+    times.value.push(times.value.at(-1) + 1)
+  }
+}
+
+
+watch(translateX, (newValue, oldValue) => {
+      let n = Math.floor(Math.abs(newValue / 120))
+
+      let headValue = times.value.at(0)
+      times.value.at(-1);
+      let count = Math.abs(n - Math.abs(headValue))
+
+      if (newValue - oldValue > 0) {
+        moveRight(count)
+      } else {
+        moveLeft(count)
+      }
+    }
+)
 
 const handleWheel = (e) => {
   let dx = e.deltaY / 5;
-  translateX.value += dx
+  translateX.value = (translateX.value + dx)
   graph.value.translate(dx, 0)
 }
 
@@ -64,7 +103,7 @@ const container = ref(null)
 const graph = ref(null)
 
 onMounted(() => {
-  console.log("render")
+  console.log("render g6")
   graph.value = new G6.Graph({
     container: container.value,
     width: container.value.clientWidth,
@@ -89,7 +128,9 @@ onMounted(() => {
 window.addEventListener("resize", () => {
   console.log("resize")
   if (container.value) {
+    console.log("g6 container width", container.value.clientWidth, "header width", header.value.clientWidth)
     graph.value.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
+    initTimesArr()
   }
 })
 </script>
