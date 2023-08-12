@@ -23,7 +23,7 @@ const times = ref([])
 const translateX = ref(0)
 
 const relationX = computed(() => {
-  return translateX.value % 120 - 120
+  return translateX.value % 120 - 100
 })
 
 const timeCols = 25;
@@ -78,7 +78,7 @@ const data = {
       id: 'node',
       x: 2000,
       y: 100,
-      type: 'circle',
+      label: 'modelRect',
       style: {
         fill: '#00FFFF', // 节点填充色
         stroke: '#FFFF00',  // 节点的描边颜色
@@ -87,9 +87,9 @@ const data = {
     },
     {
       id: 'node2',
-      x: 100,
-      y: 100,
-      type: 'circle',
+      x: 110,
+      y: 20,
+      label: 'modelRect',
       style: {
         fill: '#00FFFF', // 节点填充色
         stroke: '#FFFF00',  // 节点的描边颜色
@@ -119,8 +119,22 @@ onMounted(() => {
           return true
         },
       }]
+    },
+    defaultNode: {
+      type: 'modelRect',
+      size: [200, 40],
+      style: {
+        fill: '#545454',
+        stroke: '#adc6ff',
+        lineWidth: 1,
+      },
     }
   });
+  graph.value.on("node:click", (e) => {
+    // 节点监听
+    const node = e.item
+    console.log(node)
+  })
   graph.value.data(data);
   graph.value.render();
 })
@@ -168,7 +182,7 @@ window.addEventListener("resize", () => {
   background-color: #2c3e50;
 
   .container {
-    background-color: cadetblue;
+    background-color: #949494;
     height: 100%;
   }
 }

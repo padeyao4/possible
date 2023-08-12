@@ -13,7 +13,7 @@ export default reactive({
         if (result.length === 1) {
             result[0].nodes.push({
                 name: taskName,
-                dateIndex: 0, // 时间索引
+                dataIndex: 0, // 时间索引
                 children: [],
                 parent: []
             })
