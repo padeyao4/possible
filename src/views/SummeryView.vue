@@ -26,7 +26,7 @@ const relationX = computed(() => {
   return translateX.value % 120 - 120
 })
 
-const timeCols = 20;
+const timeCols = 25;
 
 function initTimesArr() {
   for (let i = 0; i < timeCols; i++) {
@@ -130,7 +130,6 @@ window.addEventListener("resize", () => {
   if (container.value) {
     console.log("g6 container width", container.value.clientWidth, "header width", header.value.clientWidth)
     graph.value.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
-    initTimesArr()
   }
 })
 </script>
