@@ -1,12 +1,35 @@
 <template>
   <div>
-    <div class="main">
-      <div class="test">hello world</div>
+    <button @click="handleClick">+/ADD</button>
+    <div class="main" @wheel="handleWheel">
+      <div class="test" style="translate: 100px" v-for="item in arr" :key="item" :style="{translate: translateX+'px'}">
+        {{ item }}
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import {ref} from "vue";
+
+const arr = ref([])
+
+for (let i = 0; i < 5; i++) {
+  arr.value.push(i)
+}
+
+const translateX = ref(0)
+
+function handleClick() {
+  translateX.value += 50
+}
+
+const handleWheel = (e) => {
+  let dx = e.deltaY / 5;
+  translateX.value += dx;
+}
+
+
 </script>
 <style scoped>
 .main {
@@ -19,9 +42,10 @@
 
 .test {
   /* absolute定位是相对于找到最近的祖先元素包含position的元素 */
-  position: absolute;
+  display: inline-block;
   border: 1px solid;
-  left: 0;
+  width: 100px;
   color: wheat;
+  margin: 0 50px 0 50px;
 }
 </style>

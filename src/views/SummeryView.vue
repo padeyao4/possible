@@ -2,7 +2,7 @@
   <div>
     <div class="main">
       <div class="header" @wheel="handleWheel" ref="header" id="header">
-        <div class="time-item" v-for="time in times">{{ time }}</div>
+        <div class="time-item" v-for="time in times" :key="time" :style="{translate: translateX+'px'}">{{ time }}</div>
       </div>
       <div class="body">
         <div id="container" ref="container" class="container"></div>
@@ -17,18 +17,20 @@
 import G6 from '@antv/g6';
 import {onMounted, ref, watchEffect} from 'vue';
 
-let times = []
+const times = ref([])
 for (let i = 0; i < 100; i++) {
-  times.push(i)
+  times.value.push(i)
 }
+
+const translateX = ref(0)
+
 
 const header = ref(null)
 
 const handleWheel = (e) => {
   let dx = e.deltaY / 5;
-  let ox = header.value.scrollLeft
-  header.value.scrollLeft = ox + dx
-  graph.value.translate(-dx, 0)
+  translateX.value += dx
+  graph.value.translate(dx, 0)
 }
 
 const data = {
@@ -36,6 +38,17 @@ const data = {
     {
       id: 'node',
       x: 2000,
+      y: 100,
+      type: 'circle',
+      style: {
+        fill: '#00FFFF', // 节点填充色
+        stroke: '#FFFF00',  // 节点的描边颜色
+        lineWidth: 1,       // 描边宽度
+      },
+    },
+    {
+      id: 'node2',
+      x: 100,
       y: 100,
       type: 'circle',
       style: {
@@ -63,7 +76,7 @@ onMounted(() => {
         shouldUpdate: () => {
           let p = graph.value.getPointByCanvas(0, 0)
           // 将画布长度和滚动条绑定
-          header.value.scrollLeft = p.x
+          translateX.value = -p.x
           return true
         },
       }]
@@ -73,12 +86,10 @@ onMounted(() => {
   graph.value.render();
 })
 
-watchEffect(() => {
+window.addEventListener("resize", () => {
+  console.log("resize")
   if (container.value) {
-    console.log("add event listener")
-    window.addEventListener("resize", () => {
-      graph.value.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
-    })
+    graph.value.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
   }
 })
 </script>
