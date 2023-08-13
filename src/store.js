@@ -3,6 +3,7 @@ import {reactive} from "vue";
 export default reactive({
     projects: [{
         name: '1',
+        key: '1',
         nodes: [{
             name: 'node1',
             id: 'node1',
@@ -25,6 +26,7 @@ export default reactive({
         ]
     }, {
         name: '2',
+        key: '2',
         nodes: [{
             name: 'x1',
             id: 'x1',
@@ -50,12 +52,14 @@ export default reactive({
         }
     },
     /**
-     * select data based on the project index and covert to data for antv g6
-     * @param index
+     * select data based on the project key and covert to data for antv g6
+     * @param key
      * @returns {{nodes: {x, y, id: *, label: *}[], edges: *[]}}
      */
-    dataByIndex(index) {
-        let project = this.projects[index];
+    dataByKey(key) {
+        console.log('data by key', key)
+        let project = this.projects.filter(p => p.key === key)[0]
+        console.log('project', project)
         let nodes = project.nodes
 
         let edges = []

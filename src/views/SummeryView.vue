@@ -18,6 +18,10 @@ import G6 from '@antv/g6';
 import {computed, onMounted, ref, watch} from 'vue';
 import store from "@/store";
 
+const props = defineProps(['projectKey'])
+
+console.log('props project key', props.projectKey)
+
 const header = ref(null)
 const times = ref([])
 
@@ -113,7 +117,14 @@ onMounted(() => {
     const node = e.item
     console.log(node)
   })
-  graph.value.data(store.dataByIndex(0));
+  console.log('project key', props.projectKey)
+  graph.value.data(store.dataByKey(props.projectKey));
+  graph.value.render();
+})
+
+watch(props, () => {
+  console.log('watch render g6', props.projectKey)
+  graph.value.data(store.dataByKey(props.projectKey));
   graph.value.render();
 })
 

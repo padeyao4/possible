@@ -2,12 +2,12 @@
   <div class="main">
     <div class="side">
       <button>
-        <RouterLink to="/">
+        <RouterLink :to="{name: 'home'}">
           我的一天
         </RouterLink>
       </button>
       <button>
-        <RouterLink to="/summery">
+        <RouterLink :to="{name: 'summery',params: {projectKey: '1'}}">
           生活规划
         </RouterLink>
       </button>
@@ -19,7 +19,7 @@
       <hr/>
       <div class="list">
         <div v-for="item in store.projects">
-          <button class="item">{{ item.name }}</button>
+          <button class="item" @click="handleListClick(item.key)" :key="item.key">{{ item.name }}</button>
         </div>
       </div>
       <button @click="addProject">
@@ -35,9 +35,20 @@
 <script setup>
 import {RouterLink, RouterView} from 'vue-router'
 import store from "./store"
+import router from "@/router";
 
 function addProject() {
   store.addProject(store.projects.length + 1)
+}
+
+function handleListClick(key) {
+  console.log('key', key)
+  router.push({
+    name: 'summery',
+    params: {
+      projectKey: key
+    }
+  })
 }
 
 </script>
