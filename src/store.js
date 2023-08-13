@@ -6,26 +6,32 @@ export default reactive({
         nodes: [{
             name: 'node1',
             id: 'node1',
-            dataIndex: 1,
+            dataIndex: 0,
             priority: 0,
-            children: ['node2','node3'],
+            children: ['node2', 'node3'],
         }, {
             name: 'node2',
             id: 'node2',
-            dataIndex: 2,
+            dataIndex: 1,
             priority: 3,
             children: ['node3'],
         }, {
             name: 'node3',
             id: 'node3',
-            dataIndex: 6,
+            dataIndex: 5,
             priority: 1,
             children: [],
         },
         ]
     }, {
         name: '2',
-        nodes: []
+        nodes: [{
+            name: 'x1',
+            id: 'x1',
+            dataIndex: 0,
+            priority: 3,
+            children: [],
+        }]
     }],
     addProject(name) {
         this.projects.push({
@@ -43,6 +49,11 @@ export default reactive({
             })
         }
     },
+    /**
+     * select data based on the project index and covert to data for antv g6
+     * @param index
+     * @returns {{nodes: {x, y, id: *, label: *}[], edges: *[]}}
+     */
     dataByIndex(index) {
         let project = this.projects[index];
         let nodes = project.nodes
@@ -65,11 +76,24 @@ export default reactive({
                 return {
                     id: v.id,
                     label: v.name,
-                    x: v.dataIndex * 120 - 60,
+                    x: v.dataIndex * 120 + 60,
                     y: v.priority * 40 + 28
                 }
             }),
             edges
         }
+    },
+    /**
+     * select day based on the day index and return list
+     * @param day
+     * @returns {*[]}
+     */
+    dataByDay(day = 0) {
+        let ans = []
+        for (let project of this.projects) {
+            let res = project.nodes.filter(n => n.dataIndex === day).map(v => v.name)
+            ans.push(...res)
+        }
+        return ans
     }
 })

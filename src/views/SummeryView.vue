@@ -31,7 +31,7 @@ const timeCols = 25;
 
 function initTimesArr() {
   for (let i = 0; i < timeCols; i++) {
-    times.value.push(i)
+    times.value.push(i - 1)
   }
 }
 
@@ -57,7 +57,7 @@ watch(translateX, (newValue, oldValue) => {
 
       let headValue = times.value.at(0)
       times.value.at(-1);
-      let count = Math.abs(n - Math.abs(headValue))
+      let count = Math.abs(n - Math.abs(headValue) + 1)
 
       if (newValue - oldValue > 0) {
         moveRight(count)
