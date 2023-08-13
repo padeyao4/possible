@@ -8,15 +8,19 @@ export default reactive({
             id: 'node1',
             dataIndex: 1,
             priority: 0,
-            children: [],
-            parent: []
+            children: ['node2','node3'],
         }, {
             name: 'node2',
             id: 'node2',
             dataIndex: 2,
-            priority: 0,
+            priority: 3,
+            children: ['node3'],
+        }, {
+            name: 'node3',
+            id: 'node3',
+            dataIndex: 6,
+            priority: 1,
             children: [],
-            parent: []
         },
         ]
     }, {
@@ -36,14 +40,26 @@ export default reactive({
                 name: taskName,
                 dataIndex: 0, // 时间索引
                 children: [],
-                parent: []
             })
         }
     },
     dataByIndex(index) {
         let project = this.projects[index];
         let nodes = project.nodes
-        console.log("store project", project)
+
+        let edges = []
+        for (let i in nodes) {
+            let node = nodes[i]
+            let children = node.children
+            for (let j in children) {
+                let edge = {
+                    source: node.id,
+                    target: children[j]
+                }
+                edges.push(edge)
+            }
+        }
+
         return {
             nodes: nodes.map((v) => {
                 return {
@@ -52,7 +68,8 @@ export default reactive({
                     x: v.dataIndex * 120 - 60,
                     y: v.priority * 40 + 28
                 }
-            })
+            }),
+            edges
         }
     }
 })

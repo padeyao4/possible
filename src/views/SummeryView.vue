@@ -102,6 +102,10 @@ onMounted(() => {
         stroke: '#0050ff',
         lineWidth: 0,
       },
+    },
+    defaultEdge: {
+      type: 'cubic-horizontal',
+      style: {}
     }
   });
   graph.value.on("node:click", (e) => {
