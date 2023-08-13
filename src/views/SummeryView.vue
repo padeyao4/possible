@@ -16,6 +16,7 @@
 <script setup>
 import G6 from '@antv/g6';
 import {computed, onMounted, ref, watch} from 'vue';
+import store from "@/store";
 
 const header = ref(null)
 const times = ref([])
@@ -23,7 +24,7 @@ const times = ref([])
 const translateX = ref(0)
 
 const relationX = computed(() => {
-  return translateX.value % 120 - 100
+  return translateX.value % 120 - 96
 })
 
 const timeCols = 25;
@@ -72,33 +73,6 @@ const handleWheel = (e) => {
   graph.value.translate(dx, 0)
 }
 
-const data = {
-  nodes: [
-    {
-      id: 'node',
-      x: 2000,
-      y: 100,
-      label: 'modelRect',
-      style: {
-        fill: '#00FFFF', // 节点填充色
-        stroke: '#FFFF00',  // 节点的描边颜色
-        lineWidth: 1,       // 描边宽度
-      },
-    },
-    {
-      id: 'node2',
-      x: 110,
-      y: 20,
-      label: 'modelRect',
-      style: {
-        fill: '#00FFFF', // 节点填充色
-        stroke: '#FFFF00',  // 节点的描边颜色
-        lineWidth: 1,       // 描边宽度
-      },
-    }
-  ]
-}
-
 const container = ref(null)
 const graph = ref(null)
 
@@ -121,12 +95,12 @@ onMounted(() => {
       }]
     },
     defaultNode: {
-      type: 'modelRect',
-      size: [200, 40],
+      type: 'rect',
+      size: [100, 40],
       style: {
-        fill: '#545454',
-        stroke: '#adc6ff',
-        lineWidth: 1,
+        fill: '#016458',
+        stroke: '#0050ff',
+        lineWidth: 0,
       },
     }
   });
@@ -135,7 +109,7 @@ onMounted(() => {
     const node = e.item
     console.log(node)
   })
-  graph.value.data(data);
+  graph.value.data(store.dataByIndex(0));
   graph.value.render();
 })
 
