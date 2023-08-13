@@ -64,7 +64,6 @@ export default reactive({
      * @returns {{nodes: {x, y, id: *, label: *}[], edges: *[]}}
      */
     dataByKey(key) {
-        console.log('data by key', key)
         let projects = this.projects.filter(p => p.key === key)
         if (projects.length === 0) {
             return {
@@ -73,7 +72,6 @@ export default reactive({
             }
         }
         let project = projects[0]
-        console.log('project', project)
         let nodes = project.nodes
 
         let edges = []

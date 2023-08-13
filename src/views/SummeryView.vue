@@ -14,13 +14,11 @@
 </template>
 
 <script setup>
-import G6 from '@antv/g6';
+import G6, {Grid} from '@antv/g6';
 import {computed, onMounted, ref, watch} from 'vue';
 import store from "@/store";
 
 const props = defineProps(['projectKey'])
-
-console.log('props project key', props.projectKey)
 
 const header = ref(null)
 const times = ref([])
@@ -43,7 +41,7 @@ initTimesArr()
 
 function moveRight(n = 1) {
   for (let i = 0; i < n; i++) {
-    times.value.unshift(times.value.at(0) - 1)
+    times.value.unshift(times.value[0] - 1)
     times.value.pop()
   }
 }
@@ -59,9 +57,9 @@ function moveLeft(n = 1) {
 watch(translateX, (newValue, oldValue) => {
       let n = Math.floor(Math.abs(newValue / 120))
 
-      let headValue = times.value.at(0)
+      let headValue = times.value[0] + 1
       times.value.at(-1);
-      let count = Math.abs(n - Math.abs(headValue) + 1)
+      let count = Math.abs(n - Math.abs(headValue))
 
       if (newValue - oldValue > 0) {
         moveRight(count)
@@ -81,11 +79,12 @@ const container = ref(null)
 const graph = ref(null)
 
 onMounted(() => {
-  console.log("render g6")
+  let grid = new Grid();
   graph.value = new G6.Graph({
     container: container.value,
     width: container.value.clientWidth,
     height: container.value.clientHeight - 8,
+    plugins: [grid],
     modes: {
       default: [{
         type: 'drag-canvas',
@@ -102,8 +101,7 @@ onMounted(() => {
       type: 'rect',
       size: [100, 40],
       style: {
-        fill: '#016458',
-        stroke: '#0050ff',
+        fill: '#91d2fb',
         lineWidth: 0,
       },
     },
@@ -117,7 +115,6 @@ onMounted(() => {
     const node = e.item
     console.log(node)
   })
-  console.log('project key', props.projectKey)
   graph.value.data(store.dataByKey(props.projectKey));
   graph.value.render();
 })
@@ -129,9 +126,7 @@ watch(props, () => {
 })
 
 window.addEventListener("resize", () => {
-  console.log("resize")
   if (container.value) {
-    console.log("g6 container width", container.value.clientWidth, "header width", header.value.clientWidth)
     graph.value.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
   }
 })
@@ -168,11 +163,13 @@ window.addEventListener("resize", () => {
   border: #222222 solid;
   overflow-y: auto;
   height: calc(100vh - 100px);
-  background-color: #2c3e50;
+  background-color: rgb(158, 158, 158);
 
   .container {
-    background-color: #949494;
     height: 100%;
+    z-index: 1;
+    position: relative;
+    background-color: #fdfdfd;
   }
 }
 
