@@ -1,7 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import TodayView from '../views/TodayView.vue'
 import SummeryView from '../views/SummeryView.vue'
-import TestView from '../views/TestView.vue'
 
 
 const router = createRouter({
@@ -18,10 +17,6 @@ const router = createRouter({
             component: SummeryView,
             props: true
         },
-        {
-            path: '/test',
-            component: TestView
-        }
     ]
 })
 

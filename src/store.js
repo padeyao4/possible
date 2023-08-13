@@ -3,7 +3,7 @@ import {reactive} from "vue";
 export default reactive({
     projects: [{
         name: '1',
-        key: '1',
+        key: '0',
         nodes: [{
             name: 'node1',
             id: 'node1',
@@ -26,7 +26,7 @@ export default reactive({
         ]
     }, {
         name: '2',
-        key: '2',
+        key: '1',
         nodes: [{
             name: 'x1',
             id: 'x1',
@@ -35,11 +35,18 @@ export default reactive({
             children: [],
         }]
     }],
+    /**
+     * record the activated project, default no project has active
+     */
+    active: '',
     addProject(name) {
-        this.projects.push({
+        let project = {
             name,
+            key: this.projects.length.toString(),
             nodes: [],
-        })
+        };
+        this.projects.push(project)
+        return project
     },
     addTask(projectName, taskName) {
         let result = this.projects.filter((project) => project.name === projectName);
@@ -58,7 +65,14 @@ export default reactive({
      */
     dataByKey(key) {
         console.log('data by key', key)
-        let project = this.projects.filter(p => p.key === key)[0]
+        let projects = this.projects.filter(p => p.key === key)
+        if (projects.length === 0) {
+            return {
+                nodes: [],
+                edges: []
+            }
+        }
+        let project = projects[0]
         console.log('project', project)
         let nodes = project.nodes
 
