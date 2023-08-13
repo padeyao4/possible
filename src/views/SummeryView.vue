@@ -89,6 +89,8 @@ onMounted(() => {
       default: [{
         type: 'drag-canvas',
         allowDragOnItem: true,
+        enableOptimize: true,
+        scalableRange: 99,
         shouldUpdate: () => {
           let p = graph.value.getPointByCanvas(0, 0)
           // 将画布长度和滚动条绑定
