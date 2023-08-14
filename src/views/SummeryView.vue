@@ -78,8 +78,27 @@ const handleWheel = (e) => {
 const container = ref(null)
 const graph = ref(null)
 
+
 onMounted(() => {
   let grid = new Grid();
+
+  // todo canvas on click not work
+  G6.registerBehavior('double-click-canvas-add-node', {
+    getEvents() {
+      return {
+        'dblclick': 'onCreateNode'
+      }
+    },
+    onCreateNode(e) {
+      if (e.target?.isCanvas?.()) {
+        this.graph.addItem("node", {
+          x: e.x,
+          y: e.y,
+          id: `node-${e.x}-${e.y}`
+        })
+      }
+    }
+  })
   graph.value = new G6.Graph({
     container: container.value,
     width: container.value.clientWidth,
@@ -97,7 +116,13 @@ onMounted(() => {
           translateX.value = -p.x
           return true
         },
-      }]
+      }, {
+        type: 'double-click-canvas-add-node'
+      }, {
+        // todo 拖动需要指定范围，前端不能操作父节点，后端不能操作子节点
+        // todo 指定编辑模式可拖动
+        type: 'drag-node'
+      }],
     },
     defaultNode: {
       type: 'rect',
@@ -112,11 +137,7 @@ onMounted(() => {
       style: {}
     }
   });
-  graph.value.on("node:click", (e) => {
-    // 节点监听
-    const node = e.item
-    console.log(node)
-  })
+
   graph.value.data(store.dataByKey(props.projectKey));
   graph.value.render();
 })
