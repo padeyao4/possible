@@ -1,31 +1,40 @@
 @import './base.css';
 
 #app {
-  font-weight: normal;
+    font-weight: normal;
 }
 
 /* 滚动条设置 */
 ::-webkit-scrollbar {
-  width: 3px;
+    width: 3px;
 }
 
 ::-webkit-scrollbar-track {
-  width: 2px;
-  background-color: #1c1c1c;
-  -webkit-border-radius: 2em;
-  -moz-border-radius: 2em;
-  border-radius: 2em;
+    width: 2px;
+    background-color: #1c1c1c;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius: 2em;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #9f9f9f;
-  background-clip: padding-box;
-  min-height: 28px;
-  -webkit-border-radius: 2em;
-  -moz-border-radius: 2em;
-  border-radius: 2em;
+    background-color: #9f9f9f;
+    background-clip: padding-box;
+    min-height: 28px;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius: 2em;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  width: 6px;
+    width: 6px;
+}
+
+/*antV g6 custom tooltip */
+.g6-tooltip {
+    padding: 10px 6px;
+    color: #444;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #e2e2e2;
+    border-radius: 4px;
 }

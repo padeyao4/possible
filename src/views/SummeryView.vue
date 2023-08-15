@@ -5,9 +5,13 @@
         <div class="time-item" v-for="time in times" :key="time" :style="{translate: relationX+'px'}">{{ time }}</div>
       </div>
       <div class="body">
+        <el-drawer v-model="drawer" title="I am the title" :with-header="false">
+          <span>Hi there!</span>
+        </el-drawer>
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
+        <p class="footer-label">{{ operationMode }}</p>
       </div>
     </div>
   </div>
@@ -20,24 +24,20 @@ import store from "@/store";
 
 const props = defineProps(['projectKey'])
 
+const drawer = ref(false)
 const header = ref(null)
 const times = ref([])
-
 const translateX = ref(0)
+const container = ref(null)
+const graph = ref(null)
 
 const relationX = computed(() => {
   return translateX.value % 120 - 96
 })
 
-const timeCols = 25;
-
-function initTimesArr() {
-  for (let i = 0; i < timeCols; i++) {
-    times.value.push(i - 1)
-  }
+for (let i = 0; i < 25; i++) {
+  times.value.push(i - 1)
 }
-
-initTimesArr()
 
 function moveRight(n = 1) {
   for (let i = 0; i < n; i++) {
@@ -52,7 +52,6 @@ function moveLeft(n = 1) {
     times.value.push(times.value.at(-1) + 1)
   }
 }
-
 
 watch(translateX, (newValue, oldValue) => {
       let n = Math.floor(Math.abs(newValue / 120))
@@ -75,9 +74,9 @@ const handleWheel = (e) => {
   graph.value.translate(dx, 0)
 }
 
-const container = ref(null)
-const graph = ref(null)
-
+const operationMode = computed(() => {
+  return graph.value?.getCurrentMode()
+})
 
 onMounted(() => {
   let grid = new Grid();
@@ -86,7 +85,7 @@ onMounted(() => {
   G6.registerBehavior('double-click-canvas-add-node', {
     getEvents() {
       return {
-        'dblclick': 'onCreateNode'
+        'dblclick': 'onCreateNode',
       }
     },
     onCreateNode(e) {
@@ -94,11 +93,34 @@ onMounted(() => {
         this.graph.addItem("node", {
           x: e.x,
           y: e.y,
+          // todo set id
           id: `node-${e.x}-${e.y}`
         })
       }
+      if (e.item?.getType() === 'node') {
+        drawer.value = true
+      }
     }
   })
+  G6.registerBehavior('ctrl-change-edit-mode', {
+    getEvents() {
+      return {
+        'keydown': 'onCtrlDown',
+        'keyup': 'onCtrlUp'
+      }
+    },
+    onCtrlDown(e) {
+      if (e.key === 'Control') {
+        this.graph.setMode('edit')
+      }
+    },
+    onCtrlUp(e) {
+      if (e.key === 'Control') {
+        this.graph.setMode('default')
+      }
+    }
+  })
+
   graph.value = new G6.Graph({
     container: container.value,
     width: container.value.clientWidth,
@@ -116,13 +138,10 @@ onMounted(() => {
           translateX.value = -p.x
           return true
         },
-      }, {
-        type: 'double-click-canvas-add-node'
-      }, {
-        // todo 拖动需要指定范围，前端不能操作父节点，后端不能操作子节点
-        // todo 指定编辑模式可拖动
+      }, 'double-click-canvas-add-node', 'ctrl-change-edit-mode'],
+      edit: ['ctrl-change-edit-mode', {
         type: 'drag-node'
-      }],
+      }]
     },
     defaultNode: {
       type: 'rect',
@@ -143,7 +162,6 @@ onMounted(() => {
 })
 
 watch(props, () => {
-  console.log('watch render g6', props.projectKey)
   graph.value.data(store.dataByKey(props.projectKey));
   graph.value.render();
 })
@@ -174,6 +192,7 @@ window.addEventListener("resize", () => {
 
   .time-item {
     width: 100px;
+    color: #c8c9cc;
     flex-shrink: 0;
     background-color: #1c1c1c;
     margin: 0 10px 0 10px;
@@ -203,6 +222,12 @@ window.addEventListener("resize", () => {
   background: whitesmoke;
   display: flex;
   justify-content: space-between;
+
+  .footer-label {
+    color: #181818;
+    background-color: #c8c9cc;
+    user-select: none;
+  }
 
   div {
     display: flex;
