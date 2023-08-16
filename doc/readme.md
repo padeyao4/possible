@@ -11,4 +11,5 @@
 - indexeddb
 - 圆角
 - 点击创建task
-
+- auto align
+- edit node

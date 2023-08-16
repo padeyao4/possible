@@ -25,11 +25,11 @@ import store from "@/store";
 const props = defineProps(['projectKey'])
 
 const drawer = ref(false)
-const header = ref(null)
+// const header = ref(null)
 const times = ref([])
 const translateX = ref(0)
 const container = ref(null)
-const graph = ref(null)
+let graph = null
 
 const relationX = computed(() => {
   return translateX.value % 120 - 96
@@ -71,18 +71,18 @@ watch(translateX, (newValue, oldValue) => {
 const handleWheel = (e) => {
   let dx = e.deltaY / 5;
   translateX.value = (translateX.value + dx)
-  graph.value.translate(dx, 0)
+  graph.translate(dx, 0)
 }
 
 const operationMode = computed(() => {
-  return graph.value?.getCurrentMode()
+  return graph?.getCurrentMode()
 })
 
 onMounted(() => {
   let grid = new Grid();
 
   // todo canvas on click not work
-  G6.registerBehavior('double-click-canvas-add-node', {
+  G6.registerBehavior('double-click-add-node', {
     getEvents() {
       return {
         'dblclick': 'onCreateNode',
@@ -91,7 +91,7 @@ onMounted(() => {
     onCreateNode(e) {
       if (e.target?.isCanvas?.()) {
         this.graph.addItem("node", {
-          x: e.x,
+          x: Math.floor(e.x / 120) * 120 + 60,
           y: e.y,
           // todo set id
           id: `node-${e.x}-${e.y}`
@@ -121,7 +121,7 @@ onMounted(() => {
     }
   })
 
-  graph.value = new G6.Graph({
+  graph = new G6.Graph({
     container: container.value,
     width: container.value.clientWidth,
     height: container.value.clientHeight - 8,
@@ -133,14 +133,19 @@ onMounted(() => {
         enableOptimize: true,
         scalableRange: 99,
         shouldUpdate: () => {
-          let p = graph.value.getPointByCanvas(0, 0)
+          let p = graph.getPointByCanvas(0, 0)
           // 将画布长度和滚动条绑定
           translateX.value = -p.x
           return true
         },
-      }, 'double-click-canvas-add-node', 'ctrl-change-edit-mode'],
+      }, 'double-click-add-node', 'ctrl-change-edit-mode'],
       edit: ['ctrl-change-edit-mode', {
-        type: 'drag-node'
+        type: 'drag-node',
+        shouldUpdate(e) {
+          console.log(e.item)
+          e.item.x = Math.floor(e.x / 120) * 120 + 60;
+          return true
+        }
       }]
     },
     defaultNode: {
@@ -157,18 +162,16 @@ onMounted(() => {
     }
   });
 
-  graph.value.data(store.dataByKey(props.projectKey));
-  graph.value.render();
+  graph.read(store.dataByKey(props.projectKey));
 })
 
 watch(props, () => {
-  graph.value.data(store.dataByKey(props.projectKey));
-  graph.value.render();
+  graph.read(store.dataByKey(props.projectKey));
 })
 
 window.addEventListener("resize", () => {
   if (container.value) {
-    graph.value.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
+    graph.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
   }
 })
 </script>
