@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="main">
-      <div class="header" @wheel="handleWheel" ref="header" id="header">
+      <div class="header" @wheel="handleWheel" id="header">
         <div class="time-item" v-for="time in times" :key="time" :style="{translate: relationX+'px'}">{{ time }}</div>
       </div>
       <div class="body">
@@ -19,14 +19,13 @@
 
 <script setup>
 import G6, {Grid} from '@antv/g6';
-import {computed, onMounted, ref, watch} from 'vue';
+import {computed, onMounted, ref, watch, watchEffect} from 'vue';
 import store from "@/store";
 
 const props = defineProps(['projectKey'])
 
 const drawer = ref(false)
-// const header = ref(null)
-const times = ref([])
+const times = ref([...new Array(25).keys()].map(i => i - 1))
 const translateX = ref(0)
 const container = ref(null)
 let graph = null
@@ -34,10 +33,6 @@ let graph = null
 const relationX = computed(() => {
   return translateX.value % 120 - 96
 })
-
-for (let i = 0; i < 25; i++) {
-  times.value.push(i - 1)
-}
 
 function moveRight(n = 1) {
   for (let i = 0; i < n; i++) {
@@ -166,7 +161,14 @@ onMounted(() => {
 })
 
 watch(props, () => {
-  graph.read(store.dataByKey(props.projectKey));
+  translateX.value = 0
+  times.value = []
+  for (let i = 0; i < 25; i++) {
+    times.value.push(i - 1)
+  }
+  if (graph) {
+    graph.read(store.dataByKey(props.projectKey));
+  }
 })
 
 window.addEventListener("resize", () => {
