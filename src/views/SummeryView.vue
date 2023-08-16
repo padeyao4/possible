@@ -11,7 +11,7 @@
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
-        <p class="footer-label">{{ operationMode }}</p>
+        <p class="footer-label">{{ operationMode || 'null' }}</p>
       </div>
     </div>
   </div>
@@ -19,17 +19,22 @@
 
 <script setup>
 import G6, {Grid} from '@antv/g6';
-import {computed, onMounted, ref, watch, watchEffect} from 'vue';
+import {computed, onMounted, ref, watch} from 'vue';
 import store from "@/store";
 
 const props = defineProps(['projectKey'])
 
 const drawer = ref(false)
 const times = ref([...new Array(25).keys()].map(i => i - 1))
+// header time bar item offset
 const translateX = ref(0)
 const container = ref(null)
-let graph = null
+const graph = ref(null)
 
+/**
+ * time bar item align with canvas
+ * @type {ComputedRef<unknown>}
+ */
 const relationX = computed(() => {
   return translateX.value % 120 - 96
 })
@@ -66,11 +71,11 @@ watch(translateX, (newValue, oldValue) => {
 const handleWheel = (e) => {
   let dx = e.deltaY / 5;
   translateX.value = (translateX.value + dx)
-  graph.translate(dx, 0)
+  graph.value?.translate(dx, 0)
 }
 
 const operationMode = computed(() => {
-  return graph?.getCurrentMode()
+  return graph.value?.getCurrentMode()
 })
 
 onMounted(() => {
@@ -105,18 +110,20 @@ onMounted(() => {
       }
     },
     onCtrlDown(e) {
+      let {graph} = this
       if (e.key === 'Control') {
-        this.graph.setMode('edit')
+        graph.setMode('edit')
       }
     },
     onCtrlUp(e) {
+      let {graph} = this
       if (e.key === 'Control') {
-        this.graph.setMode('default')
+        graph.setMode('default')
       }
     }
   })
 
-  graph = new G6.Graph({
+  graph.value = new G6.Graph({
     container: container.value,
     width: container.value.clientWidth,
     height: container.value.clientHeight - 8,
@@ -128,7 +135,7 @@ onMounted(() => {
         enableOptimize: true,
         scalableRange: 99,
         shouldUpdate: () => {
-          let p = graph.getPointByCanvas(0, 0)
+          let p = graph.value.getPointByCanvas(0, 0)
           // 将画布长度和滚动条绑定
           translateX.value = -p.x
           return true
@@ -157,7 +164,7 @@ onMounted(() => {
     }
   });
 
-  graph.read(store.dataByKey(props.projectKey));
+  graph.value.read(store.dataByKey(props.projectKey));
 })
 
 watch(props, () => {
@@ -167,13 +174,13 @@ watch(props, () => {
     times.value.push(i - 1)
   }
   if (graph) {
-    graph.read(store.dataByKey(props.projectKey));
+    graph.value.read(store.dataByKey(props.projectKey));
   }
 })
 
 window.addEventListener("resize", () => {
   if (container.value) {
-    graph.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
+    graph.value.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
   }
 })
 </script>
