@@ -13,3 +13,4 @@
 - 点击创建task
 - auto align
 - edit node
+- 自定义背景图片

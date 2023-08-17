@@ -18,8 +18,9 @@
 </template>
 
 <script setup>
-import G6, {Grid} from '@antv/g6';
+import G6 from '@antv/g6';
 import {computed, onMounted, ref, watch} from 'vue';
+import PossibleGrid from "@/plugin/possible-grid";
 import store from "@/store";
 
 const props = defineProps(['projectKey'])
@@ -33,7 +34,6 @@ const graph = ref(null)
 
 /**
  * time bar item align with canvas
- * @type {ComputedRef<unknown>}
  */
 const relationX = computed(() => {
   return translateX.value % 120 - 96
@@ -79,7 +79,7 @@ const operationMode = computed(() => {
 })
 
 onMounted(() => {
-  let grid = new Grid();
+  let grid = new PossibleGrid()
 
   // todo canvas on click not work
   G6.registerBehavior('double-click-add-node', {
@@ -163,7 +163,6 @@ onMounted(() => {
       style: {}
     }
   });
-
   graph.value.read(store.dataByKey(props.projectKey));
 })
 
@@ -246,7 +245,6 @@ window.addEventListener("resize", () => {
     justify-content: center;
     align-items: center;
     margin: auto;
-  //padding: auto 5px; -webkit-user-select: none; user-select: none; min-width: 40px; min-height: 30px; border-radius: 10%;
 
     &:hover {
       background: wheat;
