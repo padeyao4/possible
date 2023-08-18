@@ -21,6 +21,7 @@
 import G6 from '@antv/g6';
 import {computed, onMounted, ref, watch} from 'vue';
 import PossibleGrid from "@/plugin/possible-grid";
+import PossibleNodeDrag from '@/behavior/possible-node-drag'
 import store from "@/store";
 
 const props = defineProps(['projectKey'])
@@ -122,6 +123,7 @@ onMounted(() => {
       }
     }
   })
+  G6.registerBehavior('possible-drag-node', PossibleNodeDrag)
 
   graph.value = new G6.Graph({
     container: container.value,
@@ -142,7 +144,7 @@ onMounted(() => {
         },
       }, 'double-click-add-node', 'ctrl-change-edit-mode'],
       edit: ['ctrl-change-edit-mode', {
-        type: 'drag-node'
+        type: 'possible-drag-node'
       }]
     },
     defaultNode: {

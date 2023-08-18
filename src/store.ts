@@ -1,6 +1,25 @@
 import {reactive} from "vue";
 
+
+export interface Node {
+    name: string,
+    id: string,
+    dataIndex: number,
+    priority: number,
+    children: string[]
+}
+
+export interface Project {
+    name: string,
+    key: string,
+    nodes: Node[]
+}
+
 export default reactive({
+    /**
+     * record the activated project, default no project has active
+     */
+    active: '',
     projects: [{
         name: '1',
         key: '0',
@@ -35,12 +54,10 @@ export default reactive({
             children: [],
         }]
     }],
-    /**
-     * record the activated project, default no project has active
-     */
-    active: '',
-    addProject(name) {
-        let project = {
+
+
+    addProject(name: string) {
+        let project: Project = {
             name,
             key: this.projects.length.toString(),
             nodes: [],
@@ -48,7 +65,7 @@ export default reactive({
         this.projects.push(project)
         return project
     },
-    addTask(projectName, taskName) {
+    addTask(projectName: string, taskName: string) {
         let result = this.projects.filter((project) => project.name === projectName);
         if (result.length === 1) {
             result[0].nodes.push({
@@ -104,7 +121,7 @@ export default reactive({
      * @param day
      * @returns {*[]}
      */
-    dataByDay(day = 0) {
+    dataByDay(day: number = 0) {
         let ans = []
         for (let project of this.projects) {
             let res = project.nodes.filter(n => n.dataIndex === day).map(v => v.name)
