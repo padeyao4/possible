@@ -8,7 +8,9 @@
 
 ## todo
 
-- 页面点击创建任务
-- 创建工程名
 - indexeddb
-
+- 圆角
+- 点击创建task
+- auto align
+- edit node
+- 自定义背景图片

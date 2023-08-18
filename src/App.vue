@@ -121,7 +121,6 @@ function handleListClick(key) {
 
 .content {
   background-color: rgb(73, 57, 57);
-  color: antiquewhite;
   height: 100vh;
 }
 </style>

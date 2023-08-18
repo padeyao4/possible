@@ -1,13 +1,17 @@
 <template>
   <div>
     <div class="main">
-      <div class="header" @wheel="handleWheel" ref="header" id="header">
+      <div class="header" @wheel="handleWheel" id="header">
         <div class="time-item" v-for="time in times" :key="time" :style="{translate: relationX+'px'}">{{ time }}</div>
       </div>
       <div class="body">
+        <el-drawer v-model="drawer" title="I am the title" :with-header="false">
+          <span>Hi there!</span>
+        </el-drawer>
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
+        <p class="footer-label">{{ operationMode || 'null' }}</p>
       </div>
     </div>
   </div>
@@ -16,34 +20,28 @@
 <script setup>
 import G6 from '@antv/g6';
 import {computed, onMounted, ref, watch} from 'vue';
+import PossibleGrid from "@/plugin/possible-grid";
 import store from "@/store";
 
 const props = defineProps(['projectKey'])
 
-console.log('props project key', props.projectKey)
-
-const header = ref(null)
-const times = ref([])
-
+const drawer = ref(false)
+const times = ref([...new Array(25).keys()].map(i => i - 1))
+// header time bar item offset
 const translateX = ref(0)
+const container = ref(null)
+const graph = ref(null)
 
+/**
+ * time bar item align with canvas
+ */
 const relationX = computed(() => {
   return translateX.value % 120 - 96
 })
 
-const timeCols = 25;
-
-function initTimesArr() {
-  for (let i = 0; i < timeCols; i++) {
-    times.value.push(i - 1)
-  }
-}
-
-initTimesArr()
-
 function moveRight(n = 1) {
   for (let i = 0; i < n; i++) {
-    times.value.unshift(times.value.at(0) - 1)
+    times.value.unshift(times.value[0] - 1)
     times.value.pop()
   }
 }
@@ -55,13 +53,12 @@ function moveLeft(n = 1) {
   }
 }
 
-
 watch(translateX, (newValue, oldValue) => {
       let n = Math.floor(Math.abs(newValue / 120))
 
-      let headValue = times.value.at(0)
+      let headValue = times.value[0] + 1
       times.value.at(-1);
-      let count = Math.abs(n - Math.abs(headValue) + 1)
+      let count = Math.abs(n - Math.abs(headValue))
 
       if (newValue - oldValue > 0) {
         moveRight(count)
@@ -74,36 +71,90 @@ watch(translateX, (newValue, oldValue) => {
 const handleWheel = (e) => {
   let dx = e.deltaY / 5;
   translateX.value = (translateX.value + dx)
-  graph.value.translate(dx, 0)
+  graph.value?.translate(dx, 0)
 }
 
-const container = ref(null)
-const graph = ref(null)
+const operationMode = computed(() => {
+  return graph.value?.getCurrentMode()
+})
 
 onMounted(() => {
-  console.log("render g6")
+  let grid = new PossibleGrid()
+
+  // todo canvas on click not work
+  G6.registerBehavior('double-click-add-node', {
+    getEvents() {
+      return {
+        'dblclick': 'onCreateNode',
+      }
+    },
+    onCreateNode(e) {
+      if (e.target?.isCanvas?.()) {
+        this.graph.addItem("node", {
+          x: Math.floor(e.x / 120) * 120 + 60,
+          y: e.y,
+          // todo set id
+          id: `node-${e.x}-${e.y}`
+        })
+      }
+      if (e.item?.getType() === 'node') {
+        drawer.value = true
+      }
+    }
+  })
+  G6.registerBehavior('ctrl-change-edit-mode', {
+    getEvents() {
+      return {
+        'keydown': 'onCtrlDown',
+        'keyup': 'onCtrlUp'
+      }
+    },
+    onCtrlDown(e) {
+      let {graph} = this
+      if (e.key === 'Control') {
+        graph.setMode('edit')
+      }
+    },
+    onCtrlUp(e) {
+      let {graph} = this
+      if (e.key === 'Control') {
+        graph.setMode('default')
+      }
+    }
+  })
+
   graph.value = new G6.Graph({
     container: container.value,
     width: container.value.clientWidth,
     height: container.value.clientHeight - 8,
+    plugins: [grid],
     modes: {
       default: [{
         type: 'drag-canvas',
         allowDragOnItem: true,
+        enableOptimize: true,
+        scalableRange: 99,
         shouldUpdate: () => {
           let p = graph.value.getPointByCanvas(0, 0)
           // 将画布长度和滚动条绑定
           translateX.value = -p.x
           return true
         },
+      }, 'double-click-add-node', 'ctrl-change-edit-mode'],
+      edit: ['ctrl-change-edit-mode', {
+        type: 'drag-node',
+        shouldUpdate(e) {
+          console.log(e.item)
+          e.item.x = Math.floor(e.x / 120) * 120 + 60;
+          return true
+        }
       }]
     },
     defaultNode: {
       type: 'rect',
       size: [100, 40],
       style: {
-        fill: '#016458',
-        stroke: '#0050ff',
+        fill: '#91d2fb',
         lineWidth: 0,
       },
     },
@@ -112,26 +163,22 @@ onMounted(() => {
       style: {}
     }
   });
-  graph.value.on("node:click", (e) => {
-    // 节点监听
-    const node = e.item
-    console.log(node)
-  })
-  console.log('project key', props.projectKey)
-  graph.value.data(store.dataByKey(props.projectKey));
-  graph.value.render();
+  graph.value.read(store.dataByKey(props.projectKey));
 })
 
 watch(props, () => {
-  console.log('watch render g6', props.projectKey)
-  graph.value.data(store.dataByKey(props.projectKey));
-  graph.value.render();
+  translateX.value = 0
+  times.value = []
+  for (let i = 0; i < 25; i++) {
+    times.value.push(i - 1)
+  }
+  if (graph) {
+    graph.value.read(store.dataByKey(props.projectKey));
+  }
 })
 
 window.addEventListener("resize", () => {
-  console.log("resize")
   if (container.value) {
-    console.log("g6 container width", container.value.clientWidth, "header width", header.value.clientWidth)
     graph.value.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
   }
 })
@@ -156,6 +203,7 @@ window.addEventListener("resize", () => {
 
   .time-item {
     width: 100px;
+    color: #c8c9cc;
     flex-shrink: 0;
     background-color: #1c1c1c;
     margin: 0 10px 0 10px;
@@ -168,11 +216,13 @@ window.addEventListener("resize", () => {
   border: #222222 solid;
   overflow-y: auto;
   height: calc(100vh - 100px);
-  background-color: #2c3e50;
+  background-color: rgb(158, 158, 158);
 
   .container {
-    background-color: #949494;
     height: 100%;
+    z-index: 1;
+    position: relative;
+    background-color: #fdfdfd;
   }
 }
 
@@ -184,12 +234,17 @@ window.addEventListener("resize", () => {
   display: flex;
   justify-content: space-between;
 
+  .footer-label {
+    color: #181818;
+    background-color: #c8c9cc;
+    user-select: none;
+  }
+
   div {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: auto;
-  //padding: auto 5px; -webkit-user-select: none; user-select: none; min-width: 40px; min-height: 30px; border-radius: 10%;
 
     &:hover {
       background: wheat;
