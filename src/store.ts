@@ -5,7 +5,7 @@ export interface Node {
     name: string,
     id: string,
     dataIndex: number,
-    priority: number,
+    y: number,
     children: string[]
 }
 
@@ -27,19 +27,25 @@ export default reactive({
             name: 'node1',
             id: 'node1',
             dataIndex: 0,
-            priority: 0,
+            y: 100,
             children: ['node2', 'node3'],
         }, {
             name: 'node2',
             id: 'node2',
             dataIndex: 1,
-            priority: 3,
+            y: 300,
             children: ['node3'],
         }, {
             name: 'node3',
             id: 'node3',
             dataIndex: 5,
-            priority: 1,
+            y: 400,
+            children: [],
+        }, {
+            name: 'node4',
+            id: 'node4',
+            dataIndex: 5,
+            y: 440,
             children: [],
         },
         ]
@@ -66,7 +72,7 @@ export default reactive({
         return project
     },
     addTask(projectName: string, taskName: string) {
-        let result = this.projects.filter((project) => project.name === projectName);
+        let result = this.projects.filter((project: Project) => project.name === projectName);
         if (result.length === 1) {
             result[0].nodes.push({
                 name: taskName,
@@ -80,7 +86,7 @@ export default reactive({
      * @param key
      * @returns {{nodes: {x, y, id: *, label: *}[], edges: *[]}}
      */
-    dataByKey(key) {
+    dataByKey(key: string) {
         let projects = this.projects.filter(p => p.key === key)
         if (projects.length === 0) {
             return {
@@ -110,7 +116,7 @@ export default reactive({
                     id: v.id,
                     label: v.name,
                     x: v.dataIndex * 120 + 60,
-                    y: v.priority * 40 + 28
+                    y: v.y
                 }
             }),
             edges
@@ -124,7 +130,7 @@ export default reactive({
     dataByDay(day: number = 0) {
         let ans = []
         for (let project of this.projects) {
-            let res = project.nodes.filter(n => n.dataIndex === day).map(v => v.name)
+            let res = project.nodes.filter((n: Node) => n.dataIndex === day).map(v => v.name)
             ans.push(...res)
         }
         return ans

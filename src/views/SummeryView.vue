@@ -22,6 +22,7 @@ import G6 from '@antv/g6';
 import {computed, onMounted, ref, watch} from 'vue';
 import PossibleGrid from "@/plugin/possible-grid";
 import PossibleNodeDrag from '@/behavior/possible-node-drag'
+import PossibleLayout from '@/layout/possible-layout'
 import store from "@/store";
 
 const props = defineProps(['projectKey'])
@@ -124,6 +125,7 @@ onMounted(() => {
     }
   })
   G6.registerBehavior('possible-drag-node', PossibleNodeDrag)
+  G6.registerLayout('possible-layout', PossibleLayout)
 
   graph.value = new G6.Graph({
     container: container.value,
@@ -143,9 +145,7 @@ onMounted(() => {
           return true
         },
       }, 'double-click-add-node', 'ctrl-change-edit-mode'],
-      edit: ['ctrl-change-edit-mode', {
-        type: 'possible-drag-node'
-      }]
+      edit: ['ctrl-change-edit-mode', 'possible-drag-node']
     },
     defaultNode: {
       type: 'rect',
@@ -157,7 +157,9 @@ onMounted(() => {
     },
     defaultEdge: {
       type: 'cubic-horizontal',
-      style: {}
+    },
+    layout: {
+      type: 'possible-layout'
     }
   });
   graph.value.read(store.dataByKey(props.projectKey));
