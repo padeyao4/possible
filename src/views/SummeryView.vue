@@ -174,6 +174,7 @@ watch(props, () => {
   }
   if (graph) {
     graph.value.read(store.dataByKey(props.projectKey));
+    graph.value.emit('viewportchange')
   }
 })
 
