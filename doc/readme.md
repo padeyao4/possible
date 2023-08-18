@@ -10,7 +10,6 @@
 
 - indexeddb
 - 圆角
-- 点击创建task
 - auto align
 - edit node
-- 自定义背景图片
+- 修改

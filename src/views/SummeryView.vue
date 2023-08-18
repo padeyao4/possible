@@ -142,12 +142,7 @@ onMounted(() => {
         },
       }, 'double-click-add-node', 'ctrl-change-edit-mode'],
       edit: ['ctrl-change-edit-mode', {
-        type: 'drag-node',
-        shouldUpdate(e) {
-          console.log(e.item)
-          e.item.x = Math.floor(e.x / 120) * 120 + 60;
-          return true
-        }
+        type: 'drag-node'
       }]
     },
     defaultNode: {

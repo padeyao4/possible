@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "@antv/dom-util": "^2.0.4",
+    "@antv/g-base": "^0.5.15",
     "@antv/g6": "^4.8.21",
+    "@antv/g6-core": "^0.8.21",
     "@antv/util": "^3.3.4",
     "element-plus": "^2.3.9",
     "vue": "^3.3.4",
