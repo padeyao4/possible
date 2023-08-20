@@ -1,23 +1,26 @@
 import {each, wrapBehavior} from '@antv/util'
 import {createDom, modifyCSS} from '@antv/dom-util'
+import {IGraph} from "@antv/g6";
+import {IG6GraphEvent} from "@antv/g6-core";
 
 export default class PossibleGrid {
 
     // 网格背景图片
     // imgGrid = 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2UwZTBlMCIgb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTBlMGUwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=)';
-    imgStripe = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZDbSAAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TpbVUBO0g4pChOlkQFXHUKhShQqgVWnUweekfNGlIUlwcBdeCgz+LVQcXZ10dXAVB8AfE1cVJ0UVKvC8ptIj1weV9nPfO4b77AKFeZprVNQ5oum2mEnExk10VA68Ioh8hqh6ZWcacJCXRcX3dw8f3uxjP6nzvz9Wr5iwG+ETiWWaYNvEG8fSmbXDeJ46woqwSnxOPmdQg8SPXFY/fOBdcFnhmxEyn5okjxGKhjZU2ZkVTI54ijqqaTvlCxmOV8xZnrVxlzT75C8M5fWWZ61TDSGARS5AgQkEVJZRhI0a7ToqFFJ3HO/iHXL9ELoVcJTByLKACDbLrB/+D37O18pMTXlI4DnS/OM7HCBDYBRo1x/k+dpzGCeB/Bq70lr9SB2Y+Sa+1tOgR0LcNXFy3NGUPuNwBBp8M2ZRdyU8l5PPA+xl9UxYYuAVCa97cmuc4fQDSNKvkDXBwCIwWKHu9w7uD7XP7905zfj8Pb3J/nym3kwAAAAZiS0dEAAAAAAAA+UO7fwAAAAlwSFlzAAAN1wAADdcBQiibeAAAAAd0SU1FB+cIEgsLHYFSD7wAAADMSURBVHja7dEBDQAACMOwB+kYvRV8kE7CmrYbvW0sACzAAizAAizAAgxYgAVYgAVYgAUYsAALsAALsAALsAADFmABFmABFmABBizAAizAAizAAgxYgAVYgAVYgAVYgAELsAALsAALsAADFmABFmABFmABBizAAizAAizAAizAgAVYgAVYgAVYgAELsAALsAALsAALMGABFmABFmABFmDAAizAAizAAizAgAVYgAVYgAVYgAUYsAALsAALsAALMGABFmABFmABFmDA+twBje0EDnulDbcAAAAASUVORK5CYII=)'
+    public imgStripe = 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZDbSAAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TpbVUBO0g4pChOlkQFXHUKhShQqgVWnUweekfNGlIUlwcBdeCgz+LVQcXZ10dXAVB8AfE1cVJ0UVKvC8ptIj1weV9nPfO4b77AKFeZprVNQ5oum2mEnExk10VA68Ioh8hqh6ZWcacJCXRcX3dw8f3uxjP6nzvz9Wr5iwG+ETiWWaYNvEG8fSmbXDeJ46woqwSnxOPmdQg8SPXFY/fOBdcFnhmxEyn5okjxGKhjZU2ZkVTI54ijqqaTvlCxmOV8xZnrVxlzT75C8M5fWWZ61TDSGARS5AgQkEVJZRhI0a7ToqFFJ3HO/iHXL9ELoVcJTByLKACDbLrB/+D37O18pMTXlI4DnS/OM7HCBDYBRo1x/k+dpzGCeB/Bq70lr9SB2Y+Sa+1tOgR0LcNXFy3NGUPuNwBBp8M2ZRdyU8l5PPA+xl9UxYYuAVCa97cmuc4fQDSNKvkDXBwCIwWKHu9w7uD7XP7905zfj8Pb3J/nym3kwAAAAZiS0dEAAAAAAAA+UO7fwAAAAlwSFlzAAAN1wAADdcBQiibeAAAAAd0SU1FB+cIEgsLHYFSD7wAAADMSURBVHja7dEBDQAACMOwB+kYvRV8kE7CmrYbvW0sACzAAizAAizAAgxYgAVYgAVYgAUYsAALsAALsAALsAADFmABFmABFmABBizAAizAAizAAgxYgAVYgAVYgAVYgAELsAALsAALsAADFmABFmABFmABBizAAizAAizAAizAgAVYgAVYgAVYgAELsAALsAALsAALMGABFmABFmABFmDAAizAAizAAizAgAVYgAVYgAVYgAUYsAALsAALsAALMGABFmABFmABFmDA+twBje0EDnulDbcAAAAASUVORK5CYII=)'
+    private _cfgs = {}
+    private _events: object
 
     constructor() {
         this._cfgs = {}
         this._events = []
-        this.destroyed = false
     }
 
-    set(k, v) {
+    set(k: string, v: object) {
         this._cfgs[k] = v
     }
 
-    get(k) {
+    get(k: string) {
         return this._cfgs?.[k]
     }
 
@@ -25,14 +28,14 @@ export default class PossibleGrid {
      * call by g6 graph
      * @param graph
      */
-    initPlugin(graph) {
+    initPlugin(graph: IGraph) {
         const self = this
         self.set('graph', graph)
         const events = self.getEvents();
         const bindEvents = {}
 
         each(events, (v, k) => {
-            const event = wrapBehavior(self, v)
+            const event: any = wrapBehavior(self, v)
             bindEvents[k] = event
             graph.on(k, event)
         })
@@ -80,9 +83,9 @@ export default class PossibleGrid {
         });
     }
 
-    update(param) {
+    update(param: any) {
         const gridContainer = this.get('gridContainer');
-        let {matrix} = param ? param : {};
+        let {matrix}: any = param ? param : {};
         if (!matrix) matrix = [1, 0, 0, 0, 1, 0, 0, 0, 1];
 
         const isFollow = true; // follow viewport change
@@ -109,6 +112,5 @@ export default class PossibleGrid {
 
         this._events = null
         this._cfgs = null
-        this.destroyed = true;
     }
 }

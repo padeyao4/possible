@@ -565,7 +565,7 @@ export default {
      * 更新拖动元素时的delegate
      * @param {Event} evt 事件句柄
      */
-    updateDelegate(evt) {
+    updateDelegate(evt: any) {
         const {graph} = this;
         if (!this.delegateRect) {
             // 拖动多个
@@ -599,7 +599,7 @@ export default {
     /**
      * 计算delegate位置，包括左上角左边及宽度和高度
      * @memberof ItemGroup
-     * @return {object} 计算出来的delegate坐标信息及宽高
+     * @return  计算出来的delegate坐标信息及宽高
      */
     calculationGroupPosition(evt: IG6GraphEvent) {
         const nodes = this.targets;
@@ -653,7 +653,7 @@ export default {
      * @param paramGraph param for debounce function, where 'this' is not available
      * @param paramTargets param for debounce function, where 'this' is not available
      */
-    updateParentCombos(paramGraph, paramTargets) {
+    updateParentCombos(paramGraph: any, paramTargets: any) {
         const graph = paramGraph || this.graph;
         const targets = paramTargets || this.targets;
         const comboParentMap = {};
