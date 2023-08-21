@@ -20,17 +20,15 @@
 <script setup>
 import G6 from '@antv/g6';
 import {computed, onMounted, onUnmounted, ref, watch} from 'vue';
-import PossibleGrid from "@/plugin/possible-grid";
-import PossibleNodeDrag from '@/behavior/possible-node-drag'
-import PossibleLayout from '@/layout/possible-layout'
+import PossibleGrid from "@/g6/plugin/possible-grid";
+import PossibleNodeDrag from '@/g6/behavior/possible-node-drag'
+import PossibleLayout from '@/g6/layout/possible-layout'
 import store from "@/store";
 
 const props = defineProps(['projectKey'])
 
 const drawer = ref(false)
 const times = ref([...new Array(25).keys()].map(i => i - 1))
-// header time bar item offset
-const translateX = ref(0)
 const container = ref(null)
 const graph = ref(null)
 
@@ -38,7 +36,7 @@ const graph = ref(null)
  * time bar item align with canvas
  */
 const relationX = computed(() => {
-  return translateX.value % 120 - 96
+  return -graph.value?.getPointByCanvas(0, 0).x % 120 - 96
 })
 
 function moveRight(n = 1) {
@@ -55,7 +53,7 @@ function moveLeft(n = 1) {
   }
 }
 
-watch(translateX, (newValue, oldValue) => {
+watch(() => -graph.value?.getPointByCanvas(0, 0).x, (newValue, oldValue) => {
       let n = Math.floor(Math.abs(newValue / 120))
 
       let headValue = times.value[0] + 1
@@ -71,9 +69,7 @@ watch(translateX, (newValue, oldValue) => {
 )
 
 const handleWheel = (e) => {
-  let dx = e.deltaY / 5;
-  translateX.value = (translateX.value + dx)
-  graph.value?.translate(dx, 0)
+  graph.value?.translate(e.deltaY / 5, 0)
 }
 
 const operationMode = computed(() => {
@@ -136,12 +132,6 @@ onMounted(() => {
         allowDragOnItem: true,
         enableOptimize: true,
         scalableRange: 99,
-        shouldUpdate: () => {
-          let p = graph.value.getPointByCanvas(0, 0)
-          // 将画布长度和滚动条绑定
-          translateX.value = -p.x
-          return true
-        },
       }, 'double-click-add-node', 'ctrl-change-edit-mode'],
       edit: ['ctrl-change-edit-mode', 'possible-drag-node']
     },
@@ -169,7 +159,6 @@ onUnmounted(() => {
 })
 
 watch(props, () => {
-  translateX.value = 0
   times.value = []
   for (let i = 0; i < 25; i++) {
     times.value.push(i - 1)
