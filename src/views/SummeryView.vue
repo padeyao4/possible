@@ -18,12 +18,9 @@
 </template>
 
 <script setup>
-import G6 from '@antv/g6';
 import {computed, onMounted, onUnmounted, ref, watch} from 'vue';
-import PossibleGrid from "@/g6/plugin/possible-grid";
-import PossibleNodeDrag from '@/g6/behavior/possible-node-drag'
-import PossibleLayout from '@/g6/layout/possible-layout'
 import store from "@/store";
+import PossibleGraph from "@/g6/graph/possible-graph";
 
 const props = defineProps(['projectKey'])
 
@@ -78,78 +75,11 @@ const operationMode = computed(() => {
 
 onMounted(() => {
   // todo canvas on click not work
-  G6.registerBehavior('double-click-add-node', {
-    getEvents() {
-      return {
-        'dblclick': 'onCreateNode',
-      }
-    },
-    onCreateNode(e) {
-      if (e.target?.isCanvas?.()) {
-        this.graph.addItem("node", {
-          x: Math.floor(e.x / 120) * 120 + 60,
-          y: e.y,
-          // todo set id
-          id: `node-${e.x}-${e.y}`
-        })
-      }
-      if (e.item?.getType() === 'node') {
-        drawer.value = true
-      }
-    }
-  })
-  G6.registerBehavior('ctrl-change-edit-mode', {
-    getEvents() {
-      return {
-        'keydown': 'onCtrlDown',
-        'keyup': 'onCtrlUp'
-      }
-    },
-    onCtrlDown(e) {
-      let {graph} = this
-      if (e.key === 'Control') {
-        graph.setMode('edit')
-      }
-    },
-    onCtrlUp(e) {
-      let {graph} = this
-      if (e.key === 'Control') {
-        graph.setMode('default')
-      }
-    }
-  })
-  G6.registerBehavior('possible-drag-node', PossibleNodeDrag)
-  G6.registerLayout('possible-layout', PossibleLayout)
 
-  graph.value = new G6.Graph({
-    container: container.value,
-    width: container.value.clientWidth,
-    height: container.value.clientHeight - 8,
-    plugins: [new PossibleGrid()],
-    modes: {
-      default: [{
-        type: 'drag-canvas',
-        allowDragOnItem: true,
-        enableOptimize: true,
-        scalableRange: 99,
-      }, 'double-click-add-node', 'ctrl-change-edit-mode'],
-      edit: ['ctrl-change-edit-mode', 'possible-drag-node']
-    },
-    defaultNode: {
-      type: 'rect',
-      size: [100, 40],
-      style: {
-        fill: '#91d2fb',
-        lineWidth: 1,
-      },
-    },
-    defaultEdge: {
-      type: 'cubic-horizontal',
-    },
-    layout: {
-      type: 'possible-layout'
-    }
-  });
+  // todo open drawer
+  graph.value = new PossibleGraph(container.value, () => {
+    drawer.value = true
+  }).graph
   graph.value.read(store.dataByKey(props.projectKey));
 })
 
