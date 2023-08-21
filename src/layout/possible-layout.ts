@@ -1,7 +1,7 @@
-import {INode} from "@antv/g6-core";
+// import {INode} from "@antv/g6-core";
 
 export default class {
-    private nodes: INode[]
+    private nodes: any[]
     /**
      * 最小移动常量
      */
@@ -26,7 +26,6 @@ export default class {
      */
     public init(data: any) {
         let self = this
-        console.log(data)
         let {nodes} = data
         self.nodes = nodes
     }

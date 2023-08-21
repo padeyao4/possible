@@ -19,7 +19,7 @@
 
 <script setup>
 import G6 from '@antv/g6';
-import {computed, onMounted, ref, watch} from 'vue';
+import {computed, onMounted, onUnmounted, ref, watch} from 'vue';
 import PossibleGrid from "@/plugin/possible-grid";
 import PossibleNodeDrag from '@/behavior/possible-node-drag'
 import PossibleLayout from '@/layout/possible-layout'
@@ -81,8 +81,6 @@ const operationMode = computed(() => {
 })
 
 onMounted(() => {
-  let grid = new PossibleGrid()
-
   // todo canvas on click not work
   G6.registerBehavior('double-click-add-node', {
     getEvents() {
@@ -131,7 +129,7 @@ onMounted(() => {
     container: container.value,
     width: container.value.clientWidth,
     height: container.value.clientHeight - 8,
-    plugins: [grid],
+    plugins: [new PossibleGrid()],
     modes: {
       default: [{
         type: 'drag-canvas',
@@ -152,7 +150,7 @@ onMounted(() => {
       size: [100, 40],
       style: {
         fill: '#91d2fb',
-        lineWidth: 0,
+        lineWidth: 1,
       },
     },
     defaultEdge: {
@@ -165,6 +163,11 @@ onMounted(() => {
   graph.value.read(store.dataByKey(props.projectKey));
 })
 
+onUnmounted(() => {
+  graph.value.destroy()
+  console.log('graph destroy')
+})
+
 watch(props, () => {
   translateX.value = 0
   times.value = []
@@ -173,6 +176,7 @@ watch(props, () => {
   }
   if (graph) {
     graph.value.read(store.dataByKey(props.projectKey));
+    // 更新画布背景
     graph.value.emit('viewportchange')
   }
 })

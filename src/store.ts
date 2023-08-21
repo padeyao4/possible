@@ -1,7 +1,6 @@
 import {reactive} from "vue";
 import {GraphData} from "@antv/g6-core/lib/types";
 
-
 export interface Node {
     name: string,
     id: string,
@@ -128,7 +127,7 @@ const template: Project[] = [
                 name: 'node4',
                 id: 'node4',
                 dataIndex: 5,
-                y: 410,
+                y: 460,
                 children: [],
             },
         ]
