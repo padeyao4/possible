@@ -1,3 +1,4 @@
+// @ts-nocheck
 export default {
     getEvents() {
         return {
@@ -7,7 +8,6 @@ export default {
 
     onCreateNode(e: any) {
         if (e.target?.isCanvas?.()) {
-            //@ts-ignore
             this.graph.addItem("node", {
                 x: Math.floor(e.x / 120) * 120 + 60,
                 y: e.y,
@@ -16,7 +16,6 @@ export default {
             })
         }
         if (e.item?.getType() === 'node') {
-            //@ts-ignore
             this.getDefaultCfg().functionName?.()
         }
     }

@@ -55,7 +55,6 @@ watch(() => -(graph.value as Graph)?.getPointByCanvas?.(0, 0).x, (newValue, oldV
       let n = Math.floor(Math.abs(newValue / 120))
 
       let headValue = times.value[0] + 1
-      times.value[times.value.length - 1];
       let count = Math.abs(n - Math.abs(headValue))
 
       if (newValue - oldValue > 0) {
