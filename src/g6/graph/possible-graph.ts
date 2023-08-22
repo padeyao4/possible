@@ -1,17 +1,24 @@
 import {Graph} from "@antv/g6";
 import PossibleGrid from "../plugin/possible-grid";
+import type {GraphData} from "@antv/g6-core/lib/types";
 
 export default class PossibleGraph {
     /**
+     * The distance between nodes is gap x 2
+     */
+    public readonly gap = 10
+    /**
      * graph node size
      */
-    public nodeSize = [100, 40]
-    public scale = 99
-    public mountPointHeightOffset = 8
+    public readonly nodeSize = [100, 40]
+    public readonly scale = 99
+    public readonly mountPointHeightOffset = 8
 
     graph: Graph
+    container: HTMLElement
 
-    constructor(mountPoint: any, f: string) {
+    constructor(mountPoint: HTMLElement, f: string) {
+        this.container = mountPoint
         this.graph = new Graph({
             container: mountPoint,
             width: mountPoint.clientWidth,
@@ -44,5 +51,39 @@ export default class PossibleGraph {
                 type: 'possible-layout'
             }
         });
+    }
+
+    /**
+     * origin x on canvas
+     */
+    originX() {
+        return this.graph.getPointByCanvas(0, 0).x
+    }
+
+    updateGraph(data: GraphData) {
+        this.graph.read(data)
+    }
+
+    currentMode() {
+        return this.graph.getCurrentMode()
+    }
+
+    translateX(dx: number) {
+        this.graph.translate(dx, 0)
+    }
+
+    destroy() {
+        this.graph.destroy()
+    }
+
+    /**
+     * update background canvas
+     */
+    updateBG() {
+        this.graph.emit('viewportchange')
+    }
+
+    updateCanvasSize(w: number, h: number) {
+        this.graph.changeSize(w, h)
     }
 }

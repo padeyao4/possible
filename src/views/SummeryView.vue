@@ -1,8 +1,10 @@
 <template>
   <div>
     <div class="main">
-      <div class="header" @wheel="handleWheel" id="header">
-        <div class="time-item" v-for="time in times" :key="time" :style="{translate: relationX+'px'}">{{ time }}</div>
+      <div class="header" @wheel="(e: any) => {graph?.translateX(e.deltaY / 5)}" id="header">
+        <div class="time-item" v-for="time in times" :key="time"
+             :style="{translate:  -(graph?.originX() ?? 0) % 120 - 96+'px'}">{{ time }}
+        </div>
       </div>
       <div class="body">
         <el-drawer v-model="drawer" title="I am the title" :with-header="false">
@@ -11,31 +13,23 @@
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
-        <p class="footer-label">{{ operationMode || 'null' }}</p>
+        <p class="footer-label">{{ graph?.currentMode() }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, onUnmounted, ref, watch} from 'vue';
+import {onMounted, onUnmounted, ref, watch} from 'vue';
 import store from "@/store";
 import PossibleGraph from "@/g6/graph/possible-graph";
-import type {Graph} from "@antv/g6";
 
 const props = defineProps(['projectKey'])
 
 const drawer = ref(false)
 const times = ref<number[]>([...new Array(25).keys()].map(i => i - 1))
 const container = ref<HTMLElement>()
-const graph = ref<Graph>()
-
-/**
- * time bar item align with canvas
- */
-const relationX = computed(() => {
-  return -(graph.value as Graph)?.getPointByCanvas?.(0, 0).x % 120 - 96
-})
+const graph = ref<PossibleGraph | null>(null)
 
 function moveRight(n = 1) {
   for (let i = 0; i < n; i++) {
@@ -51,13 +45,15 @@ function moveLeft(n = 1) {
   }
 }
 
-watch(() => -(graph.value as Graph)?.getPointByCanvas?.(0, 0).x, (newValue, oldValue) => {
+watch(() => graph.value?.originX(), (newValue, oldValue) => {
+      if (newValue == undefined || oldValue == undefined) {
+        return
+      }
       let n = Math.floor(Math.abs(newValue / 120))
 
       let headValue = times.value[0] + 1
       let count = Math.abs(n - Math.abs(headValue))
-
-      if (newValue - oldValue > 0) {
+      if (oldValue - newValue > 0) {
         moveRight(count)
       } else {
         moveLeft(count)
@@ -65,20 +61,12 @@ watch(() => -(graph.value as Graph)?.getPointByCanvas?.(0, 0).x, (newValue, oldV
     }
 )
 
-const handleWheel = (e: any) => {
-  graph.value?.translate(e.deltaY / 5, 0)
-}
-
-const operationMode = computed(() => {
-  return graph.value?.getCurrentMode()
-})
-
 onMounted(() => {
   // todo canvas on click not work
 
   // todo open drawer
-  graph.value = new PossibleGraph(container.value, '').graph
-  graph.value.read(store.dataByKey(props.projectKey));
+  graph.value = new PossibleGraph(container.value!, '')
+  graph.value?.updateGraph(store.dataByKey(props.projectKey));
 })
 
 onUnmounted(() => {
@@ -92,15 +80,15 @@ watch(props, () => {
     times.value.push(i - 1)
   }
   if (graph) {
-    graph.value?.read(store.dataByKey(props.projectKey));
+    graph.value?.updateGraph(store.dataByKey(props.projectKey));
     // 更新画布背景
-    graph.value?.emit('viewportchange')
+    graph.value?.updateBG()
   }
 })
 
 window.addEventListener("resize", () => {
   if (container.value) {
-    graph.value?.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
+    graph.value?.updateCanvasSize(container.value.clientWidth, container.value.clientHeight - 8)
   }
 })
 </script>
