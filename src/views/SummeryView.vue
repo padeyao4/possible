@@ -24,34 +24,36 @@ import {onMounted, onUnmounted, ref, watch} from 'vue';
 import store from "@/store";
 import PossibleGraph from "@/g6/graph/possible-graph";
 
-const props = defineProps(['projectKey'])
+const props = defineProps<{
+  projectKey: string
+}>()
 
 const drawer = ref(false)
-const times = ref<number[]>([...new Array(25).keys()].map(i => i - 1))
-const container = ref<HTMLElement>()
-const graph = ref<PossibleGraph | null>(null)
+let times = $ref<number[]>([...new Array(25).keys()].map(i => i - 1))
+let container = $ref<HTMLElement>()
+let graph = $ref<PossibleGraph>()
 
 function moveRight(n = 1) {
   for (let i = 0; i < n; i++) {
-    times.value.unshift(times.value[0] - 1)
-    times.value.pop()
+    times.unshift(times[0] - 1)
+    times.pop()
   }
 }
 
 function moveLeft(n = 1) {
   for (let i = 0; i < n; i++) {
-    times.value.shift()
-    times.value.push(times.value[times.value.length - 1] + 1)
+    times.shift()
+    times.push(times[times.length - 1] + 1)
   }
 }
 
-watch(() => graph.value?.originX(), (newValue, oldValue) => {
+watch(() => graph?.originX(), (newValue, oldValue) => {
       if (newValue == undefined || oldValue == undefined) {
         return
       }
       let n = Math.floor(Math.abs(newValue / 120))
 
-      let headValue = times.value[0] + 1
+      let headValue = times[0] + 1
       let count = Math.abs(n - Math.abs(headValue))
       if (oldValue - newValue > 0) {
         moveRight(count)
@@ -65,30 +67,30 @@ onMounted(() => {
   // todo canvas on click not work
 
   // todo open drawer
-  graph.value = new PossibleGraph(container.value!, '')
-  graph.value?.updateGraph(store.dataByKey(props.projectKey));
+  graph = new PossibleGraph(container!, '')
+  graph?.updateGraph(store.dataByKey(props.projectKey));
 })
 
 onUnmounted(() => {
-  graph.value?.destroy()
+  graph?.destroy()
   console.log('graph destroy')
 })
 
 watch(props, () => {
-  times.value = []
+  times = []
   for (let i = 0; i < 25; i++) {
-    times.value.push(i - 1)
+    times.push(i - 1)
   }
   if (graph) {
-    graph.value?.updateGraph(store.dataByKey(props.projectKey));
+    graph?.updateGraph(store.dataByKey(props.projectKey));
     // 更新画布背景
-    graph.value?.updateBG()
+    graph?.updateBG()
   }
 })
 
 window.addEventListener("resize", () => {
-  if (container.value) {
-    graph.value?.updateCanvasSize(container.value.clientWidth, container.value.clientHeight - 8)
+  if (container) {
+    graph?.updateCanvasSize(container.clientWidth, container.clientHeight - 8)
   }
 })
 </script>
