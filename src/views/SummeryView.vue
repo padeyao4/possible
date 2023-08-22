@@ -1,8 +1,10 @@
 <template>
   <div>
     <div class="main">
-      <div class="header" @wheel="handleWheel" id="header">
-        <div class="time-item" v-for="time in times" :key="time" :style="{translate: relationX+'px'}">{{ time }}</div>
+      <div class="header" @wheel="(e: any) => {graph?.translateX(e.deltaY / 5)}" id="header">
+        <div class="time-item" v-for="time in times" :key="time"
+             :style="{translate:  -(graph?.originX() ?? 0) % 120 - 96+'px'}">{{ time }}
+        </div>
       </div>
       <div class="body">
         <el-drawer v-model="drawer" title="I am the title" :with-header="false">
@@ -11,56 +13,49 @@
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
-        <p class="footer-label">{{ operationMode || 'null' }}</p>
+        <p class="footer-label">{{ graph?.currentMode() }}</p>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-import G6 from '@antv/g6';
-import {computed, onMounted, ref, watch} from 'vue';
-import PossibleGrid from "@/plugin/possible-grid";
+<script setup lang="ts">
+import {onMounted, onUnmounted, ref, watch} from 'vue';
 import store from "@/store";
+import PossibleGraph from "@/g6/graph/possible-graph";
 
-const props = defineProps(['projectKey'])
+const props = defineProps<{
+  projectKey: string
+}>()
 
 const drawer = ref(false)
-const times = ref([...new Array(25).keys()].map(i => i - 1))
-// header time bar item offset
-const translateX = ref(0)
-const container = ref(null)
-const graph = ref(null)
-
-/**
- * time bar item align with canvas
- */
-const relationX = computed(() => {
-  return translateX.value % 120 - 96
-})
+let times = $ref<number[]>([...new Array(25).keys()].map(i => i - 1))
+let container = $ref<HTMLElement>()
+let graph = $ref<PossibleGraph>()
 
 function moveRight(n = 1) {
   for (let i = 0; i < n; i++) {
-    times.value.unshift(times.value[0] - 1)
-    times.value.pop()
+    times.unshift(times[0] - 1)
+    times.pop()
   }
 }
 
 function moveLeft(n = 1) {
   for (let i = 0; i < n; i++) {
-    times.value.shift()
-    times.value.push(times.value.at(-1) + 1)
+    times.shift()
+    times.push(times[times.length - 1] + 1)
   }
 }
 
-watch(translateX, (newValue, oldValue) => {
+watch(() => graph?.originX(), (newValue, oldValue) => {
+      if (newValue == undefined || oldValue == undefined) {
+        return
+      }
       let n = Math.floor(Math.abs(newValue / 120))
 
-      let headValue = times.value[0] + 1
-      times.value.at(-1);
+      let headValue = times[0] + 1
       let count = Math.abs(n - Math.abs(headValue))
-
-      if (newValue - oldValue > 0) {
+      if (oldValue - newValue > 0) {
         moveRight(count)
       } else {
         moveLeft(count)
@@ -68,118 +63,34 @@ watch(translateX, (newValue, oldValue) => {
     }
 )
 
-const handleWheel = (e) => {
-  let dx = e.deltaY / 5;
-  translateX.value = (translateX.value + dx)
-  graph.value?.translate(dx, 0)
-}
+onMounted(() => {
+  // todo canvas on click not work
 
-const operationMode = computed(() => {
-  return graph.value?.getCurrentMode()
+  // todo open drawer
+  graph = new PossibleGraph(container!, '')
+  graph?.updateGraph(store.dataByKey(props.projectKey));
 })
 
-onMounted(() => {
-  let grid = new PossibleGrid()
-
-  // todo canvas on click not work
-  G6.registerBehavior('double-click-add-node', {
-    getEvents() {
-      return {
-        'dblclick': 'onCreateNode',
-      }
-    },
-    onCreateNode(e) {
-      if (e.target?.isCanvas?.()) {
-        this.graph.addItem("node", {
-          x: Math.floor(e.x / 120) * 120 + 60,
-          y: e.y,
-          // todo set id
-          id: `node-${e.x}-${e.y}`
-        })
-      }
-      if (e.item?.getType() === 'node') {
-        drawer.value = true
-      }
-    }
-  })
-  G6.registerBehavior('ctrl-change-edit-mode', {
-    getEvents() {
-      return {
-        'keydown': 'onCtrlDown',
-        'keyup': 'onCtrlUp'
-      }
-    },
-    onCtrlDown(e) {
-      let {graph} = this
-      if (e.key === 'Control') {
-        graph.setMode('edit')
-      }
-    },
-    onCtrlUp(e) {
-      let {graph} = this
-      if (e.key === 'Control') {
-        graph.setMode('default')
-      }
-    }
-  })
-
-  graph.value = new G6.Graph({
-    container: container.value,
-    width: container.value.clientWidth,
-    height: container.value.clientHeight - 8,
-    plugins: [grid],
-    modes: {
-      default: [{
-        type: 'drag-canvas',
-        allowDragOnItem: true,
-        enableOptimize: true,
-        scalableRange: 99,
-        shouldUpdate: () => {
-          let p = graph.value.getPointByCanvas(0, 0)
-          // 将画布长度和滚动条绑定
-          translateX.value = -p.x
-          return true
-        },
-      }, 'double-click-add-node', 'ctrl-change-edit-mode'],
-      edit: ['ctrl-change-edit-mode', {
-        type: 'drag-node',
-        shouldUpdate(e) {
-          console.log(e.item)
-          e.item.x = Math.floor(e.x / 120) * 120 + 60;
-          return true
-        }
-      }]
-    },
-    defaultNode: {
-      type: 'rect',
-      size: [100, 40],
-      style: {
-        fill: '#91d2fb',
-        lineWidth: 0,
-      },
-    },
-    defaultEdge: {
-      type: 'cubic-horizontal',
-      style: {}
-    }
-  });
-  graph.value.read(store.dataByKey(props.projectKey));
+onUnmounted(() => {
+  graph?.destroy()
+  console.log('graph destroy')
 })
 
 watch(props, () => {
-  translateX.value = 0
-  times.value = []
+  times = []
   for (let i = 0; i < 25; i++) {
-    times.value.push(i - 1)
+    times.push(i - 1)
   }
   if (graph) {
-    graph.value.read(store.dataByKey(props.projectKey));
+    graph?.updateGraph(store.dataByKey(props.projectKey));
+    // 更新画布背景
+    graph?.updateBG()
   }
 })
 
 window.addEventListener("resize", () => {
-  if (container.value) {
-    graph.value.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
+  if (container) {
+    graph?.updateCanvasSize(container.clientWidth, container.clientHeight - 8)
   }
 })
 </script>
