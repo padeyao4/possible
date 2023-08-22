@@ -89,9 +89,7 @@ watch(props, () => {
 })
 
 window.addEventListener("resize", () => {
-  if (container) {
-    graph?.updateCanvasSize(container.clientWidth, container.clientHeight - 8)
-  }
+  graph?.updateCanvasSize()
 })
 </script>
 

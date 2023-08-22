@@ -1,6 +1,7 @@
 import {Graph} from "@antv/g6";
 import PossibleGrid from "../plugin/possible-grid";
 import type {GraphData} from "@antv/g6-core/lib/types";
+import type {IG6GraphEvent} from "@antv/g6-core";
 
 export default class PossibleGraph {
     /**
@@ -83,7 +84,11 @@ export default class PossibleGraph {
         this.graph.emit('viewportchange')
     }
 
-    updateCanvasSize(w: number, h: number) {
-        this.graph.changeSize(w, h)
+    updateCanvasSize() {
+        this.graph.changeSize(this.container.clientWidth, this.container.clientHeight - this.mountPointHeightOffset)
+    }
+
+    on(eventName: string, callback: (e: IG6GraphEvent) => void) {
+        this.graph.on(eventName, callback)
     }
 }
