@@ -1,7 +1,8 @@
-import {Point} from '@antv/g-base';
-import {G6Event, ICombo, IG6GraphEvent, INode, Item, NodeConfig} from '@antv/g6-core';
+// @ts-nocheck
+import type {Point} from '@antv/g-base';
+import type {G6Event, ICombo, IG6GraphEvent, INode, Item, NodeConfig} from '@antv/g6-core';
 import {clone, debounce, deepMix} from '@antv/util';
-import {Global, IGraph} from "@antv/g6";
+import {Global, type IGraph} from "@antv/g6";
 
 export default {
     getDefaultCfg(): object {
@@ -63,11 +64,13 @@ export default {
         } catch (e) {
             console.warn('Touch original event not exist!');
         }
+
         this.mousedown = {
             item: evt.item,
             target: evt.target,
             origin: {x: evt.x, y: evt.y}
         };
+
         this.dragstart = true;
         self.onDragStart(evt);
     },
@@ -94,6 +97,7 @@ export default {
      * @param evt event param
      */
     onMouseDown(evt: IG6GraphEvent) {
+
         this.mousedown = {
             item: evt.item,
             target: evt.target,
@@ -101,9 +105,13 @@ export default {
         };
 
         // 绑定浏览器监听，触发拖拽结束，结束拖拽时移除
+
         if (typeof window !== 'undefined' && !this.windowEventBinded) {
+
             this.windowEventBinded = true;
+
             document.body.addEventListener('contextmenu', this.onDragEnd.bind(this));
+
             document.body.addEventListener('mouseup', this.onDragEnd.bind(this));
         }
     },
@@ -113,10 +121,13 @@ export default {
      */
     onDragMove(evt: IG6GraphEvent) {
         if (evt.item?.getType?.() !== 'node') {
+
             this.onDragEnd();
             return;
         }
+
         if (!this.mousedown) return;
+
         if (!this.dragstart) {
             // dragstart
             this.dragstart = true;

@@ -1,17 +1,9 @@
-// import {INode} from "@antv/g6-core";
-
 export default class {
-    private nodes: any[]
+    private nodes: any[] | null = null
     /**
      * 最小移动常量
      */
     public minMovement: number = 0.5
-    /**
-     * 总共移动变量
-     */
-    private totalMovement: number
-
-    private timeInterval: number
 
 
     /**
@@ -36,10 +28,10 @@ export default class {
      */
     public execute() {
         let self = this
-        let nodes: any[] = self.nodes
+        let nodes = self.nodes
 
-        let groups = {}
-        nodes.forEach(n => {
+        let groups: Record<any, any> = {}
+        nodes?.forEach(n => {
             groups[n.x] = groups[n.x] || []
             groups[n.x].push(n)
         })
@@ -56,7 +48,7 @@ export default class {
         console.log("groups", groups)
     }
 
-    run(groups: object) {
+    run(groups: Record<any, any>) {
         console.log('run')
         Object.keys(groups).forEach(k => {
             let nodes: any[] = groups[k]
@@ -71,7 +63,7 @@ export default class {
                 // todo 自定义布局不生效
                 a.y -= delta;
                 b.y += delta
-                console.log("delta",delta)
+                console.log("delta", delta)
                 return delta
             })
         })

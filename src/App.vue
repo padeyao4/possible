@@ -46,7 +46,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {RouterLink, RouterView} from 'vue-router'
 import store from "./store"
 import router from "@/router";
@@ -75,7 +75,7 @@ function handleDialogSubmit() {
   store.active = project.key
 }
 
-function handleListClick(key) {
+function handleListClick(key: string) {
   router.push({
     name: 'summery',
     params: {
@@ -114,7 +114,8 @@ function handleListClick(key) {
     width: 100%;
     height: 40px;
   }
-  .active{
+
+  .active {
     background-color: burlywood;
   }
 }

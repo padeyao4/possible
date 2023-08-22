@@ -17,23 +17,24 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {computed, onMounted, onUnmounted, ref, watch} from 'vue';
 import store from "@/store";
 import PossibleGraph from "@/g6/graph/possible-graph";
+import type {Graph} from "@antv/g6";
 
 const props = defineProps(['projectKey'])
 
 const drawer = ref(false)
-const times = ref([...new Array(25).keys()].map(i => i - 1))
-const container = ref(null)
-const graph = ref(null)
+const times = ref<number[]>([...new Array(25).keys()].map(i => i - 1))
+const container = ref<HTMLElement>()
+const graph = ref<Graph>()
 
 /**
  * time bar item align with canvas
  */
 const relationX = computed(() => {
-  return -graph.value?.getPointByCanvas(0, 0).x % 120 - 96
+  return -(graph.value as Graph)?.getPointByCanvas?.(0, 0).x % 120 - 96
 })
 
 function moveRight(n = 1) {
@@ -46,15 +47,15 @@ function moveRight(n = 1) {
 function moveLeft(n = 1) {
   for (let i = 0; i < n; i++) {
     times.value.shift()
-    times.value.push(times.value.at(-1) + 1)
+    times.value.push(times.value[times.value.length - 1] + 1)
   }
 }
 
-watch(() => -graph.value?.getPointByCanvas(0, 0).x, (newValue, oldValue) => {
+watch(() => -(graph.value as Graph)?.getPointByCanvas?.(0, 0).x, (newValue, oldValue) => {
       let n = Math.floor(Math.abs(newValue / 120))
 
       let headValue = times.value[0] + 1
-      times.value.at(-1);
+      times.value[times.value.length - 1];
       let count = Math.abs(n - Math.abs(headValue))
 
       if (newValue - oldValue > 0) {
@@ -65,7 +66,7 @@ watch(() => -graph.value?.getPointByCanvas(0, 0).x, (newValue, oldValue) => {
     }
 )
 
-const handleWheel = (e) => {
+const handleWheel = (e: any) => {
   graph.value?.translate(e.deltaY / 5, 0)
 }
 
@@ -77,14 +78,12 @@ onMounted(() => {
   // todo canvas on click not work
 
   // todo open drawer
-  graph.value = new PossibleGraph(container.value, () => {
-    drawer.value = true
-  }).graph
+  graph.value = new PossibleGraph(container.value, '').graph
   graph.value.read(store.dataByKey(props.projectKey));
 })
 
 onUnmounted(() => {
-  graph.value.destroy()
+  graph.value?.destroy()
   console.log('graph destroy')
 })
 
@@ -94,15 +93,15 @@ watch(props, () => {
     times.value.push(i - 1)
   }
   if (graph) {
-    graph.value.read(store.dataByKey(props.projectKey));
+    graph.value?.read(store.dataByKey(props.projectKey));
     // 更新画布背景
-    graph.value.emit('viewportchange')
+    graph.value?.emit('viewportchange')
   }
 })
 
 window.addEventListener("resize", () => {
   if (container.value) {
-    graph.value.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
+    graph.value?.changeSize(container.value.clientWidth, container.value.clientHeight - 8)
   }
 })
 </script>

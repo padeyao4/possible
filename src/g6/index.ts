@@ -4,7 +4,7 @@ import PossibleLayout from "./layout/possible-layout";
 import DoubleClickAddNode from "./behavior/double-click-add-node";
 import CtrlChangeEditMode from "./behavior/ctrl-change-edit-mode";
 
-const behaviors = {
+const behaviors: Record<string, any> = {
     "possible-drag-node": PossibleNodeDrag,
     'double-click-add-node': DoubleClickAddNode,
     'ctrl-change-edit-mode': CtrlChangeEditMode

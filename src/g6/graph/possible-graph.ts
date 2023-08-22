@@ -9,7 +9,7 @@ export default class PossibleGraph {
     public scale = 99
     public mountPointHeightOffset = 8
 
-    graph: Graph = null
+    graph: Graph
 
     constructor(mountPoint: any, f: string) {
         this.graph = new Graph({
