@@ -6,7 +6,7 @@ import CtrlChangeEditMode from "./behavior/ctrl-change-edit-mode";
 
 const behaviors: Record<string, any> = {
     "possible-drag-node": PossibleNodeDrag,
-    'double-click-add-node': DoubleClickAddNode,
+    'double-click': DoubleClickAddNode,
     'ctrl-change-edit-mode': CtrlChangeEditMode
 }
 

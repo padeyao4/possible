@@ -27,14 +27,14 @@ export default class {
      * 自定义布局，x轴方向没有作用力，当x轴相同时在y轴方向有相互斥力
      */
     public execute() {
-        let self = this
-        let nodes = self.nodes
-
-        let groups: Record<any, any> = {}
-        nodes?.forEach(n => {
-            groups[n.x] = groups[n.x] || []
-            groups[n.x].push(n)
-        })
+        // let self = this
+        // let nodes = self.nodes
+        //
+        // let groups: Record<any, any> = {}
+        // nodes?.forEach(n => {
+        //     groups[n.x] = groups[n.x] || []
+        //     groups[n.x].push(n)
+        // })
 
         // if (self.timeInterval !== undefined && typeof window !== "undefined") {
         //     window.clearInterval(self.timeInterval)
@@ -44,29 +44,27 @@ export default class {
         // if (this.totalMovement <= this.minMovement) {
         //     window.clearInterval(self.timeInterval)
         // }
-        self.run(groups)
-        console.log("groups", groups)
+        // self.run(groups)
     }
 
     run(groups: Record<any, any>) {
-        console.log('run')
-        Object.keys(groups).forEach(k => {
-            let nodes: any[] = groups[k]
-            // 由小到大排序
-            nodes.sort((a, b) => a.y - b.y)
-            return nodes.reduce((a, b) => {
-                let dst = Math.abs(a.y - b.y)
-                console.log("a", a.y, "b", b.y)
-                if (dst >= 60) return 0
-
-                let delta = (60 - dst) / 2
-                // todo 自定义布局不生效
-                a.y -= delta;
-                b.y += delta
-                console.log("delta", delta)
-                return delta
-            })
-        })
+        // Object.keys(groups).forEach(k => {
+        //     let nodes: any[] = groups[k]
+        //     // 由小到大排序
+        //     nodes.sort((a, b) => a.y - b.y)
+        //     return nodes.reduce((a, b) => {
+        //         let dst = Math.abs(a.y - b.y)
+        //         console.log("a", a.y, "b", b.y)
+        //         if (dst >= 60) return 0
+        //
+        //         let delta = (60 - dst) / 2
+        //         // todo 自定义布局不生效
+        //         a.y -= delta;
+        //         b.y += delta
+        //         console.log("delta", delta)
+        //         return delta
+        //     })
+        // })
     }
 
     /**

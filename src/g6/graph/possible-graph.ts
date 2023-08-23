@@ -18,7 +18,7 @@ export default class PossibleGraph {
     graph: Graph
     container: HTMLElement
 
-    constructor(mountPoint: HTMLElement, f: string) {
+    constructor(mountPoint: HTMLElement) {
         this.container = mountPoint
         this.graph = new Graph({
             container: mountPoint,
@@ -32,8 +32,8 @@ export default class PossibleGraph {
                     enableOptimize: true,
                     scalableRange: this.scale,
                 }, {
-                    type: 'double-click-add-node',
-                    functionName: f,
+                    type: 'double-click',
+                    // trigger: () => console.log('trigger function'),
                 }, 'ctrl-change-edit-mode'],
                 edit: ['ctrl-change-edit-mode', 'possible-drag-node']
             },

@@ -16,12 +16,14 @@
     "@antv/g6-core": "^0.8.21",
     "@antv/util": "^3.3.4",
     "element-plus": "^2.3.9",
+    "uuid": "latest",
     "vue": "^3.3.4",
     "vue-router": "^4.2.2"
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.0",
     "@types/node": "^18.17.5",
+    "@types/uuid": "^9.0.2",
     "@vitejs/plugin-vue": "^4.3.1",
     "@vue-macros/reactivity-transform": "^0.3.20",
     "@vue/tsconfig": "^0.4.0",

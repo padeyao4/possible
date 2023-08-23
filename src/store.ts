@@ -1,57 +1,89 @@
 import {reactive} from "vue";
-import {GraphData} from "@antv/g6-core/lib/types";
+import {v4 as uuidv4} from 'uuid'
+import type {GraphData} from "@antv/g6-core/lib/types";
+import templateJson from '@/data/template.json'
 
-export interface Node {
-    name: string,
-    id: string,
-    dataIndex: number,
-    y: number,
+export interface ITask {
+    name: string
+    id: string
+    dataIndex: number
+    y: number
     children: string[]
 }
 
-export interface Project {
-    name: string,
-    key: string,
-    nodes: Node[]
+export class Task implements ITask {
+    name: string
+    id: string
+    dataIndex: number
+    y: number
+    children: string[]
+
+    constructor(name: string, dataIndex: number, y: number, id: string = uuidv4(), children: string[] = []) {
+        this.name = name;
+        this.id = id;
+        this.dataIndex = dataIndex;
+        this.y = y;
+        this.children = children;
+    }
+}
+
+export interface IProject {
+    name: string
+    id: string
+    tasks: ITask[]
+    createdTime: Date
+}
+
+export class Project implements IProject {
+    name: string
+    id: string
+    tasks: ITask[]
+    createdTime: Date
+
+    constructor(name: string, id: string = uuidv4(), tasks: Task[] = [], createdTime: Date = new Date()) {
+        this.name = name;
+        this.id = id;
+        this.tasks = tasks;
+        this.createdTime = createdTime;
+    }
+
+    addTask(task: ITask) {
+        this.tasks.push(task)
+    }
+
+    removeTask(taskId: string) {
+        let tasks = this.tasks.filter(t => t.id == taskId)
+        this.tasks.unshift(...tasks)
+    }
 }
 
 class Model {
     public active: string
-    public projects: Project[]
+    public projects: IProject[]
 
-    public constructor(projects: Project[] = [], active: string = '') {
+    public constructor(projects: IProject[] = [], active: string = '') {
         this.projects = projects
         this.active = active
     }
 
     public addProject(name: string) {
-        let project: Project = {
-            name,
-            key: this.projects.length.toString(),
-            nodes: [],
-        };
+        let project: IProject = new Project(name)
         this.projects.push(project)
         return project
     }
 
-    public addTask(projectName: string, taskName: string) {
-        let result = this.projects.filter((project: Project) => project.name === projectName);
-        if (result.length === 1) {
-            result[0].nodes.push({
-                id: "", y: 0,
-                name: taskName,
-                dataIndex: 0, // 时间索引
-                children: []
-            })
+    public addTask(projectId: string, taskName: string) {
+        let projects = this.projects.filter((project: IProject) => project.id === projectId);
+        if (projects.length === 1) {
+            projects[0].tasks.push(new Task(taskName, 3, 300))
         }
     }
 
     /**
      * select data based on the project key and covert to data for antv g6
-     * @param key
      */
-    public dataByKey(key: string): GraphData {
-        let projects = this.projects.filter(p => p.key === key)
+    public dataByKey(id: string): GraphData {
+        let projects = this.projects.filter(p => p.id === id)
         if (projects.length === 0) {
             return {
                 nodes: [],
@@ -59,11 +91,11 @@ class Model {
             }
         }
         let project = projects[0]
-        let nodes = project.nodes
+        let tasks = project.tasks
 
         let edges = []
-        for (let i in nodes) {
-            let node = nodes[i]
+        for (let i in tasks) {
+            let node = tasks[i]
             let children = node.children
             for (let j in children) {
                 let edge = {
@@ -75,7 +107,7 @@ class Model {
         }
 
         return {
-            nodes: nodes.map((v) => {
+            nodes: tasks.map((v) => {
                 return {
                     id: v.id,
                     label: v.name,
@@ -90,62 +122,13 @@ class Model {
     public dataByDay(day: number = 0) {
         let ans: string[] = []
         for (let project of this.projects) {
-            let res = project.nodes.filter((n: Node) => n.dataIndex === day).map(v => v.name)
+            let res = project.tasks.filter((n: ITask) => n.dataIndex === day).map(v => v.name)
             ans.push(...res)
         }
         return ans
     }
 }
 
-const template: Project[] = [
-    {
-        name: '1',
-        key: '0',
-        nodes: [
-            {
-                name: 'node1',
-                id: 'node1',
-                dataIndex: 0,
-                y: 100,
-                children: ['node2', 'node3'],
-            },
-            {
-                name: 'node2',
-                id: 'node2',
-                dataIndex: 1,
-                y: 300,
-                children: ['node3'],
-            },
-            {
-                name: 'node3',
-                id: 'node3',
-                dataIndex: 5,
-                y: 400,
-                children: [],
-            },
-            {
-                name: 'node4',
-                id: 'node4',
-                dataIndex: 5,
-                y: 460,
-                children: [],
-            },
-        ]
-    },
-    {
-        name: '2',
-        key: '1',
-        nodes: [
-            {
-                name: 'x1',
-                id: 'x1',
-                dataIndex: 0,
-                y: 300,
-                children: [],
-            }]
-    }
-]
-
-let model = new Model(template)
+let model = new Model(templateJson as unknown as IProject[])
 
 export default reactive(model)

@@ -31,8 +31,8 @@
       <hr/>
       <div class="list">
         <div v-for="item in store.projects">
-          <button class="item" @click="handleListClick(item.key)" :class="{active:item.key===store.active}"
-                  :key="item.key">{{ item.name }}
+          <button class="item" @click="handleListClick(item.id)" :class="{active:item.id===store.active}"
+                  :key="item.id">{{ item.name }}
           </button>
         </div>
       </div>
@@ -69,10 +69,10 @@ function handleDialogSubmit() {
   router.push({
     name: 'summery',
     params: {
-      projectKey: project.key
+      projectKey: project.id
     }
   })
-  store.active = project.key
+  store.active = project.id
 }
 
 function handleListClick(key: string) {

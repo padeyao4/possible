@@ -33,21 +33,23 @@ let times = $ref<number[]>([...new Array(25).keys()].map(i => i - 1))
 let container = $ref<HTMLElement>()
 let graph = $ref<PossibleGraph>()
 
-function moveRight(n = 1) {
-  for (let i = 0; i < n; i++) {
-    times.unshift(times[0] - 1)
-    times.pop()
-  }
-}
-
-function moveLeft(n = 1) {
-  for (let i = 0; i < n; i++) {
-    times.shift()
-    times.push(times[times.length - 1] + 1)
-  }
-}
 
 watch(() => graph?.originX(), (newValue, oldValue) => {
+      function moveLeft(n = 1) {
+        for (let i = 0; i < n; i++) {
+          times.shift()
+          times.push(times[times.length - 1] + 1)
+        }
+      }
+
+      function moveRight(n = 1) {
+        for (let i = 0; i < n; i++) {
+          times.unshift(times[0] - 1)
+          times.pop()
+        }
+      }
+
+
       if (newValue == undefined || oldValue == undefined) {
         return
       }
@@ -67,7 +69,7 @@ onMounted(() => {
   // todo canvas on click not work
 
   // todo open drawer
-  graph = new PossibleGraph(container!, '')
+  graph = new PossibleGraph(container!)
   graph?.updateGraph(store.dataByKey(props.projectKey));
 })
 
