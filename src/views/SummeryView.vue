@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="main">
-      <div class="header" @wheel="(e: any) => {graph?.translateX(e.deltaY / 5)}" id="header">
+      <div class="header" @wheel="(e: any) => {graph?.translate(e.deltaY / 5,0)}" id="header">
         <div class="time-item" v-for="time in times" :key="time"
-             :style="{translate:  -(graph?.originX() ?? 0) % 120 - 96+'px'}">{{ time }}
+             :style="{translate:  translateX+'px'}">{{ time }}
         </div>
       </div>
       <div class="body">
@@ -13,64 +13,87 @@
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
-        <p class="footer-label">{{ graph?.currentMode() }}</p>
+        <p class="footer-label">{{ graph?.getCurrentMode() }}</p>
+        <p class="footer-label">{{ store.currentProjectOffset }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref, watch} from 'vue';
-import store from "@/store";
-import PossibleGraph from "@/g6/graph/possible-graph";
-
-const props = defineProps<{
-  projectKey: string
-}>()
+import {computed, onMounted, onUnmounted, ref, watch} from 'vue';
+import {Graph} from "@antv/g6";
+import PossibleGrid from "@/g6/plugin/possible-grid";
+import {useGlobalStore} from "@/store/global";
 
 const drawer = ref(false)
-let times = $ref<number[]>([...new Array(25).keys()].map(i => i - 1))
 let container = $ref<HTMLElement>()
-let graph = $ref<PossibleGraph>()
+let graph = $ref<Graph>()
+const store = useGlobalStore()
 
+watch(() => store.active, () => {
+  if (graph === undefined) return
+  graph.read(store.graphData)
+  // update grid
+  graph?.emit('viewportchange')
+  let offset = store.currentProjectOffset
+  let origin = graph.getCanvasByPoint(0, 0)
+  graph.translate(offset.x - origin.x, offset.y - origin.y)
+})
 
-watch(() => graph?.originX(), (newValue, oldValue) => {
-      function moveLeft(n = 1) {
-        for (let i = 0; i < n; i++) {
-          times.shift()
-          times.push(times[times.length - 1] + 1)
-        }
-      }
+const times = computed(() => {
+  let x = store.currentProjectOffset.x
+  let n = Math.floor(Math.abs(x / 120)) * (x >= 0 ? 1 : -1)
+  return [...new Array(25).keys()].map(i => i - n - 1)
+})
 
-      function moveRight(n = 1) {
-        for (let i = 0; i < n; i++) {
-          times.unshift(times[0] - 1)
-          times.pop()
-        }
-      }
+const translateX = computed(() => {
+  let x = store.currentProjectOffset.x
+  return x % 120 - 96
+})
 
-
-      if (newValue == undefined || oldValue == undefined) {
-        return
-      }
-      let n = Math.floor(Math.abs(newValue / 120))
-
-      let headValue = times[0] + 1
-      let count = Math.abs(n - Math.abs(headValue))
-      if (oldValue - newValue > 0) {
-        moveRight(count)
-      } else {
-        moveLeft(count)
-      }
-    }
-)
+watch(() => graph?.getCanvasByPoint(0, 0), (newValue) => {
+  if (newValue) {
+    store.setCurrentProjectOffset(newValue.x, newValue.y)
+  }
+})
 
 onMounted(() => {
   // todo canvas on click not work
 
   // todo open drawer
-  graph = new PossibleGraph(container!)
-  graph?.updateGraph(store.dataByKey(props.projectKey));
+  graph = new Graph({
+    container: container!,
+    width: container!.clientWidth,
+    height: container!.clientHeight - 8,
+    plugins: [new PossibleGrid()],
+    modes: {
+      default: [
+        {
+          type: 'drag-canvas',
+          allowDragOnItem: true,
+          enableOptimize: true,
+          scalableRange: 99,
+        },
+        'double-click', 'ctrl-change-edit-mode'],
+      edit: ['ctrl-change-edit-mode', 'possible-drag-node']
+    },
+    defaultNode: {
+      type: 'rect',
+      size: [100, 40],
+      style: {
+        fill: '#91d2fb',
+        lineWidth: 1,
+      },
+    },
+    defaultEdge: {
+      type: 'cubic-horizontal',
+    },
+    // layout: {
+    //     type: 'possible-layout'
+    // }
+  });
+  graph.read(store.graphData)
 })
 
 onUnmounted(() => {
@@ -78,20 +101,10 @@ onUnmounted(() => {
   console.log('graph destroy')
 })
 
-watch(props, () => {
-  times = []
-  for (let i = 0; i < 25; i++) {
-    times.push(i - 1)
-  }
-  if (graph) {
-    graph?.updateGraph(store.dataByKey(props.projectKey));
-    // 更新画布背景
-    graph?.updateBG()
-  }
-})
-
 window.addEventListener("resize", () => {
-  graph?.updateCanvasSize()
+  if (container) {
+    graph?.changeSize(container.clientWidth, container.clientHeight - 8)
+  }
 })
 </script>
 
