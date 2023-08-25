@@ -1,74 +1,124 @@
 <template>
   <div>
     <div class="main">
-      <div class="header" @wheel="(e: any) => {graph?.translateX(e.deltaY / 5)}" id="header">
+      <div class="header" @wheel="(e: any) => {graph?.translate(e.deltaY / 5,0)}" id="header">
         <div class="time-item" v-for="time in times" :key="time"
-             :style="{translate:  -(graph?.originX() ?? 0) % 120 - 96+'px'}">{{ time }}
+             :style="{translate:  translateX+'px'}">{{ time }}
         </div>
       </div>
       <div class="body">
-        <el-drawer v-model="drawer" title="I am the title" :with-header="false">
-          <span>Hi there!</span>
-        </el-drawer>
+        <task-drawer v-model:visible="visible" :task-id="activeTaskId"></task-drawer>
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
-        <p class="footer-label">{{ graph?.currentMode() }}</p>
+        <p class="footer-label">{{ graph?.getCurrentMode() }}</p>
+        <p class="footer-label">{{ store.currentProjectOffset }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref, watch} from 'vue';
-import store from "@/store";
-import PossibleGraph from "@/g6/graph/possible-graph";
+import {computed, onMounted, onUnmounted, watch} from 'vue';
+import {Graph} from "@antv/g6";
+import PossibleGrid from "@/g6/plugin/possible-grid";
+import {useGlobalStore} from "@/store/global";
+import {v4 as uuidv4} from "uuid";
+import TaskDrawer from "@/components/TaskDrawer.vue";
 
-const props = defineProps<{
-  projectKey: string
-}>()
+let visible = $ref<boolean>(false)
+let activeTaskId = $ref<string>('')
 
-const drawer = ref(false)
-let times = $ref<number[]>([...new Array(25).keys()].map(i => i - 1))
 let container = $ref<HTMLElement>()
-let graph = $ref<PossibleGraph>()
+let graph = $ref<Graph>()
+const store = useGlobalStore()
 
-function moveRight(n = 1) {
-  for (let i = 0; i < n; i++) {
-    times.unshift(times[0] - 1)
-    times.pop()
-  }
+function renderGraph() {
+  graph?.read(store.graphData)
+  // update grid
+  graph?.emit('viewportchange')
+  let offset = store.currentProjectOffset
+  let origin = graph?.getCanvasByPoint(0, 0)
+  graph?.translate(offset.x - origin!.x, offset.y - origin!.y)
 }
 
-function moveLeft(n = 1) {
-  for (let i = 0; i < n; i++) {
-    times.shift()
-    times.push(times[times.length - 1] + 1)
+watch(() => store.active, () => {
+  if (graph === undefined) return
+  renderGraph();
+})
+
+const times = computed(() => {
+  let x = store.currentProjectOffset.x
+  let n = Math.floor(Math.abs(x / 120)) * (x >= 0 ? 1 : -1)
+  return [...new Array(25).keys()].map(i => i - n - 2)
+})
+
+const translateX = computed(() => {
+  let x = store.currentProjectOffset.x
+  return x % 120 - 216
+})
+
+watch(() => graph?.getCanvasByPoint(0, 0), (newValue) => {
+  if (newValue) {
+    store.setCurrentProjectOffset(newValue.x, newValue.y)
   }
-}
+})
 
-watch(() => graph?.originX(), (newValue, oldValue) => {
-      if (newValue == undefined || oldValue == undefined) {
-        return
-      }
-      let n = Math.floor(Math.abs(newValue / 120))
-
-      let headValue = times[0] + 1
-      let count = Math.abs(n - Math.abs(headValue))
-      if (oldValue - newValue > 0) {
-        moveRight(count)
-      } else {
-        moveLeft(count)
-      }
-    }
-)
+watch(store.currentProjectTasks, () => {
+  console.log('render')
+  renderGraph()
+})
 
 onMounted(() => {
   // todo canvas on click not work
-
-  // todo open drawer
-  graph = new PossibleGraph(container!, '')
-  graph?.updateGraph(store.dataByKey(props.projectKey));
+  graph = new Graph({
+    container: container!,
+    width: container!.clientWidth,
+    height: container!.clientHeight - 8,
+    plugins: [new PossibleGrid()],
+    modes: {
+      default: [
+        {
+          type: 'drag-canvas',
+          allowDragOnItem: true,
+          enableOptimize: true,
+          scalableRange: 99,
+        },
+        'ctrl-change-edit-mode'],
+      edit: ['ctrl-change-edit-mode', 'possible-drag-node']
+    },
+    defaultNode: {
+      type: 'rect',
+      size: [100, 40],
+      style: {
+        fill: '#91d2fb',
+        lineWidth: 1,
+      },
+    },
+    defaultEdge: {
+      type: 'cubic-horizontal',
+    }
+  });
+  // 处理双击事件
+  graph.on('dblclick', (e) => {
+    if (e.target?.isCanvas?.()) {
+      let newTask = {
+        name: 'uname task',
+        id: uuidv4(),
+        dataIndex: Math.floor(e.x / 120),
+        y: e.y,
+        children: []
+      };
+      store.currentProjectAddTask(newTask)
+      visible = true
+      activeTaskId = newTask.id
+    }
+    if (e.item?.getType() === 'node') {
+      visible = true
+      activeTaskId = e.item.getID()
+    }
+  })
+  renderGraph()
 })
 
 onUnmounted(() => {
@@ -76,21 +126,9 @@ onUnmounted(() => {
   console.log('graph destroy')
 })
 
-watch(props, () => {
-  times = []
-  for (let i = 0; i < 25; i++) {
-    times.push(i - 1)
-  }
-  if (graph) {
-    graph?.updateGraph(store.dataByKey(props.projectKey));
-    // 更新画布背景
-    graph?.updateBG()
-  }
-})
-
 window.addEventListener("resize", () => {
   if (container) {
-    graph?.updateCanvasSize(container.clientWidth, container.clientHeight - 8)
+    graph?.changeSize(container.clientWidth, container.clientHeight - 8)
   }
 })
 </script>

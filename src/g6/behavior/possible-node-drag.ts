@@ -3,6 +3,7 @@ import type {Point} from '@antv/g-base';
 import type {G6Event, ICombo, IG6GraphEvent, INode, Item, NodeConfig} from '@antv/g6-core';
 import {clone, debounce, deepMix} from '@antv/util';
 import {Global, type IGraph} from "@antv/g6";
+import {useGlobalStore} from "@/store/global";
 
 export default {
     getDefaultCfg(): object {
@@ -43,10 +44,7 @@ export default {
         }
 
         const type = item.getType();
-        if (type !== 'combo') {
-            return false;
-        }
-        return true;
+        return type === 'combo';
     },
     onTouchStart(evt: IG6GraphEvent) {
         if (!evt.item) return;
@@ -269,6 +267,19 @@ export default {
      * @param evt
      */
     onDragEnd(evt: IG6GraphEvent) {
+        if (evt?.item) {
+            // 拖动节点时更改store
+            const store = useGlobalStore()
+            console.log('id', evt.item.getID(), evt.item)
+            let node = evt.item
+            let model = node.getModel()
+            store.setCurrentProjectTask({
+                id: node.getID(),
+                dataIndex: Math.floor(model.x / 120),
+                y: model.y
+            })
+        }
+
         this.mousedown = false;
         this.dragstart = false;
 

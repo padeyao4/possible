@@ -3,14 +3,17 @@
     <h1>
       My Day
     </h1>
-    <div v-for="value in store.dataByDay()">
+    <div v-for="value in store.dataByDay">
       <div class="item">{{ value }}</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import store from "@/store";
+
+import {useGlobalStore} from "@/store/global";
+
+const store = useGlobalStore()
 </script>
 
 <style>

@@ -1,22 +1,30 @@
-// @ts-nocheck
+import type {IG6GraphEvent} from "@antv/g6-core";
+import type {Caller} from "@/g6/hebavior";
+import {useGlobalStore} from "@/store/global";
+import {v4 as uuidv4} from 'uuid'
+
+
 export default {
     getEvents() {
         return {
-            'dblclick': 'onCreateNode',
+            'dblclick': 'onDoubleClick'
         }
     },
 
-    onCreateNode(e: any) {
+    onDoubleClick(this: Caller, e: IG6GraphEvent) {
+        const store = useGlobalStore()
         if (e.target?.isCanvas?.()) {
-            this.graph.addItem("node", {
-                x: Math.floor(e.x / 120) * 120 + 60,
+            store.currentProjectAddTask({
+                name: 'uname task',
+                id: uuidv4(),
+                dataIndex: Math.floor(e.x / 120),
                 y: e.y,
-                // todo set id
-                id: `node-${e.x}-${e.y}`
+                children: []
             })
         }
         if (e.item?.getType() === 'node') {
-            this.getDefaultCfg().functionName?.()
+            // todo show details
+            console.log("node", e.item, this)
         }
-    }
+    },
 }
