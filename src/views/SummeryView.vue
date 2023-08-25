@@ -31,31 +31,40 @@ let container = $ref<HTMLElement>()
 let graph = $ref<Graph>()
 const store = useGlobalStore()
 
-watch(() => store.active, () => {
-  if (graph === undefined) return
-  graph.read(store.graphData)
+function renderGraph() {
+  graph?.read(store.graphData)
   // update grid
   graph?.emit('viewportchange')
   let offset = store.currentProjectOffset
-  let origin = graph.getCanvasByPoint(0, 0)
-  graph.translate(offset.x - origin.x, offset.y - origin.y)
+  let origin = graph?.getCanvasByPoint(0, 0)
+  graph?.translate(offset.x - origin!.x, offset.y - origin!.y)
+}
+
+watch(() => store.active, () => {
+  if (graph === undefined) return
+  renderGraph();
 })
 
 const times = computed(() => {
   let x = store.currentProjectOffset.x
   let n = Math.floor(Math.abs(x / 120)) * (x >= 0 ? 1 : -1)
-  return [...new Array(25).keys()].map(i => i - n - 1)
+  return [...new Array(25).keys()].map(i => i - n - 2)
 })
 
 const translateX = computed(() => {
   let x = store.currentProjectOffset.x
-  return x % 120 - 96
+  return x % 120 - 216
 })
 
 watch(() => graph?.getCanvasByPoint(0, 0), (newValue) => {
   if (newValue) {
     store.setCurrentProjectOffset(newValue.x, newValue.y)
   }
+})
+
+watch(store.currentProjectTasks, () => {
+  console.log('render')
+  renderGraph()
 })
 
 onMounted(() => {
@@ -93,7 +102,7 @@ onMounted(() => {
     //     type: 'possible-layout'
     // }
   });
-  graph.read(store.graphData)
+  renderGraph()
 })
 
 onUnmounted(() => {

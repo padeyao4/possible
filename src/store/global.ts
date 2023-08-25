@@ -21,6 +21,9 @@ export interface ITask {
 
 
 interface GlobalState {
+    /**
+     * 当前激活的项目id
+     */
     active: string
     projects: Record<string, IProject>
 }
@@ -61,7 +64,6 @@ export const useGlobalStore = defineStore('global', {
                         edges.push(edge)
                     }
                 }
-
                 return {
                     nodes: tasks.map((v) => {
                         return {
@@ -76,6 +78,12 @@ export const useGlobalStore = defineStore('global', {
             },
             currentProjectOffset(): Point {
                 return this.projects[this.active]?.offset ?? {x: 0, y: 0}
+            },
+            currentProject(): IProject {
+                return this.projects[this.active]
+            },
+            currentProjectTasks(): ITask[] {
+                return this.projects[this.active]?.tasks ?? []
             }
         },
         actions: {
@@ -94,6 +102,16 @@ export const useGlobalStore = defineStore('global', {
                 let p = this.projects[this.active].offset
                 p.x = x;
                 p.y = y;
+            },
+            currentProjectAddTask(task: ITask) {
+                this.currentProject?.tasks.push(task)
+            },
+            setCurrentProjectTask(task: ITask) {
+                let currentTask = this.currentProject?.tasks.find(t => t.id === task.id)
+                if (currentTask) {
+                    currentTask.dataIndex = task.dataIndex
+                    currentTask.y = task.y
+                }
             }
         },
     }
