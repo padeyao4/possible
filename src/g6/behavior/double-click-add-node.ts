@@ -5,7 +5,6 @@ import {v4 as uuidv4} from 'uuid'
 
 
 export default {
-
     getEvents() {
         return {
             'dblclick': 'onDoubleClick'
@@ -25,7 +24,7 @@ export default {
         }
         if (e.item?.getType() === 'node') {
             // todo show details
-            console.log("node", e.item)
+            console.log("node", e.item, this)
         }
     },
 }

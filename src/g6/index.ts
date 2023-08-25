@@ -1,13 +1,13 @@
 import G6 from "@antv/g6";
 import PossibleNodeDrag from "./behavior/possible-node-drag";
 import PossibleLayout from "./layout/possible-layout";
-import DoubleClickAddNode from "./behavior/double-click-add-node";
+// import DoubleClickAddNode from "./behavior/double-click-add-node";
 import CtrlChangeEditMode from "./behavior/ctrl-change-edit-mode";
 // import PossibleCanvasDrag from "@/g6/behavior/possible-canvas-drag";
 
 const behaviors: Record<string, any> = {
     "possible-drag-node": PossibleNodeDrag,
-    'double-click': DoubleClickAddNode,
+    // 'double-click': DoubleClickAddNode,
     'ctrl-change-edit-mode': CtrlChangeEditMode,
     // 'possible-drag-canvas': PossibleCanvasDrag
 }

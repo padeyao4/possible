@@ -7,9 +7,7 @@
         </div>
       </div>
       <div class="body">
-        <el-drawer v-model="drawer" title="I am the title" :with-header="false">
-          <span>Hi there!</span>
-        </el-drawer>
+        <task-drawer v-model:visible="visible" :task-id="activeTaskId"></task-drawer>
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
@@ -21,12 +19,16 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, onUnmounted, ref, watch} from 'vue';
+import {computed, onMounted, onUnmounted, watch} from 'vue';
 import {Graph} from "@antv/g6";
 import PossibleGrid from "@/g6/plugin/possible-grid";
 import {useGlobalStore} from "@/store/global";
+import {v4 as uuidv4} from "uuid";
+import TaskDrawer from "@/components/TaskDrawer.vue";
 
-const drawer = ref(false)
+let visible = $ref<boolean>(false)
+let activeTaskId = $ref<string>('')
+
 let container = $ref<HTMLElement>()
 let graph = $ref<Graph>()
 const store = useGlobalStore()
@@ -69,8 +71,6 @@ watch(store.currentProjectTasks, () => {
 
 onMounted(() => {
   // todo canvas on click not work
-
-  // todo open drawer
   graph = new Graph({
     container: container!,
     width: container!.clientWidth,
@@ -84,7 +84,7 @@ onMounted(() => {
           enableOptimize: true,
           scalableRange: 99,
         },
-        'double-click', 'ctrl-change-edit-mode'],
+        'ctrl-change-edit-mode'],
       edit: ['ctrl-change-edit-mode', 'possible-drag-node']
     },
     defaultNode: {
@@ -97,11 +97,27 @@ onMounted(() => {
     },
     defaultEdge: {
       type: 'cubic-horizontal',
-    },
-    // layout: {
-    //     type: 'possible-layout'
-    // }
+    }
   });
+  // 处理双击事件
+  graph.on('dblclick', (e) => {
+    if (e.target?.isCanvas?.()) {
+      let newTask = {
+        name: 'uname task',
+        id: uuidv4(),
+        dataIndex: Math.floor(e.x / 120),
+        y: e.y,
+        children: []
+      };
+      store.currentProjectAddTask(newTask)
+      visible = true
+      activeTaskId = newTask.id
+    }
+    if (e.item?.getType() === 'node') {
+      visible = true
+      activeTaskId = e.item.getID()
+    }
+  })
   renderGraph()
 })
 
