@@ -67,7 +67,6 @@ watch(() => graph?.getCanvasByPoint(0, 0), (newValue) => {
   }
 })
 
-
 onMounted(() => {
   // todo canvas on click not work
   graph = new Graph({

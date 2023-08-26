@@ -115,6 +115,11 @@ export const useGlobalStore = defineStore('global', {
                     currentTask.id = tmp.id
                     currentTask.children = tmp.children
                 }
+            },
+            deleteCurrentProjectTaskById(id: string) {
+                let index = this.currentProject?.tasks.findIndex(t => t.id === id)
+                this.currentProject?.tasks.splice(index, 1)
+                // todo 解决连接问题
             }
         },
     }

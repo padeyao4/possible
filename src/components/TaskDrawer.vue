@@ -10,7 +10,7 @@ const props = defineProps<{
 
 let emit = defineEmits(['update:visible'])
 
-const value = $computed({
+let modelValue = $computed({
   get: () => {
     return props.visible
   },
@@ -52,13 +52,24 @@ let currentTaskTile = $computed({
   }
 })
 
+const handleClose = () => {
+  modelValue = false
+}
+
+const handleDeleteTask = () => {
+  if (props.taskId) {
+    store.deleteCurrentProjectTaskById(props.taskId)
+    modelValue = false
+  }
+}
+
 </script>
 
 <template>
-  <el-drawer v-model="value"
+  <el-drawer v-model="modelValue"
              :close-on-click-modal="false"
              :show-close="false"
-             @close="()=>{console.log('do close',value)}"
+             @close="handleClose"
   >
     <template #header>
       <el-input ref="headerInputRef"
@@ -70,13 +81,19 @@ let currentTaskTile = $computed({
       <h3 v-else @click="showHeaderInput">{{ currentTask?.name ?? '' }}</h3>
     </template>
     <template #footer>
-      <el-button-group>
-        <el-button>cancel</el-button>
-        <el-button>enter</el-button>
-      </el-button-group>
+      <div class="footer">
+        <el-button type="danger" round @click="handleDeleteTask">删除</el-button>
+        <el-button-group>
+          <el-button @click="handleClose" type="primary">确定</el-button>
+        </el-button-group>
+      </div>
     </template>
   </el-drawer>
 </template>
 
 <style scoped>
+.footer {
+  display: flex;
+  justify-content: space-between;
+}
 </style>
