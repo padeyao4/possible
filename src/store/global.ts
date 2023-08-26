@@ -19,7 +19,6 @@ export interface ITask {
     children: string[]
 }
 
-
 interface GlobalState {
     /**
      * 当前激活的项目id
@@ -83,7 +82,7 @@ export const useGlobalStore = defineStore('global', {
                 return this.projects[this.active]
             },
             currentProjectTasks(): ITask[] {
-                return this.projects[this.active]?.tasks ?? []
+                return this.projects[this.active]?.tasks
             }
         },
         actions: {

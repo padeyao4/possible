@@ -42,9 +42,12 @@ function renderGraph() {
   graph?.translate(offset.x - origin!.x, offset.y - origin!.y)
 }
 
-watch(() => store.active, () => {
-  if (graph === undefined) return
-  renderGraph();
+watch([() => store.active, () => store.currentProject.tasks], () => {
+  if (graph !== undefined) {
+    renderGraph();
+  }
+}, {
+  deep: true,
 })
 
 const times = computed(() => {
@@ -64,10 +67,6 @@ watch(() => graph?.getCanvasByPoint(0, 0), (newValue) => {
   }
 })
 
-watch(store.currentProjectTasks, () => {
-  console.log('render')
-  renderGraph()
-})
 
 onMounted(() => {
   // todo canvas on click not work
