@@ -109,8 +109,12 @@ export const useGlobalStore = defineStore('global', {
             setCurrentProjectTask(task: ITask) {
                 let currentTask = this.currentProject?.tasks.find(t => t.id === task.id)
                 if (currentTask) {
-                    currentTask.dataIndex = task.dataIndex
-                    currentTask.y = task.y
+                    let tmp = {...currentTask, ...task}
+                    currentTask.name = tmp.name
+                    currentTask.y = tmp.y
+                    currentTask.dataIndex = tmp.dataIndex
+                    currentTask.id = tmp.id
+                    currentTask.children = tmp.children
                 }
             }
         },
