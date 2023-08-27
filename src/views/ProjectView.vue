@@ -20,11 +20,12 @@
 
 <script setup lang="ts">
 import {computed, onMounted, onUnmounted, watch} from 'vue';
-import {Graph} from "@antv/g6";
+import {Graph, type IEdge} from "@antv/g6";
 import PossibleGrid from "@/g6/plugin/possible-grid";
 import {type ITask, useGlobalStore} from "@/store/global";
 import {v4 as uuidv4} from "uuid";
 import TaskDrawer from "@/components/TaskDrawer.vue";
+import {normalX, x2Index} from "@/util";
 
 let visible = $ref<boolean>(false)
 let activeTaskId = $ref<string>('')
@@ -67,10 +68,11 @@ onMounted(() => {
           allowDragOnItem: false,
           enableOptimize: true,
           scalableRange: 99,
-        }, {
-          type: 'create-edge',
-          trigger: 'drag',
-        }, 'click-add-edge', 'possible-drag-node']
+        }, 'possible-drag-node'],
+      edit: [{
+        type: 'create-edge',
+        trigger: 'drag'
+      },]
     },
     defaultNode: {
       type: 'rect',
@@ -82,42 +84,78 @@ onMounted(() => {
     },
     defaultEdge: {
       type: 'cubic-horizontal',
+      style: {
+        endArrow: true
+      }
     }
   });
-  // 处理双击事件 todo 操作 graph
-  graph.on("canvas:dblclick", (e) => {
-    console.log('canvas:dblclick', e)
+
+  // todo
+  graph.on('node:dblclick', (e) => {
+    if (graph?.getCurrentMode() === 'default') {
+      console.log('on node')
+    }
   })
-  // graph.on('dblclick', (e) => {
-  //   if (e.target?.isCanvas?.()) {
-  //     let newTask = {
-  //       name: 'uname task',
-  //       id: uuidv4(),
-  //       dataIndex: Math.floor(e.x / 120),
-  //       y: e.y,
-  //       children: []
-  //     };
-  //     store.currentProjectAddTask(newTask)
-  //     visible = true
-  //     activeTaskId = newTask.id
-  //   }
-  //   if (e.item?.getType() === 'node') {
-  //     visible = true
-  //     activeTaskId = e.item.getID()
-  //   }
-  // })
+
+  // create node by double click
+  graph.on('dblclick', e => {
+    if (e.target.isCanvas?.() && graph?.getCurrentMode() === 'default') {
+      let newNode = {
+        id: uuidv4(),
+        label: 'untitled',
+        x: normalX(e.x),
+        y: e.y
+      };
+      graph?.addItem('node', newNode)
+      store.currentProjectAddTask({
+        id: newNode.id,
+        name: newNode.label,
+        dataIndex: x2Index(newNode.x),
+        y: newNode.y
+      } as ITask)
+    }
+  })
   graph.on('node:dragend', (e) => {
-    console.log('node:dragend', e)
     let model = e.item!.getModel()
     store.setCurrentProjectTask({
       id: model.id!,
-      dataIndex: Math.floor(model.x! / 120),
+      dataIndex: x2Index(model.x!),
       y: model.y!
     } as ITask)
+
+    // 清理空边
+    let edges = e.item?._cfg?.edges as IEdge[]
+    edges.filter(edge => edge._cfg?.targetNode === null).forEach(edge => {
+      console.log(edge)
+      graph?.removeItem(edge)
+    })
+  })
+  graph.on('keydown', e => {
+    if (e.key === 'Control') {
+      graph?.setMode('edit')
+    }
+  })
+  graph.on('keyup', e => {
+    if (e.key === 'Control') {
+      graph?.setMode('default')
+    }
   })
   // 处理添加完边后的操作
   graph.on('aftercreateedge', (e) => {
-    console.log(e.edge);
+    console.log('after create edge', e.edge);
+    let edge = e.edge as IEdge
+
+    // 删除自环边
+    if (edge.getSource() === edge.getTarget()) {
+      console.log('same source')
+      graph?.removeItem(edge)
+    }
+
+    // todo 删除重复边
+
+    // todo 边大小转换和排序
+
+    // todo 存储边数据
   });
 })
 
