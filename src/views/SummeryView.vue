@@ -78,12 +78,12 @@ onMounted(() => {
       default: [
         {
           type: 'drag-canvas',
-          allowDragOnItem: true,
+          allowDragOnItem: false,
           enableOptimize: true,
           scalableRange: 99,
         },
-        'ctrl-change-edit-mode'],
-      edit: ['ctrl-change-edit-mode', 'possible-drag-node']
+        'ctrl-change-edit-mode', 'click-add-edge', 'possible-drag-node'],
+      edit: ['ctrl-change-edit-mode',]
     },
     defaultNode: {
       type: 'rect',

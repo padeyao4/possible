@@ -80,6 +80,7 @@ const handleDeleteTask = () => {
                 @blur="handleHeaderInputConfirm"/>
       <h3 v-else @click="showHeaderInput">{{ currentTask?.name ?? '' }}</h3>
     </template>
+    <p>{{ currentTask?.id}}</p>
     <template #footer>
       <div class="footer">
         <el-button type="danger" round @click="handleDeleteTask">删除</el-button>

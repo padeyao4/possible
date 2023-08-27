@@ -1,7 +1,5 @@
-import type {Graph} from "@antv/g6";
+import type {BehaviorOption, Graph} from "@antv/g6";
 
-type Caller = {
-    graph: Graph,
-    getDefaultCfg?: () => object,
-    [property: any]: unknown
+export interface Caller extends BehaviorOption {
+    graph: Graph
 }
