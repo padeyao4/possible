@@ -42,9 +42,12 @@ function renderGraph() {
   graph?.translate(offset.x - origin!.x, offset.y - origin!.y)
 }
 
-watch(() => store.active, () => {
-  if (graph === undefined) return
-  renderGraph();
+watch([() => store.active, () => store.currentProject.tasks], () => {
+  if (graph !== undefined) {
+    renderGraph();
+  }
+}, {
+  deep: true,
 })
 
 const times = computed(() => {
@@ -64,11 +67,6 @@ watch(() => graph?.getCanvasByPoint(0, 0), (newValue) => {
   }
 })
 
-watch(store.currentProjectTasks, () => {
-  console.log('render')
-  renderGraph()
-})
-
 onMounted(() => {
   // todo canvas on click not work
   graph = new Graph({
@@ -80,12 +78,12 @@ onMounted(() => {
       default: [
         {
           type: 'drag-canvas',
-          allowDragOnItem: true,
+          allowDragOnItem: false,
           enableOptimize: true,
           scalableRange: 99,
         },
-        'ctrl-change-edit-mode'],
-      edit: ['ctrl-change-edit-mode', 'possible-drag-node']
+        'ctrl-change-edit-mode', 'click-add-edge', 'possible-drag-node'],
+      edit: ['ctrl-change-edit-mode',]
     },
     defaultNode: {
       type: 'rect',

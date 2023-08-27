@@ -28,7 +28,8 @@ function handleDialogSubmit() {
 
 function handleListClick(id: string) {
   router.push({
-    name: 'summery'
+    name: 'summery',
+    replace: true
   })
   store.$patch({active: id})
 }

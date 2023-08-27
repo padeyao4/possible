@@ -1,6 +1,6 @@
 <template>
   <div class="my-day">
-    <h1>
+    <h1 style="color: #c8c9cc">
       My Day
     </h1>
     <div v-for="value in store.dataByDay">
@@ -23,7 +23,6 @@ const store = useGlobalStore()
     width: 400px;
     height: 40px;
     border-bottom: 1px solid #181818;
-    color: #181818;
   }
 }
 </style>
