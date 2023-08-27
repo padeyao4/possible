@@ -25,6 +25,9 @@
           "id": "df9a7435-270a-4256-ab22-1d6b418fae93",
           "dataIndex": 1,
           "y": 300,
+          "parents": [
+            "dcb4504c-a9af-42e4-b871-0b7fdf07c1f1"
+          ],
           "children": [
             "9f25f318-5a08-4572-b03f-de0fbd0c5cb6"
           ]
@@ -33,6 +36,10 @@
           "name": "node3",
           "id": "9f25f318-5a08-4572-b03f-de0fbd0c5cb6",
           "dataIndex": 5,
+          "parents": [
+            "df9a7435-270a-4256-ab22-1d6b418fae93",
+            "dcb4504c-a9af-42e4-b871-0b7fdf07c1f1"
+          ],
           "y": 400,
           "children": []
         },

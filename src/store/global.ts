@@ -16,7 +16,8 @@ export interface ITask {
     id: string
     dataIndex: number
     y: number
-    children: string[]
+    children: string[],
+    parents?: string[]
 }
 
 interface GlobalState {
@@ -117,9 +118,27 @@ export const useGlobalStore = defineStore('global', {
                 }
             },
             deleteCurrentProjectTaskById(id: string) {
-                let index = this.currentProject?.tasks.findIndex(t => t.id === id)
-                this.currentProject?.tasks.splice(index, 1)
-                // todo 解决连接问题
+                let self = this
+                let projects = self.currentProject
+                let tasks = projects?.tasks ?? []
+                let index = tasks.findIndex(t => t.id === id)
+                let currentTask = tasks?.[index];
+
+                // delete id from parents
+                let parentsId = currentTask?.parents ?? []
+                console.log('parent ids', parentsId)
+                tasks.filter(task => parentsId.includes(task.id)).forEach(task => {
+                    task.children.splice(task.children.indexOf(id), 1)
+                })
+
+                // delete id from children
+                let childrenIds = currentTask?.children
+                tasks.filter(task => childrenIds?.includes(task.id)).forEach(task => {
+                    let parents = task.parents ?? []
+                    parents.splice(parents.indexOf(id), 1)
+                })
+                // delete current task
+                self.currentProject?.tasks.splice(index, 1)
             }
         },
     }
