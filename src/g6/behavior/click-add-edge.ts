@@ -11,6 +11,7 @@ export default {
             'edge:click': 'onEdgeClick', // 监听事件 edge:click，响应函数是 onEdgeClick, 点击空白处取消边
         };
     },
+
     // getEvents 中定义的 'node:click' 的响应函数
     onClick(this: BehaviorOption, ev: IG6GraphEvent) {
         const node = ev.item;
@@ -26,25 +27,26 @@ export default {
             this.edge = null;
             this.addingEdge = false;
 
-            console.log('model', edge.getModel())
-            let edgeModel = edge.getModel()
-            const store = useGlobalStore()
-            let ids = [edgeModel.source, edgeModel.target]
-            let arr = store.currentProjectTasks.filter(task => ids.includes(task.id))
-            if (arr.length == 2) {
-                let source = arr[0]
-                let target = arr [1]
-                if (source.dataIndex > target.dataIndex) {
-                    let swap = source
-                    source = target
-                    target = swap
-                }
-                source.children.push(target.id)
-                if (target.parents === undefined) {
-                    target.parents = []
-                }
-                target.parents.push(source.id)
-            }
+            // todo
+            // console.log('model', edge.getModel())
+            // let edgeModel = edge.getModel()
+            // const store = useGlobalStore()
+            // let ids = [edgeModel.source, edgeModel.target]
+            // let arr = store.currentProjectTasks.filter(task => ids.includes(task.id))
+            // if (arr.length == 2) {
+            //     let source = arr[0]
+            //     let target = arr [1]
+            //     if (source.dataIndex > target.dataIndex) {
+            //         let swap = source
+            //         source = target
+            //         target = swap
+            //     }
+            //     source.children.push(target.id)
+            //     if (target.parents === undefined) {
+            //         target.parents = []
+            //     }
+            //     target.parents.push(source.id)
+            // }
         } else {
             // 在图上新增一条边，结束点是鼠标当前点击的节点的位置
             this.edge = graph.addItem('edge', {

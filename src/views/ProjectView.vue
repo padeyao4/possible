@@ -22,7 +22,7 @@
 import {computed, onMounted, onUnmounted, watch} from 'vue';
 import {Graph} from "@antv/g6";
 import PossibleGrid from "@/g6/plugin/possible-grid";
-import {useGlobalStore} from "@/store/global";
+import {type ITask, useGlobalStore} from "@/store/global";
 import {v4 as uuidv4} from "uuid";
 import TaskDrawer from "@/components/TaskDrawer.vue";
 
@@ -33,38 +33,24 @@ let container = $ref<HTMLElement>()
 let graph = $ref<Graph>()
 const store = useGlobalStore()
 
-function renderGraph() {
+watch([() => store.active, () => graph], () => {
+  graph?.off('viewportchange', syncProjectOffset)
   graph?.read(store.graphData)
-  // update grid
-  graph?.emit('viewportchange')
   let offset = store.currentProjectOffset
   let origin = graph?.getCanvasByPoint(0, 0)
   graph?.translate(offset.x - origin!.x, offset.y - origin!.y)
-}
-
-watch([() => store.active, () => store.currentProject.tasks], () => {
-  if (graph !== undefined) {
-    renderGraph();
-  }
-}, {
-  deep: true,
+  graph?.on('viewportchange', syncProjectOffset)
 })
 
 const times = computed(() => {
-  let x = store.currentProjectOffset.x
+  let x = graph?.getCanvasByPoint(0, 0).x ?? 0
   let n = Math.floor(Math.abs(x / 120)) * (x >= 0 ? 1 : -1)
   return [...new Array(25).keys()].map(i => i - n - 2)
 })
 
 const translateX = computed(() => {
-  let x = store.currentProjectOffset.x
+  let x = graph?.getCanvasByPoint(0, 0).x ?? 0
   return x % 120 - 216
-})
-
-watch(() => graph?.getCanvasByPoint(0, 0), (newValue) => {
-  if (newValue) {
-    store.setCurrentProjectOffset(newValue.x, newValue.y)
-  }
 })
 
 onMounted(() => {
@@ -81,9 +67,10 @@ onMounted(() => {
           allowDragOnItem: false,
           enableOptimize: true,
           scalableRange: 99,
-        },
-        'ctrl-change-edit-mode', 'click-add-edge', 'possible-drag-node'],
-      edit: ['ctrl-change-edit-mode',]
+        }, {
+          type: 'create-edge',
+          trigger: 'drag',
+        }, 'click-add-edge', 'possible-drag-node']
     },
     defaultNode: {
       type: 'rect',
@@ -97,31 +84,52 @@ onMounted(() => {
       type: 'cubic-horizontal',
     }
   });
-  // 处理双击事件
-  graph.on('dblclick', (e) => {
-    if (e.target?.isCanvas?.()) {
-      let newTask = {
-        name: 'uname task',
-        id: uuidv4(),
-        dataIndex: Math.floor(e.x / 120),
-        y: e.y,
-        children: []
-      };
-      store.currentProjectAddTask(newTask)
-      visible = true
-      activeTaskId = newTask.id
-    }
-    if (e.item?.getType() === 'node') {
-      visible = true
-      activeTaskId = e.item.getID()
-    }
+  // 处理双击事件 todo 操作 graph
+  graph.on("canvas:dblclick", (e) => {
+    console.log('canvas:dblclick', e)
   })
-  renderGraph()
+  // graph.on('dblclick', (e) => {
+  //   if (e.target?.isCanvas?.()) {
+  //     let newTask = {
+  //       name: 'uname task',
+  //       id: uuidv4(),
+  //       dataIndex: Math.floor(e.x / 120),
+  //       y: e.y,
+  //       children: []
+  //     };
+  //     store.currentProjectAddTask(newTask)
+  //     visible = true
+  //     activeTaskId = newTask.id
+  //   }
+  //   if (e.item?.getType() === 'node') {
+  //     visible = true
+  //     activeTaskId = e.item.getID()
+  //   }
+  // })
+  graph.on('node:dragend', (e) => {
+    console.log('node:dragend', e)
+    let model = e.item!.getModel()
+    store.setCurrentProjectTask({
+      id: model.id!,
+      dataIndex: Math.floor(model.x! / 120),
+      y: model.y!
+    } as ITask)
+  })
+  // 处理添加完边后的操作
+  graph.on('aftercreateedge', (e) => {
+    console.log(e.edge);
+  });
 })
+
+const syncProjectOffset = () => {
+  let p = graph?.getCanvasByPoint(0, 0)
+  if (p !== undefined) {
+    store.setCurrentProjectOffset(p.x, p.y)
+  }
+}
 
 onUnmounted(() => {
   graph?.destroy()
-  console.log('graph destroy')
 })
 
 window.addEventListener("resize", () => {
