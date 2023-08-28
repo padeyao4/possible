@@ -19,13 +19,14 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, onUnmounted, watch} from 'vue';
+import {computed, onMounted, onUnmounted, watch, nextTick} from 'vue';
 import {Graph, type IEdge} from "@antv/g6";
 import PossibleGrid from "@/g6/plugin/possible-grid";
 import {type ITask, useGlobalStore} from "@/store/global";
 import {v4 as uuidv4} from "uuid";
 import TaskDrawer from "@/components/TaskDrawer.vue";
 import {normalX, x2Index} from "@/util";
+import type {INode} from "@antv/g6-core";
 
 let visible = $ref<boolean>(false)
 let activeTaskId = $ref<string>('')
@@ -145,17 +146,39 @@ onMounted(() => {
     console.log('after create edge', e.edge);
     let edge = e.edge as IEdge
 
+    let sourceNode = edge.getSource() as INode;
+    let targetNode = edge.getTarget() as INode;
+
     // 删除自环边
-    if (edge.getSource() === edge.getTarget()) {
+    if (sourceNode === targetNode) {
       console.log('same source')
-      graph?.removeItem(edge)
+      nextTick(() => {
+        graph?.removeItem(edge)
+      })
+      return
     }
 
-    // todo 删除重复边
+    // 删除重复边
+    let count = sourceNode.getEdges()
+        .filter(e => e.getTarget().getID() === targetNode.getID() || e.getSource().getID() === targetNode.getID()).length
+    if (count >= 2) {
+      console.log('delete multi edge', count)
+      nextTick(() => {
+        graph?.removeItem(edge)
+      })
+      return;
+    }
 
-    // todo 边大小转换和排序
+    // 删除相同列的边
+    if (sourceNode.getModel().x! >= targetNode.getModel().x!) {
+      nextTick(() => {
+        graph?.removeItem(edge)
+      })
+      return;
+    }
 
-    // todo 存储边数据
+    // 存储边数据
+    store.currentProjectAddEdge(edge)
   });
 })
 

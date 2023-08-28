@@ -1,7 +1,8 @@
 import {defineStore} from "pinia";
 import {type Point} from "@antv/g-base";
 import {v4 as uuidv4} from 'uuid'
-import type {GraphData} from "@antv/g6-core";
+import type {GraphData, INode} from "@antv/g6-core";
+import type {IEdge} from "@antv/g6";
 
 export interface IProject {
     name: string
@@ -139,6 +140,14 @@ export const useGlobalStore = defineStore('global', {
                 })
                 // delete current task
                 self.currentProject?.tasks.splice(index, 1)
+            },
+            currentProjectAddEdge(edge: IEdge) {
+                let source = edge.getSource() as INode
+                let target = edge.getTarget() as INode
+                let sourceId = source.getID()
+                let targetId = target.getID()
+                this.currentProject.tasks.find(task => task.id === sourceId)?.children.push(targetId)
+                this.currentProject.tasks.find(task => task.id === targetId)?.parents?.push(sourceId)
             }
         },
     }
