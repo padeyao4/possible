@@ -1,16 +1,18 @@
 import {fileURLToPath, URL} from 'node:url'
 
 import {defineConfig} from 'vite'
-import vue from '@vitejs/plugin-vue'
+import VueMacros from 'unplugin-vue-macros/vite'
+import Vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 
-import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
-
 export default defineConfig({
     plugins: [
-        vue(),
-        ReactivityTransform()
+        VueMacros({
+            plugins: {
+                vue: Vue(),
+            },
+        }),
     ],
     resolve: {
         alias: {

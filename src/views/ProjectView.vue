@@ -105,10 +105,14 @@ onMounted(() => {
   });
 
   // todo
-  graph.on('node:dblclick', (e) => {
+  graph.on('node:dblclick', () => {
     if (graph?.getCurrentMode() === 'default') {
       console.log('on node')
     }
+  })
+
+  graph.on('canvas:click', () => {
+    console.log('canvas:click')
   })
 
   // create node by double click
