@@ -1,65 +1,22 @@
 <script setup lang="ts">
 import {RouterLink, RouterView} from "vue-router";
-import {ref} from "vue";
 import router from "@/router/index";
 import {useGlobalStore} from "@/store/global";
+import NewProjectButton from "@/components/NewProjectButton.vue";
 
 const store = useGlobalStore()
 
-const dialogVisible = ref(false)
-
-const nameValue = $ref({
-  input: ''
-})
-
-function handleDialogOpen() {
-  nameValue.input = ''
-  dialogVisible.value = true
-}
-
-function handleDialogSubmit() {
-  let project = store.createProjectByName(nameValue.input)
-  dialogVisible.value = false
-  router.push({
-    name: 'summery',
-  })
-  store.active = project.id
-}
-
-function handleListClick(id: string) {
+function handleClick(id: string) {
   router.push({
     name: 'summery',
     replace: true
   })
   store.$patch({active: id})
 }
-
 </script>
 
 <template>
   <div class="main">
-    <el-dialog
-        v-model="dialogVisible"
-        title="创建项目"
-        width="30%"
-        :draggable="true"
-        :destroy-on-close="true"
-        :close-on-click-modal="false"
-    >
-      <el-form :model="nameValue" @submit="handleDialogSubmit" @submit.prevent>
-        <el-form-item>
-          <el-input v-model="nameValue.input" type="text" autocomplete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleDialogSubmit">
-          确定
-        </el-button>
-      </span>
-      </template>
-    </el-dialog>
     <div class="side">
       <button>
         <RouterLink :to="{name: 'home'}">
@@ -68,25 +25,22 @@ function handleListClick(id: string) {
       </button>
       <hr/>
       <div class="list">
-        <div v-for="item in store.projects">
-          <button class="item" @click="handleListClick(item.id)" :class="{active:item.id===store.active}"
-                  :key="item.id">{{ item.name }}
-          </button>
-        </div>
+        <button v-for="item in store.projects"
+                @click="()=>handleClick(item.id)"
+                :class="{active:item.id===store.active,it:true}"
+                :key="item.id">
+          {{ item.name }}
+        </button>
       </div>
-      <button @click="handleDialogOpen">
-        新建项目
-      </button>
+      <new-project-button></new-project-button>
     </div>
     <div class="content">
-      <RouterView></RouterView>
+      <router-view></router-view>
     </div>
   </div>
 </template>
 
 <style scoped>
-
-
 .main {
   display: grid;
   width: 100vw;
@@ -103,21 +57,22 @@ function handleListClick(id: string) {
     border: none;
     border-top: 1px solid #323232;
   }
+
+  .list {
+    overflow-y: auto;
+    height: calc(100vh - 120px);
+
+    .it {
+      width: 100%;
+      height: 40px;
+    }
+
+    .active {
+      background-color: burlywood;
+    }
+  }
 }
 
-.list {
-  overflow-y: auto;
-  height: calc(100vh - 120px);
-
-  .item {
-    width: 100%;
-    height: 40px;
-  }
-
-  .active {
-    background-color: burlywood;
-  }
-}
 
 .content {
   background-color: rgb(73, 57, 57);
