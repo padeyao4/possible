@@ -85,10 +85,12 @@ function handleListClick(id: string) {
 </template>
 
 <style scoped>
+
+
 .main {
   display: grid;
   width: 100vw;
-  grid-template-columns: 240px calc( 100vw - 240px );
+  grid-template-columns: var(--side-width) var(--content-width);
 }
 
 .side {
