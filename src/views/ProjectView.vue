@@ -20,13 +20,14 @@
 
 <script setup lang="ts">
 import {computed, onMounted, onUnmounted, watch, nextTick} from 'vue';
-import {Graph, type IEdge} from "@antv/g6";
+import {Graph, type IEdge, Menu} from "@antv/g6";
 import PossibleGrid from "@/g6/plugin/possible-grid";
 import {type ITask, useGlobalStore} from "@/store/global";
 import {v4 as uuidv4} from "uuid";
 import TaskDrawer from "@/components/TaskDrawer.vue";
 import {normalX, x2Index} from "@/util";
 import type {INode} from "@antv/g6-core";
+import {type Item} from "@antv/g6-core";
 
 let visible = $ref<boolean>(false)
 let activeTaskId = $ref<string>('')
@@ -61,7 +62,19 @@ onMounted(() => {
     container: container!,
     width: container!.clientWidth,
     height: container!.clientHeight - 8,
-    plugins: [new PossibleGrid()],
+    plugins: [new PossibleGrid(), new Menu({
+      offsetX: -263,
+      offsetY: -63,
+      getContent: () => "删除",
+      handleMenuClick: (target: HTMLElement, item: Item) => {
+        console.log('target', target)
+        console.log('item', item)
+        let id = item.getID()
+        console.log('id', id)
+        graph?.removeItem(item)
+        store.deleteCurrentProjectTaskById(id)
+      }
+    })],
     modes: {
       default: [
         {
