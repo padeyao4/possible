@@ -1,18 +1,7 @@
 <script setup lang="ts">
 import {RouterLink, RouterView} from "vue-router";
-import router from "@/router/index";
-import {useGlobalStore} from "@/store/global";
 import NewProjectButton from "@/components/NewProjectButton.vue";
-
-const store = useGlobalStore()
-
-function handleClick(id: string) {
-  router.push({
-    name: 'summery',
-    replace: true
-  })
-  store.$patch({active: id})
-}
+import SideListItem from "@/components/SideListItem.vue";
 </script>
 
 <template>
@@ -24,14 +13,7 @@ function handleClick(id: string) {
         </RouterLink>
       </button>
       <hr/>
-      <div class="list">
-        <button v-for="item in store.projects"
-                @click="()=>handleClick(item.id)"
-                :class="{active:item.id===store.active,it:true}"
-                :key="item.id">
-          {{ item.name }}
-        </button>
-      </div>
+      <side-list-item class="list"></side-list-item>
       <new-project-button></new-project-button>
     </div>
     <div class="content">
@@ -61,18 +43,8 @@ function handleClick(id: string) {
   .list {
     overflow-y: auto;
     height: calc(100vh - 120px);
-
-    .it {
-      width: 100%;
-      height: 40px;
-    }
-
-    .active {
-      background-color: burlywood;
-    }
   }
 }
-
 
 .content {
   background-color: rgb(73, 57, 57);
