@@ -112,8 +112,10 @@ onMounted(() => {
         id: newNode.id,
         name: newNode.label,
         dataIndex: x2Index(newNode.x),
-        y: newNode.y
-      } as ITask)
+        y: newNode.y,
+        children: [],
+        parents: []
+      })
     }
   })
   graph.on('node:dragend', (e) => {

@@ -18,7 +18,7 @@ export interface ITask {
     dataIndex: number
     y: number
     children: string[],
-    parents?: string[]
+    parents: string[]
 }
 
 interface GlobalState {
