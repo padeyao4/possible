@@ -62,7 +62,6 @@ const handleDeleteTask = () => {
     modelValue = false
   }
 }
-
 </script>
 
 <template>
