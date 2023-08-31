@@ -1,7 +1,8 @@
 import {defineStore} from "pinia";
 import {type Point} from "@antv/g-base";
 import {v4 as uuidv4} from 'uuid'
-import type {GraphData} from "@antv/g6-core";
+import type {GraphData, INode} from "@antv/g6-core";
+import type {IEdge} from "@antv/g6";
 
 export interface IProject {
     name: string
@@ -17,7 +18,7 @@ export interface ITask {
     dataIndex: number
     y: number
     children: string[],
-    parents?: string[]
+    parents: string[]
 }
 
 interface GlobalState {
@@ -98,10 +99,12 @@ export const useGlobalStore = defineStore('global', {
                 this.projects[project.id] = project
                 return project
             },
-            setCurrentProjectOffset(x: number, y: number) {
-                let p = this.projects[this.active].offset
-                p.x = x;
-                p.y = y;
+            setCurrentProjectOffset(point: Point | undefined) {
+                let offset = this.projects[this.active].offset
+                if (point) {
+                    offset.x = point.x;
+                    offset.y = point.y;
+                }
             },
             currentProjectAddTask(task: ITask) {
                 this.currentProject?.tasks.push(task)
@@ -139,6 +142,14 @@ export const useGlobalStore = defineStore('global', {
                 })
                 // delete current task
                 self.currentProject?.tasks.splice(index, 1)
+            },
+            currentProjectAddEdge(edge: IEdge) {
+                let source = edge.getSource() as INode
+                let target = edge.getTarget() as INode
+                let sourceId = source.getID()
+                let targetId = target.getID()
+                this.currentProject.tasks.find(task => task.id === sourceId)?.children.push(targetId)
+                this.currentProject.tasks.find(task => task.id === targetId)?.parents?.push(sourceId)
             }
         },
     }

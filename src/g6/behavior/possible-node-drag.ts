@@ -3,7 +3,6 @@ import type {Point} from '@antv/g-base';
 import type {G6Event, ICombo, IG6GraphEvent, INode, Item, NodeConfig} from '@antv/g6-core';
 import {clone, debounce, deepMix} from '@antv/util';
 import {Global, type IGraph} from "@antv/g6";
-import {useGlobalStore} from "@/store/global";
 
 export default {
     getDefaultCfg(): object {
@@ -80,7 +79,7 @@ export default {
             const event2 = touches[1];
 
             if (event1 && event2) {
-                self.onDragEnd(e);
+                self.onDragEnd();
                 return;
             }
 
@@ -264,22 +263,8 @@ export default {
     },
     /**
      * 拖动结束，设置拖动元素capture为true，更新元素位置，如果是拖动涉及到 combo，则更新 combo 结构
-     * @param evt
      */
-    onDragEnd(evt: IG6GraphEvent) {
-        if (evt?.item) {
-            // 拖动节点时更改store
-            const store = useGlobalStore()
-            console.log('id', evt.item.getID(), evt.item)
-            let node = evt.item
-            let model = node.getModel()
-            store.setCurrentProjectTask({
-                id: node.getID(),
-                dataIndex: Math.floor(model.x / 120),
-                y: model.y
-            })
-        }
-
+    onDragEnd() {
         this.mousedown = false;
         this.dragstart = false;
 
@@ -620,7 +605,6 @@ export default {
     },
     /**
      * 计算delegate位置，包括左上角左边及宽度和高度
-     * @memberof ItemGroup
      * @return  计算出来的delegate坐标信息及宽高
      */
     calculationGroupPosition(evt: IG6GraphEvent) {

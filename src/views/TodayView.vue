@@ -4,7 +4,7 @@
       My Day
     </h1>
     <div v-for="value in store.dataByDay">
-      <div class="item">{{ value }}</div>
+      <div class="it">{{ value }}</div>
     </div>
   </div>
 </template>
@@ -18,7 +18,7 @@ const store = useGlobalStore()
 
 <style>
 .my-day {
-  .item {
+  .it {
     background-color: #016458;
     width: 400px;
     height: 40px;
