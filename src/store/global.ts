@@ -150,6 +150,13 @@ export const useGlobalStore = defineStore('global', {
                 let targetId = target.getID()
                 this.currentProject.tasks.find(task => task.id === sourceId)?.children.push(targetId)
                 this.currentProject.tasks.find(task => task.id === targetId)?.parents?.push(sourceId)
+            },
+            currentProjectDeleteEdge(sourceId: string, targetId: string) {
+                let children = this.currentProject.tasks.find(t => t.id == sourceId)?.children;
+                children?.splice((children?.indexOf(targetId))!, 1)
+
+                let parents = this.currentProject.tasks.find(t => t.id === targetId)?.parents
+                parents?.splice(parents!.indexOf(sourceId), 1)
             }
         },
     }

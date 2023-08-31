@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, onUnmounted, watch, nextTick} from 'vue';
+import {computed, nextTick, onMounted, onUnmounted, watch} from 'vue';
 import {Graph, type IEdge, Menu} from "@antv/g6";
 import PossibleGrid from "@/g6/plugin/possible-grid";
 import {type ITask, useGlobalStore} from "@/store/global";
@@ -65,16 +65,22 @@ onMounted(() => {
     width: container!.clientWidth,
     height: container!.clientHeight - 8,
     plugins: [new PossibleGrid(), new Menu({
-      offsetX: -263,
-      offsetY: -63,
+      offsetX: -262,
+      offsetY: -62,
       getContent: () => "删除",
       handleMenuClick: (target: HTMLElement, item: Item) => {
-        console.log('target', target)
         console.log('item', item)
         let id = item.getID()
-        console.log('id', id)
+        let itemType = item.getType();
+        if (itemType === 'node') {
+          store.deleteCurrentProjectTaskById(id)
+        }
+        if (itemType === 'edge') {
+          let model = (item as IEdge).getModel();
+          console.log('model',model)
+          store.currentProjectDeleteEdge(model.source as string, model.target as string)
+        }
         graph?.removeItem(item)
-        store.deleteCurrentProjectTaskById(id)
       }
     })],
     modes: {
@@ -101,7 +107,13 @@ onMounted(() => {
     defaultEdge: {
       type: 'cubic-horizontal',
       style: {
-        endArrow: true
+        endArrow: true,
+      }
+    },
+    edgeStateStyles: {
+      hover: {
+        stroke: 'rgba(154,154,154,0.38)',
+        lineWidth: 2,
       }
     }
   });
@@ -115,6 +127,13 @@ onMounted(() => {
 
   graph.on('canvas:click', () => {
     console.log('canvas:click')
+  })
+
+  graph.on('edge:mouseover', (e) => {
+    graph?.setItemState(e.item!, 'hover', true)
+  })
+  graph.on('edge:mouseout', (e) => {
+    graph?.setItemState(e.item!, 'hover', false)
   })
 
   // create node by double click

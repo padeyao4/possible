@@ -10,6 +10,8 @@
 
 - indexeddb
 - 圆角
-- auto align
+- layout
 - edit node
 - 自定义布局 - y轴互相排斥
+- g6 canvas click 无效
+- edge 鼠标 hover 特效
