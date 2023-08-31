@@ -37,12 +37,14 @@ let graph = $ref<Graph>()
 const store = useGlobalStore()
 
 watch([() => store.active, () => graph], () => {
-  graph?.off('viewportchange', syncProjectOffset)
-  graph?.read(store.graphData)
-  let offset = store.currentProjectOffset
-  let origin = graph?.getCanvasByPoint(0, 0)
-  graph?.translate(offset.x - origin!.x, offset.y - origin!.y)
-  graph?.on('viewportchange', syncProjectOffset)
+  if (graph) {
+    graph.off('viewportchange', syncProjectOffset)
+    graph.read(store.graphData)
+    let offset = store.currentProjectOffset
+    let origin = graph.getCanvasByPoint(0, 0)
+    graph.translate(offset.x - origin.x, offset.y - origin.y)
+    graph.on('viewportchange', syncProjectOffset)
+  }
 })
 
 const times = computed(() => {
@@ -124,7 +126,7 @@ onMounted(() => {
         x: normalX(e.x),
         y: e.y
       };
-      graph?.addItem('node', newNode)
+      graph.addItem('node', newNode)
       store.currentProjectAddTask({
         id: newNode.id,
         name: newNode.label,
@@ -203,9 +205,7 @@ onMounted(() => {
 
 const syncProjectOffset = () => {
   let p = graph?.getCanvasByPoint(0, 0)
-  if (p !== undefined) {
-    store.setCurrentProjectOffset(p.x, p.y)
-  }
+  store.setCurrentProjectOffset(p)
 }
 
 onUnmounted(() => {
@@ -283,30 +283,6 @@ window.addEventListener("resize", () => {
 
     &:hover {
       background: wheat;
-    }
-  }
-
-  input[type='range'] {
-    background-size: 50% 3px;
-    margin: auto 0;
-    width: 40%;
-    background: linear-gradient(to right, #ccc 0%, #ccc 100%);
-    outline: none;
-    /*清除系统默认样式*/
-    -webkit-appearance: none;
-    appearance: none;
-    /*横条的高度*/
-    height: 3px;
-
-    &::-webkit-slider-thumb {
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-      background-color: black;
-      box-shadow: 0 0 2px rgba(0, 0, 0, 0.3), 0 3px 5px rgba(0, 0, 0, 0.2);
-      cursor: pointer;
-      -webkit-appearance: none;
-      border: 0;
     }
   }
 }

@@ -99,10 +99,12 @@ export const useGlobalStore = defineStore('global', {
                 this.projects[project.id] = project
                 return project
             },
-            setCurrentProjectOffset(x: number, y: number) {
-                let p = this.projects[this.active].offset
-                p.x = x;
-                p.y = y;
+            setCurrentProjectOffset(point: Point | undefined) {
+                let offset = this.projects[this.active].offset
+                if (point) {
+                    offset.x = point.x;
+                    offset.y = point.y;
+                }
             },
             currentProjectAddTask(task: ITask) {
                 this.currentProject?.tasks.push(task)
