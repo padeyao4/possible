@@ -1,17 +1,16 @@
 # 实现思路
 
-## 规划页面
-
-用x轴表示日期间隔
-
-用y轴表示任务优先级
-
 ## todo
 
 - indexeddb
 - 圆角
-- layout
-- edit node
 - 自定义布局 - y轴互相排斥
 - g6 canvas click 无效
-- edge 鼠标 hover 特效
+- ~~edge 鼠标 hover 特效~~
+- electron
+- 时间轴匹配
+- 右键:单任务延期
+- 右键:整体任务延期
+- 编辑模式下 画框 批量选择
+- 服务器端保存数据
+- 双击节点弹出编辑框
