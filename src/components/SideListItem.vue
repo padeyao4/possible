@@ -37,6 +37,7 @@ function handleClick(id: string) {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    user-select: none;
   }
 
   .active {

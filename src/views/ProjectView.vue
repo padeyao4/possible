@@ -4,7 +4,7 @@ import {Graph, type IEdge, Menu} from "@antv/g6";
 import PossibleGrid from "@/g6/plugin/possible-grid";
 import {type ITask, useGlobalStore} from "@/store/global";
 import {v4 as uuidv4} from "uuid";
-import TaskDrawer from "@/components/TaskDrawer.vue";
+import TaskDrawer from "@/components/TaskEditor.vue";
 import ProjectNameBadge from "@/components/ProjectNameBadge.vue";
 import {normalX, x2Index} from "@/util";
 import type {INode} from "@antv/g6-core";
