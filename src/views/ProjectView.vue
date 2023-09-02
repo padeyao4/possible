@@ -1,25 +1,5 @@
-<template>
-  <div>
-    <div class="main">
-      <div class="header" @wheel="(e: any) => {graph?.translate(e.deltaY / 5,0)}" id="header">
-        <div class="time-item" v-for="time in times" :key="time"
-             :style="{translate:  translateX+'px'}">{{ time }}
-        </div>
-      </div>
-      <div class="body">
-        <task-drawer v-model:visible="visible" :task-id="activeTaskId"></task-drawer>
-        <div id="container" ref="container" class="container"></div>
-      </div>
-      <div class="footer">
-        <p class="footer-label">{{ graph?.getCurrentMode() }}</p>
-        <p class="footer-label">{{ store.currentProjectOffset }}</p>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import {computed, onMounted, onUnmounted, watch, nextTick} from 'vue';
+import {computed, nextTick, onMounted, onUnmounted, watch} from 'vue';
 import {Graph, type IEdge, Menu} from "@antv/g6";
 import PossibleGrid from "@/g6/plugin/possible-grid";
 import {type ITask, useGlobalStore} from "@/store/global";
@@ -28,6 +8,7 @@ import TaskDrawer from "@/components/TaskDrawer.vue";
 import {normalX, x2Index} from "@/util";
 import type {INode} from "@antv/g6-core";
 import {type Item} from "@antv/g6-core";
+import {$ref} from "vue/macros";
 
 let visible = $ref<boolean>(false)
 let activeTaskId = $ref<string>('')
@@ -36,7 +17,7 @@ let container = $ref<HTMLElement>()
 let graph = $ref<Graph>()
 const store = useGlobalStore()
 
-watch([() => store.active, () => graph], () => {
+function reRenderByData() {
   if (graph) {
     graph.off('viewportchange', syncProjectOffset)
     graph.read(store.graphData)
@@ -45,6 +26,10 @@ watch([() => store.active, () => graph], () => {
     graph.translate(offset.x - origin.x, offset.y - origin.y)
     graph.on('viewportchange', syncProjectOffset)
   }
+}
+
+watch([() => store.active, () => graph], () => {
+  reRenderByData();
 })
 
 const times = computed(() => {
@@ -55,26 +40,35 @@ const times = computed(() => {
 
 const translateX = computed(() => {
   let x = graph?.getCanvasByPoint(0, 0).x ?? 0
-  return x % 120 - 216
+  return x % 120 - 240
 })
+
+const openNodeEditor = (id: string) => {
+  activeTaskId = id
+  visible = true
+}
 
 onMounted(() => {
   // todo canvas on click not work
   graph = new Graph({
-    container: container!,
-    width: container!.clientWidth,
-    height: container!.clientHeight - 8,
+    container: "container",
     plugins: [new PossibleGrid(), new Menu({
-      offsetX: -263,
-      offsetY: -63,
+      offsetX: -262,
+      offsetY: -62,
       getContent: () => "删除",
       handleMenuClick: (target: HTMLElement, item: Item) => {
-        console.log('target', target)
         console.log('item', item)
         let id = item.getID()
-        console.log('id', id)
+        let itemType = item.getType();
+        if (itemType === 'node') {
+          store.deleteCurrentProjectTaskById(id)
+        }
+        if (itemType === 'edge') {
+          let model = (item as IEdge).getModel();
+          console.log('model', model)
+          store.currentProjectDeleteEdge(model.source as string, model.target as string)
+        }
         graph?.removeItem(item)
-        store.deleteCurrentProjectTaskById(id)
       }
     })],
     modes: {
@@ -101,20 +95,34 @@ onMounted(() => {
     defaultEdge: {
       type: 'cubic-horizontal',
       style: {
-        endArrow: true
+        endArrow: true,
+      }
+    },
+    edgeStateStyles: {
+      hover: {
+        stroke: 'rgba(154,154,154,0.38)',
+        lineWidth: 2,
       }
     }
   });
 
-  // todo
-  graph.on('node:dblclick', () => {
-    if (graph?.getCurrentMode() === 'default') {
-      console.log('on node')
-    }
+  // todo not worker
+  graph.on('canvas:click', () => {
+    alert("canvas:click")
   })
 
-  graph.on('canvas:click', () => {
-    console.log('canvas:click')
+  graph.on('edge:mouseover', (e) => {
+    graph?.setItemState(e.item!, 'hover', true)
+  })
+  graph.on('edge:mouseout', (e) => {
+    graph?.setItemState(e.item!, 'hover', false)
+  })
+
+  // open drawer editor
+  graph.on('node:dblclick', e => {
+    if (graph?.getCurrentMode() === 'default') {
+      openNodeEditor(e.item!.getID())
+    }
   })
 
   // create node by double click
@@ -214,10 +222,31 @@ onUnmounted(() => {
 
 window.addEventListener("resize", () => {
   if (container) {
-    graph?.changeSize(container.clientWidth, container.clientHeight - 8)
+    graph?.changeSize(container.clientWidth, container.clientHeight)
   }
 })
 </script>
+
+<template>
+  <div>
+    <div class="main">
+      <div class="header" @wheel="(e: any) => {graph?.translate(e.deltaY / 5,0)}" id="header">
+        <div class="time-item" v-for="time in times" :key="time"
+             :style="{translate:  translateX+'px'}">{{ time }}
+        </div>
+      </div>
+      <div class="body">
+        <task-drawer v-model:visible="visible" :graph="graph!" :task-id="activeTaskId"></task-drawer>
+        <div id="container" ref="container" class="container"></div>
+      </div>
+      <div class="footer">
+        <p class="footer-label">{{ graph?.getCurrentMode() }}</p>
+        <p class="footer-label">{{ graph?.getCanvasByPoint(0,0) }}</p>
+      </div>
+    </div>
+  </div>
+</template>
+
 
 <style scoped>
 .main {
@@ -245,16 +274,15 @@ window.addEventListener("resize", () => {
   }
 }
 
-
 .body {
-  padding: 0 20px;
-  border: #222222 solid;
-  overflow-y: auto;
+  overflow: hidden;
   height: calc(100vh - 100px);
   background-color: rgb(158, 158, 158);
 
   .container {
+    display: inline-block;
     height: 100%;
+    width: 100%;
     z-index: 1;
     position: relative;
     background-color: #fdfdfd;
@@ -268,6 +296,7 @@ window.addEventListener("resize", () => {
   background: whitesmoke;
   display: flex;
   justify-content: space-between;
+  border-top: 1px solid;
 
   .footer-label {
     color: #181818;

@@ -15,22 +15,56 @@ function handleClick(id: string) {
 
 <template>
   <div>
-    <button v-for="item in store.projects"
-            @click="()=>handleClick(item.id)"
-            :class="{active:item.id===store.active,it:true}"
-            :key="item.id">
-      {{ item.name }}
-    </button>
+    <div class="main">
+      <button v-for="item in store.projects"
+              @click="()=>handleClick(item.id)"
+              :class="{active:item.id===store.active,'list-item':true}"
+              :key="item.id">
+        {{ item.name }}
+      </button>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.it {
-  width: 100%;
-  height: 40px;
+.main {
+  height: calc(100vh - 120px);
+  overflow-y: auto;
+
+  .list-item {
+    width: 100%;
+    height: 40px;
+  }
+
+  .active {
+    background-color: burlywood;
+  }
 }
 
-.active {
-  background-color: burlywood;
+/* 滚动条设置 */
+
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+::-webkit-scrollbar-track {
+  width: 2px;
+  background-color: #1c1c1c;
+  -webkit-border-radius: 2em;
+  -moz-border-radius: 2em;
+  border-radius: 2em;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #9f9f9f;
+  background-clip: padding-box;
+  min-height: 28px;
+  -webkit-border-radius: 2em;
+  -moz-border-radius: 2em;
+  border-radius: 2em;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  width: 6px;
 }
 </style>
