@@ -5,10 +5,12 @@ import PossibleGrid from "@/g6/plugin/possible-grid";
 import {type ITask, useGlobalStore} from "@/store/global";
 import {v4 as uuidv4} from "uuid";
 import TaskDrawer from "@/components/TaskDrawer.vue";
+import ProjectNameBadge from "@/components/ProjectNameBadge.vue";
 import {normalX, x2Index} from "@/util";
 import type {INode} from "@antv/g6-core";
 import {type Item} from "@antv/g6-core";
 import {$ref} from "vue/macros";
+
 
 let visible = $ref<boolean>(false)
 let activeTaskId = $ref<string>('')
@@ -250,6 +252,7 @@ window.addEventListener("resize", () => {
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
+        <ProjectNameBadge/>
         <p class="footer-label">{{ graph?.getCurrentMode() }}</p>
         <el-button @click="back2Today">today</el-button>
         <p class="footer-label">{{ graph?.getCanvasByPoint(0, 0) }}</p>
@@ -318,6 +321,10 @@ window.addEventListener("resize", () => {
     color: #181818;
     background-color: #c8c9cc;
     user-select: none;
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
   }
 
   div {

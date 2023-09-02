@@ -15,6 +15,7 @@
     "@antv/g6": "^4.8.21",
     "@antv/g6-core": "^0.8.21",
     "@antv/util": "^3.3.4",
+    "@element-plus/icons-vue": "^2.1.0",
     "element-plus": "^2.3.9",
     "pinia": "^2.1.6",
     "uuid": "latest",

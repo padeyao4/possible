@@ -32,8 +32,11 @@ function handleClick(id: string) {
   overflow-y: auto;
 
   .list-item {
-    width: 100%;
+    width: 240px;
     height: 40px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .active {
@@ -42,7 +45,6 @@ function handleClick(id: string) {
 }
 
 /* 滚动条设置 */
-
 ::-webkit-scrollbar {
   width: 3px;
 }
