@@ -17,6 +17,7 @@ function handleDialogOpen() {
 
 function handleDialogSubmit() {
   let project = store.createProjectByName(nameValue.input)
+  project.offset.x = -Math.floor(new Date().valueOf() / 86400000) * 120
   dialogVisible = false
   router.push({
     name: 'summery',
