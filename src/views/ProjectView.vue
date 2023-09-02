@@ -8,6 +8,7 @@ import TaskDrawer from "@/components/TaskDrawer.vue";
 import {normalX, x2Index} from "@/util";
 import type {INode} from "@antv/g6-core";
 import {type Item} from "@antv/g6-core";
+import {$ref} from "vue/macros";
 
 let visible = $ref<boolean>(false)
 let activeTaskId = $ref<string>('')
@@ -16,7 +17,7 @@ let container = $ref<HTMLElement>()
 let graph = $ref<Graph>()
 const store = useGlobalStore()
 
-watch([() => store.active, () => graph], () => {
+function reRenderByData() {
   if (graph) {
     graph.off('viewportchange', syncProjectOffset)
     graph.read(store.graphData)
@@ -25,6 +26,10 @@ watch([() => store.active, () => graph], () => {
     graph.translate(offset.x - origin.x, offset.y - origin.y)
     graph.on('viewportchange', syncProjectOffset)
   }
+}
+
+watch([() => store.active, () => graph], () => {
+  reRenderByData();
 })
 
 const times = computed(() => {
@@ -37,6 +42,11 @@ const translateX = computed(() => {
   let x = graph?.getCanvasByPoint(0, 0).x ?? 0
   return x % 120 - 240
 })
+
+const openNodeEditor = (id: string) => {
+  activeTaskId = id
+  visible = true
+}
 
 onMounted(() => {
   // todo canvas on click not work
@@ -96,13 +106,7 @@ onMounted(() => {
     }
   });
 
-  // todo
-  graph.on('node:dblclick', () => {
-    if (graph?.getCurrentMode() === 'default') {
-      console.log('on node')
-    }
-  })
-
+  // todo not worker
   graph.on('canvas:click', () => {
     alert("canvas:click")
   })
@@ -112,6 +116,13 @@ onMounted(() => {
   })
   graph.on('edge:mouseout', (e) => {
     graph?.setItemState(e.item!, 'hover', false)
+  })
+
+  // open drawer editor
+  graph.on('node:dblclick', e => {
+    if (graph?.getCurrentMode() === 'default') {
+      openNodeEditor(e.item!.getID())
+    }
   })
 
   // create node by double click
@@ -225,12 +236,12 @@ window.addEventListener("resize", () => {
         </div>
       </div>
       <div class="body">
-        <task-drawer v-model:visible="visible" :task-id="activeTaskId"></task-drawer>
+        <task-drawer v-model:visible="visible" :graph="graph!" :task-id="activeTaskId"></task-drawer>
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
         <p class="footer-label">{{ graph?.getCurrentMode() }}</p>
-        <p class="footer-label">{{ store.currentProjectOffset }}</p>
+        <p class="footer-label">{{ graph?.getCanvasByPoint(0,0) }}</p>
       </div>
     </div>
   </div>
