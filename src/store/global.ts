@@ -26,13 +26,18 @@ interface GlobalState {
      * 当前激活的项目id
      */
     active: string
-    projects: Record<string, IProject>
+    projects: Record<string, IProject>,
+    /**
+     * 今天是距离1970.1.1的日期距离
+     */
+    todayIndex: number,
 }
 
 export const useGlobalStore = defineStore('global', {
         state: (): GlobalState => ({
             active: '',
-            projects: {}
+            projects: {},
+            todayIndex: 0
         }),
         getters: {
             dataByDay(day: number = 0) {

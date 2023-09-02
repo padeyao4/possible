@@ -232,7 +232,9 @@ window.addEventListener("resize", () => {
     <div class="main">
       <div class="header" @wheel="(e: any) => {graph?.translate(e.deltaY / 5,0)}" id="header">
         <div class="time-item" v-for="time in times" :key="time"
-             :style="{translate:  translateX+'px'}">{{ time }}
+             :style="{translate:  translateX+'px'}">{{
+            new Intl.DateTimeFormat("zh-Hans").format(new Date(time * 86400000))
+          }}
         </div>
       </div>
       <div class="body">
@@ -241,7 +243,7 @@ window.addEventListener("resize", () => {
       </div>
       <div class="footer">
         <p class="footer-label">{{ graph?.getCurrentMode() }}</p>
-        <p class="footer-label">{{ graph?.getCanvasByPoint(0,0) }}</p>
+        <p class="footer-label">{{ graph?.getCanvasByPoint(0, 0) }}</p>
       </div>
     </div>
   </div>
