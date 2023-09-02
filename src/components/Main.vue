@@ -13,7 +13,7 @@ import SideListItem from "@/components/SideListItem.vue";
         </RouterLink>
       </button>
       <hr/>
-      <side-list-item class="list"></side-list-item>
+      <side-list-item></side-list-item>
       <new-project-button></new-project-button>
     </div>
     <div class="content">
@@ -38,11 +38,6 @@ import SideListItem from "@/components/SideListItem.vue";
     height: 1px;
     border: none;
     border-top: 1px solid #323232;
-  }
-
-  .list {
-    overflow-y: auto;
-    height: calc(100vh - 120px);
   }
 }
 
