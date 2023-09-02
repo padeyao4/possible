@@ -17,7 +17,7 @@ let container = $ref<HTMLElement>()
 let graph = $ref<Graph>()
 const store = useGlobalStore()
 
-function reRenderByData() {
+watch([() => store.active, () => graph], () => {
   if (graph) {
     graph.off('viewportchange', syncProjectOffset)
     graph.read(store.graphData)
@@ -26,10 +26,6 @@ function reRenderByData() {
     graph.translate(offset.x - origin.x, offset.y - origin.y)
     graph.on('viewportchange', syncProjectOffset)
   }
-}
-
-watch([() => store.active, () => graph], () => {
-  reRenderByData();
 })
 
 const times = computed(() => {
@@ -180,7 +176,6 @@ onMounted(() => {
 
     // 删除自环边
     if (sourceNode === targetNode) {
-      console.log('same source')
       nextTick(() => {
         graph?.removeItem(edge)
       })
@@ -191,7 +186,6 @@ onMounted(() => {
     let count = sourceNode.getEdges()
         .filter(e => e.getTarget().getID() === targetNode.getID() || e.getSource().getID() === targetNode.getID()).length
     if (count >= 2) {
-      console.log('delete multi edge', count)
       nextTick(() => {
         graph?.removeItem(edge)
       })
@@ -220,6 +214,19 @@ onUnmounted(() => {
   graph?.destroy()
 })
 
+const todayIndex = computed(() => {
+  return Math.floor(new Date().valueOf() / 86400000)
+})
+
+/**
+ * 回到今天时间点
+ */
+const back2Today = () => {
+  let ox = graph?.getCanvasByPoint(0, 0).x ?? 0
+  let dx = ox + todayIndex.value * 120
+  graph?.translate(-dx, 0)
+}
+
 window.addEventListener("resize", () => {
   if (container) {
     graph?.changeSize(container.clientWidth, container.clientHeight)
@@ -232,7 +239,8 @@ window.addEventListener("resize", () => {
     <div class="main">
       <div class="header" @wheel="(e: any) => {graph?.translate(e.deltaY / 5,0)}" id="header">
         <div class="time-item" v-for="time in times" :key="time"
-             :style="{translate:  translateX+'px'}">{{
+             :style="{translate:  translateX+'px',}"
+             :class="{active:  time=== todayIndex}">{{
             new Intl.DateTimeFormat("zh-Hans").format(new Date(time * 86400000))
           }}
         </div>
@@ -243,6 +251,7 @@ window.addEventListener("resize", () => {
       </div>
       <div class="footer">
         <p class="footer-label">{{ graph?.getCurrentMode() }}</p>
+        <el-button @click="back2Today">today</el-button>
         <p class="footer-label">{{ graph?.getCanvasByPoint(0, 0) }}</p>
       </div>
     </div>
@@ -274,6 +283,10 @@ window.addEventListener("resize", () => {
     background-color: #1c1c1c;
     margin: 0 10px 0 10px;
   }
+
+  .active {
+    color: greenyellow;
+  }
 }
 
 .body {
@@ -298,6 +311,7 @@ window.addEventListener("resize", () => {
   background: whitesmoke;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   border-top: 1px solid;
 
   .footer-label {
