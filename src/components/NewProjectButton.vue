@@ -36,13 +36,17 @@ function handleDialogSubmit() {
       :close-on-click-modal="false"
   >
     <el-form :model="nameValue" @submit="handleDialogSubmit" @submit.prevent>
-      <el-form-item>
+      <el-form-item
+          prop="input"
+          :rules="[
+              { required: true, message: 'project name is required' },
+        ]"
+      >
         <el-input v-model="nameValue.input" type="text" autocomplete="off"></el-input>
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
         <el-button type="primary" @click="handleDialogSubmit">
           确定
         </el-button>
