@@ -233,7 +233,7 @@ const timeIndex = computed(() => {
  */
 const back2Today = () => {
   let ox = graph?.getCanvasByPoint(0, 0).x ?? 0
-  let dx = timeIndex.value * 120 + ox
+  let dx = (timeIndex.value - 1) * 120 + ox
   graph?.translate(-dx, 0)
 }
 

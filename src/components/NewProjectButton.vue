@@ -25,7 +25,7 @@ const handleDialogSubmit = (formEl: FormInstance | undefined) => {
   formEl.validate((valid) => {
     if (valid) {
       let project = store.createProjectByName(nameValue.value.input)
-      project.offset.x = -Math.floor(new Date().valueOf() / 86400000) * 120
+      project.offset.x = -Math.floor((new Date().valueOf() - new Date('2023/9/1').valueOf()) / 86400000) * 120
       dialogVisible.value = false
       router.push({
         name: 'summery',
