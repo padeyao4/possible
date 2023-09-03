@@ -54,7 +54,7 @@ const handleDialogSubmit = (formEl: FormInstance | undefined) => {
               { required: true, message: 'project name is required' },
         ]"
       >
-        <el-input v-model="nameValue.input" type="text" autocomplete="off" autofocus="true"
+        <el-input v-model="nameValue.input" type="text" autocomplete="off"
                   @keydown.enter=""></el-input>
       </el-form-item>
     </el-form>

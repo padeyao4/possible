@@ -13,7 +13,6 @@
     "moduleResolution": "Bundler",
     "types": [
       "node",
-      "@vue-macros/reactivity-transform/macros-global"
     ]
   }
 }

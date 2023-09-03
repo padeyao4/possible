@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {type ITask, useGlobalStore} from "@/store/global";
 import {ElInput} from "element-plus";
-import {nextTick} from "vue";
+import {computed, nextTick, ref} from "vue";
 import type {Graph} from "@antv/g6";
 
 const props = defineProps<{
@@ -12,7 +12,7 @@ const props = defineProps<{
 
 let emit = defineEmits(['update:visible'])
 
-let modelValue = $computed({
+let modelValue = computed({
   get: () => {
     return props.visible
   },
@@ -23,22 +23,22 @@ let modelValue = $computed({
 
 const store = useGlobalStore()
 
-let titleInputVisible = $ref(false)
+let titleInputVisible = ref(false)
 
 const handleTitleInputConfirm = () => {
   console.log('header input')
-  titleInputVisible = false
+  titleInputVisible.value = false
 }
 
-let titleInputRef = $ref<InstanceType<typeof ElInput>>()
+let titleInputRef = ref<InstanceType<typeof ElInput>>()
 const showTitleInput = () => {
-  titleInputVisible = true
+  titleInputVisible.value = true
   nextTick(() => {
-    titleInputRef?.input!.focus()
+    titleInputRef.value?.input!.focus()
   })
 }
 
-let currentTaskTile = $computed({
+let currentTaskTile = computed({
   get: () => {
     if (props.visible) {
       let item = props.graph.findById(props.taskId);
@@ -60,7 +60,7 @@ let currentTaskTile = $computed({
 })
 
 const handleClose = () => {
-  modelValue = false
+  modelValue.value = false
 }
 
 </script>
