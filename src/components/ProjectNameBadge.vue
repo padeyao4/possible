@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useGlobalStore} from "@/store/global";
-import {computed, ref} from "vue";
+import {computed, nextTick, ref} from "vue";
 
 const store = useGlobalStore()
 
@@ -16,10 +16,21 @@ const projectName = computed({
 let iconOpacity = ref<number>(0)
 let editShow = ref<boolean>(true)
 
-const handleInput = () => {
-  iconOpacity.value = 0.5
+const inputRef = ref()
+
+const submitInput = () => {
+  iconOpacity.value = 0
   editShow.value = true
 }
+
+const handleInputClick = () => {
+  editShow.value = false
+  iconOpacity.value = 0
+  nextTick(() => {
+    inputRef.value.focus()
+  })
+}
+
 </script>
 
 <template>
@@ -28,12 +39,12 @@ const handleInput = () => {
       <div v-if="editShow" class="p-detail" @mouseenter="iconOpacity=0.5"
            @mouseleave="iconOpacity=0">
         <p class="p-name">{{ projectName }}</p>
-        <el-icon :style="{opacity: iconOpacity}" class="icon" @click="editShow=false">
+        <el-icon :style="{opacity: iconOpacity}" class="icon" @click="handleInputClick">
           <Edit/>
         </el-icon>
       </div>
-      <el-input v-else v-model="projectName" @blur="handleInput" style="border: 0"
-             @keydown.enter="handleInput"/>
+      <el-input ref="inputRef" v-else v-model="projectName" @blur="submitInput" style="border: 0"
+                @keydown.enter="submitInput"/>
     </div>
   </div>
 </template>
