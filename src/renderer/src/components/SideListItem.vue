@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import {useGlobalStore} from "../store/global";
-import router from "../router";
+import { useGlobalStore } from '../store/global'
+import router from '../router'
 
 const store = useGlobalStore()
 
@@ -9,17 +9,19 @@ function handleClick(id: string) {
     name: 'summery',
     replace: true
   })
-  store.$patch({active: id})
+  store.$patch({ active: id })
 }
 </script>
 
 <template>
   <div>
     <div class="main">
-      <button v-for="item in store.projects"
-              @click="()=>handleClick(item.id)"
-              :class="{active:item.id===store.active,'list-item':true}"
-              :key="item.id">
+      <button
+        v-for="item in store.projects"
+        :key="item.id"
+        :class="{ active: item.id === store.active, 'list-item': true }"
+        @click="() => handleClick(item.id)"
+      >
         {{ item.name }}
       </button>
     </div>

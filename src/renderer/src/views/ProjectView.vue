@@ -1,43 +1,42 @@
 <script setup lang="ts">
-import {computed, nextTick, onMounted, onUnmounted, ref, watch} from 'vue';
-import {Graph, type IEdge, Menu} from "@antv/g6";
-import PossibleGrid from "../g6/plugin/possible-grid";
-import {type ITask, useGlobalStore} from "../store/global";
-import {v4 as uuidv4} from "uuid";
-import TaskDrawer from "@renderer/components/TaskEditor.vue";
-import ProjectNameBadge from "@renderer/components/ProjectNameBadge.vue";
-import {normalX, x2Index} from "../util";
-import type {INode} from "@antv/g6-core";
-import {type Item} from "@antv/g6-core";
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { Graph, type IEdge, Menu } from '@antv/g6'
+import PossibleGrid from '../g6/plugin/possible-grid'
+import { type ITask, useGlobalStore } from '../store/global'
+import { v4 as uuidv4 } from 'uuid'
+import TaskDrawer from '@renderer/components/TaskEditor.vue'
+import ProjectNameBadge from '@renderer/components/ProjectNameBadge.vue'
+import { normalX, x2Index } from '../util'
+import type { INode } from '@antv/g6-core'
+import { type Item } from '@antv/g6-core'
 
+const visible = ref<boolean>(false)
+const activeTaskId = ref<string>('')
 
-let visible = ref<boolean>(false)
-let activeTaskId = ref<string>('')
-
-let container = ref<HTMLElement>()
-let graph = ref<Graph>()
+const container = ref<HTMLElement>()
+const graph = ref<Graph>()
 const store = useGlobalStore()
 
 watch([() => store.active, () => graph.value], () => {
   if (graph.value) {
     graph.value.off('viewportchange', syncProjectOffset)
     graph.value.read(store.graphData)
-    let offset = store.currentProjectOffset
-    let origin = graph.value.getCanvasByPoint(0, 0)
+    const offset = store.currentProjectOffset
+    const origin = graph.value.getCanvasByPoint(0, 0)
     graph.value.translate(offset.x - origin.x, offset.y - origin.y)
     graph.value.on('viewportchange', syncProjectOffset)
   }
 })
 
 const times = computed(() => {
-  let x = graph.value?.getCanvasByPoint(0, 0).x ?? 0
-  let n = Math.floor(Math.abs(x / 120)) * (x >= 0 ? 1 : -1)
-  return [...new Array(25).keys()].map(i => i - n - 1)
+  const x = graph.value?.getCanvasByPoint(0, 0).x ?? 0
+  const n = Math.floor(Math.abs(x / 120)) * (x >= 0 ? 1 : -1)
+  return [...new Array(25).keys()].map((i) => i - n - 1)
 })
 
 const translateX = computed(() => {
-  let x = graph.value?.getCanvasByPoint(0, 0).x ?? 0
-  return x % 120 - 240
+  const x = graph.value?.getCanvasByPoint(0, 0).x ?? 0
+  return (x % 120) - 240
 })
 
 const openNodeEditor = (id: string) => {
@@ -48,64 +47,71 @@ const openNodeEditor = (id: string) => {
 onMounted(() => {
   // todo canvas on click not work
   graph.value = new Graph({
-    container: "container",
-    plugins: [new PossibleGrid(), new Menu({
-      offsetX: -262,
-      offsetY: -62,
-      getContent: () => "删除",
-      handleMenuClick: (_: HTMLElement, item: Item) => {
-        console.log('item', item)
-        let id = item.getID()
-        let itemType = item.getType();
-        if (itemType === 'node') {
-          store.deleteCurrentProjectTaskById(id)
+    container: 'container',
+    plugins: [
+      new PossibleGrid(),
+      new Menu({
+        offsetX: -262,
+        offsetY: -62,
+        getContent: () => '删除',
+        handleMenuClick: (_: HTMLElement, item: Item) => {
+          console.log('item', item)
+          const id = item.getID()
+          const itemType = item.getType()
+          if (itemType === 'node') {
+            store.deleteCurrentProjectTaskById(id)
+          }
+          if (itemType === 'edge') {
+            const model = (item as IEdge).getModel()
+            console.log('model', model)
+            store.currentProjectDeleteEdge(model.source as string, model.target as string)
+          }
+          graph.value?.removeItem(item)
         }
-        if (itemType === 'edge') {
-          let model = (item as IEdge).getModel();
-          console.log('model', model)
-          store.currentProjectDeleteEdge(model.source as string, model.target as string)
-        }
-        graph.value?.removeItem(item)
-      }
-    })],
+      })
+    ],
     modes: {
       default: [
         {
           type: 'drag-canvas',
           allowDragOnItem: false,
           enableOptimize: true,
-          scalableRange: 99,
-        }, 'possible-drag-node'],
-      edit: [{
-        type: 'create-edge',
-        trigger: 'drag'
-      },]
+          scalableRange: 99
+        },
+        'possible-drag-node'
+      ],
+      edit: [
+        {
+          type: 'create-edge',
+          trigger: 'drag'
+        }
+      ]
     },
     defaultNode: {
       type: 'rect',
       size: [100, 40],
       style: {
         fill: '#91d2fb',
-        lineWidth: 1,
-      },
+        lineWidth: 1
+      }
     },
     defaultEdge: {
       type: 'cubic-horizontal',
       style: {
-        endArrow: true,
+        endArrow: true
       }
     },
     edgeStateStyles: {
       hover: {
         stroke: 'rgba(154,154,154,0.38)',
-        lineWidth: 2,
+        lineWidth: 2
       }
     }
-  });
+  })
 
   // todo not worker
   graph.value.on('canvas:click', () => {
-    alert("canvas:click")
+    alert('canvas:click')
   })
 
   graph.value.on('edge:mouseover', (e) => {
@@ -116,21 +122,21 @@ onMounted(() => {
   })
 
   // open drawer editor
-  graph.value.on('node:dblclick', e => {
+  graph.value.on('node:dblclick', (e) => {
     if (graph.value?.getCurrentMode() === 'default') {
       openNodeEditor(e.item!.getID())
     }
   })
 
   // create node by double click
-  graph.value.on('dblclick', e => {
+  graph.value.on('dblclick', (e) => {
     if (e.target.isCanvas?.() && graph.value?.getCurrentMode() === 'default') {
-      let newNode = {
+      const newNode = {
         id: uuidv4(),
         label: 'untitled',
         x: normalX(e.x),
         y: e.y
-      };
+      }
       graph.value.addItem('node', newNode)
       store.currentProjectAddTask({
         id: newNode.id,
@@ -143,7 +149,7 @@ onMounted(() => {
     }
   })
   graph.value.on('node:dragend', (e) => {
-    let model = e.item!.getModel()
+    const model = e.item!.getModel()
     store.setCurrentProjectTask({
       id: model.id!,
       dataIndex: x2Index(model.x!),
@@ -151,29 +157,31 @@ onMounted(() => {
     } as ITask)
 
     // 清理空边
-    let edges = e.item?._cfg?.edges as IEdge[]
-    edges.filter(edge => edge._cfg?.targetNode === null).forEach(edge => {
-      console.log(edge)
-      graph.value?.removeItem(edge)
-    })
+    const edges = e.item?._cfg?.edges as IEdge[]
+    edges
+      .filter((edge) => edge._cfg?.targetNode === null)
+      .forEach((edge) => {
+        console.log(edge)
+        graph.value?.removeItem(edge)
+      })
   })
-  graph.value.on('keydown', e => {
+  graph.value.on('keydown', (e) => {
     if (e.key === 'Control') {
       graph.value?.setMode('edit')
     }
   })
-  graph.value.on('keyup', e => {
+  graph.value.on('keyup', (e) => {
     if (e.key === 'Control') {
       graph.value?.setMode('default')
     }
   })
   // 处理添加完边后的操作
   graph.value.on('aftercreateedge', (e) => {
-    console.log('after create edge', e.edge);
-    let edge = e.edge as IEdge
+    console.log('after create edge', e.edge)
+    const edge = e.edge as IEdge
 
-    let sourceNode = edge.getSource() as INode;
-    let targetNode = edge.getTarget() as INode;
+    const sourceNode = edge.getSource() as INode
+    const targetNode = edge.getTarget() as INode
 
     // 删除自环边
     if (sourceNode === targetNode) {
@@ -184,13 +192,18 @@ onMounted(() => {
     }
 
     // 删除重复边
-    let count = sourceNode.getEdges()
-      .filter(e => e.getTarget().getID() === targetNode.getID() || e.getSource().getID() === targetNode.getID()).length
+    const count = sourceNode
+      .getEdges()
+      .filter(
+        (e) =>
+          e.getTarget().getID() === targetNode.getID() ||
+          e.getSource().getID() === targetNode.getID()
+      ).length
     if (count >= 2) {
       nextTick(() => {
         graph.value?.removeItem(edge)
       })
-      return;
+      return
     }
 
     // 删除相同列的边
@@ -198,16 +211,16 @@ onMounted(() => {
       nextTick(() => {
         graph.value?.removeItem(edge)
       })
-      return;
+      return
     }
 
     // 存储边数据
     store.currentProjectAddEdge(edge)
-  });
+  })
 })
 
 const syncProjectOffset = () => {
-  let p = graph.value?.getCanvasByPoint(0, 0)
+  const p = graph.value?.getCanvasByPoint(0, 0)
   store.setCurrentProjectOffset(p)
 }
 
@@ -231,12 +244,12 @@ const timeIndex = computed(() => {
  * 回到今天时间点
  */
 const back2Today = () => {
-  let ox = graph.value?.getCanvasByPoint(0, 0).x ?? 0
-  let dx = (timeIndex.value - 1) * 120 + ox
+  const ox = graph.value?.getCanvasByPoint(0, 0).x ?? 0
+  const dx = (timeIndex.value - 1) * 120 + ox
   graph.value?.translate(-dx, 0)
 }
 
-window.addEventListener("resize", () => {
+window.addEventListener('resize', () => {
   if (container.value) {
     graph.value?.changeSize(container.value.clientWidth, container.value.clientHeight)
   }
@@ -246,12 +259,13 @@ window.addEventListener("resize", () => {
 <template>
   <div>
     <div class="main">
-      <div class="header" @wheel="(e: any) => {graph?.translate(e.deltaY / 5,0)}" id="header">
-        <div class="time-item" v-for="time in times" :key="time"
-             :style="{translate:  translateX+'px',}"
-             :class="{active:  time===timeIndex}">{{
-            new Intl.DateTimeFormat("zh-Hans").format(new Date((time + 19600) * 86400000))
-          }}
+      <div id="header" class="header" @wheel="(e: any) => {
+          graph?.translate(e.deltaY / 5, 0)
+        }
+        ">
+        <div v-for="time in times" :key="time" class="time-item" :style="{ translate: translateX + 'px' }"
+          :class="{ active: time === timeIndex }">
+          {{ new Intl.DateTimeFormat('zh-Hans').format(new Date((time + 19600) * 86400000)) }}
         </div>
       </div>
       <div class="body">
@@ -259,7 +273,7 @@ window.addEventListener("resize", () => {
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
-        <ProjectNameBadge/>
+        <ProjectNameBadge />
         <p class="footer-label">{{ graph?.getCurrentMode() }}</p>
         <el-button @click="back2Today">today</el-button>
         <p class="footer-label">{{ graph?.getCanvasByPoint(0, 0) }}</p>
@@ -267,7 +281,6 @@ window.addEventListener("resize", () => {
     </div>
   </div>
 </template>
-
 
 <style scoped>
 .main {

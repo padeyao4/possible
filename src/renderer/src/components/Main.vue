@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import {RouterLink, RouterView} from "vue-router";
-import NewProjectButton from "@renderer/components/NewProjectButton.vue";
-import SideListItem from "@renderer/components/SideListItem.vue";
+import { RouterLink, RouterView } from 'vue-router'
+import NewProjectButton from '@renderer/components/NewProjectButton.vue'
+import SideListItem from '@renderer/components/SideListItem.vue'
 </script>
 
 <template>
   <div class="main">
     <div class="side">
       <button>
-        <RouterLink :to="{name: 'home'}">
-          我的一天
-        </RouterLink>
+        <RouterLink :to="{ name: 'home' }"> 我的一天 </RouterLink>
       </button>
-      <hr/>
+      <hr />
       <side-list-item></side-list-item>
       <new-project-button></new-project-button>
     </div>

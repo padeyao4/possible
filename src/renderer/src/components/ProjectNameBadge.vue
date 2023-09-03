@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {useGlobalStore} from "../store/global";
-import {computed, nextTick, ref} from "vue";
+import { useGlobalStore } from '../store/global'
+import { computed, nextTick, ref } from 'vue'
 
 const store = useGlobalStore()
 
@@ -13,8 +13,8 @@ const projectName = computed({
   }
 })
 
-let iconOpacity = ref<number>(0)
-let editShow = ref<boolean>(true)
+const iconOpacity = ref<number>(0)
+const editShow = ref<boolean>(true)
 
 const inputRef = ref()
 
@@ -30,25 +30,33 @@ const handleInputClick = () => {
     inputRef.value.focus()
   })
 }
-
 </script>
 
 <template>
   <div>
     <div class="pro-label">
-      <div v-if="editShow" class="p-detail" @mouseenter="iconOpacity=0.5"
-           @mouseleave="iconOpacity=0">
+      <div
+        v-if="editShow"
+        class="p-detail"
+        @mouseenter="iconOpacity = 0.5"
+        @mouseleave="iconOpacity = 0"
+      >
         <p class="p-name">{{ projectName }}</p>
-        <el-icon :style="{opacity: iconOpacity}" class="icon" @click="handleInputClick">
-          <Edit/>
+        <el-icon :style="{ opacity: iconOpacity }" class="icon" @click="handleInputClick">
+          <Edit />
         </el-icon>
       </div>
-      <el-input ref="inputRef" v-else v-model="projectName" @blur="submitInput" style="border: 0"
-                @keydown.enter="submitInput"/>
+      <el-input
+        v-else
+        ref="inputRef"
+        v-model="projectName"
+        style="border: 0"
+        @blur="submitInput"
+        @keydown.enter="submitInput"
+      />
     </div>
   </div>
 </template>
-
 
 <style scoped>
 .pro-label {

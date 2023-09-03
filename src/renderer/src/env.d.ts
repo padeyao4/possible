@@ -1,16 +1,9 @@
 /// <reference types="vite/client" />
-declare module 'uuid';
-// declare module '*.vue' {
-//   import type {DefineComponent} from 'vue'
-//   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
-//   const component: DefineComponent<{}, {}, any>
-//   export default component
-// }
+/// <reference types="@types/uuid" />
 
-interface ImportMeta {
-  readonly env: ImportMetaEnv
-}
-
-interface ImportMetaEnv {
-  readonly url: string
+declare module '*.vue' {
+  import type { DefineComponent } from 'vue'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
+  const component: DefineComponent<{}, {}, any>
+  export default component
 }

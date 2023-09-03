@@ -1,54 +1,54 @@
 <script lang="ts" setup>
-import {type ITask, useGlobalStore} from "../store/global";
-import {ElInput} from "element-plus";
-import {computed, nextTick, ref} from "vue";
-import type {Graph} from "@antv/g6";
+import { type ITask, useGlobalStore } from '../store/global'
+import { ElInput } from 'element-plus'
+import { computed, nextTick, ref } from 'vue'
+import type { Graph } from '@antv/g6'
 
 const props = defineProps<{
-  visible: boolean,
-  taskId: string,
+  visible: boolean
+  taskId: string
   graph: Graph
 }>()
 
-let emit = defineEmits(['update:visible'])
+const emit = defineEmits(['update:visible'])
 
-let modelValue = computed({
+const modelValue = computed({
   get: () => {
     return props.visible
   },
   set: (v) => {
-    emit("update:visible", v)
+    emit('update:visible', v)
   }
 })
 
 const store = useGlobalStore()
 
-let titleInputVisible = ref(false)
+const titleInputVisible = ref(false)
 
 const handleTitleInputConfirm = () => {
   console.log('header input')
   titleInputVisible.value = false
 }
 
-let titleInputRef = ref<InstanceType<typeof ElInput>>()
+const titleInputRef = ref<InstanceType<typeof ElInput>>()
 const showTitleInput = () => {
   titleInputVisible.value = true
   nextTick(() => {
-    titleInputRef.value?.input!.focus()
+    titleInputRef.value?.input?.focus()
   })
 }
 
-let currentTaskTile = computed({
+const currentTaskTile = computed({
   get: () => {
     if (props.visible) {
-      let item = props.graph.findById(props.taskId);
+      const item = props.graph.findById(props.taskId)
       return item.getModel().label as string
     } else {
       return ''
     }
   },
   set: (title: string) => {
-    let item = props.graph.findById(props.taskId);
+    const item = props.graph.findById(props.taskId)
     props.graph.updateItem(item, {
       label: title
     })
@@ -62,22 +62,24 @@ let currentTaskTile = computed({
 const handleClose = () => {
   modelValue.value = false
 }
-
 </script>
 
 <template>
-  <el-drawer v-model="modelValue"
-             :close-on-click-modal="false"
-             :show-close="true"
-             @close="handleClose"
+  <el-drawer
+    v-model="modelValue"
+    :close-on-click-modal="false"
+    :show-close="true"
+    @close="handleClose"
   >
     <div>
-      <el-input ref="titleInputRef"
-                v-if="titleInputVisible"
-                v-model="currentTaskTile"
-                size="small"
-                @keyup.enter="handleTitleInputConfirm"
-                @blur="handleTitleInputConfirm"/>
+      <el-input
+        v-if="titleInputVisible"
+        ref="titleInputRef"
+        v-model="currentTaskTile"
+        size="small"
+        @keyup.enter="handleTitleInputConfirm"
+        @blur="handleTitleInputConfirm"
+      />
       <p v-else @click="showTitleInput">{{ currentTaskTile }}</p>
     </div>
   </el-drawer>

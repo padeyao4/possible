@@ -52,6 +52,9 @@ devDependencies:
   '@types/node':
     specifier: ^18.17.5
     version: 18.17.14
+  '@types/uuid':
+    specifier: ^9.0.3
+    version: 9.0.3
   '@vitejs/plugin-vue':
     specifier: ^4.3.1
     version: 4.3.4(vite@4.4.9)(vue@3.3.4)
@@ -1156,6 +1159,10 @@ packages:
 
   /@types/semver@7.5.1:
     resolution: {integrity: sha512-cJRQXpObxfNKkFAZbJl2yjWtJCqELQIdShsogr1d2MilP8dKD9TE/nEKHkJgUNHdGKCQaf9HbIynuV2csLGVLg==}
+    dev: true
+
+  /@types/uuid@9.0.3:
+    resolution: {integrity: sha512-taHQQH/3ZyI3zP8M/puluDEIEvtQHVYcC6y3N8ijFtAd28+Ey/G4sg1u2gB01S8MwybLOKAp9/yCMu/uR5l3Ug==}
     dev: true
 
   /@types/verror@1.10.6:
