@@ -51,8 +51,8 @@ onMounted(() => {
     plugins: [
       new PossibleGrid(),
       new Menu({
-        offsetX: -262,
-        offsetY: -62,
+        offsetX: -240,
+        offsetY: -60,
         getContent: () => '删除',
         handleMenuClick: (_: HTMLElement, item: Item) => {
           console.log('item', item)
@@ -63,7 +63,6 @@ onMounted(() => {
           }
           if (itemType === 'edge') {
             const model = (item as IEdge).getModel()
-            console.log('model', model)
             store.currentProjectDeleteEdge(model.source as string, model.target as string)
           }
           graph.value?.removeItem(item)

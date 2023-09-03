@@ -10,5 +10,4 @@ import { useGlobalStore } from './store/global'
 
 useGlobalStore().$patch(data)
 registerBehaviors()
-
 </script>
