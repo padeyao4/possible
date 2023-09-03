@@ -33,7 +33,7 @@ watch([() => store.active, () => graph], () => {
 const times = computed(() => {
   let x = graph?.getCanvasByPoint(0, 0).x ?? 0
   let n = Math.floor(Math.abs(x / 120)) * (x >= 0 ? 1 : -1)
-  return [...new Array(25).keys()].map(i => i - n - 2)
+  return [...new Array(25).keys()].map(i => i - n - 1)
 })
 
 const translateX = computed(() => {
@@ -54,7 +54,7 @@ onMounted(() => {
       offsetX: -262,
       offsetY: -62,
       getContent: () => "删除",
-      handleMenuClick: (target: HTMLElement, item: Item) => {
+      handleMenuClick: (_: HTMLElement, item: Item) => {
         console.log('item', item)
         let id = item.getID()
         let itemType = item.getType();
@@ -216,8 +216,16 @@ onUnmounted(() => {
   graph?.destroy()
 })
 
+const dayOriginIndex = computed(() => {
+  return Math.floor(new Date('2023/9/1').valueOf() / 86400000)
+})
+
 const todayIndex = computed(() => {
   return Math.floor(new Date().valueOf() / 86400000)
+})
+
+const timeIndex = computed(() => {
+  return todayIndex.value - dayOriginIndex.value
 })
 
 /**
@@ -225,7 +233,7 @@ const todayIndex = computed(() => {
  */
 const back2Today = () => {
   let ox = graph?.getCanvasByPoint(0, 0).x ?? 0
-  let dx = ox + todayIndex.value * 120
+  let dx = timeIndex.value * 120 + ox
   graph?.translate(-dx, 0)
 }
 
@@ -242,8 +250,8 @@ window.addEventListener("resize", () => {
       <div class="header" @wheel="(e: any) => {graph?.translate(e.deltaY / 5,0)}" id="header">
         <div class="time-item" v-for="time in times" :key="time"
              :style="{translate:  translateX+'px',}"
-             :class="{active:  time=== todayIndex}">{{
-            new Intl.DateTimeFormat("zh-Hans").format(new Date(time * 86400000))
+             :class="{active:  time===timeIndex}">{{
+            new Intl.DateTimeFormat("zh-Hans").format(new Date((time + 19600) * 86400000))
           }}
         </div>
       </div>
