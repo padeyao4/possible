@@ -258,17 +258,31 @@ window.addEventListener('resize', () => {
 <template>
   <div>
     <div class="main">
-      <div id="header" class="header" @wheel="(e: any) => {
-          graph?.translate(e.deltaY / 5, 0)
-        }
-        ">
-        <div v-for="time in times" :key="time" class="time-item" :style="{ translate: translateX + 'px' }"
-          :class="{ active: time === timeIndex }">
+      <div
+        id="header"
+        class="header"
+        @wheel="
+          (e: any) => {
+            graph?.translate(e.deltaY / 5, 0)
+          }
+        "
+      >
+        <div
+          v-for="time in times"
+          :key="time"
+          class="time-item"
+          :style="{ translate: translateX + 'px' }"
+          :class="{ active: time === timeIndex }"
+        >
           {{ new Intl.DateTimeFormat('zh-Hans').format(new Date((time + 19600) * 86400000)) }}
         </div>
       </div>
       <div class="body">
-        <task-drawer v-model:visible="visible" :graph="graph!" :task-id="activeTaskId"></task-drawer>
+        <task-drawer
+          v-model:visible="visible"
+          :graph="graph!"
+          :task-id="activeTaskId"
+        ></task-drawer>
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
