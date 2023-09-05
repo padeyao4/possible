@@ -6,7 +6,7 @@ const store = useGlobalStore()
 
 const projectName = computed({
   get: () => {
-    return store.currentProject.name
+    return store.currentProject?.name ?? ''
   },
   set: (v) => {
     store.currentProject.name = v

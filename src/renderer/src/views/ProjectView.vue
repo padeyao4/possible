@@ -9,6 +9,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import PossibleGrid from '../g6/plugin/possible-grid'
 import { type ITask, useGlobalStore } from '../store/global'
 import { normalX, x2Index } from '../util'
+import router from '../router'
 
 const visible = ref<boolean>(false)
 const activeTaskId = ref<string>('')
@@ -21,7 +22,7 @@ let graph: Graph | null = null
 const graphRef = ref()
 
 const offset = computed(() => {
-  return store.currentProject.offset
+  return store.currentProject?.offset ?? { x: 0, y: 0 }
 })
 
 watch([() => store.active, () => graphRef.value], () => {
@@ -246,6 +247,15 @@ const back2Today = () => {
   const dx = (timeIndex.value - 1) * 120 + ox
   graph?.translate(-dx, 0)
 }
+
+/**
+ * 删除项目
+ */
+const deleteProject = () => {
+  router.push({ name: 'home' })
+  delete store.projects[store.active]
+  store.active = ''
+}
 </script>
 
 <template>
@@ -280,6 +290,7 @@ const back2Today = () => {
       </div>
       <div class="footer">
         <ProjectNameBadge />
+        <el-button @click="deleteProject">delete</el-button>
         <p class="footer-label">{{ graphMode }}</p>
         <el-button @click="back2Today">today</el-button>
         <p class="footer-label">{{ offset }}</p>

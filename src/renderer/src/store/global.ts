@@ -107,7 +107,7 @@ export const useGlobalStore = defineStore('global', {
       return project
     },
     setCurrentProjectOffset(point: Point | undefined) {
-      const offset = this.projects[this.active].offset
+      const offset = this.projects[this.active]?.offset ?? { x: 0, y: 0 }
       if (point) {
         offset.x = point.x
         offset.y = point.y
