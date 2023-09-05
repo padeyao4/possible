@@ -6,8 +6,9 @@
 - 圆角
 - 自定义布局 - y轴互相排斥
 - g6 canvas click 无效
+- 修复@renderer找不到路径
 - ~~edge 鼠标 hover 特效~~
-- electron
+- ~~electron~~
 - ~~时间轴匹配~~
 - 时间轴添加星期
 - 时间轴添加节日
