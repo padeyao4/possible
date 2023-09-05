@@ -15,36 +15,38 @@ const activeTaskId = ref<string>('')
 
 const container = ref<HTMLElement>()
 const store = useGlobalStore()
-const originPoint = ref<{ x: number; y: number }>({ x: 0, y: 0 })
 const graphMode = ref<string>()
 
 let graph: Graph | null = null
+const graphRef = ref()
 
-watch([() => store.active, () => graph !== null], () => {
+const offset = computed(() => {
+  return store.currentProject.offset
+})
+
+watch([() => store.active, () => graphRef.value], () => {
   const setOriginPoint = () => {
-    originPoint.value = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
-    const offset = store.currentProject.offset
-    offset.x = x
-    offset.y = y
+    const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
+    store.setCurrentProjectOffset({ x, y })
   }
   graph?.off('viewportchange', setOriginPoint)
   graph?.read(store.graphData)
-  const { x, y } = store.currentProjectOffset
   const { x: ox, y: oy } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
-  const dx = ox - x
-  const dy = oy - y
+  const { x: sx, y: sy } = offset.value
+  const dx = sx - ox
+  const dy = sy - oy
   graph?.translate(dx, dy)
   graph?.on('viewportchange', setOriginPoint)
 })
 
 const timeItems = computed(() => {
-  const x = originPoint.value.x
+  const x = offset.value.x
   const n = Math.floor(Math.abs(x / 120)) * (x >= 0 ? 1 : -1)
   return [...new Array(25).keys()].map((i) => i - n - 1)
 })
 
 const translateX = computed(() => {
-  return (originPoint.value.x % 120) - 240
+  return (offset.value.x % 120) - 240
 })
 
 const openNodeEditor = (id: string) => {
@@ -211,6 +213,8 @@ onMounted(() => {
     graphMode.value = e.mode as string
   })
 
+  graphRef.value = graph
+
   window.addEventListener('resize', () => {
     if (container.value) {
       graph?.changeSize(container.value.clientWidth, container.value.clientHeight)
@@ -238,7 +242,7 @@ const timeIndex = computed(() => {
  * 回到今天时间点
  */
 const back2Today = () => {
-  const ox = originPoint.value.x
+  const ox = offset.value.x
   const dx = (timeIndex.value - 1) * 120 + ox
   graph?.translate(-dx, 0)
 }
@@ -278,7 +282,7 @@ const back2Today = () => {
         <ProjectNameBadge />
         <p class="footer-label">{{ graphMode }}</p>
         <el-button @click="back2Today">today</el-button>
-        <p class="footer-label">{{ store.currentProject.offset }}</p>
+        <p class="footer-label">{{ offset }}</p>
       </div>
     </div>
   </div>
