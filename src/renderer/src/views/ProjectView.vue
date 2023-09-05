@@ -273,7 +273,7 @@ const back2Today = () => {
       <div class="body">
         <task-drawer
           v-model:visible="visible"
-          :graph="graph!"
+          :graph="graphRef"
           :task-id="activeTaskId"
         ></task-drawer>
         <div id="container" ref="container" class="container"></div>
