@@ -2,7 +2,6 @@
 
 ## todo
 
-- indexeddb
 - 圆角
 - 自定义布局 - y轴互相排斥
 - ~~g6 canvas click 无效~~

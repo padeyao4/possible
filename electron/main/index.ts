@@ -1,6 +1,6 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, BrowserWindow, Menu, shell, Tray } from 'electron'
 import { join } from 'path'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
 function createWindow(): void {
@@ -9,6 +9,7 @@ function createWindow(): void {
     width: 1440,
     height: 900,
     show: false,
+    title: 'possible',
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -22,7 +23,7 @@ function createWindow(): void {
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
+    shell.openExternal(details.url).then((r) => console.log(r))
     return { action: 'deny' }
   })
 
@@ -35,10 +36,24 @@ function createWindow(): void {
   }
 }
 
+// let tray: Tray
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  // const icon = nativeImage.createFromPath('../../resources/icon.png')
+  const tray = new Tray(join(__dirname, '../../resources/tray.png'))
+  const contextMenu = Menu.buildFromTemplate([
+    { label: 'Item1', type: 'radio' },
+    { label: 'Item2', type: 'radio' },
+    { label: 'Item3', type: 'radio', checked: true },
+    { label: 'Item4', type: 'radio' }
+  ])
+
+  tray.setContextMenu(contextMenu)
+  tray.setToolTip('This is my application')
+  tray.setTitle('This is my title')
+
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
