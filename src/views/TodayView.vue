@@ -1,6 +1,6 @@
 <template>
   <div class="my-day">
-    <h1 style="color: #c8c9cc">My Day</h1>
+    <h1 style="{color: #c8c9cc}">My Day</h1>
     <div v-for="value in store.dataByDay" :key="value">
       <div class="ite">{{ value }}</div>
     </div>

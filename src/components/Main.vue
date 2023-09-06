@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import NewProjectButton from '@renderer/components/NewProjectButton.vue'
-import SideListItem from '@renderer/components/SideListItem.vue'
+import NewProjectButton from '../components/NewProjectButton.vue'
+import SideListItem from '../components/SideListItem.vue'
 </script>
 
 <template>

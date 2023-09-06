@@ -2,8 +2,8 @@
 import { Graph, type IEdge, Menu } from '@antv/g6'
 import type { INode } from '@antv/g6-core'
 import { type Item } from '@antv/g6-core'
-import ProjectNameBadge from '@renderer/components/ProjectNameBadge.vue'
-import TaskDrawer from '@renderer/components/TaskEditor.vue'
+import ProjectNameBadge from '../components/ProjectNameBadge.vue'
+import TaskDrawer from '../components/TaskEditor.vue'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import PossibleGrid from '../g6/plugin/possible-grid'
@@ -257,7 +257,6 @@ const deleteProject = () => {
   store.active = ''
 }
 </script>
-
 <template>
   <div>
     <div class="main">

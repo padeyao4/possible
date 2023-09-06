@@ -1,7 +1,7 @@
 import { each, wrapBehavior } from '@antv/util'
 import { createDom, modifyCSS } from '@antv/dom-util'
 import { Graph } from '@antv/g6'
-import img from '@renderer/assets/120-bg.png' // 网格背景图片
+import img from '../../assets/120-bg.png' // 网格背景图片
 
 export default class PossibleGrid {
   private _cfgs: Record<string, any> = {}
@@ -43,10 +43,10 @@ export default class PossibleGrid {
     const graphContainer = graph.getContainer()
     const canvas = graph.get('canvas').get('el')
     const container = createDom(
-      `<div class='g6-grid-container' style="position:absolute;overflow:hidden;z-index: -1;"></div>`
+      `<div class="g6-grid-container" style="position:absolute;overflow:hidden;z-index: -1;"></div>`
     )
     const gridContainer = createDom(
-      `<div class='g6-grid' style='position:absolute; background-image: url("${img}"); user-select: none'></div>`
+      `<div class="g6-grid" style='position:absolute; background-image: url("${img}"); user-select: none'></div>`
     )
     this.set('container', container)
     this.set('gridContainer', gridContainer)
