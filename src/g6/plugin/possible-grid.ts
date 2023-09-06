@@ -1,7 +1,9 @@
 import { each, wrapBehavior } from '@antv/util'
 import { createDom, modifyCSS } from '@antv/dom-util'
 import { Graph } from '@antv/g6'
-import img from '../../assets/120-bg.png' // 网格背景图片
+
+const img =
+  'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZDbSAAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TpbVUBO0g4pChOlkQFXHUKhShQqgVWnUweekfNGlIUlwcBdeCgz+LVQcXZ10dXAVB8AfE1cVJ0UVKvC8ptIj1weV9nPfO4b77AKFeZprVNQ5oum2mEnExk10VA68Ioh8hqh6ZWcacJCXRcX3dw8f3uxjP6nzvz9Wr5iwG+ETiWWaYNvEG8fSmbXDeJ46woqwSnxOPmdQg8SPXFY/fOBdcFnhmxEyn5okjxGKhjZU2ZkVTI54ijqqaTvlCxmOV8xZnrVxlzT75C8M5fWWZ61TDSGARS5AgQkEVJZRhI0a7ToqFFJ3HO/iHXL9ELoVcJTByLKACDbLrB/+D37O18pMTXlI4DnS/OM7HCBDYBRo1x/k+dpzGCeB/Bq70lr9SB2Y+Sa+1tOgR0LcNXFy3NGUPuNwBBp8M2ZRdyU8l5PPA+xl9UxYYuAVCa97cmuc4fQDSNKvkDXBwCIwWKHu9w7uD7XP7905zfj8Pb3J/nym3kwAAAAZiS0dEAAAAAAAA+UO7fwAAAAlwSFlzAAAN1wAADdcBQiibeAAAAAd0SU1FB+cIEgsLHYFSD7wAAADMSURBVHja7dEBDQAACMOwB+kYvRV8kE7CmrYbvW0sACzAAizAAizAAgxYgAVYgAVYgAUYsAALsAALsAALsAADFmABFmABFmABBizAAizAAizAAgxYgAVYgAVYgAVYgAELsAALsAALsAADFmABFmABFmABBizAAizAAizAAizAgAVYgAVYgAVYgAELsAALsAALsAALMGABFmABFmABFmDAAizAAizAAizAgAVYgAVYgAVYgAUYsAALsAALsAALMGABFmABFmABFmDA+twBje0EDnulDbcAAAAASUVORK5CYII=)'
 
 export default class PossibleGrid {
   private _cfgs: Record<string, any> = {}
@@ -46,7 +48,7 @@ export default class PossibleGrid {
       `<div class="g6-grid-container" style="position:absolute;overflow:hidden;z-index: -1;"></div>`
     )
     const gridContainer = createDom(
-      `<div class="g6-grid" style='position:absolute; background-image: url("${img}"); user-select: none'></div>`
+      `<div class="g6-grid" style="position:absolute; background-image: ${img}; user-select: none"></div>`
     )
     this.set('container', container)
     this.set('gridContainer', gridContainer)
