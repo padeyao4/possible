@@ -73,6 +73,10 @@ app.whenReady().then(() => {
   ipcMain.on('project:save', () => {
     console.log('project:save')
   })
+  ipcMain.handle('test:query', () => {
+    console.log('test:query', new Date())
+    return new Date()
+  })
 
   createWindow()
 

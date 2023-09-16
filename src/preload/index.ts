@@ -5,6 +5,9 @@ import { electronAPI } from '@electron-toolkit/preload'
 const api = {
   projectSave: () => {
     ipcRenderer.send('project:save')
+  },
+  testQuery: () => {
+    return ipcRenderer.invoke('test:query')
   }
 }
 
