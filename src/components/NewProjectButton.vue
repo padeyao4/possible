@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import router from '../router'
-import { useGlobalStore } from '../store/global'
+import router from '@renderer/router'
+import { useGlobalStore } from '@renderer/store/global'
 import type { FormInstance } from 'element-plus'
 import { ref } from 'vue'
 
@@ -41,14 +41,8 @@ const handleDialogSubmit = (formEl: FormInstance | undefined) => {
 </script>
 
 <template>
-  <el-dialog
-    v-model="dialogVisible"
-    title="创建项目"
-    width="30%"
-    :draggable="true"
-    :destroy-on-close="true"
-    :close-on-click-modal="false"
-  >
+  <el-dialog v-model="dialogVisible" title="创建项目" width="30%" :draggable="true" :destroy-on-close="true"
+    :close-on-click-modal="false">
     <el-form ref="formRef" :model="nameValue" @submit.prevent="true">
       <el-form-item prop="input" :rules="[{ required: true, message: 'project name is required' }]">
         <el-input v-model="nameValue.input" type="text" autocomplete="off"></el-input>

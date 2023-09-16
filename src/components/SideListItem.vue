@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useGlobalStore } from '../store/global'
-import router from '../router'
+import { useGlobalStore } from '@renderer/store/global'
+import router from '@renderer/router'
 
 const store = useGlobalStore()
 

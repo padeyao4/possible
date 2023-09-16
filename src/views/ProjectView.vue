@@ -2,14 +2,14 @@
 import { Graph, type IEdge, Menu } from '@antv/g6'
 import type { INode } from '@antv/g6-core'
 import { type Item } from '@antv/g6-core'
-import ProjectNameBadge from '../components/ProjectNameBadge.vue'
-import TaskDrawer from '../components/TaskEditor.vue'
+import ProjectNameBadge from '@renderer/components/ProjectNameBadge.vue'
+import TaskDrawer from '@renderer/components/TaskEditor.vue'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
-import PossibleGrid from '../g6/plugin/possible-grid'
-import { type ITask, useGlobalStore } from '../store/global'
-import { normalX, x2Index } from '../util'
-import router from '../router'
+import PossibleGrid from '@renderer/g6/plugin/possible-grid'
+import { type ITask, useGlobalStore } from '@renderer/store/global'
+import { normalX, x2Index } from '@renderer/util'
+import router from '@renderer/router'
 
 const visible = ref<boolean>(false)
 const activeTaskId = ref<string>('')
@@ -260,31 +260,17 @@ const deleteProject = () => {
 <template>
   <div>
     <div class="main">
-      <div
-        id="header"
-        class="header"
-        @wheel="
-          (e: any) => {
-            graph?.translate(e.deltaY / 5, 0)
-          }
-        "
-      >
-        <div
-          v-for="timeItem in timeItems"
-          :key="timeItem"
-          class="time-item"
-          :style="{ translate: translateX + 'px' }"
-          :class="{ active: timeItem === timeIndex }"
-        >
+      <div id="header" class="header" @wheel="(e: any) => {
+        graph?.translate(e.deltaY / 5, 0)
+      }
+        ">
+        <div v-for="timeItem in timeItems" :key="timeItem" class="time-item" :style="{ translate: translateX + 'px' }"
+          :class="{ active: timeItem === timeIndex }">
           {{ new Intl.DateTimeFormat('zh-Hans').format(new Date((timeItem + 19600) * 86400000)) }}
         </div>
       </div>
       <div class="body">
-        <task-drawer
-          v-model:visible="visible"
-          :graph="graphRef"
-          :task-id="activeTaskId"
-        ></task-drawer>
+        <task-drawer v-model:visible="visible" :graph="graphRef" :task-id="activeTaskId"></task-drawer>
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">

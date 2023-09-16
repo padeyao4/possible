@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGlobalStore } from '../store/global'
+import { useGlobalStore } from '@renderer/store/global'
 import { computed, nextTick, ref } from 'vue'
 
 const store = useGlobalStore()

@@ -14,7 +14,6 @@ import { useGlobalStore } from '../store/global'
 const store = useGlobalStore()
 
 const handleTest = () => {
-  console.log('111')
   window.api.projectSave()
 }
 </script>
