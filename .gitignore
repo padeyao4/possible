@@ -3,3 +3,5 @@ dist
 out
 *.log*
 .idea
+.env
+prisma/dev.db

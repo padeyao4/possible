@@ -4,6 +4,7 @@
     <div v-for="value in store.dataByDay" :key="value">
       <div class="ite">{{ value }}</div>
     </div>
+    <button @click="handleTest">test</button>
   </div>
 </template>
 
@@ -11,6 +12,11 @@
 import { useGlobalStore } from '../store/global'
 
 const store = useGlobalStore()
+
+const handleTest = () => {
+  console.log('111')
+  window.api.projectSave()
+}
 </script>
 
 <style>

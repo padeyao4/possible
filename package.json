@@ -24,8 +24,10 @@
     "@antv/g-base": "^0.5.15",
     "@electron-toolkit/preload": "^2.0.0",
     "@electron-toolkit/utils": "^2.0.0",
+    "@prisma/client": "5.2.0",
     "electron-updater": "^6.1.1",
     "pinia": "^2.1.6",
+    "prisma": "^5.2.0",
     "uuid": "^9.0.0",
     "vue-router": "^4.2.4"
   },

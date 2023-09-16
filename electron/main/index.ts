@@ -1,7 +1,8 @@
-import { app, BrowserWindow, Menu, shell, Tray } from 'electron'
+import { app, BrowserWindow, Menu, shell, Tray, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { createProject } from './service'
 
 function createWindow(): void {
   // Create the browser window.
@@ -36,11 +37,10 @@ function createWindow(): void {
   }
 }
 
-// let tray: Tray
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+/**
+ * 创建托盘
+ */
+function setTray() {
   const tray = new Tray(join(__dirname, '../../resources/tray.png'))
   const contextMenu = Menu.buildFromTemplate([
     { label: 'Item1', type: 'radio' },
@@ -52,6 +52,13 @@ app.whenReady().then(() => {
   tray.setContextMenu(contextMenu)
   tray.setToolTip('This is my application')
   tray.setTitle('This is my title')
+}
+
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.whenReady().then(() => {
+  setTray()
 
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
@@ -61,6 +68,10 @@ app.whenReady().then(() => {
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
+  })
+
+  ipcMain.on('project:save', () => {
+    console.log('project:save')
   })
 
   createWindow()
@@ -83,3 +94,5 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+createProject().then((r) => console.log(r))
