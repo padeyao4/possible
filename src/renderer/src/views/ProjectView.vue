@@ -260,17 +260,31 @@ const deleteProject = () => {
 <template>
   <div>
     <div class="main">
-      <div id="header" class="header" @wheel="(e: any) => {
-        graph?.translate(e.deltaY / 5, 0)
-      }
-        ">
-        <div v-for="timeItem in timeItems" :key="timeItem" class="time-item" :style="{ translate: translateX + 'px' }"
-          :class="{ active: timeItem === timeIndex }">
+      <div
+        id="header"
+        class="header"
+        @wheel="
+          (e: any) => {
+            graph?.translate(e.deltaY / 5, 0)
+          }
+        "
+      >
+        <div
+          v-for="timeItem in timeItems"
+          :key="timeItem"
+          class="time-item"
+          :style="{ translate: translateX + 'px' }"
+          :class="{ active: timeItem === timeIndex }"
+        >
           {{ new Intl.DateTimeFormat('zh-Hans').format(new Date((timeItem + 19600) * 86400000)) }}
         </div>
       </div>
       <div class="body">
-        <task-drawer v-model:visible="visible" :graph="graphRef" :task-id="activeTaskId"></task-drawer>
+        <task-drawer
+          v-model:visible="visible"
+          :graph="graphRef"
+          :task-id="activeTaskId"
+        ></task-drawer>
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">

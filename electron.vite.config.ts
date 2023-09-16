@@ -7,7 +7,7 @@ export default defineConfig({
     build: {
       rollupOptions: {
         input: {
-          index: resolve(__dirname, 'electron/main/index.ts')
+          index: resolve(__dirname, 'src/main/index.ts')
         }
       }
     },
@@ -17,19 +17,23 @@ export default defineConfig({
     build: {
       rollupOptions: {
         input: {
-          index: resolve(__dirname, 'electron/preload/index.ts')
+          index: resolve(__dirname, 'src/preload/index.ts')
         }
       }
     },
     plugins: [externalizeDepsPlugin()]
   },
   renderer: {
-    root: '.',
     build: {
       rollupOptions: {
         input: {
-          index: resolve(__dirname, 'index.html')
+          index: resolve(__dirname, 'src/renderer/index.html')
         }
+      }
+    },
+    resolve: {
+      alias: {
+        '@renderer': resolve('src/renderer/src')
       }
     },
     plugins: [vue()]
