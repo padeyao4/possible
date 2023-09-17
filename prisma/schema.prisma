@@ -8,7 +8,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:./possible.db"
 }
 
 model Project {
@@ -35,7 +35,7 @@ model Relation {
 }
 
 model Store {
-  id          Int   @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   stateId     String
   createdTime DateTime
   state       String

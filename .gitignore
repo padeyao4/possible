@@ -4,7 +4,7 @@ out
 *.log*
 .idea
 .env
-prisma/dev.db
-prisma/dev.db-journal
+*.db
+*.db-journal
 prisma/migrations
 src/main/generate
