@@ -1,3 +1,4 @@
+import debounce from 'lodash/debounce'
 import { PiniaPlugin, PiniaPluginContext } from 'pinia'
 
 function persist(stateId, state) {
@@ -15,10 +16,14 @@ export function createPersister(): PiniaPlugin {
       //  将数据保存到数据库
       persist(store.$id, store.$state)
     }
+    const debouncePersist = debounce(() => {
+      console.log('subscribe2', new Date(), store.$state, store.$id)
+      persist(store.$id, store.$state)
+    }, 2_000)
     store.$subscribe(() => {
       // store some change
-      console.log('subscribe', new Date(), store.$state, store.$id)
-      persist(store.$id, store.$state)
+      console.log('subscribe1', new Date())
+      debouncePersist()
     })
   }
 }

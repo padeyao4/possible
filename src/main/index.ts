@@ -3,7 +3,6 @@ import { PrismaClient } from '@prisma/client'
 import { BrowserWindow, Menu, Tray, app, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
-import { stat } from 'fs'
 
 const prisma = new PrismaClient()
 
@@ -98,6 +97,7 @@ app
 
     // 存储pinia状态
     ipcMain.handle('state:persist', async (_, stateId, state: string) => {
+      console.log('persist', new Date())
       const newStore = await prisma.store.create({
         data: {
           stateId,
