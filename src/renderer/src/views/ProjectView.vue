@@ -214,6 +214,18 @@ onMounted(() => {
     graphMode.value = e.mode as string
   })
 
+  // graph.on('afteradditem', (e) => {
+  //   console.log('after add item', e.item)
+  // })
+
+  // graph.on('afterremoveitem', (e) => {
+  //   console.log('after remove item', e.item)
+  // })
+
+  // graph.on('afterupdateitem', (e) => {
+  //   console.log('after update item', e.item)
+  // })
+
   graphRef.value = graph
 
   window.addEventListener('resize', () => {

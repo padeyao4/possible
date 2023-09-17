@@ -7,3 +7,4 @@ out
 prisma/dev.db
 prisma/dev.db-journal
 prisma/migrations
+src/main/generate
