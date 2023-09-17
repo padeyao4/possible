@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { type ITask, useGlobalStore } from '../store/global'
+import { type ITask, useGlobalStore } from '@renderer/store/global'
 import { ElInput } from 'element-plus'
 import { computed, nextTick, ref } from 'vue'
 import type { Graph } from '@antv/g6'

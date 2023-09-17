@@ -2,7 +2,7 @@
   "active": "21329c6e-5a38-4ce6-8bab-c0cd42243768",
   "projects": {
     "21329c6e-5a38-4ce6-8bab-c0cd42243768": {
-      "name": "1",
+      "name": "possible",
       "id": "21329c6e-5a38-4ce6-8bab-c0cd42243768",
       "createdTime": "2023-08-23T13:52:02.169Z",
       "offset": {
@@ -53,7 +53,7 @@
       ]
     },
     "41eb69ae-5eba-482c-b7e6-0b4b29c01a4d": {
-      "name": "2",
+      "name": "test",
       "id": "41eb69ae-5eba-482c-b7e6-0b4b29c01a4d",
       "createdTime": "2023-08-23T13:52:02.169Z",
       "offset": {

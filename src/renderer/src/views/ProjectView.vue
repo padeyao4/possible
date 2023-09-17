@@ -1,42 +1,53 @@
 <script setup lang="ts">
-import { Graph, Menu, type IEdge } from '@antv/g6'
+import { Graph, type IEdge, Menu } from '@antv/g6'
 import type { INode } from '@antv/g6-core'
 import { type Item } from '@antv/g6-core'
 import ProjectNameBadge from '@renderer/components/ProjectNameBadge.vue'
 import TaskDrawer from '@renderer/components/TaskEditor.vue'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
-import PossibleGrid from '../g6/plugin/possible-grid'
-import { useGlobalStore, type ITask } from '../store/global'
-import { normalX, x2Index } from '../util'
+import PossibleGrid from '@renderer/g6/plugin/possible-grid'
+import { type ITask, useGlobalStore } from '@renderer/store/global'
+import { normalX, x2Index } from '@renderer/util'
+import router from '@renderer/router'
 
 const visible = ref<boolean>(false)
 const activeTaskId = ref<string>('')
 
 const container = ref<HTMLElement>()
-const graph = ref<Graph>()
 const store = useGlobalStore()
+const graphMode = ref<string>()
 
-watch([() => store.active, () => graph.value], () => {
-  if (graph.value) {
-    graph.value.off('viewportchange', syncProjectOffset)
-    graph.value.read(store.graphData)
-    const offset = store.currentProjectOffset
-    const origin = graph.value.getCanvasByPoint(0, 0)
-    graph.value.translate(offset.x - origin.x, offset.y - origin.y)
-    graph.value.on('viewportchange', syncProjectOffset)
-  }
+let graph: Graph | null = null
+const graphRef = ref()
+
+const offset = computed(() => {
+  return store.currentProject?.offset ?? { x: 0, y: 0 }
 })
 
-const times = computed(() => {
-  const x = graph.value?.getCanvasByPoint(0, 0).x ?? 0
+watch([() => store.active, () => graphRef.value], () => {
+  const setOriginPoint = () => {
+    const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
+    store.setCurrentProjectOffset({ x, y })
+  }
+  graph?.off('viewportchange', setOriginPoint)
+  graph?.read(store.graphData)
+  const { x: ox, y: oy } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
+  const { x: sx, y: sy } = offset.value
+  const dx = sx - ox
+  const dy = sy - oy
+  graph?.translate(dx, dy)
+  graph?.on('viewportchange', setOriginPoint)
+})
+
+const timeItems = computed(() => {
+  const x = offset.value.x
   const n = Math.floor(Math.abs(x / 120)) * (x >= 0 ? 1 : -1)
   return [...new Array(25).keys()].map((i) => i - n - 1)
 })
 
 const translateX = computed(() => {
-  const x = graph.value?.getCanvasByPoint(0, 0).x ?? 0
-  return (x % 120) - 240
+  return (offset.value.x % 120) - 240
 })
 
 const openNodeEditor = (id: string) => {
@@ -45,8 +56,7 @@ const openNodeEditor = (id: string) => {
 }
 
 onMounted(() => {
-  // todo canvas on click not work
-  graph.value = new Graph({
+  graph = new Graph({
     container: 'container',
     plugins: [
       new PossibleGrid(),
@@ -55,7 +65,6 @@ onMounted(() => {
         offsetY: -60,
         getContent: () => '删除',
         handleMenuClick: (_: HTMLElement, item: Item) => {
-          console.log('item', item)
           const id = item.getID()
           const itemType = item.getType()
           if (itemType === 'node') {
@@ -65,7 +74,7 @@ onMounted(() => {
             const model = (item as IEdge).getModel()
             store.currentProjectDeleteEdge(model.source as string, model.target as string)
           }
-          graph.value?.removeItem(item)
+          graph?.removeItem(item)
         }
       })
     ],
@@ -108,74 +117,58 @@ onMounted(() => {
     }
   })
 
-  // todo not worker
-  graph.value.on('canvas:click', () => {
-    alert('canvas:click')
+  graph.on('edge:mouseover', (e) => {
+    graph?.setItemState(e.item as Item, 'hover', true)
   })
-
-  graph.value.on('edge:mouseover', (e) => {
-    graph.value?.setItemState(e.item!, 'hover', true)
-  })
-  graph.value.on('edge:mouseout', (e) => {
-    graph.value?.setItemState(e.item!, 'hover', false)
+  graph.on('edge:mouseout', (e) => {
+    graph?.setItemState(e.item as Item, 'hover', false)
   })
 
   // open drawer editor
-  graph.value.on('node:dblclick', (e) => {
-    if (graph.value?.getCurrentMode() === 'default') {
-      openNodeEditor(e.item!.getID())
+  graph.on('node:dblclick', (e) => {
+    if (graph?.getCurrentMode() === 'default') {
+      openNodeEditor((e.item as Item).getID())
     }
   })
 
-  // create node by double click
-  graph.value.on('dblclick', (e) => {
-    if (e.target.isCanvas?.() && graph.value?.getCurrentMode() === 'default') {
-      const newNode = {
-        id: uuidv4(),
-        label: 'untitled',
-        x: normalX(e.x),
-        y: e.y
-      }
-      graph.value.addItem('node', newNode)
-      store.currentProjectAddTask({
-        id: newNode.id,
-        name: newNode.label,
-        dataIndex: x2Index(newNode.x),
-        y: newNode.y,
-        children: [],
-        parents: []
-      })
+  graph.on('canvas:dblclick', (e) => {
+    const newNode = {
+      id: uuidv4(),
+      label: 'untitled',
+      x: normalX(e.x),
+      y: e.y
     }
+    graph?.addItem('node', newNode)
+    store.currentProjectAddTask({
+      id: newNode.id,
+      name: newNode.label,
+      dataIndex: x2Index(newNode.x),
+      y: newNode.y,
+      children: [],
+      parents: []
+    })
   })
-  graph.value.on('node:dragend', (e) => {
-    const model = e.item!.getModel()
+
+  graph.on('node:dragend', (e) => {
+    const model = (e.item as Item).getModel()
     store.setCurrentProjectTask({
-      id: model.id!,
-      dataIndex: x2Index(model.x!),
-      y: model.y!
+      id: model.id,
+      dataIndex: x2Index(model.x as number),
+      y: model.y
     } as ITask)
-
-    // 清理空边
-    const edges = e.item?._cfg?.edges as IEdge[]
-    edges
-      .filter((edge) => edge._cfg?.targetNode === null)
-      .forEach((edge) => {
-        console.log(edge)
-        graph.value?.removeItem(edge)
-      })
   })
-  graph.value.on('keydown', (e) => {
+  graph.on('keydown', (e) => {
     if (e.key === 'Control') {
-      graph.value?.setMode('edit')
+      graph?.setMode('edit')
     }
   })
-  graph.value.on('keyup', (e) => {
+  graph.on('keyup', (e) => {
     if (e.key === 'Control') {
-      graph.value?.setMode('default')
+      graph?.setMode('default')
     }
   })
   // 处理添加完边后的操作
-  graph.value.on('aftercreateedge', (e) => {
+  graph.on('aftercreateedge', (e) => {
     console.log('after create edge', e.edge)
     const edge = e.edge as IEdge
 
@@ -185,7 +178,7 @@ onMounted(() => {
     // 删除自环边
     if (sourceNode === targetNode) {
       nextTick(() => {
-        graph.value?.removeItem(edge)
+        graph?.removeItem(edge)
       })
       return
     }
@@ -200,15 +193,15 @@ onMounted(() => {
       ).length
     if (count >= 2) {
       nextTick(() => {
-        graph.value?.removeItem(edge)
+        graph?.removeItem(edge)
       })
       return
     }
 
     // 删除相同列的边
-    if (sourceNode.getModel().x! >= targetNode.getModel().x!) {
+    if ((sourceNode.getModel().x as number) >= (targetNode.getModel().x as number)) {
       nextTick(() => {
-        graph.value?.removeItem(edge)
+        graph?.removeItem(edge)
       })
       return
     }
@@ -216,15 +209,34 @@ onMounted(() => {
     // 存储边数据
     store.currentProjectAddEdge(edge)
   })
+
+  graph.on('aftermodechange', (e) => {
+    graphMode.value = e.mode as string
+  })
+
+  // graph.on('afteradditem', (e) => {
+  //   console.log('after add item', e.item)
+  // })
+
+  // graph.on('afterremoveitem', (e) => {
+  //   console.log('after remove item', e.item)
+  // })
+
+  // graph.on('afterupdateitem', (e) => {
+  //   console.log('after update item', e.item)
+  // })
+
+  graphRef.value = graph
+
+  window.addEventListener('resize', () => {
+    if (container.value) {
+      graph?.changeSize(container.value.clientWidth, container.value.clientHeight)
+    }
+  })
 })
 
-const syncProjectOffset = () => {
-  const p = graph.value?.getCanvasByPoint(0, 0)
-  store.setCurrentProjectOffset(p)
-}
-
 onUnmounted(() => {
-  graph.value?.destroy()
+  graph?.destroy()
 })
 
 const dayOriginIndex = computed(() => {
@@ -243,18 +255,20 @@ const timeIndex = computed(() => {
  * 回到今天时间点
  */
 const back2Today = () => {
-  const ox = graph.value?.getCanvasByPoint(0, 0).x ?? 0
+  const ox = offset.value.x
   const dx = (timeIndex.value - 1) * 120 + ox
-  graph.value?.translate(-dx, 0)
+  graph?.translate(-dx, 0)
 }
 
-window.addEventListener('resize', () => {
-  if (container.value) {
-    graph.value?.changeSize(container.value.clientWidth, container.value.clientHeight)
-  }
-})
+/**
+ * 删除项目
+ */
+const deleteProject = () => {
+  router.push({ name: 'home' })
+  delete store.projects[store.active]
+  store.active = ''
+}
 </script>
-
 <template>
   <div>
     <div class="main">
@@ -268,28 +282,29 @@ window.addEventListener('resize', () => {
         "
       >
         <div
-          v-for="time in times"
-          :key="time"
+          v-for="timeItem in timeItems"
+          :key="timeItem"
           class="time-item"
           :style="{ translate: translateX + 'px' }"
-          :class="{ active: time === timeIndex }"
+          :class="{ active: timeItem === timeIndex }"
         >
-          {{ new Intl.DateTimeFormat('zh-Hans').format(new Date((time + 19600) * 86400000)) }}
+          {{ new Intl.DateTimeFormat('zh-Hans').format(new Date((timeItem + 19600) * 86400000)) }}
         </div>
       </div>
       <div class="body">
         <task-drawer
           v-model:visible="visible"
-          :graph="graph!"
+          :graph="graphRef"
           :task-id="activeTaskId"
         ></task-drawer>
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
         <ProjectNameBadge />
-        <p class="footer-label">{{ graph?.getCurrentMode() }}</p>
+        <el-button @click="deleteProject">delete</el-button>
+        <p class="footer-label">{{ graphMode }}</p>
         <el-button @click="back2Today">today</el-button>
-        <p class="footer-label">{{ graph?.getCanvasByPoint(0, 0) }}</p>
+        <p class="footer-label">{{ offset }}</p>
       </div>
     </div>
   </div>

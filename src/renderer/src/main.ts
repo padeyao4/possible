@@ -1,15 +1,18 @@
-import '@renderer/assets/main.css'
+import './assets/main.css'
 
-import {createApp} from 'vue'
+import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import App from './App.vue'
 import router from './router'
-import {createPinia} from 'pinia'
+import { createPinia } from 'pinia'
+import { createPersister } from './util/persister'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
-const pinia = createPinia()
 const app = createApp(App)
+
+const pinia = createPinia()
+pinia.use(createPersister())
 
 app.use(pinia)
 app.use(ElementPlus)
@@ -19,6 +22,3 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 app.mount('#app')
-
-
-

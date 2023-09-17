@@ -1,8 +1,21 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  projectSave: () => {
+    ipcRenderer.send('project:save')
+  },
+  testQuery: (content) => {
+    return ipcRenderer.invoke('test:query', 'ipcRender' + new Date(), 'web' + content)
+  },
+  statePersist: (stateId, state) => {
+    return ipcRenderer.invoke('state:persist', stateId, state)
+  },
+  stateQuery: (stateId) => {
+    return ipcRenderer.invoke('state:query', stateId)
+  }
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

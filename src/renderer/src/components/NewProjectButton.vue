@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import router from '../router'
-import { useGlobalStore } from '../store/global'
+import router from '@renderer/router'
+import { useGlobalStore } from '@renderer/store/global'
 import type { FormInstance } from 'element-plus'
 import { ref } from 'vue'
 

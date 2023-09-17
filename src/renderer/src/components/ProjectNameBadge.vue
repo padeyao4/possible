@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useGlobalStore } from '../store/global'
+import { useGlobalStore } from '@renderer/store/global'
 import { computed, nextTick, ref } from 'vue'
 
 const store = useGlobalStore()
 
 const projectName = computed({
   get: () => {
-    return store.currentProject.name
+    return store.currentProject?.name ?? ''
   },
   set: (v) => {
     store.currentProject.name = v

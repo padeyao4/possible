@@ -2,8 +2,20 @@
 /// <reference types="@types/uuid" />
 
 declare module '*.vue' {
-  import type { DefineComponent } from 'vue'
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
-  const component: DefineComponent<{}, {}, any>
+  import { DefineComponent } from 'vue'
+  const component: DefineComponent<NonNullable<unknown>, NonNullable<unknown>, never>
   export default component
+}
+
+import 'pinia'
+
+declare module 'pinia' {
+  export interface DefineStoreOptionsBase<S, Store> {
+    // 允许为任何操作定义毫秒数
+    debounce?: Partial<Record<keyof StoreActions<Store>, number>>
+  }
+  export interface PiniaCustomStateProperties<S> {
+    $persist: () => void
+    $hydrate: () => void
+  }
 }

@@ -3,3 +3,8 @@ dist
 out
 *.log*
 .idea
+.env
+*.db
+*.db-journal
+prisma/migrations
+src/main/generate
