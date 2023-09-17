@@ -1,29 +1,11 @@
-import { app, BrowserWindow, Menu, shell, Tray, ipcMain } from 'electron'
-import { join } from 'path'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
 import { PrismaClient } from '@prisma/client'
+import { BrowserWindow, Menu, Tray, app, ipcMain, shell } from 'electron'
+import { join } from 'path'
+import icon from '../../resources/icon.png?asset'
+import { stat } from 'fs'
 
 const prisma = new PrismaClient()
-
-async function initDB() {
-  const project1 = await prisma.project.create({
-    data: {
-      name: 'hello',
-      createdTime: new Date(),
-      offsetX: 0,
-      offsetY: 0
-    }
-  })
-  await prisma.task.create({
-    data: {
-      name: 'task1',
-      dataIndex: 0,
-      projectId: project1.id,
-      priority: 0
-    }
-  })
-}
 
 function createWindow(): void {
   // Create the browser window.
@@ -96,11 +78,35 @@ app
     ipcMain.on('project:save', () => {
       console.log('project:save')
     })
-    ipcMain.handle('test:query', () => {
-      console.log('test:query', new Date())
+    ipcMain.handle('test:query', (_, arg1, arg2) => {
+      console.log('test:query', arg1, arg2)
       return new Date()
     })
-    await initDB()
+
+    // 查询状态表中最新的数据
+    ipcMain.handle('state:query', async (_, stateId) => {
+      const storeItem = await prisma.store.findFirst({
+        where: {
+          stateId
+        },
+        orderBy: {
+          createdTime: 'desc'
+        }
+      })
+      return JSON.parse(storeItem?.state ?? 'null')
+    })
+
+    // 存储pinia状态
+    ipcMain.handle('state:persist', async (_, stateId, state: string) => {
+      const newStore = await prisma.store.create({
+        data: {
+          stateId,
+          createdTime: new Date(),
+          state
+        }
+      })
+      return newStore.id
+    })
 
     createWindow()
 

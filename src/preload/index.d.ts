@@ -5,7 +5,9 @@ declare global {
     electron: ElectronAPI
     api: {
       projectSave: () => void
-      testQuery: () => Date
+      testQuery: (content) => Date
+      statePersist: (stateId, state) => number
+      stateQuery: (stateId) => object | null
     }
   }
 }

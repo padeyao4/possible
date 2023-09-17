@@ -6,13 +6,13 @@ import 'element-plus/dist/index.css'
 import App from './App.vue'
 import router from './router'
 import { createPinia } from 'pinia'
-import piniaPersist from 'pinia-plugin-persist'
+import { createPersister } from './util/persister'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 const app = createApp(App)
 
 const pinia = createPinia()
-pinia.use(piniaPersist)
+pinia.use(createPersister())
 
 app.use(pinia)
 app.use(ElementPlus)

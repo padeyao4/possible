@@ -7,7 +7,7 @@ const handleTest = () => {
   window.api.projectSave()
 }
 const handleTestQuery = () => {
-  const a = window.api.testQuery()
+  const a = window.api.testQuery(new Date())
   console.log('web', a)
 }
 </script>

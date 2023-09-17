@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output = "../node_modules/.prisma/client"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -32,4 +32,11 @@ model Relation {
   projectId Int
   sourceId  Int
   targetId  Int
+}
+
+model Store {
+  id          Int   @id @default(autoincrement())
+  stateId     String
+  createdTime DateTime
+  state       String
 }

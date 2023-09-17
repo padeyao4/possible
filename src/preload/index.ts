@@ -6,8 +6,14 @@ const api = {
   projectSave: () => {
     ipcRenderer.send('project:save')
   },
-  testQuery: () => {
-    return ipcRenderer.invoke('test:query')
+  testQuery: (content) => {
+    return ipcRenderer.invoke('test:query', 'ipcRender' + new Date(), 'web' + content)
+  },
+  statePersist: (stateId, state) => {
+    return ipcRenderer.invoke('state:persist', stateId, state)
+  },
+  stateQuery: (stateId) => {
+    return ipcRenderer.invoke('state:query', stateId)
   }
 }
 
