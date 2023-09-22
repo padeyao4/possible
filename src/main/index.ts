@@ -13,6 +13,10 @@ function createWindow(): void {
     height: 900,
     show: false,
     title: 'possible',
+    frame: false,
+    transparent: true,
+    backgroundColor: '#00000000',
+    titleBarStyle: 'hidden',
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {

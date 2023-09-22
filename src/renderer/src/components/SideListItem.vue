@@ -30,11 +30,11 @@ function handleClick(id: string) {
 
 <style scoped>
 .main {
-  height: calc(100vh - 120px);
+  height: 100%;
   overflow-y: auto;
 
   .list-item {
-    width: 240px;
+    width: 100%;
     height: 40px;
     white-space: nowrap;
     overflow: hidden;
