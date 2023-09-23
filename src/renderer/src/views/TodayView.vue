@@ -1,33 +1,27 @@
 <script setup lang="ts">
-import { useGlobalStore } from '../store/global'
-
-const store = useGlobalStore()
-
-const handleTest = () => {
-  window.api.projectSave()
-}
-const handleTestQuery = () => {
-  const a = window.api.testQuery(new Date())
-  console.log('web', a)
-}
+const data = ['hello', 'world', 'this is a test']
 </script>
 <template>
   <div class="my-day">
-    <h1 style="{color: #c8c9cc}">My Day</h1>
-    <div v-for="value in store.dataByDay" :key="value">
-      <div class="ite">{{ value }}</div>
+    <div v-for="value in data" :key="value">
+      <div class="item">{{ value }}</div>
     </div>
-    <button @click="handleTest">test</button>
-    <button @click="handleTestQuery">test query</button>
   </div>
 </template>
 <style>
 .my-day {
-  .ite {
+  background: var(--color-neptune);
+  height: 100%;
+  padding: 16px;
+  .item {
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
     background-color: #016458;
-    width: 400px;
+    width: 100%;
     height: 40px;
-    border-bottom: 1px solid #181818;
+    margin: 8px 0 8px 0;
+    border-radius: 8px;
   }
 }
 </style>

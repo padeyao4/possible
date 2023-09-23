@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import '@renderer/assets/icon/iconfont.css'
 import router from '@renderer/router'
 import { useGlobalStore } from '@renderer/store/global'
 import type { FormInstance } from 'element-plus'
@@ -60,5 +61,24 @@ const handleDialogSubmit = (formEl: FormInstance | undefined) => {
       </span>
     </template>
   </el-dialog>
-  <button style="user-select: none" @click="handleDialogOpen">新建项目</button>
+  <div style="user-select: none" class="new-button" @click="handleDialogOpen">
+    <i
+      class="iconfont icon-a-Addto"
+      style="color: aliceblue; font-size: 20px; padding-right: 4px"
+    />
+    新建项目
+  </div>
 </template>
+
+<style scoped>
+.new-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: sticky;
+  top: calc(100vh - 42px);
+  background: var(--color-bronze);
+  width: 100%;
+  height: 40px;
+}
+</style>

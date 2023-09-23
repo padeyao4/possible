@@ -2,7 +2,6 @@
 import { Graph, type IEdge, Menu } from '@antv/g6'
 import type { INode } from '@antv/g6-core'
 import { type Item } from '@antv/g6-core'
-import ProjectNameBadge from '@renderer/components/ProjectNameBadge.vue'
 import TaskDrawer from '@renderer/components/TaskEditor.vue'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
@@ -214,18 +213,6 @@ onMounted(() => {
     graphMode.value = e.mode as string
   })
 
-  // graph.on('afteradditem', (e) => {
-  //   console.log('after add item', e.item)
-  // })
-
-  // graph.on('afterremoveitem', (e) => {
-  //   console.log('after remove item', e.item)
-  // })
-
-  // graph.on('afterupdateitem', (e) => {
-  //   console.log('after update item', e.item)
-  // })
-
   graphRef.value = graph
 
   window.addEventListener('resize', () => {
@@ -266,41 +253,71 @@ const back2Today = () => {
 const deleteProject = () => {
   router.push({ name: 'home' })
   delete store.projects[store.active]
-  store.active = ''
+  store.active = 'today'
+}
+
+const titleEidtEnable = ref<boolean>(false)
+const titleRef = ref()
+
+const editTitle = () => {
+  titleEidtEnable.value = true
+  nextTick(() => {
+    titleRef.value.focus()
+  })
+}
+
+const submitTitle = () => {
+  titleEidtEnable.value = false
 }
 </script>
 <template>
   <div>
     <div class="main">
-      <div
-        id="header"
-        class="header"
-        @wheel="
-          (e: any) => {
-            graph?.translate(e.deltaY / 5, 0)
-          }
-        "
-      >
-        <div
-          v-for="timeItem in timeItems"
-          :key="timeItem"
-          class="time-item"
-          :style="{ translate: translateX + 'px' }"
-          :class="{ active: timeItem === timeIndex }"
-        >
-          {{ new Intl.DateTimeFormat('zh-Hans').format(new Date((timeItem + 19600) * 86400000)) }}
+      <div class="header">
+        <div class="title">
+          <div v-if="titleEidtEnable">
+            <input
+              ref="titleRef"
+              v-model="store.currentProject.name"
+              class="title-input"
+              @blur="submitTitle"
+              @keydown.enter="submitTitle"
+            />
+          </div>
+          <div v-else style="padding-left: 1px" @dblclick="editTitle">
+            {{ store.currentProject.name }}
+          </div>
         </div>
       </div>
+
       <div class="body">
         <task-drawer
           v-model:visible="visible"
           :graph="graphRef"
           :task-id="activeTaskId"
         ></task-drawer>
+
+        <div
+          class="time-bar"
+          @wheel="
+            (e: any) => {
+              graph?.translate(e.deltaY / 5, 0)
+            }
+          "
+        >
+          <div
+            v-for="timeItem in timeItems"
+            :key="timeItem"
+            class="time-item"
+            :style="{ translate: translateX + 'px' }"
+            :class="{ active: timeItem === timeIndex }"
+          >
+            {{ new Intl.DateTimeFormat('zh-Hans').format(new Date((timeItem + 19600) * 86400000)) }}
+          </div>
+        </div>
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
-        <ProjectNameBadge />
         <el-button @click="deleteProject">delete</el-button>
         <p class="footer-label">{{ graphMode }}</p>
         <el-button @click="back2Today">today</el-button>
@@ -312,77 +329,93 @@ const deleteProject = () => {
 
 <style scoped>
 .main {
-  background-color: #9f9f9f;
   overflow: hidden;
-}
-
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 99;
-  -webkit-user-select: none;
-  user-select: none;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  overflow-x: hidden;
-
-  .time-item {
-    width: 100px;
-    color: #c8c9cc;
-    flex-shrink: 0;
-    background-color: #1c1c1c;
-    margin: 0 10px 0 10px;
+  .header {
+    .title {
+      height: 64px;
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      padding: 24px;
+      font-size: 24px;
+      user-select: none;
+      .title-input {
+        outline-style: none;
+        border: 1px solid #ccc;
+        box-sizing: content-box;
+        /* border-radius: 3px; */
+        font-size: 24px;
+      }
+    }
   }
 
-  .active {
-    color: greenyellow;
-  }
-}
-
-.body {
-  overflow: hidden;
-  height: calc(100vh - 100px);
-  background-color: rgb(158, 158, 158);
-
-  .container {
-    display: inline-block;
-    height: 100%;
-    width: 100%;
-    z-index: 1;
-    position: relative;
-    background-color: #fdfdfd;
-  }
-}
-
-.footer {
-  position: sticky;
-  bottom: 0;
-  height: 40px;
-  background: whitesmoke;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid;
-
-  .footer-label {
-    color: #181818;
-    background-color: #c8c9cc;
-    user-select: none;
-    width: 150px;
-    white-space: nowrap;
+  .body {
     overflow: hidden;
-    text-overflow: clip;
+    height: calc(100vh - 104px);
+    padding: 24px 24px 16px 24px;
+
+    .time-bar {
+      z-index: 99;
+      user-select: none;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      overflow-x: hidden;
+
+      .time-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100px;
+        color: #727272;
+        flex-shrink: 0;
+        /* background-color: #1c1c1c; */
+        margin: 0 10px 0 10px;
+        border: 1px #c8c9cc;
+      }
+
+      .active {
+        color: greenyellow;
+      }
+    }
+    .container {
+      display: inline-block;
+      height: 100%;
+      width: 100%;
+      z-index: 1;
+      position: relative;
+    }
   }
 
-  div {
+  .footer {
+    position: sticky;
+    bottom: 0;
+    height: 40px;
+    background: whitesmoke;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    margin: auto;
+    border-top: 1px solid;
 
-    &:hover {
-      background: wheat;
+    .footer-label {
+      color: #181818;
+      background-color: #c8c9cc;
+      user-select: none;
+      width: 150px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: clip;
+    }
+
+    div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: auto;
+
+      &:hover {
+        background: wheat;
+      }
     }
   }
 }
