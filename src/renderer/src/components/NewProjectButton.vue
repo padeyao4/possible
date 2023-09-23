@@ -60,5 +60,18 @@ const handleDialogSubmit = (formEl: FormInstance | undefined) => {
       </span>
     </template>
   </el-dialog>
-  <button style="user-select: none" @click="handleDialogOpen">新建项目</button>
+  <div style="user-select: none" class="new-button" @click="handleDialogOpen">新建项目</div>
 </template>
+
+<style scoped>
+.new-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: sticky;
+  top: calc(100vh - 40px);
+  background: var(--color-bronze);
+  width: 100%;
+  height: 40px;
+}
+</style>

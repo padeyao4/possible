@@ -16,24 +16,27 @@ function handleClick(id: string) {
 <template>
   <div>
     <div class="main">
-      <button
+      <div
         v-for="item in store.projects"
         :key="item.id"
         :class="{ active: item.id === store.active, 'list-item': true }"
         @click="() => handleClick(item.id)"
       >
         {{ item.name }}
-      </button>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
 .main {
-  height: 100%;
+  height: calc(100vh - 80px);
   overflow-y: auto;
 
   .list-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     height: 40px;
     white-space: nowrap;
@@ -43,7 +46,7 @@ function handleClick(id: string) {
   }
 
   .active {
-    background-color: burlywood;
+    background-color: var(--color-neptune);
   }
 }
 

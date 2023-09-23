@@ -3,6 +3,12 @@
     --side-width: 240px;
     --content-width: calc(100vw - var(--side-width));
     --content-height: 100vh;
+
+    /* 主题色 */
+    --color-neptune: #82bbb5;
+    --color-bronze: #ca884b;
+    --color-japonica: #d1825b;
+    --color-harvest-gold: #cca142;
 }
 
 *,
@@ -23,5 +29,4 @@ body {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* background-color: rgba(0, 0, 0, 0); */
 }
