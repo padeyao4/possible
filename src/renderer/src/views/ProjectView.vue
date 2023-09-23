@@ -342,7 +342,7 @@ const deleteProject = () => {
 
 .body {
   overflow: hidden;
-  height: calc(100vh - 100px - var(--title-bar-height));
+  height: calc(100vh - 100px);
   background-color: rgb(158, 158, 158);
 
   .container {

@@ -2,8 +2,7 @@
 :root {
     --side-width: 240px;
     --content-width: calc(100vw - var(--side-width));
-    --title-bar-height: 40px;
-    --content-height: calc(100vh - var(--title-bar-height));
+    --content-height: 100vh;
 }
 
 *,
@@ -24,5 +23,5 @@ body {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: rgba(0, 0, 0, 0);
+    /* background-color: rgba(0, 0, 0, 0); */
 }

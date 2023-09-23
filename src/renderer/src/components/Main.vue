@@ -6,7 +6,7 @@ import SideListItem from '@renderer/components/SideListItem.vue'
 
 <template>
   <div class="main">
-    <div class="header">header</div>
+    <!-- <div class="header">header</div> -->
     <div class="body">
       <div class="side">
         <button>
@@ -17,6 +17,13 @@ import SideListItem from '@renderer/components/SideListItem.vue'
         <new-project-button></new-project-button>
       </div>
       <div class="content">
+        <!-- <div class="sys-title">
+          <div class="sys-button">
+            <button>min</button>
+            <button>max</button>
+            <button>close</button>
+          </div>
+        </div> -->
         <router-view></router-view>
       </div>
     </div>
@@ -26,15 +33,16 @@ import SideListItem from '@renderer/components/SideListItem.vue'
 <style scoped>
 .main {
   overflow: hidden;
-  .header {
+  /* border-radius: 16px 16px 16px 16px; */
+  /* border: 1px black; */
+  /* .header {
     height: var(--title-bar-height);
     user-select: none;
     -webkit-user-select: none;
     -webkit-app-region: drag;
     border-radius: 16px 16px 0 0;
     background-color: whitesmoke;
-    border: solid black;
-  }
+  } */
   .body {
     display: grid;
     width: 100vw;
@@ -55,6 +63,17 @@ import SideListItem from '@renderer/components/SideListItem.vue'
     .content {
       background-color: rgb(73, 57, 57);
       height: var(--content-height);
+      /* .sys-title {
+        height: 40px;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-app-region: drag;
+        background-color: whitesmoke;
+        .sys-button {
+          margin: 8px 8px 0 0;
+          float: right;
+        }
+      } */
     }
   }
 }
