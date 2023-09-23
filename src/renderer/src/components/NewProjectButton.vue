@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import '@renderer/assets/icon/iconfont.css'
 import router from '@renderer/router'
 import { useGlobalStore } from '@renderer/store/global'
 import type { FormInstance } from 'element-plus'

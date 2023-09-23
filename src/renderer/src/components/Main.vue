@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import '@renderer/assets/icon/iconfont.css'
 import NewProjectButton from '@renderer/components/NewProjectButton.vue'
 import SideListItem from '@renderer/components/SideListItem.vue'
 import router from '@renderer/router'

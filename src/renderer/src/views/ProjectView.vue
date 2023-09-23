@@ -9,6 +9,7 @@ import PossibleGrid from '@renderer/g6/plugin/possible-grid'
 import { type ITask, useGlobalStore } from '@renderer/store/global'
 import { normalX, x2Index } from '@renderer/util'
 import router from '@renderer/router'
+import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
 
 const visible = ref<boolean>(false)
 const activeTaskId = ref<string>('')
@@ -247,15 +248,6 @@ const back2Today = () => {
   graph?.translate(-dx, 0)
 }
 
-/**
- * 删除项目
- */
-const deleteProject = () => {
-  router.push({ name: 'home' })
-  delete store.projects[store.active]
-  store.active = 'today'
-}
-
 const titleEditEnable = ref<boolean>(false)
 const titleRef = ref()
 
@@ -268,6 +260,14 @@ const editTitle = () => {
 
 const submitTitle = () => {
   titleEditEnable.value = false
+}
+
+const deleteDialogVisible = ref(false)
+
+const handleDelete = () => {
+  router.push({ name: 'home' })
+  delete store.projects[store.active]
+  store.active = 'today'
 }
 </script>
 <template>
@@ -288,11 +288,34 @@ const submitTitle = () => {
             {{ store.currentProject.name }}
           </div>
           <div>
-            <el-button :size="'small'">
-              <el-icon>
-                <MoreFilled />
-              </el-icon>
-            </el-button>
+            <el-dropdown trigger="click">
+              <el-button size="small">
+                <el-icon>
+                  <MoreFilled />
+                </el-icon>
+              </el-button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item :icon="Delete" @click="deleteDialogVisible = true"
+                    >删除
+                  </el-dropdown-item>
+                  <el-dropdown-item :icon="SetUp" @click="editTitle">重命名</el-dropdown-item>
+                  <el-dropdown-item :icon="Promotion">导出</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+            <el-dialog v-model="deleteDialogVisible" title="警告" width="30%" align-center>
+              <span
+                >确定删除
+                <i style="font-size: large">{{ store.currentProject.name }} </i> 计划吗</span
+              >
+              <template #footer>
+                <span class="dialog-footer">
+                  <el-button type="primary" @click="deleteDialogVisible = false">取消</el-button>
+                  <el-button @click="handleDelete"> 确定 </el-button>
+                </span>
+              </template>
+            </el-dialog>
           </div>
         </div>
       </div>
@@ -325,9 +348,8 @@ const submitTitle = () => {
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
-        <el-button @click="deleteProject">delete</el-button>
-        <p class="footer-label">{{ graphMode }}</p>
         <el-button @click="back2Today">today</el-button>
+        <p class="footer-label">{{ graphMode }}</p>
         <p class="footer-label">{{ offset }}</p>
       </div>
     </div>
@@ -428,5 +450,9 @@ const submitTitle = () => {
       }
     }
   }
+}
+
+.dialog-footer button:first-child {
+  margin-right: 10px;
 }
 </style>
