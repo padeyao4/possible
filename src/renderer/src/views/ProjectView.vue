@@ -2,7 +2,6 @@
 import { Graph, type IEdge, Menu } from '@antv/g6'
 import type { INode } from '@antv/g6-core'
 import { type Item } from '@antv/g6-core'
-import ProjectNameBadge from '@renderer/components/ProjectNameBadge.vue'
 import TaskDrawer from '@renderer/components/TaskEditor.vue'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
@@ -256,12 +255,36 @@ const deleteProject = () => {
   delete store.projects[store.active]
   store.active = 'today'
 }
+
+const titleEidtEnable = ref<boolean>(false)
+const titleRef = ref()
+
+const editTitle = () => {
+  titleEidtEnable.value = true
+  nextTick(() => {
+    titleRef.value.focus()
+  })
+}
+
+const submitTitle = () => {
+  titleEidtEnable.value = false
+}
 </script>
 <template>
   <div>
     <div class="main">
       <div class="header">
-        <div class="title">hello</div>
+        <div class="title">
+          <div v-if="titleEidtEnable">
+            <input
+              ref="titleRef"
+              v-model="store.currentProject.name"
+              @blur="submitTitle"
+              @keydown.enter="submitTitle"
+            />
+          </div>
+          <div v-else @dblclick="editTitle">{{ store.currentProject.name }}</div>
+        </div>
       </div>
 
       <div class="body">
@@ -292,7 +315,6 @@ const deleteProject = () => {
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
-        <ProjectNameBadge />
         <el-button @click="deleteProject">delete</el-button>
         <p class="footer-label">{{ graphMode }}</p>
         <el-button @click="back2Today">today</el-button>
@@ -314,6 +336,7 @@ const deleteProject = () => {
       padding-left: 24px;
       font-size: 24px;
       font-weight: normal;
+      user-select: none;
     }
   }
 
@@ -324,7 +347,6 @@ const deleteProject = () => {
 
     .time-bar {
       z-index: 99;
-      -webkit-user-select: none;
       user-select: none;
       height: 32px;
       display: flex;

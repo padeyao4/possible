@@ -45,7 +45,6 @@ const handleTodayClick = () => {
     grid-template-columns: var(--side-width) var(--content-width);
 
     .side {
-      /* display: grid; */
       width: var(--side-width);
       height: 100vh;
       background: var(--color-bronze);
@@ -60,8 +59,6 @@ const handleTodayClick = () => {
         color: antiquewhite;
         text-decoration: none;
         border: 1px black;
-        -moz-user-select: none;
-        -webkit-user-select: none;
         user-select: none;
       }
       .active {

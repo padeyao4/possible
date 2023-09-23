@@ -58,18 +58,14 @@ function handleClick(id: string) {
 
 ::-webkit-scrollbar-track {
   width: 2px;
-  background-color: #1c1c1c;
-  -webkit-border-radius: 2em;
-  -moz-border-radius: 2em;
+  /* background-color: #1c1c1c; */
   border-radius: 2em;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #9f9f9f;
+  background-color: #585858;
   background-clip: padding-box;
   min-height: 28px;
-  -webkit-border-radius: 2em;
-  -moz-border-radius: 2em;
   border-radius: 2em;
 }
 
