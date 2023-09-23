@@ -19,7 +19,8 @@ function handleClick(id: string) {
       <div
         v-for="item in store.projects"
         :key="item.id"
-        :class="{ active: item.id === store.active, 'list-item': true }"
+        class="list-item"
+        :class="{ active: item.id === store.active }"
         @click="() => handleClick(item.id)"
       >
         {{ item.name }}

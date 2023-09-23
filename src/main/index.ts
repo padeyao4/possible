@@ -14,7 +14,6 @@ function createWindow(): void {
     show: false,
     title: 'possible',
     transparent: true,
-    backgroundColor: '#00000000',
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {

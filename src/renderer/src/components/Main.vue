@@ -1,14 +1,28 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
 import NewProjectButton from '@renderer/components/NewProjectButton.vue'
 import SideListItem from '@renderer/components/SideListItem.vue'
+import router from '@renderer/router'
+import { useGlobalStore } from '@renderer/store/global'
+import { RouterView } from 'vue-router'
+
+const store = useGlobalStore()
+
+const handleTodayClick = () => {
+  store.active = 'today'
+  router.push({
+    name: 'home',
+    replace: true
+  })
+}
 </script>
 
 <template>
   <div class="main">
     <div class="body">
       <div class="side">
-        <RouterLink :to="{ name: 'home' }" class="today"> 我的一天 </RouterLink>
+        <div class="today" :class="{ active: store.active === 'today' }" @click="handleTodayClick">
+          我的一天
+        </div>
         <hr />
         <side-list-item />
         <hr />
@@ -40,19 +54,23 @@ import SideListItem from '@renderer/components/SideListItem.vue'
       .today {
         width: 100%;
         height: 40px;
-        background: rgba(0, 0, 0, 0);
         display: flex;
         justify-content: center;
         align-items: center;
         color: antiquewhite;
         text-decoration: none;
         border: 1px black;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      .active {
+        background: var(--color-neptune);
       }
     }
 
     .content {
-      background-color: rgb(73, 57, 57);
-      height: var(--content-height);
+      width: 100%;
     }
   }
 }

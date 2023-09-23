@@ -9,6 +9,3 @@ import { useGlobalStore } from '@renderer/store/global'
 useGlobalStore().$hydrate()
 registerBehaviors()
 </script>
-
-<style scoped>
-</style>
