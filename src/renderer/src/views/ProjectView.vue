@@ -256,18 +256,18 @@ const deleteProject = () => {
   store.active = 'today'
 }
 
-const titleEidtEnable = ref<boolean>(false)
+const titleEditEnable = ref<boolean>(false)
 const titleRef = ref()
 
 const editTitle = () => {
-  titleEidtEnable.value = true
+  titleEditEnable.value = true
   nextTick(() => {
     titleRef.value.focus()
   })
 }
 
 const submitTitle = () => {
-  titleEidtEnable.value = false
+  titleEditEnable.value = false
 }
 </script>
 <template>
@@ -275,7 +275,7 @@ const submitTitle = () => {
     <div class="main">
       <div class="header">
         <div class="title">
-          <div v-if="titleEidtEnable">
+          <div v-if="titleEditEnable">
             <input
               ref="titleRef"
               v-model="store.currentProject.name"
@@ -286,6 +286,13 @@ const submitTitle = () => {
           </div>
           <div v-else style="padding-left: 1px" @dblclick="editTitle">
             {{ store.currentProject.name }}
+          </div>
+          <div>
+            <el-button :size="'small'">
+              <el-icon>
+                <MoreFilled />
+              </el-icon>
+            </el-button>
           </div>
         </div>
       </div>
@@ -330,15 +337,17 @@ const submitTitle = () => {
 <style scoped>
 .main {
   overflow: hidden;
+
   .header {
     .title {
       height: 64px;
       display: flex;
-      justify-content: start;
+      justify-content: space-between;
       align-items: center;
       padding: 24px;
       font-size: 24px;
       user-select: none;
+
       .title-input {
         outline-style: none;
         border: 1px solid #ccc;
@@ -378,6 +387,7 @@ const submitTitle = () => {
         color: greenyellow;
       }
     }
+
     .container {
       display: inline-block;
       height: 100%;

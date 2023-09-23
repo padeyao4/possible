@@ -22,7 +22,10 @@ const handleTodayClick = () => {
     <div class="body">
       <div class="side">
         <div class="today" :class="{ active: store.active === 'today' }" @click="handleTodayClick">
-          <i class="iconfont icon-sun" style="font-size: 20px; padding-right: 4px" />我的一天
+          <el-icon :size="20">
+            <Sunny />
+          </el-icon>
+          <div style="margin-left: 4px; padding-bottom: 1px">我的一天</div>
         </div>
         <hr />
         <side-list-item />
@@ -62,6 +65,7 @@ const handleTodayClick = () => {
         border: 1px black;
         user-select: none;
       }
+
       .active {
         background: var(--color-neptune);
       }

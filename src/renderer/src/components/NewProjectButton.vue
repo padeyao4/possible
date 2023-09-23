@@ -62,11 +62,10 @@ const handleDialogSubmit = (formEl: FormInstance | undefined) => {
     </template>
   </el-dialog>
   <div style="user-select: none" class="new-button" @click="handleDialogOpen">
-    <i
-      class="iconfont icon-a-Addto"
-      style="color: aliceblue; font-size: 20px; padding-right: 4px"
-    />
-    新建项目
+    <el-icon :size="20">
+      <Plus />
+    </el-icon>
+    <div style="padding: 0 0 2px 4px">新建项目</div>
   </div>
 </template>
 
