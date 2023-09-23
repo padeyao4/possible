@@ -279,11 +279,14 @@ const submitTitle = () => {
             <input
               ref="titleRef"
               v-model="store.currentProject.name"
+              class="title-input"
               @blur="submitTitle"
               @keydown.enter="submitTitle"
             />
           </div>
-          <div v-else @dblclick="editTitle">{{ store.currentProject.name }}</div>
+          <div v-else style="padding-left: 1px" @dblclick="editTitle">
+            {{ store.currentProject.name }}
+          </div>
         </div>
       </div>
 
@@ -333,17 +336,23 @@ const submitTitle = () => {
       display: flex;
       justify-content: start;
       align-items: center;
-      padding-left: 24px;
+      padding: 24px;
       font-size: 24px;
-      font-weight: normal;
       user-select: none;
+      .title-input {
+        outline-style: none;
+        border: 1px solid #ccc;
+        box-sizing: content-box;
+        /* border-radius: 3px; */
+        font-size: 24px;
+      }
     }
   }
 
   .body {
     overflow: hidden;
     height: calc(100vh - 104px);
-    padding: 24px;
+    padding: 24px 24px 16px 24px;
 
     .time-bar {
       z-index: 99;
@@ -354,6 +363,9 @@ const submitTitle = () => {
       overflow-x: hidden;
 
       .time-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 100px;
         color: #727272;
         flex-shrink: 0;
