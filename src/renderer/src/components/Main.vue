@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import '@renderer/assets/icon/iconfont.css'
 import NewProjectButton from '@renderer/components/NewProjectButton.vue'
 import SideListItem from '@renderer/components/SideListItem.vue'
 import router from '@renderer/router'
@@ -21,7 +22,7 @@ const handleTodayClick = () => {
     <div class="body">
       <div class="side">
         <div class="today" :class="{ active: store.active === 'today' }" @click="handleTodayClick">
-          我的一天
+          <i class="iconfont icon-sun" style="font-size: 20px; padding-right: 4px" />我的一天
         </div>
         <hr />
         <side-list-item />
