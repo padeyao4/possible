@@ -371,9 +371,8 @@ const handleDelete = () => {
 
       .title-input {
         outline-style: none;
-        border: 1px solid #ccc;
-        box-sizing: content-box;
-        border-radius: 8px;
+        border: 0;
+        background-color: #e2e2e2;
         font-size: 24px;
       }
     }
