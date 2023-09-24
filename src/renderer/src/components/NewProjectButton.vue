@@ -60,7 +60,7 @@ const handleDialogSubmit = (formEl: FormInstance | undefined) => {
       </span>
     </template>
   </el-dialog>
-  <div style="user-select: none" class="new-button" @click="handleDialogOpen">
+  <div style="user-select: none" class="add-button" @click="handleDialogOpen">
     <el-icon :size="20">
       <Plus />
     </el-icon>
@@ -69,7 +69,7 @@ const handleDialogSubmit = (formEl: FormInstance | undefined) => {
 </template>
 
 <style scoped>
-.new-button {
+.add-button {
   display: flex;
   justify-content: center;
   align-items: center;

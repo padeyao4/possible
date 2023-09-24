@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { registerBehaviors } from '@renderer/g6'
 import { useGlobalStore } from '@renderer/store/global'
-import NewProjectButton from '@renderer/components/NewProjectButton.vue'
 import router from '@renderer/router'
 import { RouterView } from 'vue-router'
+import { nextTick, ref } from 'vue'
 
 const store = useGlobalStore()
 store.$hydrate()
@@ -23,6 +23,27 @@ const handleItemClick = (id: string) => {
     replace: true
   })
   store.$patch({ active: id })
+}
+
+// const itemInputRef = ref();
+// const itemInputVisible = ref(false);
+
+// const onSubmitAddButton = () => {
+//   itemInputVisible.value = false;
+// };
+
+const clickAddButton = () => {
+  const project = store.createProjectByName('新任务列表')
+  project.offset.x =
+    -Math.floor((new Date().valueOf() - new Date('2023/9/1').valueOf()) / 86400000) * 120
+  router.push({
+    name: 'summery'
+  })
+  store.active = project.id
+  // itemInputVisible.value = true;
+  // nextTick(() => {
+  //   itemInputRef.value.focus()
+  // })
 }
 </script>
 
@@ -49,7 +70,12 @@ const handleItemClick = (id: string) => {
           </div>
         </div>
         <hr />
-        <new-project-button />
+        <div class="add-button" @click="clickAddButton">
+          <el-icon :size="20">
+            <Plus />
+          </el-icon>
+          <div style="padding: 0 0 2px 4px">新建项目</div>
+        </div>
       </div>
       <div class="content">
         <router-view />
@@ -99,11 +125,32 @@ const handleItemClick = (id: string) => {
           overflow: hidden;
           text-overflow: ellipsis;
           user-select: none;
+
+          .item-input {
+            outline-style: none;
+            border: 1px solid #ccc;
+            box-sizing: content-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 15px;
+          }
         }
       }
 
       .active {
+        border-radius: 4px;
         background: var(--color-neptune);
+      }
+
+      .add-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        user-select: none;
+        background: var(--color-bronze);
+        width: 100%;
+        height: 40px;
       }
     }
 

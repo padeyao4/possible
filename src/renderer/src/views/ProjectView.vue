@@ -265,9 +265,11 @@ const submitTitle = () => {
 const deleteDialogVisible = ref(false)
 
 const handleDelete = () => {
-  router.push({ name: 'home' })
   delete store.projects[store.active]
-  store.active = 'today'
+  router.push({ name: 'home' })
+  nextTick(() => {
+    store.active = 'today'
+  })
 }
 </script>
 <template>
