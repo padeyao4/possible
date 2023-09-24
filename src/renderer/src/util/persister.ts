@@ -5,7 +5,7 @@ function persist(stateId, state) {
   window.api.statePersist(stateId, JSON.stringify(state))
 }
 
-export function createPersister(): PiniaPlugin {
+export function createPersistent(): PiniaPlugin {
   return (context: PiniaPluginContext) => {
     const { store } = context
     store.$hydrate = async () => {
@@ -16,12 +16,11 @@ export function createPersister(): PiniaPlugin {
         store.$patch(r)
       }
     }
-    store.$persit = () => {
+    store.$persist = () => {
       //  将数据保存到数据库
       persist(store.$id, store.$state)
     }
     const debouncePersist = debounce(() => {
-      console.log('subscribe2', new Date(), store.$state, store.$id)
       persist(store.$id, store.$state)
     }, 2_000)
 

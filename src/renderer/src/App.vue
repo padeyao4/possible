@@ -25,25 +25,30 @@ const handleItemClick = (id: string) => {
   store.$patch({ active: id })
 }
 
-// const itemInputRef = ref();
-// const itemInputVisible = ref(false);
+const itemInputRef = ref()
+const itemInputVisible = ref(false)
 
-// const onSubmitAddButton = () => {
-//   itemInputVisible.value = false;
-// };
+const setItemInputRef = (el: unknown) => {
+  console.log('el', el)
+  itemInputRef.value = el
+}
+
+const onSubmitAddButton = () => {
+  itemInputVisible.value = false
+}
 
 const clickAddButton = () => {
   const project = store.createProjectByName('新任务列表')
   project.offset.x =
     -Math.floor((new Date().valueOf() - new Date('2023/9/1').valueOf()) / 86400000) * 120
+  store.active = project.id
+  itemInputVisible.value = true
   router.push({
     name: 'summery'
   })
-  store.active = project.id
-  // itemInputVisible.value = true;
-  // nextTick(() => {
-  //   itemInputRef.value.focus()
-  // })
+  nextTick(() => {
+    itemInputRef.value.focus()
+  })
 }
 </script>
 
@@ -66,7 +71,18 @@ const clickAddButton = () => {
             :class="{ active: item.id === store.active }"
             @click="handleItemClick(item.id)"
           >
-            {{ item.name }}
+            <template v-if="item.id === store.active && itemInputVisible">
+              <input
+                :ref="(el) => setItemInputRef(el)"
+                v-model="item.name"
+                class="item-input"
+                @blur="onSubmitAddButton"
+                @keydown.enter="onSubmitAddButton"
+              />
+            </template>
+            <template v-else>
+              {{ item.name }}
+            </template>
           </div>
         </div>
         <hr />
@@ -128,12 +144,11 @@ const clickAddButton = () => {
 
           .item-input {
             outline-style: none;
-            border: 1px solid #ccc;
             box-sizing: content-box;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            text-align: center;
+            border: 0;
             font-size: 15px;
+            background-color: rgba(0, 0, 0, 0);
           }
         }
       }

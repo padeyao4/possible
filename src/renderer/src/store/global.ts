@@ -52,7 +52,6 @@ export const useGlobalStore = defineStore('global', {
     },
     graphData(): GraphData {
       const project = this.projects[this.active]
-      console.log('project', project)
       if (project === undefined) {
         return {
           nodes: [],

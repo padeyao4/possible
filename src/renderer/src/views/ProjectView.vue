@@ -169,7 +169,6 @@ onMounted(() => {
   })
   // 处理添加完边后的操作
   graph.on('aftercreateedge', (e) => {
-    console.log('after create edge', e.edge)
     const edge = e.edge as IEdge
 
     const sourceNode = edge.getSource() as INode
@@ -284,7 +283,7 @@ const handleDelete = () => {
               @keydown.enter="submitTitle"
             />
           </div>
-          <div v-else style="padding-left: 1px" @dblclick="editTitle">
+          <div v-else @dblclick="editTitle">
             {{ store.currentProject?.name ?? '' }}
           </div>
           <div>
@@ -366,7 +365,7 @@ const handleDelete = () => {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 24px;
+      padding: 16px 20px 16px 20px;
       font-size: 24px;
       user-select: none;
 
@@ -374,7 +373,7 @@ const handleDelete = () => {
         outline-style: none;
         border: 1px solid #ccc;
         box-sizing: content-box;
-        /* border-radius: 3px; */
+        border-radius: 8px;
         font-size: 24px;
       }
     }
