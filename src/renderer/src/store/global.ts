@@ -157,14 +157,14 @@ export const useGlobalStore = defineStore('global', {
       const target = edge.getTarget() as INode
       const sourceId = source.getID()
       const targetId = target.getID()
-      this.currentProject.tasks.find((task) => task.id === sourceId)?.children.push(targetId)
-      this.currentProject.tasks.find((task) => task.id === targetId)?.parents?.push(sourceId)
+      this.currentProject?.tasks.find((task) => task.id === sourceId)?.children.push(targetId)
+      this.currentProject?.tasks.find((task) => task.id === targetId)?.parents?.push(sourceId)
     },
     currentProjectDeleteEdge(sourceId: string, targetId: string) {
-      const children = this.currentProject.tasks.find((t) => t.id == sourceId)?.children
+      const children = this.currentProject?.tasks.find((t) => t.id == sourceId)?.children
       children?.splice(children?.indexOf(targetId), 1)
 
-      const parents = this.currentProject.tasks.find((t) => t.id === targetId)?.parents
+      const parents = this.currentProject?.tasks.find((t) => t.id === targetId)?.parents
       parents?.splice(parents?.indexOf(sourceId), 1)
     }
   }

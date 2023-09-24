@@ -1,10 +1,30 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { PrismaClient } from '@prisma/client'
-import { BrowserWindow, Menu, Tray, app, ipcMain, shell } from 'electron'
-import { join } from 'path'
+import { app, BrowserWindow, ipcMain, Menu, shell, Tray } from 'electron'
+import { join, resolve } from 'path'
 import icon from '../../resources/icon.png?asset'
+import fs from 'fs'
 
-const prisma = new PrismaClient()
+const possiblePath = resolve(process.env['HOME'] || process.env['USERPROFILE'] || '~/', '.possible')
+const possibleDb = join(possiblePath, 'possible.db')
+if (!is.dev) {
+  if (!fs.existsSync(possiblePath)) {
+    fs.mkdirSync(possiblePath, { recursive: true })
+  }
+  if (!fs.existsSync(possibleDb)) {
+    fs.copyFileSync(resolve(process.resourcesPath, '../possible.db'), possibleDb)
+  }
+}
+
+const prisma = is.dev
+  ? new PrismaClient()
+  : new PrismaClient({
+      datasources: {
+        db: {
+          url: `file:${possibleDb}`
+        }
+      }
+    })
 
 function createWindow(): void {
   // Create the browser window.

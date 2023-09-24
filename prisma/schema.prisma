@@ -8,30 +8,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./possible.db"
-}
-
-model Project {
-  id          Int      @id @default(autoincrement())
-  name        String
-  createdTime DateTime
-  offsetX     BigInt
-  offsetY     BigInt
-}
-
-model Task {
-  id        Int    @id @default(autoincrement())
-  name      String
-  dataIndex Int
-  priority  Int
-  projectId Int
-}
-
-model Relation {
-  id        Int @id @default(autoincrement())
-  projectId Int
-  sourceId  Int
-  targetId  Int
+  url      = "file:possible.db"
 }
 
 model Store {

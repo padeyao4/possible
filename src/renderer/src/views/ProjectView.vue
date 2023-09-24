@@ -268,6 +268,15 @@ const handleDelete = () => {
   delete store.projects[store.active]
   store.active = 'today'
 }
+
+const currentProjectName = computed({
+  get: () => {
+    return store.projects[store.active].name
+  },
+  set: (v) => {
+    store.projects[store.active].name = v
+  }
+})
 </script>
 <template>
   <div>
@@ -277,7 +286,7 @@ const handleDelete = () => {
           <div v-if="titleEditEnable">
             <input
               ref="titleRef"
-              v-model="store.currentProject.name"
+              v-model="currentProjectName"
               class="title-input"
               @blur="submitTitle"
               @keydown.enter="submitTitle"

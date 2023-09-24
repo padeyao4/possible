@@ -23,6 +23,8 @@ $ pnpm dev
 ### Build
 
 ```bash
+$ npx prisma generate
+
 # For windows
 $ pnpm build:win
 
