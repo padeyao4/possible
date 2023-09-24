@@ -12,6 +12,7 @@
   ],
   "compilerOptions": {
     "composite": true,
+    "downlevelIteration": true,
     "types": [
       "electron-vite/node"
     ],
