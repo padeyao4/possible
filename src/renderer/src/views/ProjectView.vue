@@ -265,11 +265,9 @@ const submitTitle = () => {
 const deleteDialogVisible = ref(false)
 
 const handleDelete = () => {
-  delete store.projects[store.active]
   router.push({ name: 'home' })
-  nextTick(() => {
-    store.active = 'today'
-  })
+  delete store.projects[store.active]
+  store.active = 'today'
 }
 </script>
 <template>
@@ -287,7 +285,7 @@ const handleDelete = () => {
             />
           </div>
           <div v-else style="padding-left: 1px" @dblclick="editTitle">
-            {{ store.currentProject.name }}
+            {{ store.currentProject?.name ?? '' }}
           </div>
           <div>
             <el-dropdown trigger="click">
@@ -309,7 +307,7 @@ const handleDelete = () => {
             <el-dialog v-model="deleteDialogVisible" title="警告" width="30%" align-center>
               <span
                 >确定删除
-                <i style="font-size: large">{{ store.currentProject.name }} </i> 计划吗</span
+                <i style="font-size: large">{{ store.currentProject?.name ?? '' }} </i> 计划吗</span
               >
               <template #footer>
                 <span class="dialog-footer">

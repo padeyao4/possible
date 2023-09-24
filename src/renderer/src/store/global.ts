@@ -87,8 +87,8 @@ export const useGlobalStore = defineStore('global', {
     currentProjectOffset(): Point {
       return this.projects[this.active]?.offset ?? { x: 0, y: 0 }
     },
-    currentProject(): IProject {
-      return this.projects[this.active]
+    currentProject(): IProject | null {
+      return this.projects[this.active] ?? null
     },
     currentProjectTasks(): ITask[] {
       return this.projects[this.active]?.tasks
