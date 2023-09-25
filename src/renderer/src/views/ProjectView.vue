@@ -282,50 +282,47 @@ const currentProjectName = computed({
   <div>
     <div class="main">
       <div class="header">
-        <div class="title">
-          <div v-if="titleEditEnable">
-            <input
-              ref="titleRef"
-              v-model="currentProjectName"
-              class="title-input"
-              @blur="submitTitle"
-              @keydown.enter="submitTitle"
-            />
-          </div>
-          <div v-else @dblclick="editTitle">
+        <div>
+          <input
+            v-if="titleEditEnable"
+            ref="titleRef"
+            v-model="currentProjectName"
+            class="title-input"
+            @blur="submitTitle"
+            @keydown.enter="submitTitle"
+          />
+          <div v-else class="title" @dblclick="editTitle">
             {{ store.currentProject?.name ?? '' }}
           </div>
-          <div>
-            <el-dropdown trigger="click">
-              <el-button size="small">
-                <el-icon>
-                  <MoreFilled />
-                </el-icon>
-              </el-button>
-              <template #dropdown>
-                <el-dropdown-menu>
-                  <el-dropdown-item :icon="Delete" @click="deleteDialogVisible = true"
-                    >删除
-                  </el-dropdown-item>
-                  <el-dropdown-item :icon="SetUp" @click="editTitle">重命名</el-dropdown-item>
-                  <el-dropdown-item :icon="Promotion">导出</el-dropdown-item>
-                </el-dropdown-menu>
-              </template>
-            </el-dropdown>
-            <el-dialog v-model="deleteDialogVisible" title="警告" width="30%" align-center>
-              <span
-                >确定删除
-                <i style="font-size: large">{{ store.currentProject?.name ?? '' }} </i> 计划吗</span
-              >
-              <template #footer>
-                <span class="dialog-footer">
-                  <el-button type="primary" @click="deleteDialogVisible = false">取消</el-button>
-                  <el-button @click="handleDelete"> 确定 </el-button>
-                </span>
-              </template>
-            </el-dialog>
-          </div>
         </div>
+        <el-dropdown trigger="click">
+          <el-button size="small">
+            <el-icon>
+              <MoreFilled />
+            </el-icon>
+          </el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item :icon="Delete" @click="deleteDialogVisible = true"
+                >删除
+              </el-dropdown-item>
+              <el-dropdown-item :icon="SetUp" @click="editTitle">重命名</el-dropdown-item>
+              <el-dropdown-item :icon="Promotion">导出</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+        <el-dialog v-model="deleteDialogVisible" title="警告" width="30%" align-center>
+          <span
+            >确定删除
+            <i style="font-size: large">{{ store.currentProject?.name ?? '' }} </i> 计划吗</span
+          >
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button type="primary" @click="deleteDialogVisible = false">取消</el-button>
+              <el-button @click="handleDelete"> 确定 </el-button>
+            </span>
+          </template>
+        </el-dialog>
       </div>
 
       <div class="body">
@@ -369,21 +366,25 @@ const currentProjectName = computed({
   overflow: hidden;
 
   .header {
+    height: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px 0 20px;
+
     .title {
-      height: 64px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 20px 16px 20px;
       font-size: 24px;
       user-select: none;
+      display: flex;
+      justify-content: center;
+    }
 
-      .title-input {
-        outline-style: none;
-        border: 0;
-        background-color: #e2e2e2;
-        font-size: 24px;
-      }
+    .title-input {
+      outline-style: none;
+      border: 0;
+      border-radius: 4px;
+      font-size: 24px;
+      background: #e2e2e2;
     }
   }
 
