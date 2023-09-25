@@ -8,14 +8,13 @@
     "src/renderer/src/**/*",
     "src/renderer/src/**/*.vue",
     "src/renderer/src/**/*.json",
-    "src/preload/*.d.ts"
+    "src/preload/*.ts"
   ],
   "compilerOptions": {
     "composite": true,
     "downlevelIteration": true,
     "types": [
       "electron-vite/node",
-      "src/preload/index.d.ts"
     ],
     "baseUrl": ".",
     "paths": {

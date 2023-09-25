@@ -28,7 +28,7 @@ interface GlobalState {
   active: string
   projects: Record<string, IProject>
   /**
-   * 今天是距离1970.1.1的日期距离
+   * 今天是距离2023.9.1的日期距离
    */
   todayIndex: number
 }
@@ -45,7 +45,7 @@ export const useGlobalStore = defineStore('global', {
       for (const key in this.projects) {
         const res = this.projects[key].tasks
           .filter((n: ITask) => n.dataIndex === day)
-          .map((v) => v.name)
+          .map((v: ITask) => v.name)
         ans.push(...res)
       }
       return ans
@@ -72,7 +72,7 @@ export const useGlobalStore = defineStore('global', {
         }
       }
       return {
-        nodes: tasks.map((v) => {
+        nodes: tasks.map((v: ITask) => {
           return {
             id: v.id,
             label: v.name,
@@ -116,7 +116,7 @@ export const useGlobalStore = defineStore('global', {
       this.currentProject?.tasks.push(task)
     },
     setCurrentProjectTask(task: ITask) {
-      const currentTask = this.currentProject?.tasks.find((t) => t.id === task.id)
+      const currentTask = this.currentProject?.tasks.find((t: ITask) => t.id === task.id)
       if (currentTask) {
         const tmp = { ...currentTask, ...task }
         currentTask.name = tmp.name
@@ -129,23 +129,23 @@ export const useGlobalStore = defineStore('global', {
     deleteCurrentProjectTaskById(id: string) {
       const projects = this.currentProject
       const tasks = projects?.tasks ?? []
-      const index = tasks.findIndex((t) => t.id === id)
+      const index = tasks.findIndex((t: ITask) => t.id === id)
       const currentTask = tasks?.[index]
 
       // delete id from parents
       const parentsId = currentTask?.parents ?? []
       console.log('parent ids', parentsId)
       tasks
-        .filter((task) => parentsId.includes(task.id))
-        .forEach((task) => {
+        .filter((task: ITask) => parentsId.includes(task.id))
+        .forEach((task: ITask) => {
           task.children.splice(task.children.indexOf(id), 1)
         })
 
       // delete id from children
       const childrenIds = currentTask?.children
       tasks
-        .filter((task) => childrenIds?.includes(task.id))
-        .forEach((task) => {
+        .filter((task: ITask) => childrenIds?.includes(task.id))
+        .forEach((task: ITask) => {
           const parents = task.parents ?? []
           parents.splice(parents.indexOf(id), 1)
         })
@@ -157,14 +157,18 @@ export const useGlobalStore = defineStore('global', {
       const target = edge.getTarget() as INode
       const sourceId = source.getID()
       const targetId = target.getID()
-      this.currentProject?.tasks.find((task) => task.id === sourceId)?.children.push(targetId)
-      this.currentProject?.tasks.find((task) => task.id === targetId)?.parents?.push(sourceId)
+      this.currentProject?.tasks
+        .find((task: ITask) => task.id === sourceId)
+        ?.children.push(targetId)
+      this.currentProject?.tasks
+        .find((task: ITask) => task.id === targetId)
+        ?.parents?.push(sourceId)
     },
     currentProjectDeleteEdge(sourceId: string, targetId: string) {
-      const children = this.currentProject?.tasks.find((t) => t.id == sourceId)?.children
+      const children = this.currentProject?.tasks.find((t: ITask) => t.id == sourceId)?.children
       children?.splice(children?.indexOf(targetId), 1)
 
-      const parents = this.currentProject?.tasks.find((t) => t.id === targetId)?.parents
+      const parents = this.currentProject?.tasks.find((t: ITask) => t.id === targetId)?.parents
       parents?.splice(parents?.indexOf(sourceId), 1)
     }
   }

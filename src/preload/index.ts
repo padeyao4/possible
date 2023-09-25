@@ -3,16 +3,10 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
 const api = {
-  projectSave: () => {
-    ipcRenderer.send('project:save')
-  },
-  testQuery: (content) => {
-    return ipcRenderer.invoke('test:query', 'ipcRender' + new Date(), 'web' + content)
-  },
-  statePersist: (stateId, state) => {
+  statePersist: (stateId: string, state) => {
     return ipcRenderer.invoke('state:persist', stateId, state)
   },
-  stateQuery: (stateId) => {
+  stateQuery: (stateId: string) => {
     return ipcRenderer.invoke('state:query', stateId)
   }
 }

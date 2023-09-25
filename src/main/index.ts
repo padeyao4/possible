@@ -138,7 +138,7 @@ app
     })
   })
   .catch((reson) => {
-    console.log('reson', reson)
+    console.log('reason', reson)
     prisma.$disconnect()
   })
 

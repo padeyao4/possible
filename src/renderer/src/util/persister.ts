@@ -1,7 +1,7 @@
 import debounce from 'lodash/debounce'
 import { PiniaPlugin, PiniaPluginContext } from 'pinia'
 
-function persist(stateId, state) {
+function persist(stateId: string, state: object) {
   window.api.statePersist(stateId, JSON.stringify(state))
 }
 
