@@ -19,6 +19,9 @@ export interface ITask {
   y: number
   children: string[]
   parents: string[]
+  createdTime: Date
+  completedTime: Date | undefined
+  completed: boolean
 }
 
 interface GlobalState {
@@ -30,7 +33,7 @@ interface GlobalState {
   /**
    * 今天是距离2023.9.1的日期距离
    */
-  todayIndex: number
+  // todayIndex: number
 }
 
 export const useGlobalStore = defineStore('global', {
