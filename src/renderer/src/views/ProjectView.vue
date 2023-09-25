@@ -61,8 +61,8 @@ onMounted(() => {
     plugins: [
       new PossibleGrid(),
       new Menu({
-        offsetX: -240,
-        offsetY: -60,
+        offsetX: -container.value.offsetLeft,
+        offsetY: -container.value.offsetTop,
         getContent: () => '删除',
         handleMenuClick: (_: HTMLElement, item: Item) => {
           const id = item.getID()
