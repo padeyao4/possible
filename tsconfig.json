@@ -14,7 +14,7 @@
     "composite": true,
     "downlevelIteration": true,
     "types": [
-      "electron-vite/node",
+      "electron-vite/node"
     ],
     "baseUrl": ".",
     "paths": {
@@ -23,6 +23,7 @@
       ]
     },
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "module": "ESNext"
   }
 }

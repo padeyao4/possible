@@ -39,8 +39,7 @@ interface GlobalState {
 export const useGlobalStore = defineStore('global', {
   state: (): GlobalState => ({
     active: '',
-    projects: {},
-    todayIndex: 0
+    projects: {}
   }),
   getters: {
     dataByDay(day = 0) {

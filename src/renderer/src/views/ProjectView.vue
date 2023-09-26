@@ -140,6 +140,9 @@ onMounted(() => {
     }
     graph?.addItem('node', newNode)
     store.currentProjectAddTask({
+      completed: false,
+      completedTime: undefined,
+      createdTime: new Date(),
       id: newNode.id,
       name: newNode.label,
       dataIndex: x2Index(newNode.x),
