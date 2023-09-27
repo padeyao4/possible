@@ -4,8 +4,8 @@ declare global {
   export interface Window {
     electron: ElectronAPI
     api: {
-      statePersist: (stateId, state) => number
-      stateQuery: (stateId) => object | null
+      statePersist: (stateId: string, state: string) => Promise<number>
+      stateQuery: (stateId: string) => Promise<object | null>
     }
   }
 }

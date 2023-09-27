@@ -3,10 +3,10 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
 const api = {
-  statePersist: (stateId: string, state) => {
+  statePersist: async (stateId: string, state: string) => {
     return ipcRenderer.invoke('state:persist', stateId, state)
   },
-  stateQuery: (stateId: string) => {
+  stateQuery: async (stateId: string) => {
     return ipcRenderer.invoke('state:query', stateId)
   }
 }

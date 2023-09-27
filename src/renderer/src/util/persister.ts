@@ -2,7 +2,7 @@ import debounce from 'lodash/debounce'
 import { PiniaPlugin, PiniaPluginContext } from 'pinia'
 
 function persist(stateId: string, state: object) {
-  window.api.statePersist(stateId, JSON.stringify(state))
+  window.api.statePersist(stateId, JSON.stringify(state)).then((value) => console.log(value))
 }
 
 export function createPersistent(): PiniaPlugin {
@@ -11,7 +11,7 @@ export function createPersistent(): PiniaPlugin {
     store.$hydrate = async () => {
       // 从数据库恢复数据, eg. store.$patch(data)
 
-      const r = window.api.stateQuery(store.$id)
+      const r = await window.api.stateQuery(store.$id)
       if (r !== null) {
         store.$patch(r)
       }
