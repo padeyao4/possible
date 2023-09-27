@@ -79,7 +79,8 @@ export const useGlobalStore = defineStore('global', {
             id: v.id,
             label: v.name,
             x: v.dataIndex * 120 + 60,
-            y: v.y
+            y: v.y,
+            completed: true
           }
         }),
         edges

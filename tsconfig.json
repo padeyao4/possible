@@ -24,6 +24,7 @@
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "module": "ESNext"
+    "module": "ESNext",
+    "moduleResolution": "node"
   }
 }

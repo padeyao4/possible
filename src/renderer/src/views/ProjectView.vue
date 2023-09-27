@@ -103,6 +103,16 @@ onMounted(() => {
         lineWidth: 1
       }
     },
+    nodeStateStyles: {
+      completed: {
+        type: 'rect',
+        size: [100, 40],
+        style: {
+          fill: '#939393',
+          lineWidth: 1
+        }
+      }
+    },
     defaultEdge: {
       type: 'cubic-horizontal',
       style: {
@@ -280,6 +290,12 @@ const currentProjectName = computed({
     store.projects[store.active].name = v
   }
 })
+
+const handleTest = () => {
+  const g = graphRef.value
+  // const data = g.save()
+  // g.setItem(items[0], 'completed', 'true')
+}
 </script>
 <template>
   <div>
@@ -357,6 +373,7 @@ const currentProjectName = computed({
       </div>
       <div class="footer">
         <el-button @click="back2Today">today</el-button>
+        <el-button @click="handleTest">test</el-button>
         <p class="footer-label">{{ graphMode }}</p>
         <p class="footer-label">{{ offset }}</p>
       </div>
