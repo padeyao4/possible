@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { registerBehaviors } from '@renderer/g6'
 import { useGlobalStore } from '@renderer/store/global'
 import router from '@renderer/router'
 import { RouterView } from 'vue-router'
@@ -7,7 +6,6 @@ import { nextTick, ref } from 'vue'
 
 const store = useGlobalStore()
 store.$hydrate()
-registerBehaviors()
 
 const handleTodayClick = () => {
   store.active = 'today'

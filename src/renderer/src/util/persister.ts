@@ -10,7 +10,6 @@ export function createPersistent(): PiniaPlugin {
     const { store } = context
     store.$hydrate = async () => {
       // 从数据库恢复数据, eg. store.$patch(data)
-
       const r = await window.api.stateQuery(store.$id)
       if (r !== null) {
         store.$patch(r)

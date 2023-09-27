@@ -25,7 +25,7 @@ const offset = computed(() => {
   return store.currentProject?.offset ?? { x: 0, y: 0 }
 })
 
-watch([() => store.active, () => graphRef.value], () => {
+watch([() => store.active, graphRef.value], () => {
   const setOriginPoint = () => {
     const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
     store.setCurrentProjectOffset({ x, y })
@@ -61,8 +61,8 @@ onMounted(() => {
     plugins: [
       new PossibleGrid(),
       new Menu({
-        offsetX: -container.value.offsetLeft,
-        offsetY: -container.value.offsetTop,
+        offsetX: -(container.value?.offsetLeft ?? 0),
+        offsetY: -(container.value?.offsetTop ?? 0),
         getContent: () => '删除',
         handleMenuClick: (_: HTMLElement, item: Item) => {
           const id = item.getID()
@@ -290,12 +290,6 @@ const currentProjectName = computed({
     store.projects[store.active].name = v
   }
 })
-
-const handleTest = () => {
-  const g = graphRef.value
-  // const data = g.save()
-  // g.setItem(items[0], 'completed', 'true')
-}
 </script>
 <template>
   <div>
@@ -330,18 +324,20 @@ const handleTest = () => {
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-        <el-dialog v-model="deleteDialogVisible" title="警告" width="30%" align-center>
-          <span
-            >确定删除
-            <i style="font-size: large">{{ store.currentProject?.name ?? '' }} </i> 计划吗</span
-          >
-          <template #footer>
-            <span class="dialog-footer">
-              <el-button type="primary" @click="deleteDialogVisible = false">取消</el-button>
-              <el-button @click="handleDelete"> 确定 </el-button>
-            </span>
-          </template>
-        </el-dialog>
+        <Teleport to="body">
+          <el-dialog v-model="deleteDialogVisible" title="警告" width="30%" align-center>
+            <span
+              >确定删除
+              <i style="font-size: large">{{ store.currentProject?.name ?? '' }} </i> 计划吗</span
+            >
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button type="primary" @click="deleteDialogVisible = false">取消</el-button>
+                <el-button @click="handleDelete"> 确定 </el-button>
+              </span>
+            </template>
+          </el-dialog>
+        </Teleport>
       </div>
 
       <div class="body">
@@ -373,7 +369,6 @@ const handleTest = () => {
       </div>
       <div class="footer">
         <el-button @click="back2Today">today</el-button>
-        <el-button @click="handleTest">test</el-button>
         <p class="footer-label">{{ graphMode }}</p>
         <p class="footer-label">{{ offset }}</p>
       </div>

@@ -5,8 +5,22 @@ const behaviors: Record<string, unknown> = {
   'possible-drag-node': PossibleNodeDrag
 }
 
-export function registerBehaviors() {
-  for (const key in behaviors) {
-    G6.registerBehavior(key, <BehaviorOption>behaviors[key])
-  }
+for (const key in behaviors) {
+  G6.registerBehavior(key, <BehaviorOption>behaviors[key])
 }
+
+G6.registerNode(
+  'task-node',
+  {
+    draw(cfg, group) {
+      const keyShape = group.addShape('rect', {
+        attrs: {
+          fill: '#fff',
+          ...cfg.style
+        }
+      })
+      return keyShape
+    }
+  },
+  'rect'
+)
