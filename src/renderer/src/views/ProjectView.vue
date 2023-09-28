@@ -103,16 +103,6 @@ onMounted(() => {
         lineWidth: 1
       }
     },
-    nodeStateStyles: {
-      completed: {
-        type: 'rect',
-        size: [100, 40],
-        style: {
-          fill: '#939393',
-          lineWidth: 1
-        }
-      }
-    },
     defaultEdge: {
       type: 'cubic-horizontal',
       style: {
