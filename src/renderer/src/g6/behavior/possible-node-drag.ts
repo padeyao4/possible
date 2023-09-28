@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import type { Point } from '@antv/g-base'
 import type { G6Event, ICombo, IG6GraphEvent, INode, Item, NodeConfig } from '@antv/g6-core'
@@ -47,6 +48,7 @@ export default {
   },
   onTouchStart(evt: IG6GraphEvent) {
     if (!evt.item) return
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this
     try {
       const touches = (evt.originalEvent as TouchEvent).touches
@@ -72,6 +74,7 @@ export default {
     self.onDragStart(evt)
   },
   onTouchMove(e: IG6GraphEvent) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this
     try {
       const touches = (e.originalEvent as TouchEvent).touches
@@ -396,6 +399,7 @@ export default {
    */
   onDropNode(evt: IG6GraphEvent) {
     if (!this.targets || this.targets.length === 0) return
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this
     const item = evt.item as INode
     const graph: IGraph = self.graph
