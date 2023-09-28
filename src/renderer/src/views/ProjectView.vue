@@ -96,12 +96,7 @@ onMounted(() => {
       ]
     },
     defaultNode: {
-      type: 'rect',
-      size: [100, 40],
-      style: {
-        fill: '#91d2fb',
-        lineWidth: 1
-      }
+      type: 'task-node'
     },
     defaultEdge: {
       type: 'cubic-horizontal',
@@ -140,7 +135,6 @@ onMounted(() => {
     }
     graph?.addItem('node', newNode)
     store.currentProjectAddTask({
-      completed: false,
       completedTime: undefined,
       createdTime: new Date(),
       id: newNode.id,
@@ -148,7 +142,8 @@ onMounted(() => {
       dataIndex: x2Index(newNode.x),
       y: newNode.y,
       children: [],
-      parents: []
+      parents: [],
+      state: 'doing'
     })
   })
 

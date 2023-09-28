@@ -21,7 +21,7 @@ export interface ITask {
   parents: string[]
   createdTime: Date
   completedTime: Date | undefined
-  completed: boolean
+  state: 'completed' | 'timeout' | 'discard' | 'doing'
 }
 
 interface GlobalState {

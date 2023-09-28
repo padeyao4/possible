@@ -15,12 +15,33 @@ G6.registerNode(
     draw(cfg, group) {
       const keyShape = group.addShape('rect', {
         attrs: {
-          fill: '#fff',
+          x: -50,
+          y: -20,
+          width: 100,
+          height: 40,
+          radius: 8,
+          fill: '#70bffa',
+          textAlign: 'center',
           ...cfg.style
-        }
+        },
+        name: 'base-rect',
+        draggable: true
+      })
+      group.addShape('text', {
+        attrs: {
+          width: 100,
+          height: 40,
+          fill: '#fff',
+          textBaseline: 'middle',
+          textAlign: 'center',
+          text: cfg.label,
+          fontSize: 14
+        },
+        draggable: true
       })
       return keyShape
-    }
+    },
+    update: undefined
   },
   'rect'
 )
