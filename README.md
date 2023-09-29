@@ -17,6 +17,8 @@ $ pnpm install
 ### Development
 
 ```bash
+$ npx prisma migrate dev
+$ npx prisma generate
 $ pnpm dev
 ```
 

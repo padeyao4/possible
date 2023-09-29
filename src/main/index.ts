@@ -95,14 +95,6 @@ app
       optimizer.watchWindowShortcuts(window)
     })
 
-    ipcMain.on('project:save', () => {
-      console.log('project:save')
-    })
-    ipcMain.handle('test:query', (_, arg1, arg2) => {
-      console.log('test:query', arg1, arg2)
-      return new Date()
-    })
-
     // 查询状态表中最新的数据
     ipcMain.handle('state:query', async (_, stateId) => {
       const storeItem = await prisma.store.findFirst({
