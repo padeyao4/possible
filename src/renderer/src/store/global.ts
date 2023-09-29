@@ -174,5 +174,6 @@ export const useGlobalStore = defineStore('global', {
       const parents = this.currentProject?.tasks.find((t: ITask) => t.id === targetId)?.parents
       parents?.splice(parents?.indexOf(sourceId), 1)
     }
-  }
+  },
+  persist: true
 })

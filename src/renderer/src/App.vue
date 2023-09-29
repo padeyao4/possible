@@ -5,7 +5,6 @@ import { RouterView } from 'vue-router'
 import { nextTick, ref } from 'vue'
 
 const store = useGlobalStore()
-store.$hydrate()
 
 const handleTodayClick = () => {
   store.active = 'today'
