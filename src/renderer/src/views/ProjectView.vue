@@ -10,6 +10,9 @@ import { normalX, x2Index } from '@renderer/util'
 import router from '@renderer/router'
 import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
 
+// const props = defineProps<{ id: string }>()
+// const route = useRoute()
+
 const container = ref<HTMLElement>()
 const store = useGlobalStore()
 

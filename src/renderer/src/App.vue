@@ -15,12 +15,11 @@ const handleTodayClick = () => {
 }
 
 const handleItemClick = (id: string) => {
-  store.setActive(id)
+  store.active = id
   router.push({
-    name: 'summery',
+    path: `/summery/${id}`,
     replace: true
   })
-  // store.$patch({ active: id })
 }
 
 const itemInputRef = ref()

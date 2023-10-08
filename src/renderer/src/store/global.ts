@@ -30,7 +30,7 @@ export interface ITask {
 export const useGlobalStore = defineStore('global', {
   state: () => ({
     active: '',
-    projects: [] as IProject[]
+    projects: {} as Record<string, IProject>
   }),
   getters: {
     dataByDay(day = 0) {
