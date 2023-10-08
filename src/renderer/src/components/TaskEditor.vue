@@ -52,7 +52,7 @@ const currentTaskTile = computed({
     props.graph.updateItem(item, {
       label: title
     })
-    store.setCurrentProjectTask({
+    store.updateCurrentProjectTask({
       id: props?.taskId ?? '',
       name: title
     } as ITask)

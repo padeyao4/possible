@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { type Point } from '@antv/g-base'
 import { v4 as uuidv4 } from 'uuid'
-import type { EdgeConfig, GraphData, INode } from '@antv/g6-core'
+import type { EdgeConfig, GraphData, INode, NodeConfig } from '@antv/g6-core'
 import type { IEdge } from '@antv/g6'
 
 export interface IProject {
@@ -79,12 +79,15 @@ export const useGlobalStore = defineStore('global', {
       return {
         nodes: tasks.map((v: ITask) => {
           return {
-            id: v.id,
-            name: v.name,
-            x: v.dataIndex * 120 + 60,
-            y: v.y,
-            completed: true
-          }
+            ...v,
+            ...{
+              // id: v.id,
+              // name: v.name,
+              x: v.dataIndex * 120 + 60,
+              y: v.y,
+              state: v?.state ?? 'completed'
+            }
+          } as unknown as NodeConfig
         }),
         edges
       }
@@ -121,7 +124,7 @@ export const useGlobalStore = defineStore('global', {
     currentProjectAddTask(task: ITask) {
       this.currentProject?.tasks.push(task)
     },
-    setCurrentProjectTask(task: ITask) {
+    updateCurrentProjectTask(task: ITask) {
       const currentTask = this.currentProject?.tasks.find((t: ITask) => t.id === task.id)
       if (currentTask) {
         const tmp = { ...currentTask, ...task }

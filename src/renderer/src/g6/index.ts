@@ -9,6 +9,13 @@ for (const key in behaviors) {
   G6.registerBehavior(key, <BehaviorOption>behaviors[key])
 }
 
+const stateMapper = {
+  completed: '#bdbbbb',
+  normal: '#70bffa',
+  timeout: '#d9958d',
+  discard: '#e7e590'
+}
+
 G6.registerNode(
   'task-node',
   {
@@ -20,7 +27,7 @@ G6.registerNode(
           width: 100,
           height: 40,
           radius: 8,
-          fill: '#70bffa',
+          fill: (cfg.state as string) === '' ? '#70bffa' : stateMapper[cfg.state as string],
           textAlign: 'center',
           ...cfg.style
         },

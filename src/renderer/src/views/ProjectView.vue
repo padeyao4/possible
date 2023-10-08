@@ -2,7 +2,6 @@
 import { Graph, type IEdge, Menu } from '@antv/g6'
 import type { INode } from '@antv/g6-core'
 import { type Item } from '@antv/g6-core'
-// import TaskDrawer from '@renderer/components/TaskEditor.vue'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possible-grid'
@@ -10,9 +9,6 @@ import { type ITask, useGlobalStore } from '@renderer/store/global'
 import { normalX, x2Index } from '@renderer/util'
 import router from '@renderer/router'
 import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
-
-// const visible = ref<boolean>(false)
-// const activeTaskId = ref<string>('')
 
 const container = ref<HTMLElement>()
 const store = useGlobalStore()
@@ -49,11 +45,6 @@ const timeItems = computed(() => {
 const translateX = computed(() => {
   return (offset.value.x % 120) - 240
 })
-
-// const openNodeEditor = (id: string) => {
-//   activeTaskId.value = id
-//   visible.value = true
-// }
 
 onMounted(() => {
   graph = new Graph({
@@ -129,32 +120,30 @@ onMounted(() => {
   })
 
   graph.on('canvas:dblclick', (e) => {
-    const newNode = {
-      id: uuidv4(),
-      label: 'untitled',
-      x: normalX(e.x),
-      y: e.y
-    }
-    graph?.addItem('node', newNode)
-    store.currentProjectAddTask({
+    const nx = normalX(e.x)
+    const newTaskModel = {
       completedTime: undefined,
       createdTime: new Date(),
-      id: newNode.id,
-      name: newNode.label,
-      dataIndex: x2Index(newNode.x),
-      y: newNode.y,
+      id: uuidv4(),
+      name: 'untitled',
+      dataIndex: x2Index(nx),
+      x: normalX(nx),
+      y: e.y,
       children: [],
       parents: [],
       state: 'normal',
       detail: '',
       note: '',
       target: ''
-    })
+    }
+    graph?.addItem('node', newTaskModel)
   })
+
+  // todo 监听 graph 数据变化，并保存数据
 
   graph.on('node:dragend', (e) => {
     const model = (e.item as Item).getModel()
-    store.setCurrentProjectTask({
+    store.updateCurrentProjectTask({
       id: model.id,
       dataIndex: x2Index(model.x as number),
       y: model.y
