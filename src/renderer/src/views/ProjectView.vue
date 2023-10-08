@@ -12,7 +12,6 @@ import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
 
 const container = ref<HTMLElement>()
 const store = useGlobalStore()
-const graphMode = ref<string>()
 
 let graph: Graph | null = null
 const graphRef = ref<Graph | null>()
@@ -198,11 +197,17 @@ onMounted(() => {
     }
 
     // 存储边数据
-    store.currentProjectAddEdge(edge)
+    // store.currentProjectAddEdge(edge)
   })
 
-  graph.on('aftermodechange', (e) => {
-    graphMode.value = e.mode as string
+  graph.on('afterupdateitem', (e) => {
+    console.info('after update item', e.item?.getModel())
+  })
+  graph.on('afterremoveitem', (e) => {
+    console.info('after remove item', e.item)
+  })
+  graph.on('afteradditem', (e) => {
+    console.info('after add item', e.item?.getModel())
   })
 
   graphRef.value = graph
@@ -427,7 +432,7 @@ const editorTaskStatus = computed({
       </div>
       <div class="footer">
         <el-button @click="back2Today">today</el-button>
-        <p class="footer-label">{{ graphMode }}</p>
+        <p class="footer-label">{{ graphRef?.getCurrentMode() }}</p>
         <p class="footer-label">{{ offset }}</p>
       </div>
     </div>

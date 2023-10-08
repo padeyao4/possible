@@ -27,22 +27,10 @@ export interface ITask {
   note: string // 笔记
 }
 
-interface GlobalState {
-  /**
-   * 当前激活的项目id
-   */
-  active: string
-  projects: Record<string, IProject>
-  /**
-   * 今天是距离2023.9.1的日期距离
-   */
-  // todayIndex: number
-}
-
 export const useGlobalStore = defineStore('global', {
-  state: (): GlobalState => ({
+  state: () => ({
     active: '',
-    projects: {}
+    projects: [] as IProject[]
   }),
   getters: {
     dataByDay(day = 0) {
@@ -103,6 +91,9 @@ export const useGlobalStore = defineStore('global', {
     }
   },
   actions: {
+    setActive(id: string) {
+      this.active = id
+    },
     createProjectByName(name: string) {
       const project: IProject = {
         name,
@@ -120,9 +111,6 @@ export const useGlobalStore = defineStore('global', {
         offset.x = point.x
         offset.y = point.y
       }
-    },
-    currentProjectAddTask(task: ITask) {
-      this.currentProject?.tasks.push(task)
     },
     updateCurrentProjectTask(task: ITask) {
       const currentTask = this.currentProject?.tasks.find((t: ITask) => t.id === task.id)

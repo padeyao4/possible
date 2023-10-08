@@ -15,11 +15,12 @@ const handleTodayClick = () => {
 }
 
 const handleItemClick = (id: string) => {
+  store.setActive(id)
   router.push({
     name: 'summery',
     replace: true
   })
-  store.$patch({ active: id })
+  // store.$patch({ active: id })
 }
 
 const itemInputRef = ref()
