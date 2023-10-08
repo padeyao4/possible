@@ -34,7 +34,7 @@ G6.registerNode(
           fill: '#fff',
           textBaseline: 'middle',
           textAlign: 'center',
-          text: cfg.label,
+          text: cfg.name,
           fontSize: 14
         },
         draggable: true

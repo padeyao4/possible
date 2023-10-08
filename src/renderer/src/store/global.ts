@@ -22,6 +22,9 @@ export interface ITask {
   createdTime: Date
   completedTime: Date | undefined
   state: 'completed' | 'timeout' | 'discard' | 'normal'
+  target: string // 任务目标
+  detail: string // 任务详情
+  note: string // 笔记
 }
 
 interface GlobalState {
@@ -77,7 +80,7 @@ export const useGlobalStore = defineStore('global', {
         nodes: tasks.map((v: ITask) => {
           return {
             id: v.id,
-            label: v.name,
+            name: v.name,
             x: v.dataIndex * 120 + 60,
             y: v.y,
             completed: true

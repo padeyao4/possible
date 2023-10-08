@@ -2,7 +2,7 @@
 import { Graph, type IEdge, Menu } from '@antv/g6'
 import type { INode } from '@antv/g6-core'
 import { type Item } from '@antv/g6-core'
-import TaskDrawer from '@renderer/components/TaskEditor.vue'
+// import TaskDrawer from '@renderer/components/TaskEditor.vue'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possible-grid'
@@ -11,15 +11,15 @@ import { normalX, x2Index } from '@renderer/util'
 import router from '@renderer/router'
 import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
 
-const visible = ref<boolean>(false)
-const activeTaskId = ref<string>('')
+// const visible = ref<boolean>(false)
+// const activeTaskId = ref<string>('')
 
 const container = ref<HTMLElement>()
 const store = useGlobalStore()
 const graphMode = ref<string>()
 
 let graph: Graph | null = null
-const graphRef = ref()
+const graphRef = ref<Graph | null>()
 
 const offset = computed(() => {
   return store.currentProject?.offset ?? { x: 0, y: 0 }
@@ -50,10 +50,10 @@ const translateX = computed(() => {
   return (offset.value.x % 120) - 240
 })
 
-const openNodeEditor = (id: string) => {
-  activeTaskId.value = id
-  visible.value = true
-}
+// const openNodeEditor = (id: string) => {
+//   activeTaskId.value = id
+//   visible.value = true
+// }
 
 onMounted(() => {
   graph = new Graph({
@@ -122,7 +122,9 @@ onMounted(() => {
   // open drawer editor
   graph.on('node:dblclick', (e) => {
     if (graph?.getCurrentMode() === 'default') {
-      openNodeEditor((e.item as Item).getID())
+      // openNodeEditor((e.item as Item).getID())
+      editorTaskId.value = (e.item as Item).getID()
+      editorVisible.value = true
     }
   })
 
@@ -143,7 +145,10 @@ onMounted(() => {
       y: newNode.y,
       children: [],
       parents: [],
-      state: 'normal'
+      state: 'normal',
+      detail: '',
+      note: '',
+      target: ''
     })
   })
 
@@ -245,6 +250,7 @@ const back2Today = () => {
   graph?.translate(-dx, 0)
 }
 
+// ------------------------ project title ---------------------------
 const titleEditEnable = ref<boolean>(false)
 const titleRef = ref()
 
@@ -273,6 +279,51 @@ const currentProjectName = computed({
   },
   set: (v) => {
     store.projects[store.active].name = v
+  }
+})
+
+// -------------------- editor --------------------
+const editorTaskId = ref('')
+const editorVisible = ref(false)
+
+const editorOnClose = () => {
+  editorVisible.value = false
+}
+
+const editorTaskModel = computed(() => {
+  return graphRef.value?.findById(editorTaskId.value).getModel()
+})
+
+const editorTaskName = computed({
+  get: () => {
+    return editorTaskModel.value?.name
+  },
+  set: (name) => {
+    graphRef.value?.updateItem(editorTaskId.value, { name })
+  }
+})
+const editorTaskDetail = computed({
+  get: () => {
+    return editorTaskModel.value?.detail
+  },
+  set: (detail) => {
+    graphRef.value?.updateItem(editorTaskId.value, { detail })
+  }
+})
+const editorTaskTarget = computed({
+  get: () => {
+    return editorTaskModel.value?.target
+  },
+  set: (target) => {
+    graphRef.value?.updateItem(editorTaskId.value, { target })
+  }
+})
+const editorTaskNote = computed({
+  get: () => {
+    return editorTaskModel.value?.note
+  },
+  set: (note) => {
+    graphRef.value?.updateItem(editorTaskId.value, { note })
   }
 })
 </script>
@@ -328,11 +379,19 @@ const currentProjectName = computed({
 
       <div class="body">
         <Teleport to="body">
-          <task-drawer
-            v-model:visible="visible"
-            :graph="graphRef"
-            :task-id="activeTaskId"
-          ></task-drawer>
+          <el-drawer
+            v-model="editorVisible"
+            :close-on-click-modal="false"
+            :show-close="true"
+            @close="editorOnClose"
+          >
+            <div>
+              <el-input v-model="editorTaskName" />
+              <el-input v-model="editorTaskTarget" />
+              <el-input v-model="editorTaskDetail" />
+              <el-input v-model="editorTaskNote" />
+            </div>
+          </el-drawer>
         </Teleport>
         <div
           class="time-bar"
