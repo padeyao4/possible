@@ -143,7 +143,7 @@ onMounted(() => {
       y: newNode.y,
       children: [],
       parents: [],
-      state: 'doing'
+      state: 'normal'
     })
   })
 
@@ -276,6 +276,7 @@ const currentProjectName = computed({
   }
 })
 </script>
+
 <template>
   <div>
     <div class="main">
@@ -326,12 +327,13 @@ const currentProjectName = computed({
       </div>
 
       <div class="body">
-        <task-drawer
-          v-model:visible="visible"
-          :graph="graphRef"
-          :task-id="activeTaskId"
-        ></task-drawer>
-
+        <Teleport to="body">
+          <task-drawer
+            v-model:visible="visible"
+            :graph="graphRef"
+            :task-id="activeTaskId"
+          ></task-drawer>
+        </Teleport>
         <div
           class="time-bar"
           @wheel="
