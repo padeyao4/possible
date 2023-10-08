@@ -326,6 +326,15 @@ const editorTaskNote = computed({
     graphRef.value?.updateItem(editorTaskId.value, { note })
   }
 })
+
+const editorTaskStatus = computed({
+  get: () => {
+    return editorTaskModel.value?.state as string
+  },
+  set: (state) => {
+    graphRef.value?.updateItem(editorTaskId.value, { state })
+  }
+})
 </script>
 
 <template>
@@ -386,10 +395,24 @@ const editorTaskNote = computed({
             @close="editorOnClose"
           >
             <div>
-              <el-input v-model="editorTaskName" />
-              <el-input v-model="editorTaskTarget" />
-              <el-input v-model="editorTaskDetail" />
-              <el-input v-model="editorTaskNote" />
+              <div class="editor-input-gap">
+                <el-input v-model="editorTaskName" />
+              </div>
+              <div class="editor-input-gap">
+                <el-input v-model="editorTaskTarget" />
+              </div>
+              <div class="editor-input-gap">
+                <el-input v-model="editorTaskDetail" />
+              </div>
+              <div class="editor-input-gap">
+                <el-input v-model="editorTaskNote" />
+              </div>
+              <el-radio-group v-model="editorTaskStatus">
+                <el-radio label="completed">完成</el-radio>
+                <el-radio label="timeout">超时</el-radio>
+                <el-radio label="discard">放弃</el-radio>
+                <el-radio label="normal">正常</el-radio>
+              </el-radio-group>
             </div>
           </el-drawer>
         </Teleport>
@@ -523,5 +546,9 @@ const editorTaskNote = computed({
 
 .dialog-footer button:first-child {
   margin-right: 10px;
+}
+
+.editor-input-gap {
+  margin: 8px 0 8px 0;
 }
 </style>
