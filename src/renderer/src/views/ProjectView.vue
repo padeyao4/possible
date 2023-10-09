@@ -1,41 +1,75 @@
 <script setup lang="ts">
 import { Graph, type IEdge, Menu } from '@antv/g6'
-import type { INode } from '@antv/g6-core'
+import type { IG6GraphEvent, INode } from '@antv/g6-core'
 import { type Item } from '@antv/g6-core'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possible-grid'
-import { type ITask, useGlobalStore } from '@renderer/store/global'
 import { normalX, x2Index } from '@renderer/util'
-import router from '@renderer/router'
 import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
+import { useProjectStore } from '@renderer/store/project'
+import router from '@renderer/router'
+import { IRelation, ITask } from '@renderer/store'
 
-// const props = defineProps<{ id: string }>()
-// const route = useRoute()
+const props = defineProps<{
+  id: string
+}>()
+const projectStore = useProjectStore()
 
 const container = ref<HTMLElement>()
-const store = useGlobalStore()
 
 let graph: Graph | null = null
 const graphRef = ref<Graph | null>()
 
-const offset = computed(() => {
-  return store.currentProject?.offset ?? { x: 0, y: 0 }
+const projectTitle = computed<string>({
+  get() {
+    return projectStore.get(props.id).name
+  },
+  set(name) {
+    projectStore.update(props.id, { name })
+  }
 })
 
-watch([() => store.active, graphRef.value], () => {
-  const setOriginPoint = () => {
-    const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
-    store.setCurrentProjectOffset({ x, y })
+const offset = computed(() => {
+  return projectStore.get(props.id).offset ?? { x: 0, y: 0 }
+})
+
+const viewportChange = () => {
+  const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
+  projectStore.update(props.id, { offset: { x, y } })
+}
+
+const afterRemoveItem = (e: IG6GraphEvent) => {
+  console.log('remove item', e.item, e)
+  if (e.type === 'node') {
+    projectStore.deleteTask(props.id, (e.item as unknown as ITask).id)
   }
-  graph?.off('viewportchange', setOriginPoint)
-  graph?.read(store.graphData)
+  if (e.type === 'edge') {
+    projectStore.deleteRelation(props.id, e.item?.id as string)
+  }
+}
+
+const afterAddItem = (e: IG6GraphEvent) => {
+  console.log('add item', e.item?.getModel())
+  if (e.item?.getType() === 'node') {
+    projectStore.addTask(props.id, e.item.getModel() as unknown as ITask)
+  }
+  if (e.item?.getType() === 'edge') {
+    projectStore.addRelation(props.id, e.item.getModel() as unknown as IRelation)
+  }
+}
+
+watch([props, graphRef], () => {
+  graph?.off('viewportchange', viewportChange)
+  graph?.off('afterremoveitem', afterRemoveItem)
+  graph?.off('afteradditem', afterAddItem)
+  graph?.read(projectStore.data(props.id))
   const { x: ox, y: oy } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
   const { x: sx, y: sy } = offset.value
-  const dx = sx - ox
-  const dy = sy - oy
-  graph?.translate(dx, dy)
-  graph?.on('viewportchange', setOriginPoint)
+  graph?.translate(sx - ox, sy - oy)
+  graph?.on('viewportchange', viewportChange)
+  graph?.on('afterremoveitem', afterRemoveItem)
+  graph?.on('afteradditem', afterAddItem)
 })
 
 const timeItems = computed(() => {
@@ -58,15 +92,6 @@ onMounted(() => {
         offsetY: -(container.value?.offsetTop ?? 0),
         getContent: () => '删除',
         handleMenuClick: (_: HTMLElement, item: Item) => {
-          const id = item.getID()
-          const itemType = item.getType()
-          if (itemType === 'node') {
-            store.deleteCurrentProjectTaskById(id)
-          }
-          if (itemType === 'edge') {
-            const model = (item as IEdge).getModel()
-            store.currentProjectDeleteEdge(model.source as string, model.target as string)
-          }
           graph?.removeItem(item)
         }
       })
@@ -115,7 +140,6 @@ onMounted(() => {
   // open drawer editor
   graph.on('node:dblclick', (e) => {
     if (graph?.getCurrentMode() === 'default') {
-      // openNodeEditor((e.item as Item).getID())
       editorTaskId.value = (e.item as Item).getID()
       editorVisible.value = true
     }
@@ -131,8 +155,6 @@ onMounted(() => {
       dataIndex: x2Index(nx),
       x: normalX(nx),
       y: e.y,
-      children: [],
-      parents: [],
       state: 'normal',
       detail: '',
       note: '',
@@ -141,16 +163,6 @@ onMounted(() => {
     graph?.addItem('node', newTaskModel)
   })
 
-  // todo 监听 graph 数据变化，并保存数据
-
-  graph.on('node:dragend', (e) => {
-    const model = (e.item as Item).getModel()
-    store.updateCurrentProjectTask({
-      id: model.id,
-      dataIndex: x2Index(model.x as number),
-      y: model.y
-    } as ITask)
-  })
   graph.on('keydown', (e) => {
     if (e.key === 'Control') {
       graph?.setMode('edit')
@@ -198,19 +210,6 @@ onMounted(() => {
       })
       return
     }
-
-    // 存储边数据
-    // store.currentProjectAddEdge(edge)
-  })
-
-  graph.on('afterupdateitem', (e) => {
-    console.info('after update item', e.item?.getModel())
-  })
-  graph.on('afterremoveitem', (e) => {
-    console.info('after remove item', e.item)
-  })
-  graph.on('afteradditem', (e) => {
-    console.info('after add item', e.item?.getModel())
   })
 
   graphRef.value = graph
@@ -265,19 +264,9 @@ const submitTitle = () => {
 const deleteDialogVisible = ref(false)
 
 const handleDelete = () => {
-  router.push({ name: 'home' })
-  delete store.projects[store.active]
-  store.active = 'today'
+  router.push({ name: 'today' })
+  projectStore.delete(props.id)
 }
-
-const currentProjectName = computed({
-  get: () => {
-    return store.projects[store.active].name
-  },
-  set: (v) => {
-    store.projects[store.active].name = v
-  }
-})
 
 // -------------------- editor --------------------
 const editorTaskId = ref('')
@@ -332,6 +321,16 @@ const editorTaskStatus = computed({
     graphRef.value?.updateItem(editorTaskId.value, { state })
   }
 })
+
+const handleNodeTest = () => {
+  const nodes = graphRef.value?.getNodes()
+  console.info('nodes', nodes)
+}
+
+const handleEdgeTest = () => {
+  const edges = graphRef.value?.getEdges()
+  console.info('edges', edges)
+}
 </script>
 
 <template>
@@ -342,13 +341,13 @@ const editorTaskStatus = computed({
           <input
             v-if="titleEditEnable"
             ref="titleRef"
-            v-model="currentProjectName"
+            v-model="projectTitle"
             class="title-input"
             @blur="submitTitle"
             @keydown.enter="submitTitle"
           />
           <div v-else class="title" @dblclick="editTitle">
-            {{ store.currentProject?.name ?? '' }}
+            {{ projectTitle ?? '' }}
           </div>
         </div>
         <el-dropdown trigger="click">
@@ -370,8 +369,7 @@ const editorTaskStatus = computed({
         <Teleport to="body">
           <el-dialog v-model="deleteDialogVisible" title="警告" width="30%" align-center>
             <span
-              >确定删除
-              <i style="font-size: large">{{ store.currentProject?.name ?? '' }} </i> 计划吗</span
+              >确定删除 <i style="font-size: large">{{ projectTitle ?? '' }} </i> 计划吗</span
             >
             <template #footer>
               <span class="dialog-footer">
@@ -436,6 +434,8 @@ const editorTaskStatus = computed({
       <div class="footer">
         <el-button @click="back2Today">today</el-button>
         <p class="footer-label">{{ graphRef?.getCurrentMode() }}</p>
+        <el-button @click="handleNodeTest">NodeTest</el-button>
+        <el-button @click="handleEdgeTest">EdgeTest</el-button>
         <p class="footer-label">{{ offset }}</p>
       </div>
     </div>

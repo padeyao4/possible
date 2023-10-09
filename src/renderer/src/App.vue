@@ -1,50 +1,34 @@
 <script setup lang="ts">
-import { useGlobalStore } from '@renderer/store/global'
 import router from '@renderer/router'
-import { RouterView } from 'vue-router'
-import { nextTick, ref } from 'vue'
+import { RouterView, useRoute } from 'vue-router'
+import { computed } from 'vue'
+import { useProjectStore } from '@renderer/store/project'
 
-const store = useGlobalStore()
+const projectStore = useProjectStore()
+const route = useRoute()
+
+const activeId = computed(() => {
+  return route.params.id ?? 'default'
+})
 
 const handleTodayClick = () => {
-  store.active = 'today'
   router.push({
-    name: 'home',
+    name: 'today',
     replace: true
   })
 }
 
 const handleItemClick = (id: string) => {
-  store.active = id
   router.push({
     path: `/project/${id}`,
     replace: true
   })
 }
 
-const itemInputRef = ref()
-const itemInputVisible = ref(false)
-
-const setItemInputRef = (el: unknown) => {
-  console.log('el', el)
-  itemInputRef.value = el
-}
-
-const onSubmitAddButton = () => {
-  itemInputVisible.value = false
-}
-
 const clickAddButton = () => {
-  const project = store.createProjectByName('新任务列表')
-  project.offset.x =
-    -Math.floor((new Date().valueOf() - new Date('2023/9/1').valueOf()) / 86400000) * 120
-  store.active = project.id
-  itemInputVisible.value = true
+  const projectId = projectStore.create('新任务列表')
   router.push({
-    name: 'summery'
-  })
-  nextTick(() => {
-    itemInputRef.value.focus()
+    path: `/project/${projectId}`
   })
 }
 </script>
@@ -53,7 +37,7 @@ const clickAddButton = () => {
   <div class="main">
     <div class="body">
       <div class="side">
-        <div class="today" :class="{ active: store.active === 'today' }" @click="handleTodayClick">
+        <div class="today" :class="{ active: activeId === 'default' }" @click="handleTodayClick">
           <el-icon :size="20">
             <Sunny />
           </el-icon>
@@ -62,24 +46,13 @@ const clickAddButton = () => {
         <hr />
         <div class="list">
           <div
-            v-for="item in store.projects"
+            v-for="item in projectStore.list"
             :key="item.id"
             class="list-item"
-            :class="{ active: item.id === store.active }"
+            :class="{ active: item.id === activeId }"
             @click="handleItemClick(item.id)"
           >
-            <template v-if="item.id === store.active && itemInputVisible">
-              <input
-                :ref="(el) => setItemInputRef(el)"
-                v-model="item.name"
-                class="item-input"
-                @blur="onSubmitAddButton"
-                @keydown.enter="onSubmitAddButton"
-              />
-            </template>
-            <template v-else>
-              {{ item.name }}
-            </template>
+            {{ item.name }}
           </div>
         </div>
         <hr />

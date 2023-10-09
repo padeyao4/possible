@@ -3,6 +3,9 @@ import { app, BrowserWindow, Menu, shell, Tray } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 
+// close security warnings
+process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
