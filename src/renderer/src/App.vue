@@ -17,7 +17,7 @@ const handleTodayClick = () => {
 const handleItemClick = (id: string) => {
   store.active = id
   router.push({
-    path: `/summery/${id}`,
+    path: `/project/${id}`,
     replace: true
   })
 }

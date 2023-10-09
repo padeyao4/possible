@@ -11,8 +11,8 @@ const router = createRouter({
       component: TodayView
     },
     {
-      path: '/summery/:id',
-      name: 'summery',
+      path: '/project/:id',
+      name: 'project',
       component: ProjectView,
       props: true
     }
