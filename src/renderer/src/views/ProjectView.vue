@@ -5,7 +5,7 @@ import { type Item } from '@antv/g6-core'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possible-grid'
-import { normalX, x2Index } from '@renderer/util'
+import { date2Day, index2Date, normalX, x2Index } from '@renderer/util'
 import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
 import { useProjectStore } from '@renderer/store/project'
 import router from '@renderer/router'
@@ -41,7 +41,6 @@ const viewportChange = () => {
 }
 
 const afterRemoveItem = (e: IG6GraphEvent) => {
-  console.log('remove item', e.item, e)
   if (e.type === 'node') {
     projectStore.deleteTask(props.id, (e.item as unknown as NodeConfig).id)
   }
@@ -442,7 +441,12 @@ const handleEdgeTest = () => {
             :style="{ translate: translateX + 'px' }"
             :class="{ active: timeItem === timeIndex }"
           >
-            {{ new Intl.DateTimeFormat('zh-Hans').format(new Date((timeItem + 19600) * 86400000)) }}
+            <div>
+              <div>
+                {{ new Intl.DateTimeFormat('zh-Hans').format(index2Date(timeItem)) }}
+              </div>
+              <p>星期{{ date2Day(index2Date(timeItem)) }}</p>
+            </div>
           </div>
         </div>
         <div id="container" ref="container" class="container"></div>
@@ -493,7 +497,7 @@ const handleEdgeTest = () => {
     .time-bar {
       z-index: 99;
       user-select: none;
-      height: 32px;
+      height: 40px;
       display: flex;
       align-items: center;
       overflow-x: hidden;
