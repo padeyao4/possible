@@ -35,7 +35,7 @@ const clickAddButton = () => {
 
 const inputVisible = ref(false)
 
-const handleInputRef = (e: HTMLElement) => {
+const handleInputRef = (e: HTMLInputElement | undefined) => {
   e?.focus()
 }
 
@@ -73,7 +73,7 @@ const projectTitle = computed<string>({
           </template>
           <div v-if="inputVisible" class="list-item active">
             <input
-              :ref="(e) => handleInputRef(e as HTMLElement)"
+              :ref="(e) => handleInputRef(e as HTMLInputElement)"
               v-model="projectTitle"
               class="item-input"
               @blur="inputVisible = false"
