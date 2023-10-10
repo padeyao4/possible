@@ -63,7 +63,7 @@ const afterAddItem = (e: IG6GraphEvent) => {
  * 更新节点防抖
  */
 const debounceAfterUpdateItem = debounce(function (e: IG6GraphEvent) {
-  console.log(e, e.item?.getModel())
+  console.log('debounce update ', e, e.item?.getModel())
   if (e.item?.getType() === 'node') {
     projectStore.updateTask(props.id, e.item.getModel() as unknown as ITask)
   }
@@ -292,49 +292,17 @@ const editorOnClose = () => {
 }
 
 const editorTaskModel = computed(() => {
-  return graphRef.value?.findById(editorTaskId.value).getModel()
-})
-
-const editorTaskName = computed({
-  get: () => {
-    return editorTaskModel.value?.name
-  },
-  set: (name) => {
-    graphRef.value?.updateItem(editorTaskId.value, { name })
-  }
-})
-const editorTaskDetail = computed({
-  get: () => {
-    return editorTaskModel.value?.detail
-  },
-  set: (detail) => {
-    graphRef.value?.updateItem(editorTaskId.value, { detail })
-  }
-})
-const editorTaskTarget = computed({
-  get: () => {
-    return editorTaskModel.value?.target
-  },
-  set: (target) => {
-    graphRef.value?.updateItem(editorTaskId.value, { target })
-  }
-})
-const editorTaskNote = computed({
-  get: () => {
-    return editorTaskModel.value?.note
-  },
-  set: (note) => {
-    graphRef.value?.updateItem(editorTaskId.value, { note })
-  }
-})
-
-const editorTaskStatus = computed({
-  get: () => {
-    return editorTaskModel.value?.state as string
-  },
-  set: (state) => {
-    graphRef.value?.updateItem(editorTaskId.value, { state })
-  }
+  const task = graphRef.value?.findById(editorTaskId.value)?.getModel?.() as unknown as ITask
+  return new Proxy(task, {
+    get: (target, p) => {
+      return Reflect.get(target, p)
+    },
+    set: (target, p, newValue) => {
+      Reflect.set(target, p, newValue)
+      graphRef.value?.updateItem(target.id, target as unknown as NodeConfig)
+      return true
+    }
+  })
 })
 
 const handleNodeTest = () => {
@@ -404,26 +372,28 @@ const handleEdgeTest = () => {
             :show-close="true"
             @close="editorOnClose"
           >
-            <div>
-              <div class="editor-input-gap">
-                <el-input v-model="editorTaskName" />
-              </div>
-              <div class="editor-input-gap">
-                <el-input v-model="editorTaskTarget" />
-              </div>
-              <div class="editor-input-gap">
-                <el-input v-model="editorTaskDetail" />
-              </div>
-              <div class="editor-input-gap">
-                <el-input v-model="editorTaskNote" />
-              </div>
-              <el-radio-group v-model="editorTaskStatus">
-                <el-radio label="completed">完成</el-radio>
-                <el-radio label="timeout">超时</el-radio>
-                <el-radio label="discard">放弃</el-radio>
-                <el-radio label="normal">正常</el-radio>
-              </el-radio-group>
-            </div>
+            <el-form :model="editorTaskModel">
+              <el-form-item label="名称">
+                <el-input v-model="editorTaskModel.name" />
+              </el-form-item>
+              <el-form-item label="目标">
+                <el-input v-model="editorTaskModel.target" />
+              </el-form-item>
+              <el-form-item label="详情">
+                <el-input v-model="editorTaskModel.detail" />
+              </el-form-item>
+              <el-form-item label="记录">
+                <el-input v-model="editorTaskModel.note" type="textarea" />
+              </el-form-item>
+              <el-form-item>
+                <el-radio-group v-model="editorTaskModel.state">
+                  <el-radio label="completed">完成</el-radio>
+                  <el-radio label="timeout">超时</el-radio>
+                  <el-radio label="discard">放弃</el-radio>
+                  <el-radio label="normal">正常</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-form>
           </el-drawer>
         </Teleport>
         <div
@@ -563,9 +533,5 @@ const handleEdgeTest = () => {
 
 .dialog-footer button:first-child {
   margin-right: 10px;
-}
-
-.editor-input-gap {
-  margin: 8px 0 8px 0;
 }
 </style>
