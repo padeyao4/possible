@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import router from '@renderer/router'
 import { RouterView, useRoute } from 'vue-router'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useProjectStore } from '@renderer/store/project'
 
 const projectStore = useProjectStore()
 const route = useRoute()
 
 const activeId = computed(() => {
-  return route.params.id ?? 'default'
+  return (route.params.id ?? 'default') as string
 })
 
 const handleTodayClick = () => {
@@ -27,10 +27,26 @@ const handleItemClick = (id: string) => {
 
 const clickAddButton = () => {
   const projectId = projectStore.create('新任务列表')
+  inputVisible.value = true
   router.push({
     path: `/project/${projectId}`
   })
 }
+
+const inputVisible = ref(false)
+
+const handleInputRef = (e: HTMLElement) => {
+  e?.focus()
+}
+
+const projectTitle = computed<string>({
+  get() {
+    return projectStore.get(activeId.value).name
+  },
+  set(name) {
+    projectStore.update(activeId.value, { name })
+  }
+})
 </script>
 
 <template>
@@ -45,14 +61,24 @@ const clickAddButton = () => {
         </div>
         <hr />
         <div class="list">
-          <div
-            v-for="item in projectStore.list"
-            :key="item.id"
-            class="list-item"
-            :class="{ active: item.id === activeId }"
-            @click="handleItemClick(item.id)"
-          >
-            {{ item.name }}
+          <template v-for="item in projectStore.list" :key="item.id">
+            <div
+              v-if="!inputVisible || item.id !== activeId"
+              class="list-item"
+              :class="{ active: item.id === activeId }"
+              @click="handleItemClick(item.id)"
+            >
+              {{ item.name }}
+            </div>
+          </template>
+          <div v-if="inputVisible" class="list-item active">
+            <input
+              :ref="(e) => handleInputRef(e as HTMLElement)"
+              v-model="projectTitle"
+              class="item-input"
+              @blur="inputVisible = false"
+              @keydown.enter="inputVisible = false"
+            />
           </div>
         </div>
         <hr />

@@ -25,10 +25,10 @@ export const useProjectStore = defineStore('project', {
     },
     data: (state) => {
       return (id: string) => {
-        const project = state.projects.find((p) => p.id === id) ?? ({} as IProject)
+        const project = state.projects.find((p) => p.id === id)
         return {
-          nodes: project.tasks as unknown as NodeConfig[],
-          edges: project.relations as unknown as EdgeConfig[]
+          nodes: (project?.tasks as unknown as NodeConfig[]) ?? [],
+          edges: (project?.relations as unknown as EdgeConfig[]) ?? []
         }
       }
     }
