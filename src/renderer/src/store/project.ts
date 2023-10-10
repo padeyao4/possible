@@ -79,6 +79,18 @@ export const useProjectStore = defineStore('project', {
       if (index !== undefined) {
         project?.relations?.splice(index, 1)
       }
+    },
+    updateTask(id: string, task: ITask) {
+      Object.assign(
+        this.projects.find((p) => p.id === id)?.tasks.find((t) => t.id === task.id) ?? {},
+        task
+      )
+    },
+    updateRelation(id: string, relation: IRelation) {
+      Object.assign(
+        this.projects.find((p) => p.id === id)?.relations.find((r) => r.id === relation.id) ?? {},
+        relation
+      )
     }
   },
   persist: true

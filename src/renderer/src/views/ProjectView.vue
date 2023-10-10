@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Graph, type IEdge, Menu } from '@antv/g6'
-import type { IG6GraphEvent, INode } from '@antv/g6-core'
+import type { EdgeConfig, IG6GraphEvent, INode, NodeConfig } from '@antv/g6-core'
 import { type Item } from '@antv/g6-core'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
@@ -10,6 +10,7 @@ import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
 import { useProjectStore } from '@renderer/store/project'
 import router from '@renderer/router'
 import { IRelation, ITask } from '@renderer/store'
+import { debounce } from '@antv/util'
 
 const props = defineProps<{
   id: string
@@ -42,10 +43,10 @@ const viewportChange = () => {
 const afterRemoveItem = (e: IG6GraphEvent) => {
   console.log('remove item', e.item, e)
   if (e.type === 'node') {
-    projectStore.deleteTask(props.id, (e.item as unknown as ITask).id)
+    projectStore.deleteTask(props.id, (e.item as unknown as NodeConfig).id)
   }
   if (e.type === 'edge') {
-    projectStore.deleteRelation(props.id, e.item?.id as string)
+    projectStore.deleteRelation(props.id, (e.item as unknown as EdgeConfig).id as string)
   }
 }
 
@@ -59,10 +60,24 @@ const afterAddItem = (e: IG6GraphEvent) => {
   }
 }
 
+/**
+ * 更新节点防抖
+ */
+const debounceAfterUpdateItem = debounce(function (e: IG6GraphEvent) {
+  console.log(e, e.item?.getModel())
+  if (e.item?.getType() === 'node') {
+    projectStore.updateTask(props.id, e.item.getModel() as unknown as ITask)
+  }
+  if (e.item?.getType() === 'edge') {
+    projectStore.updateRelation(props.id, e.item.getModel() as unknown as IRelation)
+  }
+}, 500)
+
 watch([props, graphRef], () => {
   graph?.off('viewportchange', viewportChange)
   graph?.off('afterremoveitem', afterRemoveItem)
   graph?.off('afteradditem', afterAddItem)
+  graph?.off('afterupdateitem', debounceAfterUpdateItem)
   graph?.read(projectStore.data(props.id))
   const { x: ox, y: oy } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
   const { x: sx, y: sy } = offset.value
@@ -70,6 +85,7 @@ watch([props, graphRef], () => {
   graph?.on('viewportchange', viewportChange)
   graph?.on('afterremoveitem', afterRemoveItem)
   graph?.on('afteradditem', afterAddItem)
+  graph?.on('afterupdateitem', debounceAfterUpdateItem)
 })
 
 const timeItems = computed(() => {
