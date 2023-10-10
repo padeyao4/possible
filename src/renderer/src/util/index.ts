@@ -14,3 +14,32 @@ export const x2Index = (x: number) => {
 export const normalX = (x: number) => {
   return Math.floor(x / 120) * 120 + 60
 }
+
+/**
+ * 将dataIndex转为date
+ * @param index
+ */
+export function index2Date(index: number) {
+  return new Date((index + 19600) * 86400000)
+}
+
+export function dateFormat(date: Date) {
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+}
+
+/**
+ * 获取星期
+ * @param date
+ */
+export function date2Day(date: Date) {
+  const mapper = {
+    '0': '日',
+    '1': '一',
+    '2': '二',
+    '3': '三',
+    '4': '四',
+    '5': '五',
+    '6': '六'
+  }
+  return mapper[date.getDay()]
+}

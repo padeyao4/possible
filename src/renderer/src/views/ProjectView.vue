@@ -1,42 +1,90 @@
 <script setup lang="ts">
 import { Graph, type IEdge, Menu } from '@antv/g6'
-import type { INode } from '@antv/g6-core'
+import type { EdgeConfig, IG6GraphEvent, INode, NodeConfig } from '@antv/g6-core'
 import { type Item } from '@antv/g6-core'
-import TaskDrawer from '@renderer/components/TaskEditor.vue'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possible-grid'
-import { type ITask, useGlobalStore } from '@renderer/store/global'
-import { normalX, x2Index } from '@renderer/util'
+import { date2Day, index2Date, normalX, x2Index } from '@renderer/util'
+import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
+import { useProjectStore } from '@renderer/store/project'
 import router from '@renderer/router'
+import { IRelation, ITask } from '@renderer/store'
+import { debounce } from '@antv/util'
 
-const visible = ref<boolean>(false)
-const activeTaskId = ref<string>('')
+const props = defineProps<{
+  id: string
+}>()
+const projectStore = useProjectStore()
 
 const container = ref<HTMLElement>()
-const store = useGlobalStore()
-const graphMode = ref<string>()
 
 let graph: Graph | null = null
-const graphRef = ref()
+const graphRef = ref<Graph | null>()
 
-const offset = computed(() => {
-  return store.currentProject?.offset ?? { x: 0, y: 0 }
+const projectTitle = computed<string>({
+  get() {
+    return projectStore.get(props.id).name
+  },
+  set(name) {
+    projectStore.update(props.id, { name })
+  }
 })
 
-watch([() => store.active, () => graphRef.value], () => {
-  const setOriginPoint = () => {
-    const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
-    store.setCurrentProjectOffset({ x, y })
+const offset = computed(() => {
+  return projectStore.get(props.id).offset ?? { x: 0, y: 0 }
+})
+
+const viewportChange = () => {
+  const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
+  projectStore.update(props.id, { offset: { x, y } })
+}
+
+const afterRemoveItem = (e: IG6GraphEvent) => {
+  if (e.type === 'node') {
+    projectStore.deleteTask(props.id, (e.item as unknown as NodeConfig).id)
   }
-  graph?.off('viewportchange', setOriginPoint)
-  graph?.read(store.graphData)
+  if (e.type === 'edge') {
+    projectStore.deleteRelation(props.id, (e.item as unknown as EdgeConfig).id as string)
+  }
+}
+
+const afterAddItem = (e: IG6GraphEvent) => {
+  console.log('add item', e.item?.getModel())
+  if (e.item?.getType() === 'node') {
+    projectStore.addTask(props.id, e.item.getModel() as unknown as ITask)
+  }
+  if (e.item?.getType() === 'edge') {
+    projectStore.addRelation(props.id, e.item.getModel() as unknown as IRelation)
+  }
+}
+
+/**
+ * 更新节点防抖
+ */
+const debounceAfterUpdateItem = debounce(function (e: IG6GraphEvent) {
+  console.log('debounce update ', e, e.item?.getModel())
+  if (e.item?.getType() === 'node') {
+    projectStore.updateTask(props.id, e.item.getModel() as unknown as ITask)
+  }
+  if (e.item?.getType() === 'edge') {
+    projectStore.updateRelation(props.id, e.item.getModel() as unknown as IRelation)
+  }
+}, 500)
+
+watch([props, graphRef], () => {
+  graph?.off('viewportchange', viewportChange)
+  graph?.off('afterremoveitem', afterRemoveItem)
+  graph?.off('afteradditem', afterAddItem)
+  graph?.off('afterupdateitem', debounceAfterUpdateItem)
+  graph?.read(projectStore.data(props.id))
   const { x: ox, y: oy } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
   const { x: sx, y: sy } = offset.value
-  const dx = sx - ox
-  const dy = sy - oy
-  graph?.translate(dx, dy)
-  graph?.on('viewportchange', setOriginPoint)
+  graph?.translate(sx - ox, sy - oy)
+  graph?.on('viewportchange', viewportChange)
+  graph?.on('afterremoveitem', afterRemoveItem)
+  graph?.on('afteradditem', afterAddItem)
+  graph?.on('afterupdateitem', debounceAfterUpdateItem)
 })
 
 const timeItems = computed(() => {
@@ -49,30 +97,16 @@ const translateX = computed(() => {
   return (offset.value.x % 120) - 240
 })
 
-const openNodeEditor = (id: string) => {
-  activeTaskId.value = id
-  visible.value = true
-}
-
 onMounted(() => {
   graph = new Graph({
     container: 'container',
     plugins: [
       new PossibleGrid(),
       new Menu({
-        offsetX: -240,
-        offsetY: -60,
+        offsetX: -(container.value?.offsetLeft ?? 0),
+        offsetY: -(container.value?.offsetTop ?? 0),
         getContent: () => '删除',
         handleMenuClick: (_: HTMLElement, item: Item) => {
-          const id = item.getID()
-          const itemType = item.getType()
-          if (itemType === 'node') {
-            store.deleteCurrentProjectTaskById(id)
-          }
-          if (itemType === 'edge') {
-            const model = (item as IEdge).getModel()
-            store.currentProjectDeleteEdge(model.source as string, model.target as string)
-          }
           graph?.removeItem(item)
         }
       })
@@ -95,12 +129,7 @@ onMounted(() => {
       ]
     },
     defaultNode: {
-      type: 'rect',
-      size: [100, 40],
-      style: {
-        fill: '#91d2fb',
-        lineWidth: 1
-      }
+      type: 'task-node'
     },
     defaultEdge: {
       type: 'cubic-horizontal',
@@ -126,36 +155,29 @@ onMounted(() => {
   // open drawer editor
   graph.on('node:dblclick', (e) => {
     if (graph?.getCurrentMode() === 'default') {
-      openNodeEditor((e.item as Item).getID())
+      editorTaskId.value = (e.item as Item).getID()
+      editorVisible.value = true
     }
   })
 
   graph.on('canvas:dblclick', (e) => {
-    const newNode = {
+    const nx = normalX(e.x)
+    const newTaskModel = {
+      completedTime: undefined,
+      createdTime: new Date(),
       id: uuidv4(),
-      label: 'untitled',
-      x: normalX(e.x),
-      y: e.y
+      name: 'untitled',
+      dataIndex: x2Index(nx),
+      x: normalX(nx),
+      y: e.y,
+      state: 'normal',
+      detail: '',
+      note: '',
+      target: ''
     }
-    graph?.addItem('node', newNode)
-    store.currentProjectAddTask({
-      id: newNode.id,
-      name: newNode.label,
-      dataIndex: x2Index(newNode.x),
-      y: newNode.y,
-      children: [],
-      parents: []
-    })
+    graph?.addItem('node', newTaskModel)
   })
 
-  graph.on('node:dragend', (e) => {
-    const model = (e.item as Item).getModel()
-    store.setCurrentProjectTask({
-      id: model.id,
-      dataIndex: x2Index(model.x as number),
-      y: model.y
-    } as ITask)
-  })
   graph.on('keydown', (e) => {
     if (e.key === 'Control') {
       graph?.setMode('edit')
@@ -168,7 +190,6 @@ onMounted(() => {
   })
   // 处理添加完边后的操作
   graph.on('aftercreateedge', (e) => {
-    console.log('after create edge', e.edge)
     const edge = e.edge as IEdge
 
     const sourceNode = edge.getSource() as INode
@@ -204,13 +225,6 @@ onMounted(() => {
       })
       return
     }
-
-    // 存储边数据
-    store.currentProjectAddEdge(edge)
-  })
-
-  graph.on('aftermodechange', (e) => {
-    graphMode.value = e.mode as string
   })
 
   graphRef.value = graph
@@ -247,56 +261,141 @@ const back2Today = () => {
   graph?.translate(-dx, 0)
 }
 
-/**
- * 删除项目
- */
-const deleteProject = () => {
-  router.push({ name: 'home' })
-  delete store.projects[store.active]
-  store.active = 'today'
-}
-
-const titleEidtEnable = ref<boolean>(false)
+// ------------------------ project title ---------------------------
+const titleEditEnable = ref<boolean>(false)
 const titleRef = ref()
 
 const editTitle = () => {
-  titleEidtEnable.value = true
+  titleEditEnable.value = true
   nextTick(() => {
     titleRef.value.focus()
   })
 }
 
 const submitTitle = () => {
-  titleEidtEnable.value = false
+  titleEditEnable.value = false
+}
+
+const deleteDialogVisible = ref(false)
+
+const handleDelete = () => {
+  router.push({ name: 'today' })
+  projectStore.delete(props.id)
+}
+
+// -------------------- editor --------------------
+const editorTaskId = ref('')
+const editorVisible = ref(false)
+
+const editorOnClose = () => {
+  editorVisible.value = false
+}
+
+const editorTaskModel = computed(() => {
+  const task = graphRef.value?.findById(editorTaskId.value)?.getModel?.() as unknown as ITask
+  return new Proxy(task, {
+    get: (target, p) => {
+      return Reflect.get(target, p)
+    },
+    set: (target, p, newValue) => {
+      Reflect.set(target, p, newValue)
+      graphRef.value?.updateItem(target.id, target as unknown as NodeConfig)
+      return true
+    }
+  })
+})
+
+const handleNodeTest = () => {
+  const nodes = graphRef.value?.getNodes()
+  console.info('nodes', nodes)
+}
+
+const handleEdgeTest = () => {
+  const edges = graphRef.value?.getEdges()
+  console.info('edges', edges)
 }
 </script>
+
 <template>
   <div>
     <div class="main">
       <div class="header">
-        <div class="title">
-          <div v-if="titleEidtEnable">
-            <input
-              ref="titleRef"
-              v-model="store.currentProject.name"
-              class="title-input"
-              @blur="submitTitle"
-              @keydown.enter="submitTitle"
-            />
-          </div>
-          <div v-else style="padding-left: 1px" @dblclick="editTitle">
-            {{ store.currentProject.name }}
+        <div>
+          <input
+            v-if="titleEditEnable"
+            ref="titleRef"
+            v-model="projectTitle"
+            class="title-input"
+            @blur="submitTitle"
+            @keydown.enter="submitTitle"
+          />
+          <div v-else class="title" @dblclick="editTitle">
+            {{ projectTitle ?? '' }}
           </div>
         </div>
+        <el-dropdown trigger="click">
+          <el-button size="small">
+            <el-icon>
+              <MoreFilled />
+            </el-icon>
+          </el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item :icon="Delete" @click="deleteDialogVisible = true"
+                >删除
+              </el-dropdown-item>
+              <el-dropdown-item :icon="SetUp" @click="editTitle">重命名</el-dropdown-item>
+              <el-dropdown-item :icon="Promotion">导出</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+        <Teleport to="body">
+          <el-dialog v-model="deleteDialogVisible" title="警告" width="30%" align-center>
+            <span
+              >确定删除 <i style="font-size: large">{{ projectTitle ?? '' }} </i> 计划吗</span
+            >
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button type="primary" @click="deleteDialogVisible = false">取消</el-button>
+                <el-button @click="handleDelete"> 确定 </el-button>
+              </span>
+            </template>
+          </el-dialog>
+        </Teleport>
       </div>
 
       <div class="body">
-        <task-drawer
-          v-model:visible="visible"
-          :graph="graphRef"
-          :task-id="activeTaskId"
-        ></task-drawer>
-
+        <Teleport to="body">
+          <el-drawer
+            v-model="editorVisible"
+            :close-on-click-modal="false"
+            :show-close="true"
+            @close="editorOnClose"
+          >
+            <el-form :model="editorTaskModel">
+              <el-form-item label="名称">
+                <el-input v-model="editorTaskModel.name" />
+              </el-form-item>
+              <el-form-item label="目标">
+                <el-input v-model="editorTaskModel.target" />
+              </el-form-item>
+              <el-form-item label="详情">
+                <el-input v-model="editorTaskModel.detail" />
+              </el-form-item>
+              <el-form-item label="记录">
+                <el-input v-model="editorTaskModel.note" type="textarea" />
+              </el-form-item>
+              <el-form-item>
+                <el-radio-group v-model="editorTaskModel.state">
+                  <el-radio label="completed">完成</el-radio>
+                  <el-radio label="timeout">超时</el-radio>
+                  <el-radio label="discard">放弃</el-radio>
+                  <el-radio label="normal">正常</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-form>
+          </el-drawer>
+        </Teleport>
         <div
           class="time-bar"
           @wheel="
@@ -312,15 +411,21 @@ const submitTitle = () => {
             :style="{ translate: translateX + 'px' }"
             :class="{ active: timeItem === timeIndex }"
           >
-            {{ new Intl.DateTimeFormat('zh-Hans').format(new Date((timeItem + 19600) * 86400000)) }}
+            <div>
+              <div>
+                {{ new Intl.DateTimeFormat('zh-Hans').format(index2Date(timeItem)) }}
+              </div>
+              <p>星期{{ date2Day(index2Date(timeItem)) }}</p>
+            </div>
           </div>
         </div>
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
-        <el-button @click="deleteProject">delete</el-button>
-        <p class="footer-label">{{ graphMode }}</p>
         <el-button @click="back2Today">today</el-button>
+        <p class="footer-label">{{ graphRef?.getCurrentMode() }}</p>
+        <el-button @click="handleNodeTest">NodeTest</el-button>
+        <el-button @click="handleEdgeTest">EdgeTest</el-button>
         <p class="footer-label">{{ offset }}</p>
       </div>
     </div>
@@ -330,22 +435,27 @@ const submitTitle = () => {
 <style scoped>
 .main {
   overflow: hidden;
+
   .header {
+    height: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px 0 20px;
+
     .title {
-      height: 64px;
-      display: flex;
-      justify-content: start;
-      align-items: center;
-      padding: 24px;
       font-size: 24px;
       user-select: none;
-      .title-input {
-        outline-style: none;
-        border: 1px solid #ccc;
-        box-sizing: content-box;
-        /* border-radius: 3px; */
-        font-size: 24px;
-      }
+      display: flex;
+      justify-content: center;
+    }
+
+    .title-input {
+      outline-style: none;
+      border: 0;
+      border-radius: 4px;
+      font-size: 24px;
+      background: #e2e2e2;
     }
   }
 
@@ -357,7 +467,7 @@ const submitTitle = () => {
     .time-bar {
       z-index: 99;
       user-select: none;
-      height: 32px;
+      height: 40px;
       display: flex;
       align-items: center;
       overflow-x: hidden;
@@ -378,6 +488,7 @@ const submitTitle = () => {
         color: greenyellow;
       }
     }
+
     .container {
       display: inline-block;
       height: 100%;
@@ -418,5 +529,9 @@ const submitTitle = () => {
       }
     }
   }
+}
+
+.dialog-footer button:first-child {
+  margin-right: 10px;
 }
 </style>

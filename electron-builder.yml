@@ -46,4 +46,6 @@ extraResources:
     to: node_modules/.prisma/client
   - from: node_modules/@prisma/client
     to: node_modules/@prisma/client
-  - prisma/possible.db
+extraFiles:
+  - from: prisma/possible.db
+    to: possible.db

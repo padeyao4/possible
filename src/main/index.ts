@@ -1,10 +1,10 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { PrismaClient } from '@prisma/client'
-import { BrowserWindow, Menu, Tray, app, ipcMain, shell } from 'electron'
+import { app, BrowserWindow, Menu, shell, Tray } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 
-const prisma = new PrismaClient()
+// close security warnings
+process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
 
 function createWindow(): void {
   // Create the browser window.
@@ -75,40 +75,6 @@ app
       optimizer.watchWindowShortcuts(window)
     })
 
-    ipcMain.on('project:save', () => {
-      console.log('project:save')
-    })
-    ipcMain.handle('test:query', (_, arg1, arg2) => {
-      console.log('test:query', arg1, arg2)
-      return new Date()
-    })
-
-    // 查询状态表中最新的数据
-    ipcMain.handle('state:query', async (_, stateId) => {
-      const storeItem = await prisma.store.findFirst({
-        where: {
-          stateId
-        },
-        orderBy: {
-          createdTime: 'desc'
-        }
-      })
-      return JSON.parse(storeItem?.state ?? 'null')
-    })
-
-    // 存储pinia状态
-    ipcMain.handle('state:persist', async (_, stateId, state: string) => {
-      console.log('persist', new Date())
-      const newStore = await prisma.store.create({
-        data: {
-          stateId,
-          createdTime: new Date(),
-          state
-        }
-      })
-      return newStore.id
-    })
-
     createWindow()
 
     app.on('activate', function () {
@@ -117,16 +83,14 @@ app
       if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
   })
-  .catch((reson) => {
-    console.log('reson', reson)
-    prisma.$disconnect()
+  .catch((reason) => {
+    console.log('reason', reason)
   })
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  prisma.$disconnect()
   if (process.platform !== 'darwin') {
     app.quit()
   }
