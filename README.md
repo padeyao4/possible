@@ -17,16 +17,12 @@ $ pnpm install
 ### Development
 
 ```bash
-$ npx prisma migrate dev
-$ npx prisma generate
 $ pnpm dev
 ```
 
 ### Build
 
 ```bash
-$ npx prisma generate
-
 # For windows
 $ pnpm build:win
 
