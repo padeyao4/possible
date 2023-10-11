@@ -1,8 +1,13 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { IProject } from '../renderer/src/store'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  exportProject: (project: IProject) => {
+    ipcRenderer.send('export', project)
+  }
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

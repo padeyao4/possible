@@ -272,6 +272,14 @@ const editTitle = () => {
   })
 }
 
+/**
+ * 调用electron导出项目数据
+ */
+const exportProject = () => {
+  const project = projectStore.get(props.id)
+  window.api.exportProject(JSON.parse(JSON.stringify(project)))
+}
+
 const submitTitle = () => {
   titleEditEnable.value = false
 }
@@ -345,7 +353,7 @@ const handleEdgeTest = () => {
                 >删除
               </el-dropdown-item>
               <el-dropdown-item :icon="SetUp" @click="editTitle">重命名</el-dropdown-item>
-              <el-dropdown-item :icon="Promotion">导出</el-dropdown-item>
+              <el-dropdown-item :icon="Promotion" @click="exportProject">导出</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
