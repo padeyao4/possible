@@ -6,6 +6,7 @@ declare global {
     electron: ElectronAPI
     api: {
       exportProject: (project: IProject) => void
+      importProject: () => Promise<IProject | undefined>
     }
   }
 }

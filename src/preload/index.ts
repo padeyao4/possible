@@ -5,7 +5,10 @@ import { IProject } from '../renderer/src/store'
 // Custom APIs for renderer
 const api = {
   exportProject: (project: IProject) => {
-    ipcRenderer.send('export', project)
+    ipcRenderer.send('export:project', project)
+  },
+  importProject: async () => {
+    return ipcRenderer.invoke('import:project')
   }
 }
 

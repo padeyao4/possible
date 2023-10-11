@@ -34,7 +34,7 @@ export const useProjectStore = defineStore('project', {
     }
   },
   actions: {
-    create(name: string): string {
+    createByName(name: string): string {
       const projectId = uuidv4()
       this.projects.push({
         name,
@@ -91,6 +91,20 @@ export const useProjectStore = defineStore('project', {
         this.projects.find((p) => p.id === id)?.relations.find((r) => r.id === relation.id) ?? {},
         relation
       )
+    },
+    /**
+     * 当不存在项目id时，添加项目
+     * @param project
+     */
+    push(project: IProject | undefined) {
+      if (project === undefined) {
+        return false
+      }
+      const exist = this.projects.find((p) => p.id === project.id)
+      if (!exist) {
+        this.projects.push(project)
+      }
+      return !exist
     }
   },
   persist: true

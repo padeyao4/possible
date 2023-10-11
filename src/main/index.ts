@@ -1,5 +1,5 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { app, BrowserWindow, Menu, shell, Tray, ipcMain, dialog } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, Menu, shell, Tray } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 import { IProject } from '../renderer/src/store'
@@ -82,8 +82,7 @@ app
     /**
      * 导出项目
      */
-    ipcMain.on('export', (_, project: IProject) => {
-      console.log('ipc main project', project)
+    ipcMain.on('export:project', (_, project: IProject) => {
       const exportPath = dialog.showSaveDialogSync({
         title: `导出${project.name}`,
         defaultPath: `${USER_HOME}/Desktop/${project.name}.json`
@@ -92,6 +91,26 @@ app
         fs.writeFile(exportPath, JSON.stringify(project), (err) => {
           console.error(err)
         })
+      }
+    })
+
+    /**
+     * 导入项目
+     */
+    ipcMain.handle('import:project', () => {
+      const importPath = dialog.showOpenDialogSync({
+        title: '导入项目',
+        defaultPath: `${USER_HOME}/Desktop/`
+      })
+      if (importPath !== undefined) {
+        console.log('import path', importPath)
+        try {
+          const data = fs.readFileSync(importPath[0]).toString()
+          // todo 校验数据是否符合IProject
+          return JSON.parse(data)
+        } catch (e) {
+          console.error(e)
+        }
       }
     })
 
