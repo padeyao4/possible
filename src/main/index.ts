@@ -14,7 +14,9 @@ function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1440,
+    minWidth: 900,
     height: 900,
+    minHeight: 600,
     show: false,
     title: 'possible',
     transparent: true,

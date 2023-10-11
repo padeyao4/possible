@@ -201,7 +201,8 @@ onMounted(() => {
       graph?.removeItem(node)
       ElNotification({
         dangerouslyUseHTMLString: true,
-        message: '<p style="user-select: none">画布空间不足，移动其他节点后创建</p>',
+        message:
+          '<p style="user-select: none;font-size: 14px">画布空间不足，移动其他节点后创建</p>',
         type: 'warning',
         offset: 120,
         duration: 1500
