@@ -5,12 +5,13 @@ import { type Item } from '@antv/g6-core'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possible-grid'
-import { date2Day, index2Date, normalX, x2Index } from '@renderer/util'
+import { collision, date2Day, index2Date, normalX, x2Index } from '@renderer/util'
 import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
 import { useProjectStore } from '@renderer/store/project'
 import router from '@renderer/router'
 import { IRelation, ITask } from '@renderer/store'
 import { debounce } from '@antv/util'
+import { ElNotification } from 'element-plus'
 
 const props = defineProps<{
   id: string
@@ -50,7 +51,6 @@ const afterRemoveItem = (e: IG6GraphEvent) => {
 }
 
 const afterAddItem = (e: IG6GraphEvent) => {
-  console.log('add item', e.item?.getModel())
   if (e.item?.getType() === 'node') {
     projectStore.addTask(props.id, e.item.getModel() as unknown as ITask)
   }
@@ -175,9 +175,38 @@ onMounted(() => {
       note: '',
       target: ''
     }
-    // todo 判断和包围
-
-    graph?.addItem('node', newTaskModel)
+    const node = graph?.addItem('node', newTaskModel) as INode
+    const collisionNodes = graph
+      ?.getNodes()
+      .filter((n) => n.getID() != node.getID())
+      .filter((n) => collision(n.getBBox(), node.getBBox(), 0, 16))
+    console.log('before', collisionNodes)
+    if (collisionNodes === undefined) {
+      graph?.removeItem(node)
+      return
+    }
+    if (collisionNodes.length == 0) {
+      return
+    }
+    if (collisionNodes.length == 1) {
+      console.log('after', collisionNodes)
+      const collisionNode = collisionNodes[0] as INode
+      if ((collisionNode.getModel().y as number) > (node.getModel().y as number)) {
+        node.getModel().y = (collisionNode.getModel().y as number) - node.getBBox().height - 8
+      } else {
+        node.getModel().y = (collisionNode.getModel().y as number) + node.getBBox().height + 8
+      }
+      graph?.updateItem(node.getID(), node.getModel())
+    } else {
+      graph?.removeItem(node)
+      ElNotification({
+        dangerouslyUseHTMLString: true,
+        message: '<p style="user-select: none">画布空间不足，移动其他节点后创建</p>',
+        type: 'warning',
+        offset: 120,
+        duration: 1500
+      })
+    }
   })
 
   graph.on('keydown', (e) => {

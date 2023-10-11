@@ -41,7 +41,7 @@ const importButtonClick = async () => {
   ElNotification({
     message: res ? `成功导入${project?.name}` : '导入失败!文件格式异常或项目已存在',
     type: res ? 'success' : 'error',
-    offset: document.body.clientHeight - 120,
+    offset: 120,
     duration: 3000
   })
 }
