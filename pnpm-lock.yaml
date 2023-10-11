@@ -13,10 +13,10 @@ dependencies:
     version: 0.5.15
   '@electron-toolkit/preload':
     specifier: ^2.0.0
-    version: 2.0.0(electron@25.8.2)
+    version: 2.0.0(electron@25.8.4)
   '@electron-toolkit/utils':
     specifier: ^2.0.1
-    version: 2.0.1(electron@25.8.2)
+    version: 2.0.1(electron@25.8.4)
   '@element-plus/icons-vue':
     specifier: ^2.1.0
     version: 2.1.0(vue@3.3.4)
@@ -74,8 +74,8 @@ devDependencies:
     specifier: ^11.0.3
     version: 11.0.3(eslint-plugin-vue@9.17.0)(eslint@8.50.0)(typescript@5.2.2)
   electron:
-    specifier: ^25.8.2
-    version: 25.8.2
+    specifier: ^25.8.4
+    version: 25.8.4
   electron-builder:
     specifier: ^24.6.4
     version: 24.6.4
@@ -606,12 +606,12 @@ packages:
       eslint: 8.50.0
     dev: true
 
-  /@electron-toolkit/preload@2.0.0(electron@25.8.2):
+  /@electron-toolkit/preload@2.0.0(electron@25.8.4):
     resolution: {integrity: sha512-zpZDzbqJTZQC5d4LRs2EKruKWnqah+T75s+niBYFemYLtiW5TTZcWi3Q8UxHqnwTudDMuWJb233aaS2yjx3Xiw==}
     peerDependencies:
       electron: '>=13.0.0'
     dependencies:
-      electron: 25.8.2
+      electron: 25.8.4
     dev: false
 
   /@electron-toolkit/tsconfig@1.0.1(@types/node@18.18.0):
@@ -622,12 +622,12 @@ packages:
       '@types/node': 18.18.0
     dev: true
 
-  /@electron-toolkit/utils@2.0.1(electron@25.8.2):
+  /@electron-toolkit/utils@2.0.1(electron@25.8.4):
     resolution: {integrity: sha512-3nnjd3D1NIjxdzNrvR5fkJ3kbJNbRkpHppv0/pSbMX6I0DaBzpPXeSfDYuJJKzZrAc3CmGcJa0MU4+AjEOlT4g==}
     peerDependencies:
       electron: '>=13.0.0'
     dependencies:
-      electron: 25.8.2
+      electron: 25.8.4
     dev: false
 
   /@electron/asar@3.2.7:
@@ -2415,8 +2415,8 @@ packages:
       - supports-color
     dev: true
 
-  /electron@25.8.2:
-    resolution: {integrity: sha512-AM1ra6b16EQuO1bJtiA8ZiWqqFLLgVfxD56ykiy+EA5C63Hkx8OmIbe+5JAsLiTwRVvBZ4oCAj6wa2qT+iq8ww==}
+  /electron@25.8.4:
+    resolution: {integrity: sha512-hUYS3RGdaa6E1UWnzeGnsdsBYOggwMMg4WGxNGvAoWtmRrr6J1BsjFW/yRq4WsJHJce2HdzQXtz4OGXV6yUCLg==}
     engines: {node: '>= 12.20.55'}
     hasBin: true
     requiresBuild: true

@@ -1,10 +1,14 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { app, BrowserWindow, Menu, shell, Tray } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain, Menu, shell, Tray } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
+import { IProject } from '../renderer/src/store'
+import * as fs from 'fs'
 
 // close security warnings
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
+// 获取用户home目录
+const USER_HOME = process.env.HOME || process.env.USERPROFILE
 
 function createWindow(): void {
   // Create the browser window.
@@ -73,6 +77,41 @@ app
     // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
     app.on('browser-window-created', (_, window) => {
       optimizer.watchWindowShortcuts(window)
+    })
+
+    /**
+     * 导出项目
+     */
+    ipcMain.on('export:project', (_, project: IProject) => {
+      const exportPath = dialog.showSaveDialogSync({
+        title: `导出${project.name}`,
+        defaultPath: `${USER_HOME}/Desktop/${project.name}.json`
+      })
+      if (exportPath !== undefined) {
+        fs.writeFile(exportPath, JSON.stringify(project), (err) => {
+          console.error(err)
+        })
+      }
+    })
+
+    /**
+     * 导入项目
+     */
+    ipcMain.handle('import:project', () => {
+      const importPath = dialog.showOpenDialogSync({
+        title: '导入项目',
+        defaultPath: `${USER_HOME}/Desktop/`
+      })
+      if (importPath !== undefined) {
+        console.log('import path', importPath)
+        try {
+          const data = fs.readFileSync(importPath[0]).toString()
+          // todo 校验数据是否符合IProject
+          return JSON.parse(data)
+        } catch (e) {
+          console.error(e)
+        }
+      }
     })
 
     createWindow()

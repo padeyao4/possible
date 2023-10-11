@@ -272,6 +272,14 @@ const editTitle = () => {
   })
 }
 
+/**
+ * 调用electron导出项目数据
+ */
+const exportProject = () => {
+  const project = projectStore.get(props.id)
+  window.api.exportProject(JSON.parse(JSON.stringify(project)))
+}
+
 const submitTitle = () => {
   titleEditEnable.value = false
 }
@@ -345,7 +353,7 @@ const handleEdgeTest = () => {
                 >删除
               </el-dropdown-item>
               <el-dropdown-item :icon="SetUp" @click="editTitle">重命名</el-dropdown-item>
-              <el-dropdown-item :icon="Promotion">导出</el-dropdown-item>
+              <el-dropdown-item :icon="Promotion" @click="exportProject">导出</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -485,7 +493,7 @@ const handleEdgeTest = () => {
       }
 
       .active {
-        color: greenyellow;
+        color: #159d8e;
       }
     }
 
@@ -502,15 +510,15 @@ const handleEdgeTest = () => {
     position: sticky;
     bottom: 0;
     height: 40px;
-    background: whitesmoke;
+    background: #c7c5c5;
     display: flex;
     justify-content: space-between;
+    padding: 0 24px 0 24px;
     align-items: center;
-    border-top: 1px solid;
 
     .footer-label {
       color: #181818;
-      background-color: #c8c9cc;
+      background-color: #d0d0d0;
       user-select: none;
       width: 150px;
       white-space: nowrap;

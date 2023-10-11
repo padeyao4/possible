@@ -3,6 +3,7 @@ import router from '@renderer/router'
 import { RouterView, useRoute } from 'vue-router'
 import { computed, ref } from 'vue'
 import { useProjectStore } from '@renderer/store/project'
+import { ElNotification } from 'element-plus'
 
 const projectStore = useProjectStore()
 const route = useRoute()
@@ -25,11 +26,23 @@ const handleItemClick = (id: string) => {
   })
 }
 
-const clickAddButton = () => {
-  const projectId = projectStore.create('新任务列表')
+const addButtonClick = () => {
+  const projectId = projectStore.createByName('新任务列表')
   inputVisible.value = true
   router.push({
     path: `/project/${projectId}`
+  })
+}
+
+const importButtonClick = async () => {
+  const project = await window.api.importProject()
+  console.log('import project', project)
+  const res = projectStore.push(project)
+  ElNotification({
+    message: res ? `成功导入${project?.name}` : '导入失败!文件格式异常或项目已存在',
+    type: res ? 'success' : 'error',
+    offset: document.body.clientHeight - 120,
+    duration: 3000
   })
 }
 
@@ -82,11 +95,18 @@ const projectTitle = computed<string>({
           </div>
         </div>
         <hr />
-        <div class="add-button" @click="clickAddButton">
-          <el-icon :size="20">
-            <Plus />
-          </el-icon>
-          <div style="padding: 0 0 2px 4px">新建项目</div>
+        <div class="side-bottom">
+          <div class="add-button" @click="addButtonClick">
+            <el-icon :size="20">
+              <Plus />
+            </el-icon>
+            <div style="padding: 0 0 2px 4px">新建项目</div>
+          </div>
+          <div class="import-button" @click="importButtonClick">
+            <el-icon :size="20" style="width: 100%; height: 100%">
+              <Folder />
+            </el-icon>
+          </div>
         </div>
       </div>
       <div class="content">
@@ -124,7 +144,7 @@ const projectTitle = computed<string>({
       }
 
       .list {
-        height: calc(100vh - 82px);
+        height: calc(100vh - 84px);
         overflow-y: auto;
 
         .list-item {
@@ -154,14 +174,33 @@ const projectTitle = computed<string>({
         background: var(--color-neptune);
       }
 
-      .add-button {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        user-select: none;
-        background: var(--color-bronze);
-        width: 100%;
+      .side-bottom {
         height: 40px;
+        display: flex;
+        flex-direction: row;
+
+        .add-button {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          user-select: none;
+          background: var(--color-bronze);
+          width: 200px;
+          height: 100%;
+        }
+
+        .import-button {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          user-select: none;
+          width: 40px;
+          height: 100%;
+
+          :hover {
+            background: antiquewhite;
+          }
+        }
       }
     }
 
