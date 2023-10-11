@@ -168,13 +168,15 @@ onMounted(() => {
       id: uuidv4(),
       name: 'untitled',
       dataIndex: x2Index(nx),
-      x: normalX(nx),
+      x: nx,
       y: e.y,
       state: 'normal',
       detail: '',
       note: '',
       target: ''
     }
+    // todo 判断和包围
+
     graph?.addItem('node', newTaskModel)
   })
 
