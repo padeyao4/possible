@@ -144,7 +144,7 @@ const projectTitle = computed<string>({
       }
 
       .list {
-        height: calc(100vh - 82px);
+        height: calc(100vh - 84px);
         overflow-y: auto;
 
         .list-item {
