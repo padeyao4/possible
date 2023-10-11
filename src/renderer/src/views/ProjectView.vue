@@ -493,7 +493,7 @@ const handleEdgeTest = () => {
       }
 
       .active {
-        color: greenyellow;
+        color: #159d8e;
       }
     }
 
