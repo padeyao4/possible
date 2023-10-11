@@ -36,7 +36,9 @@ const addButtonClick = () => {
 
 const importButtonClick = async () => {
   const project = await window.api.importProject()
-  console.log('import project', project)
+  if (project === 'cancel') {
+    return
+  }
   const res = projectStore.push(project)
   ElNotification({
     message: res ? `成功导入${project?.name}` : '导入失败!文件格式异常或项目已存在',

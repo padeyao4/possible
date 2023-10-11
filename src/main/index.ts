@@ -113,6 +113,8 @@ app
         } catch (e) {
           console.error(e)
         }
+      } else {
+        return 'cancel'
       }
     })
 
