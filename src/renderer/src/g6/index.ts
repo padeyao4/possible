@@ -1,5 +1,6 @@
 import G6, { BehaviorOption } from '@antv/g6'
 import PossibleNodeDrag from './behavior/possible-node-drag'
+import { ITask } from '@renderer/store'
 
 const behaviors: Record<string, unknown> = {
   'possible-drag-node': PossibleNodeDrag
@@ -52,3 +53,51 @@ G6.registerNode(
   },
   'rect'
 )
+
+G6.registerLayout('possible-layout', {
+  /**
+   * 定义自定义行为的默认参数，会与用户传入的参数进行合并
+   */
+  getDefaultCfg() {
+    return {
+      gap: 32
+    }
+  },
+  /**
+   * 执行布局
+   */
+  execute() {
+    console.log('execute layout')
+    const nodes: ITask[] = this.nodes
+    const nodeHeight = 80
+    const gap = this.gap
+    const map = new Map<number, ITask[]>()
+    nodes
+      .sort((n1, n2) => n1.y - n2.y)
+      .forEach((n) => {
+        const r = map.get(n.x)
+        if (r === undefined) {
+          map.set(n.x, [n])
+        } else {
+          r.push(n)
+        }
+      })
+
+    map.forEach((items) => {
+      // const len = items.length
+      // const height = nodeHeight * len + gap * (len - 1)
+      // const mid = Math.floor(height / 2)
+      items.forEach((item, index) => {
+        item.y = index * nodeHeight + gap
+      })
+    })
+    map.clear()
+  },
+  /**
+   * 销毁
+   */
+  destroy() {
+    console.log('layout destroy')
+    return
+  }
+})

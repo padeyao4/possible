@@ -12,6 +12,7 @@ import router from '@renderer/router'
 import { IRelation, ITask } from '@renderer/store'
 import { debounce } from '@antv/util'
 import { ElNotification } from 'element-plus'
+import { autoLayout } from '@renderer/settings'
 
 const props = defineProps<{
   id: string
@@ -100,6 +101,16 @@ const translateX = computed(() => {
 onMounted(() => {
   graph = new Graph({
     container: 'container',
+    animate: true,
+    animateCfg: {
+      duration: 300,
+      callback() {
+        console.log('layout finish')
+      }
+    },
+    layout: {
+      type: 'possible-layout'
+    },
     plugins: [
       new PossibleGrid(),
       new Menu({
@@ -108,6 +119,9 @@ onMounted(() => {
         getContent: () => '删除',
         handleMenuClick: (_: HTMLElement, item: Item) => {
           graph?.removeItem(item)
+          if (autoLayout) {
+            graph?.layout()
+          }
         }
       })
     ],
@@ -176,37 +190,43 @@ onMounted(() => {
       target: ''
     }
     const node = graph?.addItem('node', newTaskModel) as INode
-    const collisionNodes = graph
-      ?.getNodes()
-      .filter((n) => n.getID() != node.getID())
-      .filter((n) => collision(n.getBBox(), node.getBBox(), 0, 16))
-    console.log('before', collisionNodes)
-    if (collisionNodes === undefined) {
-      graph?.removeItem(node)
-      return
-    }
-    if (collisionNodes.length == 0) {
-      return
-    }
-    if (collisionNodes.length == 1) {
-      console.log('after', collisionNodes)
-      const collisionNode = collisionNodes[0] as INode
-      if ((collisionNode.getModel().y as number) > (node.getModel().y as number)) {
-        node.getModel().y = (collisionNode.getModel().y as number) - node.getBBox().height - 8
-      } else {
-        node.getModel().y = (collisionNode.getModel().y as number) + node.getBBox().height + 8
-      }
-      graph?.updateItem(node.getID(), node.getModel())
+    if (autoLayout) {
+      graph?.layout()
     } else {
-      graph?.removeItem(node)
-      ElNotification({
-        dangerouslyUseHTMLString: true,
-        message:
-          '<p style="user-select: none;font-size: 14px">画布空间不足，移动其他节点后创建</p>',
-        type: 'warning',
-        offset: 120,
-        duration: 1500
-      })
+      const collisionNodes = graph
+        ?.getNodes()
+        .filter((n) => n.getID() != node.getID())
+        .filter((n) => collision(n.getBBox(), node.getBBox(), 0, 16))
+      if (collisionNodes === undefined) {
+        graph?.removeItem(node)
+      } else if (collisionNodes.length == 0) {
+        /* empty */
+      } else if (collisionNodes.length == 1) {
+        console.log('after', collisionNodes)
+        const collisionNode = collisionNodes[0] as INode
+        if ((collisionNode.getModel().y as number) > (node.getModel().y as number)) {
+          node.getModel().y = (collisionNode.getModel().y as number) - node.getBBox().height - 8
+        } else {
+          node.getModel().y = (collisionNode.getModel().y as number) + node.getBBox().height + 8
+        }
+        graph?.updateItem(node.getID(), node.getModel())
+      } else {
+        graph?.removeItem(node)
+        ElNotification({
+          dangerouslyUseHTMLString: true,
+          message:
+            '<p style="user-select: none;font-size: 14px">画布空间不足，移动其他节点后创建</p>',
+          type: 'warning',
+          offset: 120,
+          duration: 1500
+        })
+      }
+    }
+  })
+
+  graph.on('node:dragend', () => {
+    if (autoLayout) {
+      graph?.layout()
     }
   })
 
