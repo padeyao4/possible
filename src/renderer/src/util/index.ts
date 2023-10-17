@@ -1,6 +1,11 @@
 import { IBBox } from '@antv/g6-core'
 
 /**
+ * 一天等于86400000秒
+ */
+const dayOfSeconds = 86400000
+
+/**
  * 将index还原为x点
  * @param index
  */
@@ -25,11 +30,19 @@ export const normalX = (x: number) => {
 }
 
 /**
- * 将dataIndex转为date
+ * 将index转为date
  * @param index
  */
 export function index2Date(index: number) {
-  return new Date((index + 19600) * 86400000)
+  return new Date(index * dayOfSeconds)
+}
+
+/**
+ * 将date转为index
+ * @param date
+ */
+export function date2Index(date: Date) {
+  return Math.floor(date.valueOf() / dayOfSeconds) - 1
 }
 
 /**

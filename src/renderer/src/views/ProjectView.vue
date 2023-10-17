@@ -5,7 +5,7 @@ import { type Item } from '@antv/g6-core'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possible-grid'
-import { collision, date2Day, index2Date, normalX, x2Index } from '@renderer/util'
+import { collision, date2Day, date2Index, index2Date, normalX, x2Index } from '@renderer/util'
 import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
 import { useProjectStore } from '@renderer/store/project'
 import router from '@renderer/router'
@@ -13,11 +13,13 @@ import { IRelation, ITask } from '@renderer/store'
 import { debounce } from '@antv/util'
 import { ElNotification } from 'element-plus'
 import { autoLayout } from '@renderer/settings'
+import { useTodayStore } from '@renderer/store/day'
 
 const props = defineProps<{
   id: string
 }>()
 const projectStore = useProjectStore()
+const todayStore = useTodayStore()
 
 const container = ref<HTMLElement>()
 
@@ -91,7 +93,9 @@ watch([props, graphRef], () => {
 const timeItems = computed(() => {
   const x = offset.value.x
   const n = Math.floor(Math.abs(x / 120)) * (x >= 0 ? 1 : -1)
-  return [...new Array(25).keys()].map((i) => i - n - 1)
+  return [...new Array(25).keys()].map(
+    (i) => i - n - 1 + date2Index(new Date(projectStore.get(props.id).initDate))
+  )
 })
 
 const translateX = computed(() => {
@@ -109,7 +113,8 @@ onMounted(() => {
       }
     },
     layout: {
-      type: 'possible-layout'
+      type: 'possible-layout',
+      today: new Date()
     },
     plugins: [
       new PossibleGrid(),
@@ -279,6 +284,15 @@ onMounted(() => {
     }
   })
 
+  todayStore.$subscribe(() => {
+    graph?.updateLayout({
+      today: new Date(todayStore.today)
+      // todo today index
+    })
+    graph?.layout()
+    console.log('today layout')
+  })
+
   graphRef.value = graph
 
   window.addEventListener('resize', () => {
@@ -292,16 +306,11 @@ onUnmounted(() => {
   graph?.destroy()
 })
 
-const dayOriginIndex = computed(() => {
-  return Math.floor(new Date('2023/9/1').valueOf() / 86400000)
-})
-
-const todayIndex = computed(() => {
-  return Math.floor(new Date().valueOf() / 86400000)
-})
-
 const timeIndex = computed(() => {
-  return todayIndex.value - dayOriginIndex.value
+  return (
+    date2Index(new Date(todayStore.today)) -
+    date2Index(new Date(projectStore.get(props.id).initDate))
+  )
 })
 
 /**
@@ -309,8 +318,8 @@ const timeIndex = computed(() => {
  */
 const back2Today = () => {
   const ox = offset.value.x
-  const dx = (timeIndex.value - 1) * 120 + ox
-  graph?.translate(-dx, 0)
+  const dx = timeIndex.value * 120 + ox
+  graph?.translate(-dx, -offset.value.y)
 }
 
 // ------------------------ project title ---------------------------
@@ -365,14 +374,20 @@ const editorTaskModel = computed(() => {
   })
 })
 
-const handleNodeTest = () => {
-  const nodes = graphRef.value?.getNodes()
-  console.info('nodes', nodes)
+const moveRight = () => {
+  const d = new Date(todayStore.today)
+  d.setDate(d.getDate() + 1)
+  todayStore.update(d)
 }
 
-const handleEdgeTest = () => {
-  const edges = graphRef.value?.getEdges()
-  console.info('edges', edges)
+const rollback = () => {
+  todayStore.update(new Date())
+}
+
+const moveLeft = () => {
+  const d = new Date(todayStore.today)
+  d.setDate(d.getDate() - 1)
+  todayStore.update(d)
 }
 </script>
 
@@ -491,8 +506,9 @@ const handleEdgeTest = () => {
       <div class="footer">
         <el-button @click="back2Today">today</el-button>
         <p class="footer-label">{{ graphRef?.getCurrentMode() }}</p>
-        <el-button @click="handleNodeTest">NodeTest</el-button>
-        <el-button @click="handleEdgeTest">EdgeTest</el-button>
+        <el-button @click="moveLeft">left</el-button>
+        <el-button @click="rollback">back</el-button>
+        <el-button @click="moveRight">right</el-button>
         <p class="footer-label">{{ offset }}</p>
       </div>
     </div>

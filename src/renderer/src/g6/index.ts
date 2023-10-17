@@ -60,17 +60,19 @@ G6.registerLayout('possible-layout', {
    */
   getDefaultCfg() {
     return {
-      gap: 32
+      gap: 32,
+      nodeHeight: 80
     }
   },
+
   /**
    * 执行布局
    */
   execute() {
-    console.log('execute layout')
+    console.log('execute layout', this)
     const nodes: ITask[] = this.nodes
-    const nodeHeight = 80
     const gap = this.gap
+    const nodeHeight = this.nodeHeight
     const map = new Map<number, ITask[]>()
     nodes
       .sort((n1, n2) => n1.y - n2.y)

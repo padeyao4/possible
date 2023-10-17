@@ -42,9 +42,9 @@ export const useProjectStore = defineStore('project', {
         tasks: [],
         relations: [],
         createdTime: new Date(),
-        initDate: new Date('2023/9/1'),
+        initDate: new Date(),
         offset: {
-          x: -Math.floor((new Date().valueOf() - new Date('2023/9/1').valueOf()) / 86400000) * 120,
+          x: 0,
           y: 0
         }
       })
