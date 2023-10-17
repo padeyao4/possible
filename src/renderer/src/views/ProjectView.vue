@@ -181,7 +181,7 @@ onMounted(() => {
 
   graph.on('canvas:dblclick', (e) => {
     const nx = normalX(e.x)
-    const newTaskModel = {
+    const newTaskModel: ITask = {
       completedTime: undefined,
       createdTime: new Date(),
       id: uuidv4(),
@@ -192,7 +192,8 @@ onMounted(() => {
       state: 'normal',
       detail: '',
       note: '',
-      target: ''
+      target: '',
+      taskType: 'general'
     }
     const node = graph?.addItem('node', newTaskModel) as INode
     if (autoLayout) {
@@ -290,7 +291,6 @@ onMounted(() => {
       // todo today index
     })
     graph?.layout()
-    console.log('today layout')
   })
 
   graphRef.value = graph
