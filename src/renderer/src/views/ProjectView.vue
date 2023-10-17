@@ -306,11 +306,15 @@ onUnmounted(() => {
   graph?.destroy()
 })
 
-const timeIndex = computed(() => {
+const todayIndex = computed(() => {
   return (
     date2Index(new Date(todayStore.today)) -
     date2Index(new Date(projectStore.get(props.id).initDate))
   )
+})
+
+const todayActiveIndex = computed(() => {
+  return todayIndex.value + date2Index(new Date(projectStore.get(props.id).initDate)) + 1
 })
 
 /**
@@ -318,7 +322,7 @@ const timeIndex = computed(() => {
  */
 const back2Today = () => {
   const ox = offset.value.x
-  const dx = timeIndex.value * 120 + ox
+  const dx = todayIndex.value * 120 + ox
   graph?.translate(-dx, -offset.value.y)
 }
 
@@ -491,7 +495,7 @@ const moveLeft = () => {
             :key="timeItem"
             class="time-item"
             :style="{ translate: translateX + 'px' }"
-            :class="{ active: timeItem === timeIndex }"
+            :class="{ active: timeItem === todayActiveIndex }"
           >
             <div>
               <div>
