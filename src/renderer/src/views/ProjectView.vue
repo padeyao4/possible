@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Graph, type IEdge, Menu } from '@antv/g6'
+import { Graph, type IEdge, Menu, ModelConfig } from '@antv/g6'
 import type { EdgeConfig, IG6GraphEvent, INode, NodeConfig } from '@antv/g6-core'
 import { type Item } from '@antv/g6-core'
 import { v4 as uuidv4 } from 'uuid'
@@ -195,7 +195,7 @@ onMounted(() => {
       target: '',
       taskType: 'general'
     }
-    const node = graph?.addItem('node', newTaskModel) as INode
+    const node = graph?.addItem('node', newTaskModel as unknown as ModelConfig) as INode
     if (autoLayout) {
       graph?.layout()
     } else {

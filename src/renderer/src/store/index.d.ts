@@ -1,5 +1,4 @@
 import { Point } from '@antv/g-base'
-import { ModelConfig } from '@antv/g6-core/lib/types'
 
 export interface IProject {
   name: string
@@ -14,7 +13,7 @@ export interface IProject {
   initDate: Date
 }
 
-export interface ITask extends ModelConfig {
+export interface ITask {
   name: string
   id: string
   dataIndex: number
