@@ -34,7 +34,11 @@ export const normalX = (x: number) => {
  * @param index
  */
 export function index2Date(index: number) {
-  return new Date(index * dayOfSeconds)
+  if (isNaN(index)) {
+    return new Date()
+  } else {
+    return new Date(index * dayOfSeconds)
+  }
 }
 
 /**

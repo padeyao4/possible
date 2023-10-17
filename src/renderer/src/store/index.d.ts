@@ -16,7 +16,6 @@ export interface IProject {
 export interface ITask {
   name: string
   id: string
-  dataIndex: number
   y: number
   x: number
   createdTime: Date

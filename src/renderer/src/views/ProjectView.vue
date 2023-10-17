@@ -5,7 +5,7 @@ import { type Item } from '@antv/g6-core'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possible-grid'
-import { collision, date2Day, date2Index, index2Date, normalX, x2Index } from '@renderer/util'
+import { collision, date2Day, date2Index, index2Date, normalX } from '@renderer/util'
 import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
 import { useProjectStore } from '@renderer/store/project'
 import router from '@renderer/router'
@@ -66,7 +66,6 @@ const afterAddItem = (e: IG6GraphEvent) => {
  * 更新节点防抖
  */
 const debounceAfterUpdateItem = debounce(function (e: IG6GraphEvent) {
-  console.log('debounce update ', e, e.item?.getModel())
   if (e.item?.getType() === 'node') {
     projectStore.updateTask(props.id, e.item.getModel() as unknown as ITask)
   }
@@ -74,6 +73,19 @@ const debounceAfterUpdateItem = debounce(function (e: IG6GraphEvent) {
     projectStore.updateRelation(props.id, e.item.getModel() as unknown as IRelation)
   }
 }, 500)
+
+const todayIndex = computed(
+  () =>
+    date2Index(new Date(todayStore.today)) -
+    date2Index(new Date(projectStore.get(props.id).initDate))
+)
+
+watch(todayStore, () => {
+  console.log('watch today index', todayIndex)
+  graph?.updateLayout({
+    todayIndex: todayIndex.value
+  })
+})
 
 watch([props, graphRef], () => {
   graph?.off('viewportchange', viewportChange)
@@ -93,9 +105,9 @@ watch([props, graphRef], () => {
 const timeItems = computed(() => {
   const x = offset.value.x
   const n = Math.floor(Math.abs(x / 120)) * (x >= 0 ? 1 : -1)
-  return [...new Array(25).keys()].map(
-    (i) => i - n - 1 + date2Index(new Date(projectStore.get(props.id).initDate))
-  )
+  return [...new Array(25).keys()]
+    .map((i) => i - n - 1 + date2Index(new Date(projectStore.get(props.id).initDate)))
+    .filter((n) => !isNaN(n))
 })
 
 const translateX = computed(() => {
@@ -114,7 +126,9 @@ onMounted(() => {
     },
     layout: {
       type: 'possible-layout',
-      today: new Date()
+      todayIndex: todayIndex.value,
+      nodeHeight: 80,
+      gap: 32
     },
     plugins: [
       new PossibleGrid(),
@@ -180,14 +194,12 @@ onMounted(() => {
   })
 
   graph.on('canvas:dblclick', (e) => {
-    const nx = normalX(e.x)
     const newTaskModel: ITask = {
       completedTime: undefined,
       createdTime: new Date(),
       id: uuidv4(),
       name: 'untitled',
-      dataIndex: x2Index(nx),
-      x: nx,
+      x: normalX(e.x),
       y: e.y,
       state: 'normal',
       detail: '',
@@ -285,14 +297,6 @@ onMounted(() => {
     }
   })
 
-  todayStore.$subscribe(() => {
-    graph?.updateLayout({
-      today: new Date(todayStore.today)
-      // todo today index
-    })
-    graph?.layout()
-  })
-
   graphRef.value = graph
 
   window.addEventListener('resize', () => {
@@ -304,13 +308,6 @@ onMounted(() => {
 
 onUnmounted(() => {
   graph?.destroy()
-})
-
-const todayIndex = computed(() => {
-  return (
-    date2Index(new Date(todayStore.today)) -
-    date2Index(new Date(projectStore.get(props.id).initDate))
-  )
 })
 
 const todayActiveIndex = computed(() => {

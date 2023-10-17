@@ -1,13 +1,28 @@
 <script setup lang="ts">
 import router from '@renderer/router'
 import { RouterView, useRoute } from 'vue-router'
-import { computed, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watchEffect } from 'vue'
 import { useProjectStore } from '@renderer/store/project'
 import { Promotion, SetUp } from '@element-plus/icons-vue'
 import { ElNotification } from 'element-plus'
+import { useTodayStore } from '@renderer/store/day'
 
 const projectStore = useProjectStore()
 const route = useRoute()
+const todayStore = useTodayStore()
+
+const intervalRef = ref()
+
+onMounted(() => {
+  intervalRef.value = setInterval(() => {
+    console.log('update date', new Date())
+    todayStore.update(new Date())
+  }, 10_000)
+})
+
+onUnmounted(() => {
+  clearInterval(intervalRef.value)
+})
 
 const activeId = computed(() => {
   return (route.params.id ?? 'default') as string
