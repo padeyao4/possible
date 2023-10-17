@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import router from '@renderer/router'
 import { RouterView, useRoute } from 'vue-router'
-import { computed, onMounted, onUnmounted, ref, watchEffect } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useProjectStore } from '@renderer/store/project'
 import { Promotion, SetUp } from '@element-plus/icons-vue'
 import { ElNotification } from 'element-plus'
