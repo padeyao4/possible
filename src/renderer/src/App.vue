@@ -3,6 +3,7 @@ import router from '@renderer/router'
 import { RouterView, useRoute } from 'vue-router'
 import { computed, ref } from 'vue'
 import { useProjectStore } from '@renderer/store/project'
+import { Promotion, SetUp } from '@element-plus/icons-vue'
 import { ElNotification } from 'element-plus'
 
 const projectStore = useProjectStore()
@@ -34,14 +35,24 @@ const addButtonClick = () => {
   })
 }
 
-const importButtonClick = async () => {
-  const project = await window.api.importProject()
-  if (project === 'cancel') {
+/**
+ * 导出所有项目数据
+ */
+const exportAllProjects = () => {
+  window.api.exportProject(JSON.parse(JSON.stringify(projectStore.projects)))
+}
+
+/**
+ * 根据文件格式导入数据
+ */
+const importProjects = async () => {
+  const projects = await window.api.importProject()
+  if (projects === 'cancel') {
     return
   }
-  const res = projectStore.push(project)
+  const res = projectStore.push(projects)
   ElNotification({
-    message: res ? `成功导入${project?.name}` : '导入失败!文件格式异常或项目已存在',
+    message: res ? `成功导入` : '导入失败!文件格式异常或项目已存在',
     type: res ? 'success' : 'error',
     offset: 120,
     duration: 3000
@@ -104,11 +115,21 @@ const projectTitle = computed<string>({
             </el-icon>
             <div style="padding: 0 0 2px 4px">新建项目</div>
           </div>
-          <div class="import-button" @click="importButtonClick">
-            <el-icon :size="20" style="width: 100%; height: 100%">
-              <Folder />
-            </el-icon>
-          </div>
+          <el-dropdown trigger="click">
+            <div class="import-button">
+              <el-icon :size="20" style="width: 100%; height: 100%">
+                <Folder />
+              </el-icon>
+            </div>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item :icon="SetUp" @click="exportAllProjects"
+                  >导出所有
+                </el-dropdown-item>
+                <el-dropdown-item :icon="Promotion" @click="importProjects">导入</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </div>
       </div>
       <div class="content">

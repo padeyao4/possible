@@ -329,7 +329,7 @@ const editTitle = () => {
  */
 const exportProject = () => {
   const project = projectStore.get(props.id)
-  window.api.exportProject(JSON.parse(JSON.stringify(project)))
+  window.api.exportProject(JSON.parse(JSON.stringify([project])))
 }
 
 const submitTitle = () => {

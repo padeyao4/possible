@@ -42,6 +42,7 @@ export const useProjectStore = defineStore('project', {
         tasks: [],
         relations: [],
         createdTime: new Date(),
+        initDate: new Date('2023/9/1'),
         offset: {
           x: -Math.floor((new Date().valueOf() - new Date('2023/9/1').valueOf()) / 86400000) * 120,
           y: 0
@@ -92,19 +93,26 @@ export const useProjectStore = defineStore('project', {
         relation
       )
     },
+
     /**
      * 当不存在项目id时，添加项目
-     * @param project
+     * @param projects
      */
-    push(project: IProject | undefined) {
-      if (project === undefined) {
+    push(projects: IProject[] | undefined) {
+      if (projects === undefined) {
         return false
       }
-      const exist = this.projects.find((p) => p.id === project.id)
-      if (!exist) {
-        this.projects.push(project)
-      }
-      return !exist
+      let e = false
+      projects.forEach((o) => {
+        const exist = this.projects.find((p) => p.id === o.id)
+        if (!exist) {
+          this.projects.push(o)
+        } else {
+          e = true
+          return
+        }
+      })
+      return !e
     }
   },
   persist: true

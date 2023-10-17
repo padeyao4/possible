@@ -7,6 +7,10 @@ export interface IProject {
   relations: IRelation[]
   createdTime: Date
   offset: Point
+  /**
+   * 初始时间
+   */
+  initDate: Date
 }
 
 export interface ITask {
@@ -21,6 +25,10 @@ export interface ITask {
   target: string // 任务目标
   detail: string // 任务详情
   note: string // 笔记
+  /**
+   * 任务类型，周期任务，定时任务，一般任务
+   */
+  taskType: 'period' | 'schedule' | 'general'
 }
 
 export interface IRelation {

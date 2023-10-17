@@ -84,13 +84,14 @@ app
     /**
      * 导出项目
      */
-    ipcMain.on('export:project', (_, project: IProject) => {
+    ipcMain.on('export:project', (_, projects: IProject[]) => {
+      const fileName = projects.length === 1 ? `${projects[0].name}` : 'untitled'
       const exportPath = dialog.showSaveDialogSync({
-        title: `导出${project.name}`,
-        defaultPath: `${USER_HOME}/Desktop/${project.name}.json`
+        title: `导出${fileName}`,
+        defaultPath: `${USER_HOME}/Desktop/${fileName}.json`
       })
       if (exportPath !== undefined) {
-        fs.writeFile(exportPath, JSON.stringify(project), (err) => {
+        fs.writeFile(exportPath, JSON.stringify(projects), (err) => {
           console.error(err)
         })
       }
