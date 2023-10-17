@@ -440,12 +440,19 @@ const handleEdgeTest = () => {
                 <el-input v-model="editorTaskModel.target" />
               </el-form-item>
               <el-form-item label="详情">
-                <el-input v-model="editorTaskModel.detail" />
+                <el-input v-model="editorTaskModel.detail" type="textarea" />
               </el-form-item>
               <el-form-item label="记录">
                 <el-input v-model="editorTaskModel.note" type="textarea" />
               </el-form-item>
-              <el-form-item>
+              <el-form-item label="类型">
+                <el-radio-group v-model="editorTaskModel.taskType">
+                  <el-radio label="period">周期</el-radio>
+                  <el-radio label="schedule">定时</el-radio>
+                  <el-radio label="general">一般</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label="状态">
                 <el-radio-group v-model="editorTaskModel.state">
                   <el-radio label="completed">完成</el-radio>
                   <el-radio label="timeout">超时</el-radio>
