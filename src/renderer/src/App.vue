@@ -17,6 +17,7 @@ onMounted(() => {
   intervalRef.value = setInterval(() => {
     console.log('update date', new Date())
     todayStore.update(new Date())
+    // todo 修复自定更新日期
   }, 10_000)
 })
 
