@@ -3,7 +3,6 @@ import router from '@renderer/router'
 import { RouterView, useRoute } from 'vue-router'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useProjectStore } from '@renderer/store/project'
-import { Promotion, SetUp } from '@element-plus/icons-vue'
 import { ElNotification } from 'element-plus'
 import { useTodayStore } from '@renderer/store/day'
 
@@ -89,6 +88,8 @@ const projectTitle = computed<string>({
     projectStore.update(activeId.value, { name })
   }
 })
+
+const bottomVisible = ref(true)
 </script>
 
 <template>
@@ -125,27 +126,24 @@ const projectTitle = computed<string>({
         </div>
         <hr />
         <div class="side-bottom">
-          <div class="add-button" @click="addButtonClick">
-            <el-icon :size="20">
-              <Plus />
-            </el-icon>
-            <div style="padding: 0 0 2px 4px">新建项目</div>
-          </div>
-          <el-dropdown trigger="click">
-            <div class="import-button">
+          <template v-if="bottomVisible">
+            <div class="add-button" @click="addButtonClick">
+              <el-icon :size="20">
+                <Plus />
+              </el-icon>
+              <div style="padding: 0 0 2px 4px">新建项目</div>
+            </div>
+            <div class="import-button" @click="bottomVisible = false">
               <el-icon :size="20" style="width: 100%; height: 100%">
                 <Folder />
               </el-icon>
             </div>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item :icon="SetUp" @click="exportAllProjects"
-                  >导出所有
-                </el-dropdown-item>
-                <el-dropdown-item :icon="Promotion" @click="importProjects">导入</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
+          </template>
+          <div v-else class="bottom-settings">
+            <el-button text @click="importProjects">导入</el-button>
+            <el-button text @click="exportAllProjects">导出</el-button>
+            <el-button text @click="bottomVisible = true">返回</el-button>
+          </div>
         </div>
       </div>
       <div class="content">
@@ -239,6 +237,14 @@ const projectTitle = computed<string>({
           :hover {
             background: antiquewhite;
           }
+        }
+
+        .bottom-settings {
+          display: flex;
+          width: 100%;
+          justify-content: center;
+          align-items: center;
+          padding: 0 8px 0 8px;
         }
       }
     }
