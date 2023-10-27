@@ -5,23 +5,28 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useProjectStore } from '@renderer/store/project'
 import { ElNotification } from 'element-plus'
 import { useTodayStore } from '@renderer/store/day'
+import { IProject } from '@renderer/store'
 
 const projectStore = useProjectStore()
 const route = useRoute()
 const todayStore = useTodayStore()
 
 const intervalRef = ref()
+const timeoutRef = ref()
 
 onMounted(() => {
-  intervalRef.value = setInterval(() => {
-    console.log('update date', new Date())
-    todayStore.update(new Date())
-    // todo 修复自定更新日期
-  }, 10_000)
+  const time = 86400_000 - (new Date().getTime() % 86400_000)
+  timeoutRef.value = setTimeout(() => {
+    intervalRef.value = setInterval(() => {
+      console.log('update date', new Date())
+      todayStore.update(new Date())
+    }, 86400_000)
+  }, time)
 })
 
 onUnmounted(() => {
   clearInterval(intervalRef.value)
+  clearTimeout(timeoutRef.value)
 })
 
 const activeId = computed(() => {
@@ -80,16 +85,15 @@ const handleInputRef = (e: HTMLInputElement | undefined) => {
   e?.focus()
 }
 
-const projectTitle = computed<string>({
-  get() {
-    return projectStore.get(activeId.value).name
-  },
-  set(name) {
-    projectStore.update(activeId.value, { name })
-  }
+const project = computed<IProject>(() => {
+  return projectStore.get(activeId.value)
 })
 
 const bottomVisible = ref(true)
+
+const routeKey = computed(() => {
+  return route.fullPath
+})
 </script>
 
 <template>
@@ -117,7 +121,7 @@ const bottomVisible = ref(true)
           <div v-if="inputVisible" class="list-item active">
             <input
               :ref="(e) => handleInputRef(e as HTMLInputElement)"
-              v-model="projectTitle"
+              v-model="project.name"
               class="item-input"
               @blur="inputVisible = false"
               @keydown.enter="inputVisible = false"
@@ -147,7 +151,7 @@ const bottomVisible = ref(true)
         </div>
       </div>
       <div class="content">
-        <router-view />
+        <router-view :key="routeKey" />
       </div>
     </div>
   </div>

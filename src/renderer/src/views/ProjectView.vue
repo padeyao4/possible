@@ -3,118 +3,41 @@ import { Graph, type IEdge, Menu, ModelConfig } from '@antv/g6'
 import type { EdgeConfig, IG6GraphEvent, INode, NodeConfig } from '@antv/g6-core'
 import { type Item } from '@antv/g6-core'
 import { v4 as uuidv4 } from 'uuid'
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
-import PossibleGrid from '@renderer/g6/plugin/possible-grid'
-import { collision, date2Day, date2Index, index2Date, normalX } from '@renderer/util'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import PossibleGrid from '@renderer/g6/plugin/possibleGrid'
+import { collision, date2Index, normalX } from '@renderer/util'
 import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
 import { useProjectStore } from '@renderer/store/project'
 import router from '@renderer/router'
-import { IRelation, ITask } from '@renderer/store'
+import { IProject, IRelation, ITask } from '@renderer/store'
 import { debounce } from '@antv/util'
 import { ElNotification } from 'element-plus'
 import { autoLayout } from '@renderer/settings'
 import { useTodayStore } from '@renderer/store/day'
+import { PossibleTimeBar } from '@renderer/g6/plugin/possibleTimeBar'
 
-const props = defineProps<{
-  id: string
-}>()
+const props = defineProps<{ id: string }>()
 const projectStore = useProjectStore()
 const todayStore = useTodayStore()
 
 const container = ref<HTMLElement>()
 
 let graph: Graph | null = null
-const graphRef = ref<Graph | null>()
 
-const projectTitle = computed<string>({
-  get() {
-    return projectStore.get(props.id).name
-  },
-  set(name) {
-    projectStore.update(props.id, { name })
-  }
+const project = computed<IProject>(() => {
+  return projectStore.get(props.id)
 })
 
-const offset = computed(() => {
-  return projectStore.get(props.id).offset ?? { x: 0, y: 0 }
-})
-
-const viewportChange = () => {
-  const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
-  projectStore.update(props.id, { offset: { x, y } })
-}
-
-const afterRemoveItem = (e: IG6GraphEvent) => {
-  if (e.type === 'node') {
-    projectStore.deleteTask(props.id, (e.item as unknown as NodeConfig).id)
-  }
-  if (e.type === 'edge') {
-    projectStore.deleteRelation(props.id, (e.item as unknown as EdgeConfig).id as string)
-  }
-}
-
-const afterAddItem = (e: IG6GraphEvent) => {
-  if (e.item?.getType() === 'node') {
-    projectStore.addTask(props.id, e.item.getModel() as unknown as ITask)
-  }
-  if (e.item?.getType() === 'edge') {
-    projectStore.addRelation(props.id, e.item.getModel() as unknown as IRelation)
-  }
-}
-
-/**
- * 更新节点防抖
- */
-const debounceAfterUpdateItem = debounce(function (e: IG6GraphEvent) {
-  if (e.item?.getType() === 'node') {
-    projectStore.updateTask(props.id, e.item.getModel() as unknown as ITask)
-  }
-  if (e.item?.getType() === 'edge') {
-    projectStore.updateRelation(props.id, e.item.getModel() as unknown as IRelation)
-  }
-}, 500)
-
-const todayIndex = computed(
-  () =>
+const todayIndex = computed(() => {
+  console.log('computed today index', todayStore.today)
+  return (
     date2Index(new Date(todayStore.today)) -
     date2Index(new Date(projectStore.get(props.id).initDate))
-)
-
-watch(todayStore, () => {
-  console.log('watch today index', todayIndex)
-  graph?.updateLayout({
-    todayIndex: todayIndex.value
-  })
-})
-
-watch([props, graphRef], () => {
-  graph?.off('viewportchange', viewportChange)
-  graph?.off('afterremoveitem', afterRemoveItem)
-  graph?.off('afteradditem', afterAddItem)
-  graph?.off('afterupdateitem', debounceAfterUpdateItem)
-  graph?.read(projectStore.data(props.id))
-  const { x: ox, y: oy } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
-  const { x: sx, y: sy } = offset.value
-  graph?.translate(sx - ox, sy - oy)
-  graph?.on('viewportchange', viewportChange)
-  graph?.on('afterremoveitem', afterRemoveItem)
-  graph?.on('afteradditem', afterAddItem)
-  graph?.on('afterupdateitem', debounceAfterUpdateItem)
-})
-
-const timeItems = computed(() => {
-  const x = offset.value.x
-  const n = Math.floor(Math.abs(x / 120)) * (x >= 0 ? 1 : -1)
-  return [...new Array(25).keys()]
-    .map((i) => i - n - 1 + date2Index(new Date(projectStore.get(props.id).initDate)))
-    .filter((n) => !isNaN(n))
-})
-
-const translateX = computed(() => {
-  return (offset.value.x % 120) - 240
+  )
 })
 
 onMounted(() => {
+  console.debug('reload')
   graph = new Graph({
     container: 'container',
     animate: true,
@@ -132,6 +55,7 @@ onMounted(() => {
     },
     plugins: [
       new PossibleGrid(),
+      new PossibleTimeBar({ baseDate: new Date(project.value.initDate) }),
       new Menu({
         offsetX: -(container.value?.offsetLeft ?? 0),
         offsetY: -(container.value?.offsetTop ?? 0),
@@ -178,9 +102,14 @@ onMounted(() => {
     }
   })
 
+  const { x, y } = project.value.offset
+  graph.translate(x, y)
+  graph.read(projectStore.data(props.id))
+
   graph.on('edge:mouseover', (e) => {
     graph?.setItemState(e.item as Item, 'hover', true)
   })
+
   graph.on('edge:mouseout', (e) => {
     graph?.setItemState(e.item as Item, 'hover', false)
   })
@@ -253,12 +182,13 @@ onMounted(() => {
       graph?.setMode('edit')
     }
   })
+
   graph.on('keyup', (e) => {
     if (e.key === 'Control') {
       graph?.setMode('default')
     }
   })
-  // 处理添加完边后的操作
+
   graph.on('aftercreateedge', (e) => {
     const edge = e.edge as IEdge
 
@@ -297,7 +227,46 @@ onMounted(() => {
     }
   })
 
-  graphRef.value = graph
+  graph.on('viewportchange', () => {
+    // todo 防抖
+    // const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
+    // project.value.offset.x = x
+    // project.value.offset.y = y
+  })
+  graph.on('afterremoveitem', (e: IG6GraphEvent) => {
+    if (e.type === 'node') {
+      projectStore.deleteTask(props.id, (e.item as unknown as NodeConfig).id)
+    }
+    if (e.type === 'edge') {
+      projectStore.deleteRelation(props.id, (e.item as unknown as EdgeConfig).id as string)
+    }
+  })
+  graph.on('afteradditem', (e: IG6GraphEvent) => {
+    if (e.item?.getType() === 'node') {
+      projectStore.addTask(props.id, e.item.getModel() as unknown as ITask)
+    }
+    if (e.item?.getType() === 'edge') {
+      projectStore.addRelation(props.id, e.item.getModel() as unknown as IRelation)
+    }
+  })
+  graph.on(
+    'afterupdateitem',
+    debounce(function (e: IG6GraphEvent) {
+      if (e.item?.getType() === 'node') {
+        projectStore.updateTask(props.id, e.item.getModel() as unknown as ITask)
+      }
+      if (e.item?.getType() === 'edge') {
+        projectStore.updateRelation(props.id, e.item.getModel() as unknown as IRelation)
+      }
+    }, 500)
+  )
+
+  watch(todayStore, () => {
+    console.log('watch today index', todayIndex)
+    graph?.updateLayout({
+      todayIndex: todayIndex.value
+    })
+  })
 
   window.addEventListener('resize', () => {
     if (container.value) {
@@ -306,21 +275,18 @@ onMounted(() => {
   })
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
+  console.log('on before unmount')
   graph?.destroy()
-})
-
-const todayActiveIndex = computed(() => {
-  return todayIndex.value + date2Index(new Date(projectStore.get(props.id).initDate)) + 1
 })
 
 /**
  * 回到今天时间点
  */
 const back2Today = () => {
-  const ox = offset.value.x
+  const ox = project.value.offset.x
   const dx = todayIndex.value * 120 + ox
-  graph?.translate(-dx, -offset.value.y)
+  graph?.translate(-dx, -project.value.offset.y)
 }
 
 // ------------------------ project title ---------------------------
@@ -362,30 +328,34 @@ const editorOnClose = () => {
 }
 
 const editorTaskModel = computed(() => {
-  const task = graphRef.value?.findById(editorTaskId.value)?.getModel?.() as unknown as ITask
+  console.log('computed editor task model')
+  const task = graph?.findById(editorTaskId.value)?.getModel?.() as unknown as ITask
   return new Proxy(task, {
     get: (target, p) => {
       return Reflect.get(target, p)
     },
     set: (target, p, newValue) => {
       Reflect.set(target, p, newValue)
-      graphRef.value?.updateItem(target.id, target as unknown as NodeConfig)
+      graph?.updateItem(target.id, target as unknown as NodeConfig)
       return true
     }
   })
 })
 
 const moveRight = () => {
+  console.log('move right today')
   const d = new Date(todayStore.today)
   d.setDate(d.getDate() + 1)
   todayStore.update(d)
 }
 
 const rollback = () => {
+  console.log('rollback today')
   todayStore.update(new Date())
 }
 
 const moveLeft = () => {
+  console.log('move left today')
   const d = new Date(todayStore.today)
   d.setDate(d.getDate() - 1)
   todayStore.update(d)
@@ -400,13 +370,13 @@ const moveLeft = () => {
           <input
             v-if="titleEditEnable"
             ref="titleRef"
-            v-model="projectTitle"
+            v-model="project.name"
             class="title-input"
             @blur="submitTitle"
             @keydown.enter="submitTitle"
           />
           <div v-else class="title" @dblclick="editTitle">
-            {{ projectTitle ?? '' }}
+            {{ project.name ?? '' }}
           </div>
         </div>
         <el-dropdown trigger="click">
@@ -428,7 +398,7 @@ const moveLeft = () => {
         <Teleport to="body">
           <el-dialog v-model="deleteDialogVisible" title="警告" width="30%" align-center>
             <span
-              >确定删除 <i style="font-size: large">{{ projectTitle ?? '' }} </i> 计划吗</span
+              >确定删除 <i style="font-size: large">{{ project.name ?? '' }} </i> 计划吗</span
             >
             <template #footer>
               <span class="dialog-footer">
@@ -439,7 +409,6 @@ const moveLeft = () => {
           </el-dialog>
         </Teleport>
       </div>
-
       <div class="body">
         <Teleport to="body">
           <el-drawer
@@ -479,38 +448,15 @@ const moveLeft = () => {
             </el-form>
           </el-drawer>
         </Teleport>
-        <div
-          class="time-bar"
-          @wheel="
-            (e: any) => {
-              graph?.translate(e.deltaY / 5, 0)
-            }
-          "
-        >
-          <div
-            v-for="timeItem in timeItems"
-            :key="timeItem"
-            class="time-item"
-            :style="{ translate: translateX + 'px' }"
-            :class="{ active: timeItem === todayActiveIndex }"
-          >
-            <div>
-              <div>
-                {{ new Intl.DateTimeFormat('zh-Hans').format(index2Date(timeItem)) }}
-              </div>
-              <p>星期{{ date2Day(index2Date(timeItem)) }}</p>
-            </div>
-          </div>
-        </div>
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
         <el-button @click="back2Today">today</el-button>
-        <p class="footer-label">{{ graphRef?.getCurrentMode() }}</p>
+        <!--        <p class="footer-label">{{ graphRef?.getCurrentMode() }}</p>-->
         <el-button @click="moveLeft">left</el-button>
         <el-button @click="rollback">back</el-button>
         <el-button @click="moveRight">right</el-button>
-        <p class="footer-label">{{ offset }}</p>
+        <p class="footer-label">{{ project.offset }}</p>
       </div>
     </div>
   </div>
@@ -575,7 +521,7 @@ const moveLeft = () => {
 
     .container {
       display: inline-block;
-      height: 100%;
+      height: calc(100% - 40px);
       width: 100%;
       z-index: 1;
       position: relative;

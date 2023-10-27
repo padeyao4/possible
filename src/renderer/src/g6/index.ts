@@ -1,5 +1,5 @@
 import G6, { BehaviorOption } from '@antv/g6'
-import PossibleNodeDrag from './behavior/possible-node-drag'
+import PossibleNodeDrag from './behavior/possibleNodeDrag'
 import { ITask } from '@renderer/store'
 import { index2X } from '@renderer/util'
 
@@ -72,6 +72,7 @@ G6.registerLayout('possible-layout', {
     const todayIndex = this.todayIndex
     const nodeHeight = this.nodeHeight
     const map = new Map<number, ITask[]>()
+    console.log('today index', todayIndex)
     nodes
       .map((n) => {
         const nx = index2X(todayIndex)
