@@ -3,7 +3,7 @@ import { Graph, type IEdge, Menu, ModelConfig } from '@antv/g6'
 import type { EdgeConfig, IG6GraphEvent, INode, NodeConfig } from '@antv/g6-core'
 import { type Item } from '@antv/g6-core'
 import { v4 as uuidv4 } from 'uuid'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, toRaw, watch } from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possibleGrid'
 import { collision, date2Index, normalX } from '@renderer/util'
 import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
@@ -55,10 +55,10 @@ onMounted(() => {
     },
     plugins: [
       new PossibleGrid(),
-      new PossibleTimeBar({ baseDate: new Date(project.value.initDate) }),
+      new PossibleTimeBar({ baseDate: toRaw(project.value.initDate) }),
       new Menu({
         offsetX: -(container.value?.offsetLeft ?? 0),
-        offsetY: -(container.value?.offsetTop ?? 0),
+        offsetY: -(container.value?.offsetTop ?? 0) - 40,
         getContent: () => '删除',
         handleMenuClick: (_: HTMLElement, item: Item) => {
           graph?.removeItem(item)

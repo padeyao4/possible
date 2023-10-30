@@ -71,7 +71,7 @@ export function date2Day(date: Date) {
     '5': '五',
     '6': '六'
   }
-  return mapper[date.getDay()]
+  return '星期' + mapper[date.getDay()]
 }
 
 /**
@@ -88,4 +88,18 @@ export function collision(b1: IBBox, b2: IBBox, paddingX = 0, paddingY = 0) {
     b1.y > b2.y + b2.height + paddingY ||
     b1.y + b1.height + paddingY < b2.y
   )
+}
+
+/**
+ * 添加天数
+ * @param base
+ * @param n
+ */
+export function dateAdd(base: Date | string | number, n: number) {
+  return new Date(new Date(base).getTime() + n * dayOfSeconds)
+}
+
+export function timeBarShow(base: Date | string | number, n: number) {
+  const date = dateAdd(base, n)
+  return new Intl.DateTimeFormat('zh-Hans').format(date) + '\n' + date2Day(date)
 }
