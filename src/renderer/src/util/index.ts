@@ -46,7 +46,7 @@ export function index2Date(index: number) {
  * @param date
  */
 export function date2Index(date: Date) {
-  return Math.floor(date.valueOf() / dayOfSeconds) - 1
+  return Math.floor(date.valueOf() / dayOfSeconds)
 }
 
 /**

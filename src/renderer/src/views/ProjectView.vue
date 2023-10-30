@@ -5,7 +5,7 @@ import { type Item } from '@antv/g6-core'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, toRaw, watch } from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possibleGrid'
-import { collision, date2Index, normalX } from '@renderer/util'
+import { collision, normalX } from '@renderer/util'
 import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
 import { useProjectStore } from '@renderer/store/project'
 import router from '@renderer/router'
@@ -23,39 +23,30 @@ const todayStore = useTodayStore()
 const container = ref<HTMLElement>()
 let graph: Graph | null = null
 
-const project = computed<IProject>(() => {
-  return projectStore.get(props.id)
-})
+const project = projectStore.get(props.id) as IProject
 
-const todayIndex = computed(() => {
-  console.log('computed today index', todayStore.today)
-  return (
-    date2Index(new Date(todayStore.today)) -
-    date2Index(new Date(projectStore.get(props.id).initDate))
+const dataIndex = () =>
+  Math.floor(
+    (new Date(todayStore.today).getTime() - new Date(project.initDate).getTime()) / 86400_000
   )
-})
 
 onMounted(() => {
-  console.debug('reload')
   graph = new Graph({
     container: 'container',
     animate: true,
     animateCfg: {
-      duration: 300,
-      callback() {
-        console.log('layout finish')
-      }
+      duration: 300
     },
     layout: {
       type: 'possible-layout',
-      todayIndex: todayIndex.value,
+      todayIndex: dataIndex(),
       nodeHeight: 80,
       gap: 32
     },
     plugins: [
       new PossibleGrid(),
       new PossibleTimeBar({
-        baseDate: toRaw(project.value.initDate),
+        baseDate: toRaw(project.initDate),
         today: todayStore
       }),
       new Menu({
@@ -104,7 +95,7 @@ onMounted(() => {
     }
   })
 
-  const { x, y } = project.value.offset
+  const { x, y } = project.offset
   graph.data(projectStore.data(props.id))
   graph.render()
   graph.translate(x, y)
@@ -231,10 +222,9 @@ onMounted(() => {
   })
 
   graph.on('viewportchange', () => {
-    // todo 防抖
     const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
-    project.value.offset.x = x
-    project.value.offset.y = y
+    project.offset.x = x
+    project.offset.y = y
   })
   graph.on('afterremoveitem', (e: IG6GraphEvent) => {
     if (e.type === 'node') {
@@ -265,11 +255,11 @@ onMounted(() => {
   )
 
   watch(todayStore, () => {
-    console.log('watch today index', todayIndex)
+    console.log('watch today index')
     graph?.updateLayout({
-      todayIndex: todayIndex.value
+      todayIndex: dataIndex()
     })
-    graph?.emit('possible-update', { x: project.value.offset.x })
+    graph?.emit('possible-update', { x: project.offset.x })
   })
 
   window.addEventListener('resize', () => {
@@ -288,9 +278,10 @@ onBeforeUnmount(() => {
  * 回到今天时间点
  */
 const back2Today = () => {
-  const ox = project.value.offset.x
-  const dx = todayIndex.value * 120 + ox
-  graph?.translate(-dx, -project.value.offset.y)
+  const ox = project.offset.x
+  const dx = dataIndex() * 120 + ox
+  console.log('back to today', dx)
+  graph?.translate(-dx, -project.offset.y)
 }
 
 // ------------------------ project title ---------------------------
@@ -326,10 +317,6 @@ const handleDelete = () => {
 // -------------------- editor --------------------
 const editorTaskId = ref('')
 const editorVisible = ref(false)
-
-const editorOnClose = () => {
-  editorVisible.value = false
-}
 
 const editorTaskModel = computed(() => {
   console.log('computed editor task model')
@@ -419,7 +406,7 @@ const moveLeft = () => {
             v-model="editorVisible"
             :close-on-click-modal="false"
             :show-close="true"
-            @close="editorOnClose"
+            @close="editorVisible = false"
           >
             <el-form :model="editorTaskModel">
               <el-form-item label="名称">
