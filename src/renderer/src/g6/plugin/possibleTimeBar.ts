@@ -5,7 +5,7 @@ import { timeBarShow } from '@renderer/util'
 
 interface TimeBarConfig {
   baseDate: Date
-  today: Date
+  today: any
 }
 
 export class PossibleTimeBar {
@@ -15,7 +15,7 @@ export class PossibleTimeBar {
   constructor(config: TimeBarConfig) {
     this.objs = {}
     this.config = config
-    console.log('date', this.config.baseDate)
+    console.log('plugin config', config)
   }
 
   set(k: string, v: unknown) {
@@ -57,6 +57,10 @@ export class PossibleTimeBar {
       name: 'possible-time-bar-group'
     })
 
+    this.config.today.$subscribe(() => {
+      group.emit('possible-update', { x: graph.getCanvasByPoint(0, 0).x })
+    })
+
     this.set('group', group)
 
     const baseTime: Date = this.config.baseDate
@@ -78,6 +82,7 @@ export class PossibleTimeBar {
         id: i.toString()
       })
     }
+
     group.on('possible-update', (e: { x: number }) => {
       const offset = -Math.floor(e.x / 120)
       group.getChildren().forEach((value) => {
@@ -85,7 +90,7 @@ export class PossibleTimeBar {
         value.attr('text', timeBarShow(baseTime, n))
         value.attr(
           'fill',
-          Math.floor(this.config.today.getTime() / 86400_000) -
+          Math.floor(this.config.today.data.getTime() / 86400_000) -
             Math.floor((new Date(baseTime).getTime() + n * 86400_000) / 86400_000) ===
             0
             ? '#a10066'

@@ -54,7 +54,10 @@ onMounted(() => {
     },
     plugins: [
       new PossibleGrid(),
-      new PossibleTimeBar({ baseDate: toRaw(project.value.initDate), today: todayStore.today }),
+      new PossibleTimeBar({
+        baseDate: toRaw(project.value.initDate),
+        today: todayStore
+      }),
       new Menu({
         offsetX: -(container.value?.offsetLeft ?? 0),
         offsetY: -(container.value?.offsetTop ?? 0) - 40,
@@ -102,8 +105,9 @@ onMounted(() => {
   })
 
   const { x, y } = project.value.offset
+  graph.data(projectStore.data(props.id))
+  graph.render()
   graph.translate(x, y)
-  graph.read(projectStore.data(props.id))
 
   graph.on('edge:mouseover', (e) => {
     graph?.setItemState(e.item as Item, 'hover', true)
@@ -228,9 +232,9 @@ onMounted(() => {
 
   graph.on('viewportchange', () => {
     // todo 防抖
-    // const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
-    // project.value.offset.x = x
-    // project.value.offset.y = y
+    const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
+    project.value.offset.x = x
+    project.value.offset.y = y
   })
   graph.on('afterremoveitem', (e: IG6GraphEvent) => {
     if (e.type === 'node') {
@@ -265,6 +269,7 @@ onMounted(() => {
     graph?.updateLayout({
       todayIndex: todayIndex.value
     })
+    graph?.emit('possible-update', { x: project.value.offset.x })
   })
 
   window.addEventListener('resize', () => {
@@ -492,70 +497,45 @@ const moveLeft = () => {
     overflow: hidden;
     height: calc(100vh - 104px);
     padding: 24px 24px 16px 24px;
-
-    .time-bar {
-      z-index: 99;
-      user-select: none;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      overflow-x: hidden;
-
-      .time-item {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100px;
-        color: #727272;
-        flex-shrink: 0;
-        /* background-color: #1c1c1c; */
-        margin: 0 10px 0 10px;
-        border: 1px #c8c9cc;
-      }
-
-      .active {
-        color: #159d8e;
-      }
-    }
-
-    .container {
-      display: inline-block;
-      height: calc(100% - 40px);
-      width: 100%;
-      z-index: 1;
-      position: relative;
-    }
   }
 
-  .footer {
-    position: sticky;
-    bottom: 0;
-    height: 40px;
-    background: #c7c5c5;
+  .container {
+    display: inline-block;
+    height: calc(100% - 40px);
+    width: 100%;
+    z-index: 1;
+    position: relative;
+  }
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  height: 40px;
+  background: #c7c5c5;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 24px 0 24px;
+  align-items: center;
+
+  .footer-label {
+    color: #181818;
+    background-color: #d0d0d0;
+    user-select: none;
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+
+  div {
     display: flex;
-    justify-content: space-between;
-    padding: 0 24px 0 24px;
+    justify-content: center;
     align-items: center;
+    margin: auto;
 
-    .footer-label {
-      color: #181818;
-      background-color: #d0d0d0;
-      user-select: none;
-      width: 150px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: clip;
-    }
-
-    div {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: auto;
-
-      &:hover {
-        background: wheat;
-      }
+    &:hover {
+      background: wheat;
     }
   }
 }

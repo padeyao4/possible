@@ -6,6 +6,11 @@ export const useTodayStore = defineStore('today', {
       today: new Date()
     }
   },
+  getters: {
+    data: (state) => {
+      return state.today
+    }
+  },
   actions: {
     update(d: Date) {
       this.today = d
