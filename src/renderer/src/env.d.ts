@@ -1,8 +1,9 @@
 /// <reference types="vite/client" />
 /// <reference types="@types/uuid" />
-
 import 'vue'
 import 'pinia'
+
+declare module 'default-passive-events'
 
 export interface ImportNetaEnv {
   readonly VITE_APP_TITLE: string

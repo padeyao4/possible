@@ -21,7 +21,6 @@ const projectStore = useProjectStore()
 const todayStore = useTodayStore()
 
 const container = ref<HTMLElement>()
-
 let graph: Graph | null = null
 
 const project = computed<IProject>(() => {
@@ -55,7 +54,7 @@ onMounted(() => {
     },
     plugins: [
       new PossibleGrid(),
-      new PossibleTimeBar({ baseDate: toRaw(project.value.initDate) }),
+      new PossibleTimeBar({ baseDate: toRaw(project.value.initDate), today: todayStore.today }),
       new Menu({
         offsetX: -(container.value?.offsetLeft ?? 0),
         offsetY: -(container.value?.offsetTop ?? 0) - 40,

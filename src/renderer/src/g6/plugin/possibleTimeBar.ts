@@ -2,19 +2,23 @@ import { IGraph, IGroup } from '@antv/g6'
 import { createDom, modifyCSS } from '@antv/dom-util'
 import { Canvas } from '@antv/g-canvas'
 import { timeBarShow } from '@renderer/util'
-import { isReactive, isRef } from 'vue'
+
+interface TimeBarConfig {
+  baseDate: Date
+  today: Date
+}
 
 export class PossibleTimeBar {
-  public objs: Record<string, any>
-  private readonly config: { baseDate: Date }
+  public objs: Record<string, unknown>
+  private readonly config: TimeBarConfig
 
-  constructor(config: { baseDate: Date }) {
+  constructor(config: TimeBarConfig) {
     this.objs = {}
     this.config = config
     console.log('date', this.config.baseDate)
   }
 
-  set(k: string, v: any) {
+  set(k: string, v: unknown) {
     this.objs[k] = v
   }
 
@@ -24,7 +28,7 @@ export class PossibleTimeBar {
 
   destroyPlugin() {
     console.log('destroy possible time bar')
-    const graph: IGraph = this.get('graph')
+    const graph = this.get('graph') as IGraph
     graph.off('viewportchange', this.update)
   }
 
@@ -56,9 +60,6 @@ export class PossibleTimeBar {
     this.set('group', group)
 
     const baseTime: Date = this.config.baseDate
-    console.log('base time', baseTime)
-    console.log('is reactive', isReactive(baseTime))
-    console.log('is ref', isRef(baseTime))
 
     for (let i = 0; i < 24; i++) {
       group.addShape('text', {
@@ -82,12 +83,20 @@ export class PossibleTimeBar {
       group.getChildren().forEach((value) => {
         const n = offset + parseInt(value.cfg.id) + (offset >= 1 ? -1 : 0) - 2
         value.attr('text', timeBarShow(baseTime, n))
+        value.attr(
+          'fill',
+          Math.floor(this.config.today.getTime() / 86400_000) -
+            Math.floor((new Date(baseTime).getTime() + n * 86400_000) / 86400_000) ===
+            0
+            ? '#a10066'
+            : '#9e9e9e'
+        )
       })
     })
   }
 
   update = ({ matrix }: { matrix: number[] }) => {
-    const group: IGroup = this.get('group')
+    const group = this.get('group') as IGroup
     group.setMatrix([1, 0, 0, 0, 1, 0, matrix[6] % 120, 0, 1])
     group.emit('possible-update', { x: matrix[6] })
   }
