@@ -12,22 +12,19 @@ const route = useRoute()
 const todayStore = useTodayStore()
 
 const intervalRef = ref()
-const timeoutRef = ref()
 
 onMounted(() => {
-  // todo to fix update
-  const time = 86400_000 - (new Date().getTime() % 86400_000)
-  timeoutRef.value = setTimeout(() => {
-    intervalRef.value = setInterval(() => {
-      console.log('update date', new Date())
+  intervalRef.value = setInterval(() => {
+    const now = Math.floor(new Date().getTime() / 86400_000)
+    const today = Math.floor(todayStore.today.getTime() / 86400_000)
+    if (now !== today) {
       todayStore.update(new Date())
-    }, 86400_000)
-  }, time)
+    }
+  }, 30_000)
 })
 
 onUnmounted(() => {
   clearInterval(intervalRef.value)
-  clearTimeout(timeoutRef.value)
 })
 
 const activeId = computed(() => {
