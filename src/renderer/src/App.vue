@@ -15,6 +15,7 @@ const intervalRef = ref()
 const timeoutRef = ref()
 
 onMounted(() => {
+  // todo to fix update
   const time = 86400_000 - (new Date().getTime() % 86400_000)
   timeoutRef.value = setTimeout(() => {
     intervalRef.value = setInterval(() => {

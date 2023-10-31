@@ -255,7 +255,6 @@ onMounted(() => {
   )
 
   watch(todayStore, () => {
-    console.log('watch today index')
     graph?.updateLayout({
       todayIndex: dataIndex()
     })
@@ -342,7 +341,9 @@ const moveRight = () => {
 
 const rollback = () => {
   console.log('rollback today')
-  todayStore.update(new Date())
+  const date = new Date()
+  console.log('date', date)
+  todayStore.update(date)
 }
 
 const moveLeft = () => {
