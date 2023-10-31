@@ -6,6 +6,7 @@ import { useProjectStore } from '@renderer/store/project'
 import { ElNotification } from 'element-plus'
 import { useTodayStore } from '@renderer/store/day'
 import { IProject } from '@renderer/store'
+import { autoUpdateDate } from '@renderer/settings'
 
 const projectStore = useProjectStore()
 const route = useRoute()
@@ -14,17 +15,20 @@ const todayStore = useTodayStore()
 const intervalRef = ref()
 
 onMounted(() => {
-  intervalRef.value = setInterval(() => {
-    const now = Math.floor(new Date().getTime() / 86400_000)
-    const today = Math.floor(todayStore.today.getTime() / 86400_000)
-    if (now !== today) {
-      todayStore.update(new Date())
-    }
-  }, 30_000)
+  if (autoUpdateDate) {
+    console.info('start auto update date')
+    intervalRef.value = setInterval(() => {
+      const now = Math.floor(new Date().getTime() / 86400_000)
+      const today = Math.floor(todayStore.today.getTime() / 86400_000)
+      if (now !== today) {
+        todayStore.update(new Date())
+      }
+    }, 30_000)
+  }
 })
 
 onUnmounted(() => {
-  clearInterval(intervalRef.value)
+  if (intervalRef.value !== undefined) clearInterval(intervalRef.value)
 })
 
 const activeId = computed(() => {

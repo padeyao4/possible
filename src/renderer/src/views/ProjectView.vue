@@ -82,10 +82,7 @@ onMounted(() => {
       type: 'task-node'
     },
     defaultEdge: {
-      type: 'cubic-horizontal',
-      style: {
-        endArrow: true
-      }
+      type: 'cubic-horizontal'
     },
     edgeStateStyles: {
       hover: {
@@ -226,6 +223,7 @@ onMounted(() => {
     project.offset.x = x
     project.offset.y = y
   })
+
   graph.on('afterremoveitem', (e: IG6GraphEvent) => {
     if (e.type === 'node') {
       projectStore.deleteTask(props.id, (e.item as unknown as NodeConfig).id)
@@ -234,6 +232,7 @@ onMounted(() => {
       projectStore.deleteRelation(props.id, (e.item as unknown as EdgeConfig).id as string)
     }
   })
+
   graph.on('afteradditem', (e: IG6GraphEvent) => {
     if (e.item?.getType() === 'node') {
       projectStore.addTask(props.id, e.item.getModel() as unknown as ITask)
@@ -242,6 +241,7 @@ onMounted(() => {
       projectStore.addRelation(props.id, e.item.getModel() as unknown as IRelation)
     }
   })
+
   graph.on(
     'afterupdateitem',
     debounce(function (e: IG6GraphEvent) {
@@ -269,7 +269,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  console.log('on before unmount')
+  console.info('destroy graph')
   graph?.destroy()
 })
 
