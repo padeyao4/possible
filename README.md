@@ -32,3 +32,7 @@ $ pnpm build:mac
 # For Linux
 $ pnpm build:linux
 ```
+
+### Reference
+
+- https://cn.electron-vite.org/guide/introduction

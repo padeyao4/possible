@@ -154,3 +154,7 @@ export function timeBarShow(base: Date | string | number, n: number) {
   const date = dateAdd(base, n)
   return new Intl.DateTimeFormat('zh-Hans').format(date) + '\n' + date2Day(date)
 }
+
+export function viTest() {
+  return 1
+}
