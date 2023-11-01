@@ -63,11 +63,12 @@ G6.registerLayout('possible-layout', {
     /**
      * 递归处理节点
      * @param node
+     * @param currentX
      */
     const handleNode = (node: ITask & NodeConfig, currentX: number): boolean => {
       if (edgesMap.has(node.id)) {
-        const nextId = edgesMap.get(node.id)!
-        const nextNode = nodesMap.get(nextId)!
+        const nextId = edgesMap.get(node.id) as string
+        const nextNode = nodesMap.get(nextId) as ITask & NodeConfig
         if (handleNode(nextNode, currentX + 120)) {
           return handleNodeState(node, currentX)
         } else {
