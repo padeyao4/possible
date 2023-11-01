@@ -17,7 +17,7 @@ const intervalRef = ref()
 
 onMounted(() => {
   if (autoUpdateDate) {
-    console.info('start auto update date')
+    console.debug('start auto update date')
     intervalRef.value = setInterval(() => {
       // todo 存在时区问题
       const now = Math.floor(new Date().getTime() / DAY_OF_MS)

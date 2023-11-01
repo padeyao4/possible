@@ -50,6 +50,16 @@ export function date2Index(date: Date) {
 }
 
 /**
+ * 将日期转为x
+ * @param current
+ * @param base
+ */
+export function date2X(current: Date, base: Date) {
+  const delta = date2Index(new Date(current)) - date2Index(new Date(base))
+  return index2X(delta)
+}
+
+/**
  * 自定义日期格式化
  * @param date
  */
