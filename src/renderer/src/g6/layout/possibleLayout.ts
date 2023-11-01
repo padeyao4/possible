@@ -23,7 +23,6 @@ G6.registerLayout('possible-layout', {
     console.debug('layout execute')
     const {
       todayIndex,
-      nodeHeight,
       gap,
       nodes,
       edges
@@ -71,6 +70,8 @@ G6.registerLayout('possible-layout', {
         const nextNode = nodesMap.get(nextId)!
         if (handleNode(nextNode, currentX + 120)) {
           return handleNodeState(node, currentX)
+        } else {
+          return false
         }
       } else {
         return handleNodeState(node, currentX)
