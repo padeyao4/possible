@@ -138,7 +138,6 @@ export class PossibleTimeBar {
       const n = -Math.floor(e.x / 120)
       this.updateTimeItems(n)
       const index = this.todayIndex()
-      console.debug('time bar index', index)
       if (index >= this.startIndex || index <= this.endIndex) {
         group.emit('possible-today', { index })
       }

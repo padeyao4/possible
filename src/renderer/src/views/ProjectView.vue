@@ -3,7 +3,7 @@ import { Graph, type IEdge, Menu, ModelConfig } from '@antv/g6'
 import type { EdgeConfig, IG6GraphEvent, INode, NodeConfig } from '@antv/g6-core'
 import { type Item } from '@antv/g6-core'
 import { v4 as uuidv4 } from 'uuid'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possibleGrid'
 import { collision, normalX } from '@renderer/util'
 import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
@@ -110,8 +110,8 @@ onMounted(() => {
   // open drawer editor
   graph.on('node:dblclick', (e) => {
     if (graph?.getCurrentMode() === 'default') {
-      editorTaskId.value = (e.item as Item).getID()
-      editorVisible.value = true
+      editorModel.visible = true
+      editorModel.taskId = (e.item as Item).getID()
     }
   })
 
@@ -313,20 +313,20 @@ const handleDelete = () => {
   projectStore.delete(props.id)
 }
 
-// -------------------- editor --------------------
-const editorTaskId = ref('')
-const editorVisible = ref(false)
+const editorModel = reactive({
+  taskId: '',
+  visible: false
+})
 
-const editorTaskModel = computed(() => {
-  console.log('computed editor task model')
-  const task = graph?.findById(editorTaskId.value)?.getModel?.() as unknown as ITask
-  return new Proxy(task, {
+const taskModel = computed(() => {
+  const task = ref<ITask | ModelConfig>(graph?.findById(editorModel.taskId).getModel() ?? {})
+  return new Proxy(task.value, {
     get: (target, p) => {
       return Reflect.get(target, p)
     },
     set: (target, p, newValue) => {
       Reflect.set(target, p, newValue)
-      graph?.updateItem(target.id, target as unknown as NodeConfig)
+      graph?.updateItem(target.id as string, target)
       return true
     }
   })
@@ -404,33 +404,33 @@ const moveLeft = () => {
       <div class="body">
         <Teleport to="body">
           <el-drawer
-            v-model="editorVisible"
+            v-model="editorModel.visible"
             :close-on-click-modal="false"
             :show-close="true"
-            @close="editorVisible = false"
+            @close="editorModel.visible = false"
           >
-            <el-form :model="editorTaskModel">
+            <el-form :model="taskModel">
               <el-form-item label="名称">
-                <el-input v-model="editorTaskModel.name" />
+                <el-input v-model="taskModel.name" />
               </el-form-item>
               <el-form-item label="目标">
-                <el-input v-model="editorTaskModel.target" />
+                <el-input v-model="taskModel.target" />
               </el-form-item>
               <el-form-item label="详情">
-                <el-input v-model="editorTaskModel.detail" type="textarea" />
+                <el-input v-model="taskModel.detail" type="textarea" />
               </el-form-item>
               <el-form-item label="记录">
-                <el-input v-model="editorTaskModel.note" type="textarea" />
+                <el-input v-model="taskModel.note" type="textarea" />
               </el-form-item>
               <el-form-item label="类型">
-                <el-radio-group v-model="editorTaskModel.taskType">
+                <el-radio-group v-model="taskModel.taskType">
                   <el-radio label="period">周期</el-radio>
                   <el-radio label="schedule">定时</el-radio>
                   <el-radio label="general">一般</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="状态">
-                <el-radio-group v-model="editorTaskModel.state">
+                <el-radio-group v-model="taskModel.state">
                   <el-radio label="completed">完成</el-radio>
                   <el-radio label="timeout">超时</el-radio>
                   <el-radio label="discard">放弃</el-radio>
