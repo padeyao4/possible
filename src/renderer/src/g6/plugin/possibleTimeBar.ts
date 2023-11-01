@@ -2,25 +2,24 @@ import { IGraph, IGroup } from '@antv/g6'
 import { createDom, modifyCSS } from '@antv/dom-util'
 import { Canvas, ShapeCfg } from '@antv/g-canvas'
 import { timeBarShow } from '@renderer/util'
-
-interface TimeBarConfig {
-  baseDate: Date
-  today: any
-}
+import { useTodayStore } from '@renderer/store/day'
+import { IProject } from '@renderer/store'
 
 export class PossibleTimeBar {
-  public objs: Record<string, unknown>
-  private readonly config: TimeBarConfig
+  objs: Record<string, unknown>
   startIndex: number
   endIndex: number
   timeItems: number[]
+  project: IProject
 
-  constructor(config: TimeBarConfig) {
+  todayStore = useTodayStore()
+
+  constructor(project: IProject) {
     this.startIndex = 0
     this.endIndex = 22
     this.timeItems = Array.from({ length: this.endIndex - this.startIndex + 1 }, (_, i) => i)
     this.objs = {}
-    this.config = config
+    this.project = project
   }
 
   textAttr = (index: number) => {
@@ -32,7 +31,7 @@ export class PossibleTimeBar {
         x: 120 * index - 180,
         y: 0,
         textAlign: 'center',
-        text: timeBarShow(this.config.baseDate, index - 2),
+        text: timeBarShow(this.project.initDate, index - 2),
         textBaseline: 'top',
         fontSize: 15
       },
@@ -90,12 +89,15 @@ export class PossibleTimeBar {
     graph.off('viewportchange', this.viewportUpdate)
   }
 
+  /**
+   * 根据当前时间和创建时间计算index值。
+   * 注意: 当前时间不是实时同步，会出现当前时间小于创建时间的错误
+   */
   todayIndex = () => {
     return (
-      Math.floor(
-        (new Date(this.config.today.data).getTime() - new Date(this.config.baseDate).getTime()) /
-          86400_000
-      ) + 2
+      Math.floor(new Date(this.todayStore.today).getTime() / 86400_000) -
+      Math.floor(new Date(this.project.initDate).getTime() / 86400_000) +
+      2
     )
   }
 
@@ -121,7 +123,7 @@ export class PossibleTimeBar {
       name: 'possible-time-bar-group'
     })
 
-    this.config.today.$subscribe(() => {
+    this.todayStore.$subscribe(() => {
       group.emit('possible-today', { index: this.todayIndex() })
     })
 
@@ -136,6 +138,7 @@ export class PossibleTimeBar {
       const n = -Math.floor(e.x / 120)
       this.updateTimeItems(n)
       const index = this.todayIndex()
+      console.debug('time bar index', index)
       if (index >= this.startIndex || index <= this.endIndex) {
         group.emit('possible-today', { index })
       }

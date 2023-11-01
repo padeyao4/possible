@@ -3,7 +3,7 @@ import { Graph, type IEdge, Menu, ModelConfig } from '@antv/g6'
 import type { EdgeConfig, IG6GraphEvent, INode, NodeConfig } from '@antv/g6-core'
 import { type Item } from '@antv/g6-core'
 import { v4 as uuidv4 } from 'uuid'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, toRaw, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possibleGrid'
 import { collision, normalX } from '@renderer/util'
 import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
@@ -43,10 +43,7 @@ onMounted(() => {
     },
     plugins: [
       new PossibleGrid(),
-      new PossibleTimeBar({
-        baseDate: toRaw(project.initDate),
-        today: todayStore
-      }),
+      new PossibleTimeBar(project),
       new Menu({
         offsetX: -(container.value?.offsetLeft ?? 0),
         offsetY: -(container.value?.offsetTop ?? 0) - 40,
@@ -275,9 +272,7 @@ onBeforeUnmount(() => {
  * 回到今天时间点
  */
 const back2Today = () => {
-  const ox = project.offset.x
-  const dx = dataIndex() * 120 + ox
-  console.log('back to today', dx)
+  const dx = dataIndex() * 120 + project.offset.x
   graph?.translate(-dx, -project.offset.y)
 }
 
