@@ -39,9 +39,7 @@ onMounted(() => {
     },
     layout: {
       type: 'possible-layout',
-      todayIndex: dataIndex(),
-      nodeHeight: 80,
-      gap: 32
+      todayIndex: dataIndex()
     },
     plugins: [
       new PossibleGrid(),

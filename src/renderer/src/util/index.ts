@@ -1,4 +1,4 @@
-import { IBBox } from '@antv/g6-core'
+import { EdgeConfig, IBBox, IPoint, NodeConfig } from '@antv/g6-core'
 
 /**
  * 一天等于86400000秒
@@ -88,6 +88,57 @@ export function collision(b1: IBBox, b2: IBBox, paddingX = 0, paddingY = 0) {
     b1.y > b2.y + b2.height + paddingY ||
     b1.y + b1.height + paddingY < b2.y
   )
+}
+
+/**
+ * 根据点创建IBBox
+ * @param p1
+ * @param p2
+ */
+export function createBBox(p1: IPoint, p2: IPoint): IBBox {
+  const x = Math.min(p1.x, p2.x)
+  const width = Math.abs(p1.x - p2.x)
+  const y = Math.min(p1.y, p2.y)
+  const height = Math.abs(p1.y - p2.y)
+  return {
+    x,
+    y,
+    minX: x,
+    minY: y,
+    maxX: x,
+    maxY: y,
+    width,
+    height
+  }
+}
+
+/**
+ * 根据edgeConfig信息 创建 IBBox
+ * @param edge
+ */
+export function createBBoxByEdgeCfg(edge: EdgeConfig): IBBox {
+  return createBBox(edge.startPoint!, edge.endPoint!)
+}
+
+export function createBBoxXY(x: number, y: number, width: number, height: number): IBBox {
+  return {
+    x,
+    y,
+    minX: x,
+    minY: y,
+    maxX: x,
+    maxY: y,
+    width,
+    height
+  }
+}
+
+/**
+ * 根据node config信息创建BBox
+ * @param node
+ */
+export function createBBoxByNodeCfg(node: NodeConfig) {
+  return createBBoxXY(node.x!, node.y!, 100, 80)
 }
 
 /**
