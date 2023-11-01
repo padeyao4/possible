@@ -37,13 +37,51 @@ G6.registerLayout('possible-layout', {
 
     const map = new Map<number, (ITask & NodeConfig)[]>()
 
+    const edgesMap = new Map<string, string>()
+
+    edges.forEach((edge) => {
+      edgesMap.set(edge.source, edge.target)
+    })
+
+    const nodesMap = new Map<string, ITask & NodeConfig>()
+
+    nodes.forEach((node) => {
+      nodesMap.set(node.id, node)
+    })
+
     const idx = index2X(todayIndex)
+
+    const handleNodeState = (node: ITask & NodeConfig, currentX: number) => {
+      if (node.state === 'normal' && node.taskType === 'general') {
+        if (node.x < currentX) {
+          node.x = currentX
+        }
+        return true
+      } else {
+        return node.x >= currentX
+      }
+    }
+    /**
+     * 递归处理节点
+     * @param node
+     */
+    const handleNode = (node: ITask & NodeConfig, currentX: number): boolean => {
+      if (edgesMap.has(node.id)) {
+        const nextId = edgesMap.get(node.id)!
+        const nextNode = nodesMap.get(nextId)!
+        if (handleNode(nextNode, currentX + 120)) {
+          return handleNodeState(node, currentX)
+        }
+      } else {
+        return handleNodeState(node, currentX)
+      }
+    }
+
+    // todo 超期更改状态
 
     nodes
       .map((n) => {
-        if (n.state === 'normal' && n.taskType === 'general' && n.x < idx) {
-          n.x = idx
-        }
+        handleNode(n, idx)
         return n
       })
       .sort((n1, n2) => n1.y - n2.y)
