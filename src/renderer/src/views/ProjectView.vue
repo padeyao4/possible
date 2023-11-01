@@ -5,7 +5,7 @@ import { type Item } from '@antv/g6-core'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possibleGrid'
-import { collision, normalX } from '@renderer/util'
+import { collision, DAY_OF_MS, normalX } from '@renderer/util'
 import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
 import { useProjectStore } from '@renderer/store/project'
 import router from '@renderer/router'
@@ -15,8 +15,6 @@ import { ElNotification } from 'element-plus'
 import { autoLayout } from '@renderer/settings'
 import { useTodayStore } from '@renderer/store/day'
 import { PossibleTimeBar } from '@renderer/g6/plugin/possibleTimeBar'
-
-const DAY_OF_MS = 86400_000
 
 const props = defineProps<{ id: string }>()
 const projectStore = useProjectStore()

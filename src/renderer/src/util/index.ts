@@ -3,7 +3,7 @@ import { EdgeConfig, IBBox, IPoint, NodeConfig } from '@antv/g6-core'
 /**
  * 一天等于86400000秒
  */
-const dayOfSeconds = 86400000
+export const DAY_OF_MS = 86400_000
 
 /**
  * 将index还原为x点
@@ -37,7 +37,7 @@ export function index2Date(index: number) {
   if (isNaN(index)) {
     return new Date()
   } else {
-    return new Date(index * dayOfSeconds)
+    return new Date(index * DAY_OF_MS)
   }
 }
 
@@ -46,7 +46,7 @@ export function index2Date(index: number) {
  * @param date
  */
 export function date2Index(date: Date) {
-  return Math.floor(date.valueOf() / dayOfSeconds)
+  return Math.floor(date.valueOf() / DAY_OF_MS)
 }
 
 /**
@@ -117,7 +117,7 @@ export function createBBox(p1: IPoint, p2: IPoint): IBBox {
  * @param edge
  */
 export function createBBoxByEdgeCfg(edge: EdgeConfig): IBBox {
-  return createBBox(edge.startPoint!, edge.endPoint!)
+  return createBBox(edge.startPoint as IPoint, edge.endPoint as IPoint)
 }
 
 export function createBBoxXY(x: number, y: number, width: number, height: number): IBBox {
@@ -138,7 +138,7 @@ export function createBBoxXY(x: number, y: number, width: number, height: number
  * @param node
  */
 export function createBBoxByNodeCfg(node: NodeConfig) {
-  return createBBoxXY(node.x!, node.y!, 100, 80)
+  return createBBoxXY(node.x as number, node.y as number, 100, 80)
 }
 
 /**
@@ -147,7 +147,7 @@ export function createBBoxByNodeCfg(node: NodeConfig) {
  * @param n
  */
 export function dateAdd(base: Date | string | number, n: number) {
-  return new Date(new Date(base).getTime() + n * dayOfSeconds)
+  return new Date(new Date(base).getTime() + n * DAY_OF_MS)
 }
 
 export function timeBarShow(base: Date | string | number, n: number) {

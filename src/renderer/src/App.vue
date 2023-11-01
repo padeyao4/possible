@@ -7,6 +7,7 @@ import { ElNotification } from 'element-plus'
 import { useTodayStore } from '@renderer/store/day'
 import { IProject } from '@renderer/store'
 import { autoUpdateDate } from '@renderer/settings'
+import { DAY_OF_MS } from '@renderer/util'
 
 const projectStore = useProjectStore()
 const route = useRoute()
@@ -18,8 +19,9 @@ onMounted(() => {
   if (autoUpdateDate) {
     console.info('start auto update date')
     intervalRef.value = setInterval(() => {
-      const now = Math.floor(new Date().getTime() / 86400_000)
-      const today = Math.floor(todayStore.today.getTime() / 86400_000)
+      // todo 存在时区问题
+      const now = Math.floor(new Date().getTime() / DAY_OF_MS)
+      const today = Math.floor(todayStore.today.getTime() / DAY_OF_MS)
       if (now !== today) {
         todayStore.update(new Date())
       }

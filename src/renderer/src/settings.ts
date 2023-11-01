@@ -1,2 +1,2 @@
 export const autoLayout = true
-export const autoUpdateDate = false
+export const autoUpdateDate = true

@@ -1,7 +1,7 @@
 import { IGraph, IGroup } from '@antv/g6'
 import { createDom, modifyCSS } from '@antv/dom-util'
 import { Canvas, ShapeCfg } from '@antv/g-canvas'
-import { timeBarShow } from '@renderer/util'
+import { DAY_OF_MS, timeBarShow } from '@renderer/util'
 import { useTodayStore } from '@renderer/store/day'
 import { IProject } from '@renderer/store'
 
@@ -95,8 +95,8 @@ export class PossibleTimeBar {
    */
   todayIndex = () => {
     return (
-      Math.floor(new Date(this.todayStore.today).getTime() / 86400_000) -
-      Math.floor(new Date(this.project.initDate).getTime() / 86400_000) +
+      Math.floor(new Date(this.todayStore.today).getTime() / DAY_OF_MS) -
+      Math.floor(new Date(this.project.initDate).getTime() / DAY_OF_MS) +
       2
     )
   }
