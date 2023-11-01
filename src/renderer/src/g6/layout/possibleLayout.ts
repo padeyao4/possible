@@ -3,14 +3,6 @@ import { IRelation, ITask } from '@renderer/store'
 import { index2X } from '@renderer/util'
 import { EdgeConfig, NodeConfig } from '@antv/g6-core'
 
-// type R = {
-//   source: string
-//   target: string
-//   startIndex: number
-//   endIndex: number
-//   box: IBBox
-// }
-
 G6.registerLayout('possible-layout', {
   /**
    * 定义自定义行为的默认参数，会与用户传入的参数进行合并
@@ -20,7 +12,7 @@ G6.registerLayout('possible-layout', {
     return {
       todayIndex: this.todayIndex,
       nodeHeight: 80,
-      gap: 32
+      gap: 100
     }
   },
 
@@ -44,7 +36,9 @@ G6.registerLayout('possible-layout', {
     } = this
 
     const map = new Map<number, (ITask & NodeConfig)[]>()
+
     const idx = index2X(todayIndex)
+
     nodes
       .map((n) => {
         if (n.state === 'normal' && n.taskType === 'general' && n.x < idx) {
@@ -61,62 +55,18 @@ G6.registerLayout('possible-layout', {
           r.push(n)
         }
       })
-    const indexMap = new Map<string, number>()
-    edges
-      .sort((e1, e2) => {
-        return e1.startPoint!.x - e2.startPoint!.x
-      })
-      .map((edge) => {
-        return [edge.source, edge.target]
-      })
-      .flat()
-      .forEach((value, index) => {
-        indexMap.set(value, index)
-      })
-    console.log('layout index map', indexMap)
 
     map.forEach((items) => {
-      items
-        .sort((n1, n2) => {
-          return (indexMap.get(n1.id) ?? 9999) - (indexMap.get(n2.id) ?? 9999)
-        })
-        .forEach((item, index) => {
-          item.y = index * nodeHeight + gap
-        })
+      const ySet = new Set<number>()
+      items.forEach((item) => {
+        // item.y = index * nodeHeight + gap
+        item.y = Math.floor(item.y / gap) * gap + 42
+        while (ySet.has(item.y)) {
+          item.y += gap
+        }
+        ySet.add(item.y)
+      })
     })
-
-    console.log('layout map', map)
-
-    // todo 开空间曲线最大值
-    // [0,99,100,110]
-    // [1,1000,3]
-
-    // const edgeBBoxes: R[] = []
-    // edges.forEach((edge) => {
-    //   const bbox = createBBoxByEdgeCfg(edge)
-    //   edgeBBoxes.push({
-    //     source: edge.source,
-    //     target: edge.target,
-    //     box: bbox,
-    //     startIndex: bbox.x,
-    //     endIndex: bbox.x + bbox.width
-    //   })
-    // })
-
-    // todo 排序节点
-    // edgeBBoxes.forEach((b) => {
-    //   nodes.forEach((n) => {
-    //     if (n.id === b.target || n.id === b.target) {
-    //       return
-    //     }
-    //     if (n.x < b.startIndex || n.x > b.endIndex) {
-    //       return
-    //     }
-    //     if (collision(b.box, createBBoxByNodeCfg(n))) {
-    //       n.y += b.box.height + gap
-    //     }
-    //   })
-    // })
 
     map.clear()
   },
