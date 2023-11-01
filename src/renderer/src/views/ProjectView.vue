@@ -16,6 +16,8 @@ import { autoLayout } from '@renderer/settings'
 import { useTodayStore } from '@renderer/store/day'
 import { PossibleTimeBar } from '@renderer/g6/plugin/possibleTimeBar'
 
+const DAY_OF_MS = 86400_000
+
 const props = defineProps<{ id: string }>()
 const projectStore = useProjectStore()
 const todayStore = useTodayStore()
@@ -25,10 +27,15 @@ let graph: Graph | null = null
 
 const project = projectStore.get(props.id) as IProject
 
-const dataIndex = () =>
-  Math.floor(
-    (new Date(todayStore.today).getTime() - new Date(project.initDate).getTime()) / 86400_000
+/**
+ * 由于todayStore数据不是实时同步，会出现当前时间小于创建时间的错误，误差在1以内
+ */
+const dataIndex = () => {
+  return (
+    Math.floor(new Date(todayStore.today).getTime() / DAY_OF_MS) -
+    Math.floor(new Date(project.initDate).getTime() / DAY_OF_MS)
   )
+}
 
 onMounted(() => {
   graph = new Graph({
