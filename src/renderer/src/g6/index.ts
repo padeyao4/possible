@@ -2,6 +2,7 @@ import G6, { BehaviorOption } from '@antv/g6'
 import PossibleNodeDrag from './behavior/possibleNodeDrag'
 import './layout/possibleLayout'
 import './node/possibleNode'
+// import './behavior/possibleCanvasDrag'
 
 const behaviors: Record<string, unknown> = {
   'possible-drag-node': PossibleNodeDrag

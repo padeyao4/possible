@@ -5,7 +5,7 @@ import { type Item } from '@antv/g6-core'
 import { v4 as uuidv4 } from 'uuid'
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possibleGrid'
-import { collision, DAY_OF_MS, normalX } from '@renderer/util'
+import { collision, date2Index, normalX } from '@renderer/util'
 import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
 import { useProjectStore } from '@renderer/store/project'
 import router from '@renderer/router'
@@ -29,10 +29,7 @@ const project = projectStore.get(props.id) as IProject
  * 由于todayStore数据不是实时同步，会出现当前时间小于创建时间的错误，误差在1以内
  */
 const dataIndex = () => {
-  return (
-    Math.floor(new Date(todayStore.today).getTime() / DAY_OF_MS) -
-    Math.floor(new Date(project.initDate).getTime() / DAY_OF_MS)
-  )
+  return date2Index(todayStore.today) - date2Index(project.initDate)
 }
 
 onMounted(() => {
@@ -69,6 +66,7 @@ onMounted(() => {
           enableOptimize: true,
           scalableRange: 99
         },
+        // 'possible-canvas-drag',
         'possible-drag-node'
       ],
       edit: [
