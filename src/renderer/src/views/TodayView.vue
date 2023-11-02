@@ -3,6 +3,7 @@ import { useProjectStore } from '@renderer/store/project'
 import { useTodayStore } from '@renderer/store/day'
 import { computed, ref } from 'vue'
 import { date2X } from '@renderer/util'
+import SvgIcon from '@renderer/component/IconSvg.vue'
 
 const projectStore = useProjectStore()
 const todayStore = useTodayStore()
@@ -37,6 +38,11 @@ const openCompletedRef = ref(false)
     <div style="margin: 16px 0 0 0">
       <div>
         <div v-for="task in todos" :key="task.id" class="item">
+          <svg-icon
+            iconname="icon-jichu_yuanquan"
+            class="icon-font"
+            @click="task.state = 'completed'"
+          />
           {{ task.name }}
         </div>
       </div>
@@ -49,6 +55,11 @@ const openCompletedRef = ref(false)
       </div>
       <div v-if="openCompletedRef">
         <div v-for="task in completed" :key="task.id" class="item completed-item">
+          <svg-icon
+            iconname="icon-jichu_hedui2tianchong"
+            class="icon-font"
+            @click="task.state = 'normal'"
+          />
           <del>{{ task.name }}</del>
         </div>
       </div>
@@ -80,10 +91,17 @@ const openCompletedRef = ref(false)
     user-select: none;
   }
 
+  .icon-font {
+    font-size: 20px;
+    margin: 0 8px 0 4px;
+    color: #b2b4b4;
+  }
+
   .item {
     display: flex;
     align-items: center;
     padding-left: 8px;
+    text-align: center;
     background-color: var(--color-side-active);
     width: 100%;
     height: 48px;

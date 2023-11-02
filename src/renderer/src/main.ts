@@ -1,4 +1,6 @@
 import './assets/main.css'
+import '@renderer/assets/iconfont/iconfont'
+import IconSvg from '@renderer/component/IconSvg.vue'
 import '@renderer/g6'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
@@ -21,5 +23,6 @@ app.use(router)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
+app.component('SvgIcon', IconSvg)
 
 app.mount('#app')
