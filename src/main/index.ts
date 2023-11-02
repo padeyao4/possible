@@ -1,8 +1,8 @@
-import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { app, BrowserWindow, dialog, ipcMain, Menu, shell, Tray } from 'electron'
-import { join } from 'path'
+import {electronApp, is, optimizer} from '@electron-toolkit/utils'
+import {app, BrowserWindow, dialog, ipcMain, shell} from 'electron'
+import {join} from 'path'
 import icon from '../../resources/icon.png?asset'
-import { IProject } from '../renderer/src/store'
+import {IProject} from '../renderer/src/store'
 import * as fs from 'fs'
 
 // close security warnings
@@ -21,7 +21,8 @@ function createWindow(): void {
     title: 'possible',
     transparent: true,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    resizable: true,
+    ...(process.platform === 'linux' ? {icon} : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
@@ -34,7 +35,7 @@ function createWindow(): void {
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url).then((r) => console.log(r))
-    return { action: 'deny' }
+    return {action: 'deny'}
   })
 
   // HMR for renderer base on electron-vite cli.
@@ -49,19 +50,19 @@ function createWindow(): void {
 /**
  * 创建托盘
  */
-function setTray() {
-  const tray = new Tray(join(__dirname, '../../resources/tray.png'))
-  const contextMenu = Menu.buildFromTemplate([
-    { label: 'Item1', type: 'radio' },
-    { label: 'Item2', type: 'radio' },
-    { label: 'Item3', type: 'radio', checked: true },
-    { label: 'Item4', type: 'radio' }
-  ])
-
-  tray.setContextMenu(contextMenu)
-  tray.setToolTip('This is my application')
-  tray.setTitle('This is my title')
-}
+// function setTray() {
+//   const tray = new Tray(join(__dirname, '../../resources/tray.png'))
+//   const contextMenu = Menu.buildFromTemplate([
+//     { label: 'Item1', type: 'radio' },
+//     { label: 'Item2', type: 'radio' },
+//     { label: 'Item3', type: 'radio', checked: true },
+//     { label: 'Item4', type: 'radio' }
+//   ])
+//
+//   tray.setContextMenu(contextMenu)
+//   tray.setToolTip('This is my application')
+//   tray.setTitle('This is my title')
+// }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -69,7 +70,7 @@ function setTray() {
 app
   .whenReady()
   .then(async () => {
-    setTray()
+    // setTray()
 
     // Set app user model id for windows
     electronApp.setAppUserModelId('com.electron')
