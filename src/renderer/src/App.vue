@@ -104,7 +104,11 @@ const routeKey = computed(() => {
   <div class="main">
     <div class="body">
       <div class="side">
-        <div class="today" :class="{ active: activeId === 'default' }" @click="handleTodayClick">
+        <div
+          class="today"
+          :class="{ 'today-active': activeId === 'default' }"
+          @click="handleTodayClick"
+        >
           <el-icon :size="20">
             <Sunny />
           </el-icon>
@@ -132,7 +136,6 @@ const routeKey = computed(() => {
             />
           </div>
         </div>
-        <hr />
         <div class="side-bottom">
           <template v-if="bottomVisible">
             <div class="add-button" @click="addButtonClick">
@@ -173,8 +176,6 @@ const routeKey = computed(() => {
     .side {
       width: var(--side-width);
       height: 100vh;
-      background: var(--color-bronze);
-      color: rgb(66, 66, 66);
 
       .today {
         width: 100%;
@@ -182,7 +183,6 @@ const routeKey = computed(() => {
         display: flex;
         justify-content: center;
         align-items: center;
-        color: antiquewhite;
         text-decoration: none;
         border: 1px black;
         user-select: none;
@@ -196,12 +196,12 @@ const routeKey = computed(() => {
           display: flex;
           justify-content: center;
           align-items: center;
-          width: 100%;
           height: 40px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
           user-select: none;
+          margin: 4px 8px;
 
           .item-input {
             outline-style: none;
@@ -214,9 +214,14 @@ const routeKey = computed(() => {
         }
       }
 
+      .today-active {
+        color: #f2b439;
+        font-weight: bold;
+      }
+
       .active {
         border-radius: 4px;
-        background: var(--color-neptune);
+        background: var(--color-side-active);
       }
 
       .side-bottom {
@@ -229,7 +234,6 @@ const routeKey = computed(() => {
           justify-content: center;
           align-items: center;
           user-select: none;
-          background: var(--color-bronze);
           width: 200px;
           height: 100%;
         }

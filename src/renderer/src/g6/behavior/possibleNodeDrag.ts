@@ -3,9 +3,9 @@
 import type { Point } from '@antv/g-base'
 import type { G6Event, ICombo, IG6GraphEvent, INode, Item, NodeConfig } from '@antv/g6-core'
 import { clone, debounce, deepMix } from '@antv/util'
-import { Global, type IGraph } from '@antv/g6'
+import G6, { Global, type IGraph } from '@antv/g6'
 
-export default {
+const PossibleNodeDrag = {
   getDefaultCfg(): object {
     return {
       updateEdge: true,
@@ -673,3 +673,5 @@ export default {
     })
   }
 }
+
+G6.registerBehavior('possible-drag-node', PossibleNodeDrag)

@@ -453,13 +453,15 @@ const moveLeft = () => {
 <style scoped>
 .main {
   overflow: hidden;
+  border-radius: 8px 0 0 0;
+  background: var(--color-project);
 
   .header {
     height: 64px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 20px 0 20px;
+    padding: 0 24px 0 24px;
 
     .title {
       font-size: 24px;
@@ -481,14 +483,16 @@ const moveLeft = () => {
     overflow: hidden;
     height: calc(100vh - 104px);
     padding: 24px 24px 16px 24px;
-  }
 
-  .container {
-    display: inline-block;
-    height: calc(100% - 40px);
-    width: 100%;
-    z-index: 1;
-    position: relative;
+    .container {
+      display: inline-block;
+      height: calc(100% - 40px);
+      width: 100%;
+      z-index: 1;
+      position: relative;
+      border-radius: 8px;
+      background: var(--color-canvas);
+    }
   }
 }
 
@@ -496,7 +500,6 @@ const moveLeft = () => {
   position: sticky;
   bottom: 0;
   height: 40px;
-  background: #c7c5c5;
   display: flex;
   justify-content: space-between;
   padding: 0 24px 0 24px;

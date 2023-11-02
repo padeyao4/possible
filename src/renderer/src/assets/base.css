@@ -9,6 +9,10 @@
     --color-bronze: #ca884b;
     --color-japonica: #d1825b;
     --color-harvest-gold: #cca142;
+    --color-background: #f0f0f0;
+    --color-side-active: #e6e6e6;
+    --color-canvas: #ffffff;
+    --color-project: #f8f8f8;
 }
 
 *,
@@ -22,15 +26,15 @@
 
 * {
     font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
-        Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
 body {
     min-height: 100vh;
     transition: color 0.5s, background-color 0.5s;
     font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
-        Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     font-size: 15px;
     text-rendering: optimizeLegibility;
-    background: #fdfdfd;
+    background: var(--color-background);
 }
