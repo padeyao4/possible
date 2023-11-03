@@ -465,7 +465,7 @@ const moveLeft = () => {
   background: var(--color-project);
   box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
   display: grid;
-  height: 100vh;
+  height: var(--app-height);
   grid-template-rows: 24px 40px 1fr 40px;
 
   .header {
@@ -521,7 +521,7 @@ const moveLeft = () => {
     .container {
       position: relative;
       height: 100%;
-      width: calc(100vw - var(--side-width) - 48px);
+      width: calc(var(--app-width) - var(--side-width) - 48px);
       z-index: 1;
       border-radius: 8px;
       background: var(--color-canvas);

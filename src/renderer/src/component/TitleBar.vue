@@ -21,13 +21,13 @@ function handleMinimize() {
     <div class="main">
       <div v-if="props.show??true" class="container">
         <div class="window-icon window-minimize" @click="handleMinimize">
-          <icon-svg iconname="icon-window-minimize1"/>
+          <icon-svg iconname="icon-window-min_line"/>
         </div>
         <div class="window-icon window-maximize" @click="handleMaximize">
-          <icon-svg iconname="icon-window-maximize" style="font-size: 16px"/>
+          <icon-svg iconname="icon-window-max_line" style="font-size: 16px"/>
         </div>
         <div class="window-icon window-close" @click="handleClose">
-          <icon-svg iconname="icon-window-close"/>
+          <icon-svg iconname="icon-chuangkou-guanbi"/>
         </div>
       </div>
     </div>
@@ -48,14 +48,25 @@ function handleMinimize() {
     align-items: center;
 
     .window-icon {
-      display: inline-block;
-      padding: 6px 8px 6px 8px;
-      font-size: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      font-size: 12px;
       color: black;
+      width: 44px;
+    }
 
-      &:hover {
-        background: rgba(255, 255, 255, 0.3);
-      }
+    .window-maximize:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .window-minimize:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .window-close:hover {
+      background: rgba(255, 0, 0, 0.5);
     }
   }
 }

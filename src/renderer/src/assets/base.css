@@ -1,8 +1,9 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
   --side-width: 240px;
-  --content-width: calc(100vw - var(--side-width));
-  --content-height: 100vh;
+  --app-height: calc(100vh - 2px);
+  --app-width: calc(100vw - 2px);
+  --content-width: calc(var(--app-width) - var(--side-width));
 
   /* 主题色 */
   --color-neptune: #82bbb5;
@@ -38,5 +39,5 @@ body {
   text-rendering: optimizeLegibility;
   border-radius: 8px;
   overflow: hidden;
-  /*box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;*/
+  padding: 1px;
 }

@@ -75,7 +75,7 @@ const openCompletedRef = ref(false)
 <style scoped>
 .main {
   background: var(--color-neptune);
-  height: 100vh;
+  height: var(--app-height);
   border-radius: 8px 0 0 0;
 
   .header {

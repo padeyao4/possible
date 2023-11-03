@@ -20,6 +20,7 @@ function createWindow(): void {
     show: false,
     title: 'possible',
     transparent: true,
+    backgroundColor: '#00000000',
     autoHideMenuBar: true,
     frame: false,
     titleBarStyle: 'hidden',

@@ -168,8 +168,10 @@ const routeKey = computed(() => {
   background: var(--color-background);
   border-radius: 8px;
   display: grid;
-  width: 100vw;
-  grid-template-columns: var(--side-width) 1fr;
+  width: var(--app-width);
+  height: var(--app-height);
+  grid-template-columns: var(--side-width) var(--content-width);
+  box-shadow: rgba(9, 30, 66, 0.25) 0 1px 1px, rgba(9, 30, 66, 0.13) 0 0 1px 1px;
 
   .side {
     display: grid;
@@ -194,7 +196,7 @@ const routeKey = computed(() => {
     }
 
     .list {
-      height: calc(100vh - 105px);
+      height: calc(var(--app-height) - 105px);
       overflow-y: auto;
 
       .list-item {
