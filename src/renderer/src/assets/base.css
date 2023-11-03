@@ -1,8 +1,9 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
+  --padding-size: 1px;
   --side-width: 240px;
-  --app-height: calc(100vh - 2px);
-  --app-width: calc(100vw - 2px);
+  --app-height: calc(100vh - var(--padding-size) * 2);
+  --app-width: calc(100vw - var(--padding-size) * 2);
   --content-width: calc(var(--app-width) - var(--side-width));
 
   /* 主题色 */
@@ -12,7 +13,7 @@
   --color-harvest-gold: #cca142;
   --color-background: #f7f8f9;
   --color-side-active: #eef1f3;
-  --color-canvas: #ffffff;
+  --color-canvas: rgba(255, 255, 255, 0.6);
   --color-project: #fdfdfd;
 }
 
@@ -39,5 +40,5 @@ body {
   text-rendering: optimizeLegibility;
   border-radius: 8px;
   overflow: hidden;
-  padding: 1px;
+  padding: var(--padding-size);
 }
