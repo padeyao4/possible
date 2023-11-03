@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4265677 */
-  src: url('iconfont.woff2?t=1698911310272') format('woff2'),
-       url('iconfont.woff?t=1698911310272') format('woff'),
-       url('iconfont.ttf?t=1698911310272') format('truetype');
+  src: url('iconfont.woff2?t=1698974019424') format('woff2'),
+       url('iconfont.woff?t=1698974019424') format('woff'),
+       url('iconfont.ttf?t=1698974019424') format('truetype');
 }
 
 .iconfont {
@@ -13,19 +13,27 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-jichu_yuanquan:before {
+.icon-window-close:before {
+  content: "\e713";
+}
+
+.icon-window-minimize1:before {
+  content: "\e669";
+}
+
+.icon-window-maximize:before {
+  content: "\e679";
+}
+
+.icon-base_circle:before {
   content: "\e648";
 }
 
-.icon-jichu_hedui2tianchong:before {
+.icon-base_checked:before {
   content: "\e655";
 }
 
 .icon-sun:before {
   content: "\e603";
-}
-
-.icon-a-Addto:before {
-  content: "\e665";
 }
 

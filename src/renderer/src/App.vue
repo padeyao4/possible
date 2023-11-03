@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import router from '@renderer/router'
-import { RouterView, useRoute } from 'vue-router'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { useProjectStore } from '@renderer/store/project'
-import { ElNotification } from 'element-plus'
-import { useTodayStore } from '@renderer/store/day'
-import { IProject } from '@renderer/store'
-import { autoUpdateDate } from '@renderer/settings'
-import { DAY_OF_MS } from '@renderer/util'
+import {RouterView, useRoute} from 'vue-router'
+import {computed, onMounted, onUnmounted, ref} from 'vue'
+import {useProjectStore} from '@renderer/store/project'
+import {ElNotification} from 'element-plus'
+import {useTodayStore} from '@renderer/store/day'
+import {IProject} from '@renderer/store'
+import {autoUpdateDate} from '@renderer/settings'
+import {DAY_OF_MS} from '@renderer/util'
+import TitleBar from "@renderer/component/TitleBar.vue";
 
 const projectStore = useProjectStore()
 const route = useRoute()
@@ -102,64 +103,61 @@ const routeKey = computed(() => {
 
 <template>
   <div class="main">
-    <div class="body">
-      <div class="side">
-        <div
-          class="today"
-          :class="{ 'today-active': activeId === 'default' }"
-          @click="handleTodayClick"
-        >
-          <el-icon :size="20">
-            <Sunny />
+    <div class="side">
+      <title-bar :show="false"/>
+      <div class="my-day">
+        <div class="today-content" :class="{ 'today-active': activeId === 'default' }" @click="handleTodayClick">
+          <el-icon :size="20" style="margin:0 4px 0 8px ">
+            <Sunny/>
           </el-icon>
-          <div style="margin-left: 4px; padding-bottom: 1px">我的一天</div>
-        </div>
-        <hr />
-        <div class="list">
-          <template v-for="item in projectStore.list" :key="item.id">
-            <div
-              v-if="!inputVisible || item.id !== activeId"
-              class="list-item"
-              :class="{ active: item.id === activeId }"
-              @click="handleItemClick(item.id)"
-            >
-              {{ item.name }}
-            </div>
-          </template>
-          <div v-if="inputVisible" class="list-item active">
-            <input
-              :ref="(e) => handleInputRef(e as HTMLInputElement)"
-              v-model="project.name"
-              class="item-input"
-              @blur="inputVisible = false"
-              @keydown.enter="inputVisible = false"
-            />
-          </div>
-        </div>
-        <div class="side-bottom">
-          <template v-if="bottomVisible">
-            <div class="add-button" @click="addButtonClick">
-              <el-icon :size="20">
-                <Plus />
-              </el-icon>
-              <div style="padding: 0 0 2px 4px">新建项目</div>
-            </div>
-            <div class="import-button" @click="bottomVisible = false">
-              <el-icon :size="20" style="width: 100%; height: 100%">
-                <Folder />
-              </el-icon>
-            </div>
-          </template>
-          <div v-else class="bottom-settings">
-            <el-button text @click="importProjects">导入</el-button>
-            <el-button text @click="exportAllProjects">导出</el-button>
-            <el-button text @click="bottomVisible = true">返回</el-button>
-          </div>
+          <div style="display: inline-block; margin:0 8px 0 4px">我的一天</div>
         </div>
       </div>
-      <div class="content">
-        <router-view :key="routeKey" />
+      <hr/>
+      <div class="list">
+        <template v-for="item in projectStore.list" :key="item.id">
+          <div
+            v-if="!inputVisible || item.id !== activeId"
+            class="list-item"
+            :class="{ active: item.id === activeId }"
+            @click="handleItemClick(item.id)"
+          >
+            {{ item.name }}
+          </div>
+        </template>
+        <div v-if="inputVisible" class="list-item active">
+          <input
+            :ref="(e) => handleInputRef(e as HTMLInputElement)"
+            v-model="project.name"
+            class="item-input"
+            @blur="inputVisible = false"
+            @keydown.enter="inputVisible = false"
+          />
+        </div>
       </div>
+      <div class="side-bottom">
+        <template v-if="bottomVisible">
+          <div class="add-button" @click="addButtonClick">
+            <el-icon :size="20">
+              <Plus/>
+            </el-icon>
+            <div style="padding: 0 0 2px 4px">新建项目</div>
+          </div>
+          <div class="import-button" @click="bottomVisible = false">
+            <el-icon :size="20" style="width: 100%; height: 100%">
+              <Folder/>
+            </el-icon>
+          </div>
+        </template>
+        <div v-else class="bottom-settings">
+          <el-button text @click="importProjects">导入</el-button>
+          <el-button text @click="exportAllProjects">导出</el-button>
+          <el-button text @click="bottomVisible = true">返回</el-button>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <router-view :key="routeKey"/>
     </div>
   </div>
 </template>
@@ -167,103 +165,110 @@ const routeKey = computed(() => {
 <style scoped>
 .main {
   overflow: hidden;
+  background: var(--color-background);
+  border-radius: 8px;
+  display: grid;
+  width: 100vw;
+  grid-template-columns: var(--side-width) 1fr;
 
-  .body {
+  .side {
     display: grid;
-    width: 100vw;
-    grid-template-columns: var(--side-width) var(--content-width);
+    grid-template-rows: 24px 40px 1px 1fr 40px;
 
-    .side {
-      width: var(--side-width);
-      height: 100vh;
+    .my-day {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      -webkit-app-region: drag;
 
-      .today {
-        width: 100%;
-        height: 40px;
+      .today-content {
         display: flex;
         justify-content: center;
         align-items: center;
-        text-decoration: none;
-        border: 1px black;
         user-select: none;
-      }
-
-      .list {
-        height: calc(100vh - 84px);
-        overflow-y: auto;
-
-        .list-item {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 40px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          user-select: none;
-          margin: 4px 8px;
-
-          .item-input {
-            outline-style: none;
-            box-sizing: content-box;
-            text-align: center;
-            border: 0;
-            font-size: 15px;
-            background-color: rgba(0, 0, 0, 0);
-          }
-        }
-      }
-
-      .today-active {
-        color: #f2b439;
-        font-weight: bold;
-      }
-
-      .active {
-        border-radius: 4px;
-        background: var(--color-side-active);
-      }
-
-      .side-bottom {
         height: 40px;
-        display: flex;
-        flex-direction: row;
-
-        .add-button {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          user-select: none;
-          width: 200px;
-          height: 100%;
-        }
-
-        .import-button {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          user-select: none;
-          width: 40px;
-          height: 100%;
-
-          :hover {
-            background: antiquewhite;
-          }
-        }
-
-        .bottom-settings {
-          display: flex;
-          width: 100%;
-          justify-content: center;
-          align-items: center;
-          padding: 0 8px 0 8px;
-        }
+        width: max-content;
+        -webkit-app-region: no-drag;
       }
     }
 
-    .content {
-      width: 100%;
+    .list {
+      height: calc(100vh - 105px);
+      overflow-y: auto;
+
+      .list-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 40px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        user-select: none;
+        margin: 4px 8px;
+
+        .item-input {
+          outline-style: none;
+          box-sizing: content-box;
+          text-align: center;
+          border: 0;
+          font-size: 15px;
+          background-color: rgba(0, 0, 0, 0);
+        }
+      }
+
     }
+
+    .today-active {
+      color: #f2b439;
+      font-weight: bold;
+    }
+
+    .active {
+      border-radius: 4px;
+      background: var(--color-side-active);
+    }
+
+    .side-bottom {
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+
+      .add-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        user-select: none;
+        width: 200px;
+        height: 100%;
+      }
+
+      .import-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        user-select: none;
+        width: 40px;
+        height: 100%;
+
+        :hover {
+          background: antiquewhite;
+        }
+      }
+
+      .bottom-settings {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        padding: 0 8px 0 8px;
+      }
+    }
+  }
+
+  .content {
+    width: 100%;
   }
 }
 

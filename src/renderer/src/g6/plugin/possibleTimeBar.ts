@@ -1,9 +1,9 @@
-import { IGraph, IGroup } from '@antv/g6'
-import { createDom, modifyCSS } from '@antv/dom-util'
-import { Canvas, ShapeCfg } from '@antv/g-canvas'
-import { DAY_OF_MS, timeBarShow } from '@renderer/util'
-import { useTodayStore } from '@renderer/store/day'
-import { IProject } from '@renderer/store'
+import {IGraph, IGroup} from '@antv/g6'
+import {modifyCSS} from '@antv/dom-util'
+import {Canvas, ShapeCfg} from '@antv/g-canvas'
+import {DAY_OF_MS, timeBarShow} from '@renderer/util'
+import {useTodayStore} from '@renderer/store/day'
+import {IProject} from '@renderer/store'
 
 export class PossibleTimeBar {
   objs: Record<string, unknown>
@@ -11,15 +11,17 @@ export class PossibleTimeBar {
   endIndex: number
   timeItems: number[]
   project: IProject
+  timeBar: HTMLElement
 
   todayStore = useTodayStore()
 
-  constructor(project: IProject) {
+  constructor(project: IProject, timeBar: HTMLElement) {
     this.startIndex = 0
     this.endIndex = 22
-    this.timeItems = Array.from({ length: this.endIndex - this.startIndex + 1 }, (_, i) => i)
+    this.timeItems = Array.from({length: this.endIndex - this.startIndex + 1}, (_, i) => i)
     this.objs = {}
     this.project = project
+    this.timeBar = timeBar
   }
 
   textAttr = (index: number) => {
@@ -27,9 +29,9 @@ export class PossibleTimeBar {
       attrs: {
         fill: '#9e9e9e',
         stroke: '#fff',
-        lineWidth: 1,
+        lineWidth: 0,
         x: 120 * index - 180,
-        y: 0,
+        y: 5,
         textAlign: 'center',
         text: timeBarShow(this.project.initDate, index - 2),
         textBaseline: 'top',
@@ -103,12 +105,10 @@ export class PossibleTimeBar {
 
   initPlugin(graph: IGraph) {
     this.set('graph', graph)
-    const possibleTimeBarContainer = createDom('<div class="possible-time-bar"></div>')
-    modifyCSS(possibleTimeBarContainer, { position: 'relative' })
+    modifyCSS(this.timeBar, {position: 'relative'})
     const graphContainer = graph.getContainer()
-    graphContainer.parentElement?.insertBefore(possibleTimeBarContainer, graphContainer)
     const canvas = new Canvas({
-      container: possibleTimeBarContainer,
+      container: this.timeBar,
       width: graphContainer.clientWidth,
       height: 40
     })
@@ -124,7 +124,7 @@ export class PossibleTimeBar {
     })
 
     this.todayStore.$subscribe(() => {
-      group.emit('possible-today', { index: this.todayIndex() })
+      group.emit('possible-today', {index: this.todayIndex()})
     })
 
     this.set('group', group)
@@ -139,7 +139,7 @@ export class PossibleTimeBar {
       this.updateTimeItems(n)
       const index = this.todayIndex()
       if (index >= this.startIndex || index <= this.endIndex) {
-        group.emit('possible-today', { index })
+        group.emit('possible-today', {index})
       }
     })
 
@@ -150,11 +150,11 @@ export class PossibleTimeBar {
         item?.attr('fill', '#a10066')
       }
     })
-    group.emit('possible-today', { index: this.todayIndex() })
+    group.emit('possible-today', {index: this.todayIndex()})
   }
 
-  viewportUpdate = ({ matrix }: { matrix: number[] }) => {
+  viewportUpdate = ({matrix}: { matrix: number[] }) => {
     const group = this.get('group') as IGroup
-    group.emit('possible-update', { x: matrix[6] })
+    group.emit('possible-update', {x: matrix[6]})
   }
 }

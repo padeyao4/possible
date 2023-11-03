@@ -21,7 +21,9 @@ function createWindow(): void {
     title: 'possible',
     transparent: true,
     autoHideMenuBar: true,
-    resizable: true,
+    frame: false,
+    titleBarStyle: 'hidden',
+    titleBarOverlay: false,
     ...(process.platform === 'linux' ? {icon} : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -36,6 +38,25 @@ function createWindow(): void {
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url).then((r) => console.log(r))
     return {action: 'deny'}
+  })
+
+  // 关闭窗口
+  ipcMain.on('window:close', () => {
+    mainWindow.close();
+  });
+
+  // 最小化窗口
+  ipcMain.on('window:minimize', () => {
+    mainWindow.minimize();
+  });
+
+  //最大化窗口
+  ipcMain.on('window:maximize', () => {
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize();
+    } else {
+      mainWindow.maximize();
+    }
   })
 
   // HMR for renderer base on electron-vite cli.
@@ -118,6 +139,22 @@ app
       } else {
         return 'cancel'
       }
+    })
+
+    /**
+     * 获取当前运行在的操作系统
+     */
+    ipcMain.handle('platform', () => {
+      if (process.platform == 'darwin') {
+        return 'macOs'
+      }
+      if (process.platform == 'win32') {
+        return 'windows'
+      }
+      if (process.platform == 'linux') {
+        return 'linux'
+      }
+      return process.platform
     })
 
     createWindow()

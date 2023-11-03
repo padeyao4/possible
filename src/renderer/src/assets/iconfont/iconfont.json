@@ -6,16 +6,37 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "9946513",
+      "name": "window-close",
+      "font_class": "window-close",
+      "unicode": "e713",
+      "unicode_decimal": 59155
+    },
+    {
+      "icon_id": "18365394",
+      "name": "window-minimize",
+      "font_class": "window-minimize1",
+      "unicode": "e669",
+      "unicode_decimal": 58985
+    },
+    {
+      "icon_id": "18366458",
+      "name": "window-maximize",
+      "font_class": "window-maximize",
+      "unicode": "e679",
+      "unicode_decimal": 59001
+    },
+    {
       "icon_id": "32322002",
-      "name": "基础_圆圈",
-      "font_class": "jichu_yuanquan",
+      "name": "base_circle",
+      "font_class": "base_circle",
       "unicode": "e648",
       "unicode_decimal": 58952
     },
     {
       "icon_id": "32592436",
-      "name": "基础_核对2填充",
-      "font_class": "jichu_hedui2tianchong",
+      "name": "base_checked",
+      "font_class": "base_checked",
       "unicode": "e655",
       "unicode_decimal": 58965
     },
@@ -25,13 +46,6 @@
       "font_class": "sun",
       "unicode": "e603",
       "unicode_decimal": 58883
-    },
-    {
-      "icon_id": "26876170",
-      "name": "add",
-      "font_class": "a-Addto",
-      "unicode": "e665",
-      "unicode_decimal": 58981
     }
   ]
 }

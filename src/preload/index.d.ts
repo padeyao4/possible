@@ -1,5 +1,6 @@
-import { ElectronAPI } from '@electron-toolkit/preload'
-import { IProject } from '../renderer/src/store'
+import {ElectronAPI} from '@electron-toolkit/preload'
+import {IProject} from '../renderer/src/store'
+import {ipcRenderer} from "electron";
 
 declare global {
   export interface Window {
@@ -7,6 +8,10 @@ declare global {
     api: {
       exportProject: (project: IProject[]) => void
       importProject: () => Promise<IProject[] | undefined | 'cancel'>
+      windowClose: () => void,
+      windowMinimize: () => void,
+      windowMaximize: () => void,
+      platform: () => Promise<string>
     }
   }
 }

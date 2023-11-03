@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { useProjectStore } from '@renderer/store/project'
-import { useTodayStore } from '@renderer/store/day'
-import { computed, ref } from 'vue'
-import { date2X } from '@renderer/util'
+import {useProjectStore} from '@renderer/store/project'
+import {useTodayStore} from '@renderer/store/day'
+import {computed, ref} from 'vue'
+import {date2X} from '@renderer/util'
 import SvgIcon from '@renderer/component/IconSvg.vue'
+import TitleBar from "@renderer/component/TitleBar.vue";
 
 const projectStore = useProjectStore()
 const todayStore = useTodayStore()
@@ -33,34 +34,39 @@ const completed = computed(() => {
 const openCompletedRef = ref(false)
 </script>
 <template>
-  <div class="main">
-    <div class="title">我的一天</div>
-    <div style="margin: 16px 0 0 0">
-      <div>
-        <div v-for="task in todos" :key="task.id" class="item">
-          <svg-icon
-            iconname="icon-jichu_yuanquan"
-            class="icon-font"
-            @click="task.state = 'completed'"
-          />
-          {{ task.name }}
+  <div>
+    <div class="main">
+      <title-bar/>
+      <div class="header">
+        <div class="title">我的一天</div>
+      </div>
+      <div class="body">
+        <div>
+          <div v-for="task in todos" :key="task.id" class="item">
+            <svg-icon
+              iconname="icon-base_circle"
+              class="icon-font"
+              @click="task.state = 'completed'"
+            />
+            {{ task.name }}
+          </div>
         </div>
-      </div>
-      <div class="completed" @click="openCompletedRef = !openCompletedRef">
-        <el-icon style="margin: 0 4px 0 0">
-          <ArrowDown v-if="openCompletedRef" />
-          <ArrowRight v-else />
-        </el-icon>
-        已完成 {{ completed.length }}
-      </div>
-      <div v-if="openCompletedRef">
-        <div v-for="task in completed" :key="task.id" class="item completed-item">
-          <svg-icon
-            iconname="icon-jichu_hedui2tianchong"
-            class="icon-font"
-            @click="task.state = 'normal'"
-          />
-          <del>{{ task.name }}</del>
+        <div class="completed" @click="openCompletedRef = !openCompletedRef">
+          <el-icon style="margin: 0 4px 0 0">
+            <ArrowDown v-if="openCompletedRef"/>
+            <ArrowRight v-else/>
+          </el-icon>
+          已完成 {{ completed.length }}
+        </div>
+        <div v-if="openCompletedRef">
+          <div v-for="task in completed" :key="task.id" class="item completed-item">
+            <svg-icon
+              iconname="icon-base_checked"
+              class="icon-font"
+              @click="task.state = 'normal'"
+            />
+            <del>{{ task.name }}</del>
+          </div>
         </div>
       </div>
     </div>
@@ -69,48 +75,57 @@ const openCompletedRef = ref(false)
 <style scoped>
 .main {
   background: var(--color-neptune);
-  height: 100%;
-  padding: 24px;
+  height: 100vh;
   border-radius: 8px 0 0 0;
 
-  .title {
-    font-size: 24px;
+  .header {
+    -webkit-app-region: drag;
+
+    .title {
+      display: inline-block;
+      font-size: 20px;
+      margin-left: 24px;
+    }
   }
 
-  .completed {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 4px;
-    height: 32px;
-    width: max-content;
-    margin: 8px 0 8px 0;
-    text-align: center;
-    padding: 0 8px;
-    user-select: none;
-  }
+  .body {
+    margin: 16px 24px 24px 24px;
 
-  .icon-font {
-    font-size: 20px;
-    margin: 0 8px 0 4px;
-    color: #b2b4b4;
-  }
+    .completed {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 4px;
+      height: 32px;
+      width: max-content;
+      margin: 8px 0 8px 0;
+      text-align: center;
+      padding: 0 8px;
+      user-select: none;
+    }
 
-  .item {
-    display: flex;
-    align-items: center;
-    padding-left: 8px;
-    text-align: center;
-    background-color: var(--color-side-active);
-    width: 100%;
-    height: 48px;
-    margin: 4px 0 4px 0;
-    border-radius: 4px;
-  }
+    .icon-font {
+      font-size: 20px;
+      margin: 0 8px 0 4px;
+      color: #b2b4b4;
+    }
 
-  .completed-item {
-    color: #b2b4b4;
+    .item {
+      display: flex;
+      align-items: center;
+      padding-left: 8px;
+      text-align: center;
+      background-color: var(--color-side-active);
+      width: 100%;
+      height: 48px;
+      margin: 4px 0 4px 0;
+      border-radius: 4px;
+    }
+
+    .completed-item {
+      color: #b2b4b4;
+    }
   }
 }
 </style>

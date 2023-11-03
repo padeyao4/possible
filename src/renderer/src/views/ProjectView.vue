@@ -15,6 +15,7 @@ import {ElNotification} from 'element-plus'
 import {autoLayout} from '@renderer/settings'
 import {useTodayStore} from '@renderer/store/day'
 import {PossibleTimeBar} from '@renderer/g6/plugin/possibleTimeBar'
+import TitleBar from "@renderer/component/TitleBar.vue";
 
 const props = defineProps<{ id: string }>()
 const projectStore = useProjectStore()
@@ -32,6 +33,11 @@ const dataIndex = () => {
   return date2Index(todayStore.today) - date2Index(project.initDate)
 }
 
+/**
+ * time bar ref
+ */
+const timeBar = ref<HTMLElement>()
+
 onMounted(() => {
   graph = new Graph({
     container: 'container',
@@ -45,10 +51,10 @@ onMounted(() => {
     },
     plugins: [
       new PossibleGrid(),
-      new PossibleTimeBar(project),
+      new PossibleTimeBar(project, timeBar.value as HTMLElement),
       new Menu({
         offsetX: -(container.value?.offsetLeft ?? 0),
-        offsetY: -(container.value?.offsetTop ?? 0) - 40,
+        offsetY: -(container.value?.offsetTop ?? 0),
         getContent: () => '删除',
         handleMenuClick: (_: HTMLElement, item: Item) => {
           graph?.removeItem(item)
@@ -353,8 +359,9 @@ const moveLeft = () => {
 <template>
   <div>
     <div class="main">
+      <title-bar/>
       <div class="header">
-        <div>
+        <div class="header-content">
           <input
             v-if="titleEditEnable"
             ref="titleRef"
@@ -366,36 +373,36 @@ const moveLeft = () => {
           <div v-else class="title" @dblclick="editTitle">
             {{ project.name ?? '' }}
           </div>
-        </div>
-        <el-dropdown trigger="click">
-          <el-button size="small">
-            <el-icon>
-              <MoreFilled/>
-            </el-icon>
-          </el-button>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item :icon="Delete" @click="deleteDialogVisible = true"
-              >删除
-              </el-dropdown-item>
-              <el-dropdown-item :icon="SetUp" @click="editTitle">重命名</el-dropdown-item>
-              <el-dropdown-item :icon="Promotion" @click="exportProject">导出</el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-        <Teleport to="body">
-          <el-dialog v-model="deleteDialogVisible" title="警告" width="30%" align-center>
+          <el-dropdown class="operation-list" trigger="click">
+            <el-button size="small">
+              <el-icon>
+                <MoreFilled/>
+              </el-icon>
+            </el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item :icon="Delete" @click="deleteDialogVisible = true"
+                >删除
+                </el-dropdown-item>
+                <el-dropdown-item :icon="SetUp" @click="editTitle">重命名</el-dropdown-item>
+                <el-dropdown-item :icon="Promotion" @click="exportProject">导出</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+          <Teleport to="body">
+            <el-dialog v-model="deleteDialogVisible" title="警告" width="30%" align-center>
             <span
             >确定删除 <i style="font-size: large">{{ project.name ?? '' }} </i> 计划吗</span
             >
-            <template #footer>
+              <template #footer>
               <span class="dialog-footer">
                 <el-button type="primary" @click="deleteDialogVisible = false">取消</el-button>
                 <el-button @click="handleDelete"> 确定 </el-button>
               </span>
-            </template>
-          </el-dialog>
-        </Teleport>
+              </template>
+            </el-dialog>
+          </Teleport>
+        </div>
       </div>
       <div class="body">
         <Teleport to="body">
@@ -436,6 +443,7 @@ const moveLeft = () => {
             </el-form>
           </el-drawer>
         </Teleport>
+        <div id="timeBar" ref="timeBar" class="time-bar"></div>
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
@@ -456,74 +464,97 @@ const moveLeft = () => {
   border-radius: 8px 0 0 0;
   background: var(--color-project);
   box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
+  display: grid;
+  height: 100vh;
+  grid-template-rows: 24px 40px 1fr 40px;
 
   .header {
-    height: 64px;
+    height: 100%;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 24px 0 24px;
+    justify-content: center;
+    -webkit-app-region: drag;
 
-    .title {
-      font-size: 24px;
-      user-select: none;
+    .header-content {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+
+      .title {
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+        margin-left: 24px;
+        -webkit-app-region: no-drag;
+      }
+
+      .title-input {
+        outline-style: none;
+        border: 0;
+        border-radius: 4px;
+        font-size: 20px;
+        background: #e2e2e2;
+        margin-left: 24px;
+        -webkit-app-region: no-drag;
+      }
+
+      .operation-list {
+        margin-right: 24px;
+        -webkit-app-region: no-drag;
+      }
     }
 
-    .title-input {
-      outline-style: none;
-      border: 0;
-      border-radius: 4px;
-      font-size: 24px;
-      background: #e2e2e2;
-    }
   }
 
   .body {
     overflow: hidden;
-    height: calc(100vh - 104px);
-    padding: 24px 24px 16px 24px;
+    height: 100%;
+    padding: 24px 24px 24px 24px;
+    display: grid;
+    grid-template-rows: 40px calc(100% - 40px);
+
+    .time-bar {
+      height: 100%;
+      width: 100%;
+    }
 
     .container {
-      display: inline-block;
-      height: calc(100% - 40px);
-      width: 100%;
-      z-index: 1;
       position: relative;
+      height: 100%;
+      width: calc(100vw - var(--side-width) - 48px);
+      z-index: 1;
       border-radius: 8px;
       background: var(--color-canvas);
     }
   }
-}
 
-.footer {
-  position: sticky;
-  bottom: 0;
-  height: 40px;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 24px 0 24px;
-  align-items: center;
-
-  .footer-label {
-    color: #181818;
-    background-color: #d0d0d0;
-    user-select: none;
-    width: 150px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: clip;
-  }
-
-  div {
+  .footer {
+    bottom: 0;
+    height: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    padding: 0 24px 0 24px;
     align-items: center;
-    margin: auto;
 
-    &:hover {
-      background: wheat;
+    .footer-label {
+      color: #181818;
+      background-color: #d0d0d0;
+      user-select: none;
+      width: 150px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: clip;
+    }
+
+    div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: auto;
+
+      &:hover {
+        background: wheat;
+      }
     }
   }
 }

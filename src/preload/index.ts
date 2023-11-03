@@ -1,6 +1,6 @@
-import { contextBridge, ipcRenderer } from 'electron'
-import { electronAPI } from '@electron-toolkit/preload'
-import { IProject } from '../renderer/src/store'
+import {contextBridge, ipcRenderer} from 'electron'
+import {electronAPI} from '@electron-toolkit/preload'
+import {IProject} from '../renderer/src/store'
 
 // Custom APIs for renderer
 const api = {
@@ -9,6 +9,18 @@ const api = {
   },
   importProject: async () => {
     return ipcRenderer.invoke('import:project')
+  },
+  windowClose: () => {
+    ipcRenderer.send('window:close')
+  },
+  windowMinimize: () => {
+    ipcRenderer.send('window:minimize')
+  },
+  windowMaximize: () => {
+    ipcRenderer.send('window:maximize')
+  },
+  platform: async (): Promise<string> => {
+    return ipcRenderer.invoke('platform')
   }
 }
 
