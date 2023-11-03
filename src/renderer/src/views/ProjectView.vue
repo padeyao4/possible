@@ -71,9 +71,12 @@ onMounted(() => {
           allowDragOnItem: false,
           enableOptimize: true,
           scalableRange: 99,
-          key: 'shift'
         },
-        // 'possible-drag-node',
+        {
+          type: 'possible-drag-node',
+          enableOptimize: true,
+          enableStack: false
+        },
         {
           type: 'create-edge',
           trigger: 'drag',
