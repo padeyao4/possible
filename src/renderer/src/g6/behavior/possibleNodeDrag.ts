@@ -1,11 +1,11 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import type { Point } from '@antv/g-base'
-import type { G6Event, ICombo, IG6GraphEvent, INode, Item, NodeConfig } from '@antv/g6-core'
-import { clone, debounce, deepMix } from '@antv/util'
-import G6, { Global, type IGraph } from '@antv/g6'
+import type {Point} from '@antv/g-base'
+import type {G6Event, ICombo, IG6GraphEvent, INode, Item, NodeConfig} from '@antv/g6-core'
+import {clone, debounce, deepMix} from '@antv/util'
+import G6, {Global, type IGraph} from '@antv/g6'
 
-const PossibleNodeDrag = {
+G6.registerBehavior('possible-drag-node', {
   getDefaultCfg(): object {
     return {
       updateEdge: true,
@@ -67,7 +67,7 @@ const PossibleNodeDrag = {
     this.mousedown = {
       item: evt.item,
       target: evt.target,
-      origin: { x: evt.x, y: evt.y }
+      origin: {x: evt.x, y: evt.y}
     }
 
     this.dragstart = true
@@ -100,7 +100,7 @@ const PossibleNodeDrag = {
     this.mousedown = {
       item: evt.item,
       target: evt.target,
-      origin: { x: evt.x, y: evt.y }
+      origin: {x: evt.x, y: evt.y}
     }
 
     // 绑定浏览器监听，触发拖拽结束，结束拖拽时移除
@@ -143,10 +143,10 @@ const PossibleNodeDrag = {
    */
   onDragStart(evt: IG6GraphEvent) {
     this.currentShouldEnd = true
-    if (!this.shouldBegin({ ...evt, ...this.mousedown }, this)) {
+    if (!this.shouldBegin({...evt, ...this.mousedown}, this)) {
       return
     }
-    const { item, target } = this.mousedown
+    const {item, target} = this.mousedown
     if (!item || item.destroyed || item.hasLocked()) {
       return
     }
@@ -165,7 +165,7 @@ const PossibleNodeDrag = {
       }
     }
 
-    const { graph } = this
+    const {graph} = this
 
     this.targets = []
 
@@ -201,8 +201,8 @@ const PossibleNodeDrag = {
     if (this.graph.get('enabledStack') && this.enableStack) {
       const beforeDragNodes = []
       this.targets.forEach((t) => {
-        const { x, y, id } = t.getModel()
-        beforeDragNodes.push({ x, y, id })
+        const {x, y, id} = t.getModel()
+        beforeDragNodes.push({x, y, id})
       })
       this.set('beforeDragNodes', beforeDragNodes)
     }
@@ -307,8 +307,8 @@ const PossibleNodeDrag = {
     // 拖动结束后，入栈
     if (graph.get('enabledStack') && this.enableStack) {
       const stackData = {
-        before: { nodes: [], edges: [], combos: [] },
-        after: { nodes: [], edges: [], combos: [] }
+        before: {nodes: [], edges: [], combos: []},
+        after: {nodes: [], edges: [], combos: []}
       }
 
       this.get('beforeDragNodes').forEach((model) => {
@@ -316,8 +316,8 @@ const PossibleNodeDrag = {
       })
 
       this.targets.forEach((target) => {
-        const { x, y, id } = target.getModel()
-        stackData.after.nodes.push({ x, y, id })
+        const {x, y, id} = target.getModel()
+        stackData.after.nodes.push({x, y, id})
       })
       graph.pushStack('update', clone(stackData))
     }
@@ -493,7 +493,7 @@ const PossibleNodeDrag = {
    * @param restore
    */
   update(item: Item, evt: IG6GraphEvent, restore: boolean) {
-    const { origin } = this
+    const {origin} = this
     const model: NodeConfig = item.get('model')
     const nodeId: string = item.get('id')
     if (!this.point[nodeId]) {
@@ -514,7 +514,7 @@ const PossibleNodeDrag = {
     }
 
     // let normalX = Math.floor(x / 120) * 120 + 60;
-    const pos: Point = { x, y }
+    const pos: Point = {x, y}
 
     if (this.get('updateEdge')) {
       this.graph.updateItem(item, pos, false)
@@ -529,44 +529,44 @@ const PossibleNodeDrag = {
    * @param evt
    */
   debounceUpdate: debounce(
-    (event) => {
-      const {
-        targets,
-        graph,
-        point,
-        origin,
-        evt,
-        updateEdge,
-        onlyChangeComboSize,
-        updateParentCombos
-      } = event
-      targets.map((item) => {
-        const model: NodeConfig = item.get('model')
-        const nodeId: string = item.get('id')
-        if (!point[nodeId]) {
-          point[nodeId] = {
-            x: model.x || 0,
-            y: model.y || 0
+      (event) => {
+        const {
+          targets,
+          graph,
+          point,
+          origin,
+          evt,
+          updateEdge,
+          onlyChangeComboSize,
+          updateParentCombos
+        } = event
+        targets.map((item) => {
+          const model: NodeConfig = item.get('model')
+          const nodeId: string = item.get('id')
+          if (!point[nodeId]) {
+            point[nodeId] = {
+              x: model.x || 0,
+              y: model.y || 0
+            }
           }
+
+          const x: number = evt.x - origin.x + point[nodeId].x
+          const y: number = evt.y - origin.y + point[nodeId].y
+
+          const pos: Point = {x, y}
+
+          if (updateEdge) {
+            graph.updateItem(item, pos, false)
+          } else {
+            item.updatePosition(pos)
+          }
+        })
+        if (onlyChangeComboSize) {
+          updateParentCombos(graph, targets)
         }
-
-        const x: number = evt.x - origin.x + point[nodeId].x
-        const y: number = evt.y - origin.y + point[nodeId].y
-
-        const pos: Point = { x, y }
-
-        if (updateEdge) {
-          graph.updateItem(item, pos, false)
-        } else {
-          item.updatePosition(pos)
-        }
-      })
-      if (onlyChangeComboSize) {
-        updateParentCombos(graph, targets)
-      }
-    },
-    50,
-    true
+      },
+      50,
+      true
   ),
 
   /**
@@ -574,14 +574,14 @@ const PossibleNodeDrag = {
    * @param {Event} evt 事件句柄
    */
   updateDelegate(evt: any) {
-    const { graph } = this
+    const {graph} = this
     if (!this.delegateRect) {
       // 拖动多个
       const parent = graph.get('group')
       const attrs = deepMix({}, Global.delegateStyle, this.delegateStyle)
 
-      const { x: cx, y: cy, width, height, minX, minY } = this.calculationGroupPosition(evt)
-      this.originPoint = { x: cx, y: cy, width, height, minX, minY }
+      const {x: cx, y: cy, width, height, minX, minY} = this.calculationGroupPosition(evt)
+      this.originPoint = {x: cx, y: cy, width, height, minX, minY}
       // model上的x, y是相对于图形中心的，delegateShape是g实例，x,y是绝对坐标
       this.delegateRect = parent.addShape('rect', {
         attrs: {
@@ -623,7 +623,7 @@ const PossibleNodeDrag = {
     for (let i = 0; i < nodes.length; i++) {
       const element = nodes[i]
       const bbox = element.getBBox()
-      const { minX, minY, maxX, maxY } = bbox
+      const {minX, minY, maxX, maxY} = bbox
       if (minX < minx) {
         minx = minX
       }
@@ -672,6 +672,4 @@ const PossibleNodeDrag = {
       if (combo) graph.updateCombo(combo)
     })
   }
-}
-
-G6.registerBehavior('possible-drag-node', PossibleNodeDrag)
+})

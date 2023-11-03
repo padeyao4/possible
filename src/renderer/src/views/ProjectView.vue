@@ -70,17 +70,16 @@ onMounted(() => {
           type: 'drag-canvas',
           allowDragOnItem: false,
           enableOptimize: true,
-          scalableRange: 99
+          scalableRange: 99,
+          key: 'shift'
         },
-        // 'possible-canvas-drag',
-        'possible-drag-node'
-      ],
-      edit: [
+        // 'possible-drag-node',
         {
           type: 'create-edge',
-          trigger: 'drag'
+          trigger: 'drag',
+          key: 'shift'
         }
-      ]
+      ],
     },
     defaultNode: {
       type: 'task-node'
@@ -136,9 +135,9 @@ onMounted(() => {
       graph?.layout()
     } else {
       const collisionNodes = graph
-        ?.getNodes()
-        .filter((n) => n.getID() != node.getID())
-        .filter((n) => collision(n.getBBox(), node.getBBox(), 0, 16))
+          ?.getNodes()
+          .filter((n) => n.getID() != node.getID())
+          .filter((n) => collision(n.getBBox(), node.getBBox(), 0, 16))
       if (collisionNodes === undefined) {
         graph?.removeItem(node)
       } else if (collisionNodes.length == 0) {
@@ -157,7 +156,7 @@ onMounted(() => {
         ElNotification({
           dangerouslyUseHTMLString: true,
           message:
-            '<p style="user-select: none;font-size: 14px">画布空间不足，移动其他节点后创建</p>',
+              '<p style="user-select: none;font-size: 14px">画布空间不足，移动其他节点后创建</p>',
           type: 'warning',
           offset: 120,
           duration: 1500
@@ -172,17 +171,17 @@ onMounted(() => {
     }
   })
 
-  graph.on('keydown', (e) => {
-    if (e.key === 'Control') {
-      graph?.setMode('edit')
-    }
-  })
-
-  graph.on('keyup', (e) => {
-    if (e.key === 'Control') {
-      graph?.setMode('default')
-    }
-  })
+  // graph.on('keydown', (e) => {
+  //   if (e.key === 'Control') {
+  //     graph?.setMode('edit')
+  //   }
+  // })
+  //
+  // graph.on('keyup', (e) => {
+  //   if (e.key === 'Control') {
+  //     graph?.setMode('default')
+  //   }
+  // })
 
   graph.on('aftercreateedge', (e) => {
     const edge = e.edge as IEdge
@@ -200,12 +199,12 @@ onMounted(() => {
 
     // 删除重复边
     const count = sourceNode
-      .getEdges()
-      .filter(
-        (e) =>
-          e.getTarget().getID() === targetNode.getID() ||
-          e.getSource().getID() === targetNode.getID()
-      ).length
+        .getEdges()
+        .filter(
+            (e) =>
+                e.getTarget().getID() === targetNode.getID() ||
+                e.getSource().getID() === targetNode.getID()
+        ).length
     if (count >= 2) {
       nextTick(() => {
         graph?.removeItem(edge)
@@ -247,15 +246,15 @@ onMounted(() => {
   })
 
   graph.on(
-    'afterupdateitem',
-    debounce(function (e: IG6GraphEvent) {
-      if (e.item?.getType() === 'node') {
-        projectStore.updateTask(props.id, e.item.getModel() as unknown as ITask)
-      }
-      if (e.item?.getType() === 'edge') {
-        projectStore.updateRelation(props.id, e.item.getModel() as unknown as IRelation)
-      }
-    }, 500)
+      'afterupdateitem',
+      debounce(function (e: IG6GraphEvent) {
+        if (e.item?.getType() === 'node') {
+          projectStore.updateTask(props.id, e.item.getModel() as unknown as ITask)
+        }
+        if (e.item?.getType() === 'edge') {
+          projectStore.updateRelation(props.id, e.item.getModel() as unknown as IRelation)
+        }
+      }, 500)
   )
 
   watch(todayStore, () => {
@@ -363,12 +362,12 @@ const moveLeft = () => {
       <div class="header">
         <div class="header-content">
           <input
-            v-if="titleEditEnable"
-            ref="titleRef"
-            v-model="project.name"
-            class="title-input"
-            @blur="submitTitle"
-            @keydown.enter="submitTitle"
+              v-if="titleEditEnable"
+              ref="titleRef"
+              v-model="project.name"
+              class="title-input"
+              @blur="submitTitle"
+              @keydown.enter="submitTitle"
           />
           <div v-else class="title" @dblclick="editTitle">
             {{ project.name ?? '' }}
@@ -407,10 +406,10 @@ const moveLeft = () => {
       <div class="body">
         <Teleport to="body">
           <el-drawer
-            v-model="editorModel.visible"
-            :close-on-click-modal="false"
-            :show-close="true"
-            @close="editorModel.visible = false"
+              v-model="editorModel.visible"
+              :close-on-click-modal="false"
+              :show-close="true"
+              @close="editorModel.visible = false"
           >
             <el-form :model="taskModel">
               <el-form-item label="名称">
