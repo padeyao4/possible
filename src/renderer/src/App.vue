@@ -63,7 +63,7 @@ const addButtonClick = () => {
 /**
  * 导出所有项目数据
  */
-const exportAllProjects = () => {
+function exportAllProjects() {
   window.api.exportProject(JSON.parse(JSON.stringify(projectStore.projects)))
 }
 

@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { Graph, type IEdge, Menu, ModelConfig } from '@antv/g6'
-import type { EdgeConfig, IG6GraphEvent, INode, NodeConfig } from '@antv/g6-core'
-import { type Item } from '@antv/g6-core'
-import { v4 as uuidv4 } from 'uuid'
-import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+import {Graph, type IEdge, Menu, ModelConfig} from '@antv/g6'
+import type {EdgeConfig, IG6GraphEvent, INode, NodeConfig} from '@antv/g6-core'
+import {type Item} from '@antv/g6-core'
+import {v4 as uuidv4} from 'uuid'
+import {computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch} from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possibleGrid'
-import { collision, date2Index, normalX } from '@renderer/util'
-import { Delete, Promotion, SetUp } from '@element-plus/icons-vue'
-import { useProjectStore } from '@renderer/store/project'
+import {collision, date2Index, normalX} from '@renderer/util'
+import {Delete, Promotion, SetUp} from '@element-plus/icons-vue'
+import {useProjectStore} from '@renderer/store/project'
 import router from '@renderer/router'
-import { IProject, IRelation, ITask } from '@renderer/store'
-import { debounce } from '@antv/util'
-import { ElNotification } from 'element-plus'
-import { autoLayout } from '@renderer/settings'
-import { useTodayStore } from '@renderer/store/day'
-import { PossibleTimeBar } from '@renderer/g6/plugin/possibleTimeBar'
+import {IProject, IRelation, ITask} from '@renderer/store'
+import {debounce} from '@antv/util'
+import {ElNotification} from 'element-plus'
+import {autoLayout} from '@renderer/settings'
+import {useTodayStore} from '@renderer/store/day'
+import {PossibleTimeBar} from '@renderer/g6/plugin/possibleTimeBar'
 import TitleBar from '@renderer/component/TitleBar.vue'
 
 const props = defineProps<{ id: string }>()
@@ -96,7 +96,7 @@ onMounted(() => {
     }
   })
 
-  const { x, y } = project.offset
+  const {x, y} = project.offset
   graph.data(projectStore.data(props.id))
   graph.render()
   graph.translate(x, y)
@@ -223,7 +223,7 @@ onMounted(() => {
   })
 
   graph.on('viewportchange', () => {
-    const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
+    const {x, y} = graph?.getCanvasByPoint(0, 0) ?? {x: 0, y: 0}
     project.offset.x = x
     project.offset.y = y
   })
@@ -262,7 +262,7 @@ onMounted(() => {
     graph?.updateLayout({
       todayIndex: dataIndex()
     })
-    graph?.emit('possible-update', { x: project.offset.x })
+    graph?.emit('possible-update', {x: project.offset.x})
   })
 
   window.addEventListener('resize', () => {
@@ -299,7 +299,7 @@ const editTitle = () => {
 /**
  * 调用electron导出项目数据
  */
-const exportProject = () => {
+function exportProject() {
   const project = projectStore.get(props.id)
   window.api.exportProject(JSON.parse(JSON.stringify([project])))
 }
@@ -311,7 +311,7 @@ const submitTitle = () => {
 const deleteDialogVisible = ref(false)
 
 const handleDelete = () => {
-  router.push({ name: 'today' })
+  router.push({name: 'today'})
   projectStore.delete(props.id)
 }
 
@@ -359,7 +359,7 @@ const moveLeft = () => {
 <template>
   <div>
     <div class="main">
-      <title-bar />
+      <title-bar/>
       <div class="header">
         <div class="header-content">
           <input
@@ -376,13 +376,13 @@ const moveLeft = () => {
           <el-dropdown class="operation-list" trigger="click">
             <el-button size="small">
               <el-icon>
-                <MoreFilled />
+                <MoreFilled/>
               </el-icon>
             </el-button>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item :icon="Delete" @click="deleteDialogVisible = true"
-                  >删除
+                >删除
                 </el-dropdown-item>
                 <el-dropdown-item :icon="SetUp" @click="editTitle">重命名</el-dropdown-item>
                 <el-dropdown-item :icon="Promotion" @click="exportProject">导出</el-dropdown-item>
@@ -392,7 +392,7 @@ const moveLeft = () => {
           <Teleport to="body">
             <el-dialog v-model="deleteDialogVisible" title="警告" width="30%" align-center>
               <span
-                >确定删除 <i style="font-size: large">{{ project.name ?? '' }} </i> 计划吗</span
+              >确定删除 <i style="font-size: large">{{ project.name ?? '' }} </i> 计划吗</span
               >
               <template #footer>
                 <span class="dialog-footer">
@@ -414,16 +414,16 @@ const moveLeft = () => {
           >
             <el-form :model="taskModel">
               <el-form-item label="名称">
-                <el-input v-model="taskModel.name" />
+                <el-input v-model="taskModel.name"/>
               </el-form-item>
               <el-form-item label="目标">
-                <el-input v-model="taskModel.target" />
+                <el-input v-model="taskModel.target"/>
               </el-form-item>
               <el-form-item label="详情">
-                <el-input v-model="taskModel.detail" type="textarea" />
+                <el-input v-model="taskModel.detail" type="textarea"/>
               </el-form-item>
               <el-form-item label="记录">
-                <el-input v-model="taskModel.note" type="textarea" />
+                <el-input v-model="taskModel.note" type="textarea"/>
               </el-form-item>
               <el-form-item label="类型">
                 <el-radio-group v-model="taskModel.taskType">

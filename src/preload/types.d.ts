@@ -1,6 +1,5 @@
 import {ElectronAPI} from '@electron-toolkit/preload'
 import {IProject} from '../renderer/src/store'
-import {ipcRenderer} from "electron";
 
 declare global {
   export interface Window {

@@ -3,18 +3,10 @@
 import 'vue'
 import 'pinia'
 
-declare module 'default-passive-events'
-
 export interface ImportNetaEnv {
   readonly VITE_APP_TITLE: string
 }
 
 export interface ImportMeta {
   readonly env: ImportNetaEnv
-}
-
-declare module '*.vue' {
-  import { DefineComponent } from 'vue'
-  const component: DefineComponent<NonNullable<unknown>, NonNullable<unknown>, never>
-  export default component
 }

@@ -7,7 +7,7 @@ const api = {
   exportProject: (projects: IProject[]) => {
     ipcRenderer.send('export:project', projects)
   },
-  importProject: async () => {
+  importProject: async (): Promise<IProject[] | undefined | 'cancel'> => {
     return ipcRenderer.invoke('import:project')
   },
   windowClose: () => {
@@ -21,7 +21,7 @@ const api = {
   },
   platform: async (): Promise<string> => {
     return ipcRenderer.invoke('platform')
-  }
+  },
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
