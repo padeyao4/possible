@@ -35,7 +35,7 @@ const windowIsMaximized = computed(() => {
           <icon-svg iconname="icon-window-max_line" style="font-size: 16px"/>
         </div>
         <div class="window-icon window-close" @click="handleClose">
-          <icon-svg iconname="icon-chuangkou-guanbi"/>
+          <icon-svg iconname="icon-window-close"/>
         </div>
       </div>
     </div>

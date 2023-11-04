@@ -257,6 +257,7 @@ const routeKey = computed(() => {
 
         :hover {
           background: antiquewhite;
+          border-radius: 8px;
         }
       }
 

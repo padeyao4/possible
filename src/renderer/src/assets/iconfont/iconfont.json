@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "755531",
+      "name": "撤销",
+      "font_class": "chexiao",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "1272521",
+      "name": "定位",
+      "font_class": "address",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "16960500",
+      "name": "日历",
+      "font_class": "rili",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
       "icon_id": "7539812",
       "name": "窗口-窗口化_line",
       "font_class": "window-window_line",
@@ -15,7 +36,7 @@
     {
       "icon_id": "10752198",
       "name": "窗口-关闭",
-      "font_class": "chuangkou-guanbi",
+      "font_class": "window-close",
       "unicode": "e69d",
       "unicode_decimal": 59037
     },

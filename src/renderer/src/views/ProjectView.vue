@@ -16,6 +16,7 @@ import {autoLayout} from '@renderer/settings'
 import {useTodayStore} from '@renderer/store/day'
 import {PossibleTimeBar} from '@renderer/g6/plugin/possibleTimeBar'
 import TitleBar from '@renderer/component/TitleBar.vue'
+import IconSvg from "@renderer/component/IconSvg.vue";
 
 const props = defineProps<{ id: string }>()
 const projectStore = useProjectStore()
@@ -62,7 +63,7 @@ onMounted(() => {
             graph?.layout()
           }
         }
-      })
+      }),
     ],
     modes: {
       default: [
@@ -335,26 +336,26 @@ const taskModel = computed(() => {
   })
 })
 
-const moveRight = () => {
-  console.log('move right today')
-  const d = new Date(todayStore.today)
-  d.setDate(d.getDate() + 1)
-  todayStore.update(d)
-}
-
-const rollback = () => {
-  console.log('rollback today')
-  const date = new Date()
-  console.log('date', date)
-  todayStore.update(date)
-}
-
-const moveLeft = () => {
-  console.log('move left today')
-  const d = new Date(todayStore.today)
-  d.setDate(d.getDate() - 1)
-  todayStore.update(d)
-}
+// const moveRight = () => {
+//   console.log('move right today')
+//   const d = new Date(todayStore.today)
+//   d.setDate(d.getDate() + 1)
+//   todayStore.update(d)
+// }
+//
+// const rollback = () => {
+//   console.log('rollback today')
+//   const date = new Date()
+//   console.log('date', date)
+//   todayStore.update(date)
+// }
+//
+// const moveLeft = () => {
+//   console.log('move left today')
+//   const d = new Date(todayStore.today)
+//   d.setDate(d.getDate() - 1)
+//   todayStore.update(d)
+// }
 </script>
 
 <template>
@@ -448,11 +449,21 @@ const moveLeft = () => {
         <div id="container" ref="container" class="container"></div>
       </div>
       <div class="footer">
-        <el-button @click="back2Today">today</el-button>
-<!--        <el-button @click="moveLeft">left</el-button>-->
-<!--        <el-button @click="rollback">back</el-button>-->
-<!--        <el-button @click="moveRight">right</el-button>-->
-<!--        <p class="footer-label">{{ project.offset }}</p>-->
+        <div class="icon-group">
+          <div class="group-item">
+            <icon-svg iconname="icon-address" @click="back2Today" class="icon-item"/>
+          </div>
+          <div class="group-item">
+            <icon-svg iconname="icon-chexiao" class="icon-item"/>
+          </div>
+          <div class="group-item">
+            <icon-svg iconname="icon-rili" class="icon-item"/>
+          </div>
+        </div>
+        <!--        <el-button @click="moveLeft">left</el-button>-->
+        <!--        <el-button @click="rollback">back</el-button>-->
+        <!--        <el-button @click="moveRight">right</el-button>-->
+        <!--        <p class="footer-label">{{ project.offset }}</p>-->
       </div>
     </div>
   </div>
@@ -531,28 +542,30 @@ const moveLeft = () => {
     bottom: 0;
     height: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     padding: 0 24px 0 24px;
     align-items: center;
 
-    .footer-label {
-      color: #181818;
-      background-color: #d0d0d0;
-      user-select: none;
-      width: 150px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: clip;
-    }
-
-    div {
+    .icon-group {
       display: flex;
-      justify-content: center;
       align-items: center;
-      margin: auto;
 
-      &:hover {
-        background: wheat;
+      .group-item {
+        padding: 4px;
+        margin: 0 4px;
+        width: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &:hover {
+          background: rgba(37, 159, 167, 0.1);
+          border-radius: 4px;
+        }
+      }
+
+      .icon-item {
+        font-size: 18px;
       }
     }
   }
