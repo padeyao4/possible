@@ -31,7 +31,7 @@ const completed = computed(() => {
       .flat()
 })
 
-const openCompletedRef = ref(false)
+const openCompleted = ref(false)
 </script>
 <template>
   <div>
@@ -48,14 +48,14 @@ const openCompletedRef = ref(false)
             {{ task.name }}
           </div>
         </div>
-        <div class="completed" @click="openCompletedRef = !openCompletedRef">
-          <down v-if="openCompletedRef" theme="outline" size="24" fill="#333" :strokeWidth="2"
+        <div class="completed" @click="openCompleted = !openCompleted">
+          <down v-if="openCompleted" theme="outline" size="24" fill="#333" :strokeWidth="2"
                 style="display: flex;justify-content: center;align-items: center"/>
           <right v-else theme="outline" size="24" fill="#333" :strokeWidth="2"
                  style="display: flex;justify-content: center;align-items: center"/>
           已完成 {{ completed.length }}
         </div>
-        <div v-if="openCompletedRef">
+        <div v-if="openCompleted">
           <div v-for="task in completed" :key="task.id" class="item completed-item">
             <check-one theme="filled" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="icon-park"/>
             <del>{{ task.name }}</del>

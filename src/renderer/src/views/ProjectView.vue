@@ -5,18 +5,16 @@ import {type Item} from '@antv/g6-core'
 import {v4 as uuidv4} from 'uuid'
 import {computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch} from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possibleGrid'
-import {collision, date2Index, normalX} from '@renderer/util'
+import {date2Index, normalX} from '@renderer/util'
 import {Delete, Promotion, SetUp} from '@element-plus/icons-vue'
 import {useProjectStore} from '@renderer/store/project'
 import router from '@renderer/router'
 import {IProject, IRelation, ITask} from '@renderer/store'
 import {debounce} from '@antv/util'
-import {ElNotification} from 'element-plus'
-import {autoLayout} from '@renderer/settings'
 import {useTodayStore} from '@renderer/store/day'
 import {PossibleTimeBar} from '@renderer/g6/plugin/possibleTimeBar'
 import TitleBar from '@renderer/component/TitleBar.vue'
-import {More, Local, Back, Next} from '@icon-park/vue-next'
+import {Back, Local, More, Next} from '@icon-park/vue-next'
 
 const props = defineProps<{ id: string }>()
 const projectStore = useProjectStore()
@@ -59,9 +57,7 @@ onMounted(() => {
         getContent: () => '删除',
         handleMenuClick: (_: HTMLElement, item: Item) => {
           graph?.removeItem(item)
-          if (autoLayout) {
-            graph?.layout()
-          }
+          graph?.layout()
         }
       }),
     ],
@@ -133,58 +129,13 @@ onMounted(() => {
       target: '',
       taskType: 'general'
     }
-    const node = graph?.addItem('node', newTaskModel as unknown as ModelConfig) as INode
-    if (autoLayout) {
-      graph?.layout()
-    } else {
-      const collisionNodes = graph
-          ?.getNodes()
-          .filter((n) => n.getID() != node.getID())
-          .filter((n) => collision(n.getBBox(), node.getBBox(), 0, 16))
-      if (collisionNodes === undefined) {
-        graph?.removeItem(node)
-      } else if (collisionNodes.length == 0) {
-        /* empty */
-      } else if (collisionNodes.length == 1) {
-        console.log('after', collisionNodes)
-        const collisionNode = collisionNodes[0] as INode
-        if ((collisionNode.getModel().y as number) > (node.getModel().y as number)) {
-          node.getModel().y = (collisionNode.getModel().y as number) - node.getBBox().height - 8
-        } else {
-          node.getModel().y = (collisionNode.getModel().y as number) + node.getBBox().height + 8
-        }
-        graph?.updateItem(node.getID(), node.getModel())
-      } else {
-        graph?.removeItem(node)
-        ElNotification({
-          dangerouslyUseHTMLString: true,
-          message:
-              '<p style="user-select: none;font-size: 14px">画布空间不足，移动其他节点后创建</p>',
-          type: 'warning',
-          offset: 120,
-          duration: 1500
-        })
-      }
-    }
+    graph?.addItem('node', newTaskModel as unknown as ModelConfig)
+    graph?.layout()
   })
 
   graph.on('node:dragend', () => {
-    if (autoLayout) {
-      graph?.layout()
-    }
+    graph?.layout()
   })
-
-  // graph.on('keydown', (e) => {
-  //   if (e.key === 'Control') {
-  //     graph?.setMode('edit')
-  //   }
-  // })
-  //
-  // graph.on('keyup', (e) => {
-  //   if (e.key === 'Control') {
-  //     graph?.setMode('default')
-  //   }
-  // })
 
   graph.on('aftercreateedge', (e) => {
     const edge = e.edge as IEdge
