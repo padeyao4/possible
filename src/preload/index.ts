@@ -10,6 +10,9 @@ const api = {
     importProject: async (): Promise<IProject[] | undefined | 'cancel'> => {
         return ipcRenderer.invoke('import:project')
     },
+    loadLocalData: (): Promise<IProject[] | undefined> => {
+        return ipcRenderer.invoke('load')
+    },
     windowClose: (text: string) => {
         ipcRenderer.send('window:close', text)
     },

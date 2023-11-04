@@ -7,6 +7,7 @@ declare global {
         api: {
             exportProject: (project: IProject[]) => void
             importProject: () => Promise<IProject[] | undefined | 'cancel'>
+            loadLocalData: () => Promise<IProject[] | undefined>
             windowClose: (text: string) => void,
             windowMinimize: () => void,
             windowMaximize: () => void,

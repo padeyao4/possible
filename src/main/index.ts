@@ -59,23 +59,6 @@ function createWindow(): void {
     }
 }
 
-/**
- * 创建托盘
- */
-// function setTray() {
-//   const tray = new Tray(join(__dirname, '../../resources/tray.png'))
-//   const contextMenu = Menu.buildFromTemplate([
-//     { label: 'Item1', type: 'radio' },
-//     { label: 'Item2', type: 'radio' },
-//     { label: 'Item3', type: 'radio', checked: true },
-//     { label: 'Item4', type: 'radio' }
-//   ])
-//
-//   tray.setContextMenu(contextMenu)
-//   tray.setToolTip('This is my application')
-//   tray.setTitle('This is my title')
-// }
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -129,6 +112,18 @@ app
                 }
             } else {
                 return 'cancel'
+            }
+        })
+
+        ipcMain.handle('load', () => {
+            console.log(new Date(), 'load local data')
+            try {
+                let file = join(POSSIBLE_HOME, 'data.json');
+                if (fs.existsSync(file)) {
+                    return JSON.parse(fs.readFileSync(file).toString())
+                }
+            } catch (e) {
+                console.error('write file failed', e)
             }
         })
 
