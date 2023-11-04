@@ -3,32 +3,32 @@ import {useProjectStore} from '@renderer/store/project'
 import {useTodayStore} from '@renderer/store/day'
 import {computed, ref} from 'vue'
 import {date2X} from '@renderer/util'
-import SvgIcon from '@renderer/component/IconSvg.vue'
 import TitleBar from "@renderer/component/TitleBar.vue";
+import {Round,CheckOne} from "@icon-park/vue-next";
 
 const projectStore = useProjectStore()
 const todayStore = useTodayStore()
 
 const todos = computed(() => {
   return projectStore.projects
-    .map((project) => {
-      const x = date2X(todayStore.today, project.initDate)
-      return project.tasks.filter(
-        (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
-      )
-    })
-    .flat()
+      .map((project) => {
+        const x = date2X(todayStore.today, project.initDate)
+        return project.tasks.filter(
+            (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
+        )
+      })
+      .flat()
 })
 
 const completed = computed(() => {
   return projectStore.projects
-    .map((project) => {
-      const x = date2X(todayStore.today, project.initDate)
-      return project.tasks.filter(
-        (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
-      )
-    })
-    .flat()
+      .map((project) => {
+        const x = date2X(todayStore.today, project.initDate)
+        return project.tasks.filter(
+            (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
+        )
+      })
+      .flat()
 })
 
 const openCompletedRef = ref(false)
@@ -43,11 +43,8 @@ const openCompletedRef = ref(false)
       <div class="body">
         <div>
           <div v-for="task in todos" :key="task.id" class="item">
-            <svg-icon
-              iconname="icon-base_circle"
-              class="icon-font"
-              @click="task.state = 'completed'"
-            />
+            <round theme="outline" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="icon-park"
+                   @click="task.state = 'completed'"/>
             {{ task.name }}
           </div>
         </div>
@@ -60,11 +57,7 @@ const openCompletedRef = ref(false)
         </div>
         <div v-if="openCompletedRef">
           <div v-for="task in completed" :key="task.id" class="item completed-item">
-            <svg-icon
-              iconname="icon-base_checked"
-              class="icon-font"
-              @click="task.state = 'normal'"
-            />
+            <check-one theme="filled" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="icon-park"/>
             <del>{{ task.name }}</del>
           </div>
         </div>
@@ -105,10 +98,15 @@ const openCompletedRef = ref(false)
       user-select: none;
     }
 
-    .icon-font {
-      font-size: 20px;
+    .icon-park {
       margin: 0 8px 0 4px;
       color: #b2b4b4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      &:hover{
+        background: #d1825b;
+      }
     }
 
     .item {

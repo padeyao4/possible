@@ -9,6 +9,7 @@ import {IProject} from '@renderer/store'
 import {autoUpdateDate} from '@renderer/settings'
 import {DAY_OF_MS} from '@renderer/util'
 import TitleBar from "@renderer/component/TitleBar.vue";
+import {SunOne, Plus, Config} from '@icon-park/vue-next'
 
 const projectStore = useProjectStore()
 const route = useRoute()
@@ -106,46 +107,46 @@ const routeKey = computed(() => {
     <div class="side">
       <title-bar :show="false"/>
       <div class="my-day">
-        <div class="today-content" :class="{ 'today-active': activeId === 'default' }" @click="handleTodayClick">
-          <el-icon :size="20" style="margin:0 4px 0 8px ">
-            <Sunny/>
-          </el-icon>
-          <div style="display: inline-block; margin:0 8px 0 4px">我的一天</div>
+        <div class="today-content" @click="handleTodayClick">
+          <sun-one :theme="activeId==='default'?'filled':'outline'" size="20"
+                   :fill="activeId==='default'?'#f2b439':'#333'" :strokeWidth="2"
+                   style="margin:0 4px 0 8px;display: flex; justify-content: center; align-items: center "/>
+          <div style="display: inline-block; margin:0 8px 0 4px" :style="{color:activeId==='default'?'#f2b439':'#333'}">
+            我的一天
+          </div>
         </div>
       </div>
       <div class="list">
         <template v-for="item in projectStore.list" :key="item.id">
           <div
-            v-if="!inputVisible || item.id !== activeId"
-            class="list-item"
-            :class="{ active: item.id === activeId }"
-            @click="handleItemClick(item.id)"
+              v-if="!inputVisible || item.id !== activeId"
+              class="list-item"
+              :class="{ active: item.id === activeId }"
+              @click="handleItemClick(item.id)"
           >
             {{ item.name }}
           </div>
         </template>
         <div v-if="inputVisible" class="list-item active">
           <input
-            :ref="(e) => handleInputRef(e as HTMLInputElement)"
-            v-model="project.name"
-            class="item-input"
-            @blur="inputVisible = false"
-            @keydown.enter="inputVisible = false"
+              :ref="(e) => handleInputRef(e as HTMLInputElement)"
+              v-model="project.name"
+              class="item-input"
+              @blur="inputVisible = false"
+              @keydown.enter="inputVisible = false"
           />
         </div>
       </div>
       <div class="side-bottom">
         <template v-if="bottomVisible">
           <div class="add-button" @click="addButtonClick">
-            <el-icon :size="20">
-              <Plus/>
-            </el-icon>
+            <plus theme="filled" size="24" fill="#333" :strokeWidth="2"
+                  style="display: flex;justify-content: center; align-items: center"/>
             <div style="padding: 0 0 2px 4px">新建项目</div>
           </div>
           <div class="import-button" @click="bottomVisible = false">
-            <el-icon :size="20" style="width: 100%; height: 100%">
-              <Folder/>
-            </el-icon>
+            <config theme="outline" size="24" fill="#333" :strokeWidth="2"
+                    style="display: flex;justify-content: center;align-items: center; width: 30px;height: 30px"/>
           </div>
         </template>
         <div v-else class="bottom-settings">
@@ -221,11 +222,6 @@ const routeKey = computed(() => {
         }
       }
 
-    }
-
-    .today-active {
-      color: #f2b439;
-      font-weight: bold;
     }
 
     .active {

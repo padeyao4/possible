@@ -1,5 +1,5 @@
 <script setup>
-import IconSvg from "@renderer/component/IconSvg.vue";
+import {Close,Square,Minus} from '@icon-park/vue-next'
 import {useProjectStore} from "@renderer/store/project";
 import {computed} from "vue";
 
@@ -29,13 +29,13 @@ const windowIsMaximized = computed(() => {
     <div class="main">
       <div v-if="props.show??true" class="container">
         <div class="window-icon window-minimize" @click="handleMinimize">
-          <icon-svg iconname="icon-window-min_line"/>
+          <minus theme="outline" size="14" fill="#333" :strokeWidth="2" strokeLinecap="miter"/>
         </div>
         <div class="window-icon window-maximize" @click="handleMaximize">
-          <icon-svg iconname="icon-window-max_line" style="font-size: 16px"/>
+          <square theme="outline" size="14" fill="#333" :strokeWidth="2" strokeLinejoin="miter" strokeLinecap="square"/>
         </div>
         <div class="window-icon window-close" @click="handleClose">
-          <icon-svg iconname="icon-window-close"/>
+          <close theme="filled" size="14" fill="#333" :strokeWidth="2" strokeLinecap="miter"/>
         </div>
       </div>
     </div>

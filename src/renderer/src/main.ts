@@ -1,15 +1,13 @@
 import './assets/main.css'
 import '@renderer/assets/iconfont/iconfont'
-import IconSvg from '@renderer/component/IconSvg.vue'
 import '@renderer/g6'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
-import { createPinia } from 'pinia'
-import { createApp } from 'vue'
+import {createPinia} from 'pinia'
+import {createApp} from 'vue'
 import App from './App.vue'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import router from './router'
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'default-passive-events'
 
 const app = createApp(App)
@@ -20,9 +18,5 @@ app.use(pinia)
 app.use(ElementPlus)
 
 app.use(router)
-for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-  app.component(key, component)
-}
-app.component('SvgIcon', IconSvg)
 
 app.mount('#app')

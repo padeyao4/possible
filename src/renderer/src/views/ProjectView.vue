@@ -16,7 +16,7 @@ import {autoLayout} from '@renderer/settings'
 import {useTodayStore} from '@renderer/store/day'
 import {PossibleTimeBar} from '@renderer/g6/plugin/possibleTimeBar'
 import TitleBar from '@renderer/component/TitleBar.vue'
-import IconSvg from "@renderer/component/IconSvg.vue";
+import {More, Local, Back, Next} from '@icon-park/vue-next'
 
 const props = defineProps<{ id: string }>()
 const projectStore = useProjectStore()
@@ -376,11 +376,8 @@ const taskModel = computed(() => {
             {{ project.name ?? '' }}
           </div>
           <el-dropdown class="operation-list" trigger="click">
-            <el-button size="small">
-              <el-icon>
-                <MoreFilled/>
-              </el-icon>
-            </el-button>
+            <more theme="outline" size="20" fill="#333" :strokeWidth="2"
+                  style="width: 40px;display: flex;justify-content: end;align-items: end;"/>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item :icon="Delete" @click="deleteDialogVisible = true"
@@ -450,20 +447,10 @@ const taskModel = computed(() => {
       </div>
       <div class="footer">
         <div class="icon-group">
-          <div class="group-item">
-            <icon-svg iconname="icon-address" @click="back2Today" class="icon-item"/>
-          </div>
-          <div class="group-item">
-            <icon-svg iconname="icon-chexiao" class="icon-item"/>
-          </div>
-          <div class="group-item">
-            <icon-svg iconname="icon-rili" class="icon-item"/>
-          </div>
+          <local theme="outline" size="20" fill="#333" :strokeWidth="2" @click="back2Today" class="group-item"/>
+          <back theme="outline" size="20" fill="#333" :strokeWidth="2" class="group-item"/>
+          <next theme="outline" size="20" fill="#333" :strokeWidth="2" class="group-item"/>
         </div>
-        <!--        <el-button @click="moveLeft">left</el-button>-->
-        <!--        <el-button @click="rollback">back</el-button>-->
-        <!--        <el-button @click="moveRight">right</el-button>-->
-        <!--        <p class="footer-label">{{ project.offset }}</p>-->
       </div>
     </div>
   </div>
@@ -562,10 +549,6 @@ const taskModel = computed(() => {
           background: rgba(37, 159, 167, 0.1);
           border-radius: 4px;
         }
-      }
-
-      .icon-item {
-        font-size: 18px;
       }
     }
   }
