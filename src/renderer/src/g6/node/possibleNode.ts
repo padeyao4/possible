@@ -4,7 +4,7 @@ const stateMapper = {
     completed: '#bdbbbb',
     normal: '#70bffa',
     timeout: '#c74e4e',
-    discard: '#e7e590'
+    discard: '#7d849560'
 }
 
 G6.registerNode(

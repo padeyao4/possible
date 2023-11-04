@@ -314,6 +314,8 @@ const moveLeft = () => {
   d.setDate(d.getDate() - 1)
   todayStore.update(d)
 }
+
+const projectSettingsHover = ref(false)
 </script>
 
 <template>
@@ -334,8 +336,14 @@ const moveLeft = () => {
             {{ project.name ?? '' }}
           </div>
           <el-dropdown class="operation-list" trigger="click">
-            <more theme="outline" size="20" fill="#333" :strokeWidth="2"
-                  style="width: 40px;display: flex;justify-content: end;align-items: end;"/>
+            <div style="height: 40px; display: flex; align-items: end">
+              <div @mouseover="projectSettingsHover=true" @mouseleave="projectSettingsHover=false">
+                <more v-if="projectSettingsHover" theme="outline" size="20" fill="#33333360" :strokeWidth="2"
+                      style="display: flex;justify-content: center;align-items: center;"/>
+                <more v-else theme="outline" size="20" fill="#333" :strokeWidth="2"
+                      style="display: flex;justify-content: center;align-items: center;"/>
+              </div>
+            </div>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item :icon="Delete" @click="deleteDialogVisible = true"
