@@ -1,12 +1,13 @@
 <script setup>
-import {Close,Square,Minus} from '@icon-park/vue-next'
+import {Close, Square, Minus} from '@icon-park/vue-next'
 import {useProjectStore} from "@renderer/store/project";
 import {computed} from "vue";
 
-const props = defineProps(['show'])
+const props = defineProps(['show', 'beforeClose'])
 const projectStore = useProjectStore()
 
 function handleClose() {
+  props.beforeClose?.()
   window.api.windowClose(JSON.stringify(projectStore.projects))
 }
 

@@ -13,7 +13,7 @@ const todos = computed(() => {
   return projectStore.projects
       .map((project) => {
         const x = date2X(todayStore.today, project.initDate)
-        return project.tasks.filter(
+        return project.data.nodes.filter(
             (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
         )
       })
@@ -24,7 +24,7 @@ const completed = computed(() => {
   return projectStore.projects
       .map((project) => {
         const x = date2X(todayStore.today, project.initDate)
-        return project.tasks.filter(
+        return project.data.nodes.filter(
             (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
         )
       })

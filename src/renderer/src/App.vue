@@ -6,19 +6,20 @@ import {useProjectStore} from '@renderer/store/project'
 import {ElNotification} from 'element-plus'
 import {useTodayStore} from '@renderer/store/day'
 import {IProject} from '@renderer/store'
-import {autoUpdateDate} from '@renderer/settings'
 import {DAY_OF_MS} from '@renderer/util'
-import TitleBar from "@renderer/component/TitleBar.vue";
-import {SunOne, Plus, Config} from '@icon-park/vue-next'
+import TitleBar from "@renderer/component/TitleBar.vue"
+import {Config, Plus, SunOne} from '@icon-park/vue-next'
+import {useSettingsStore} from "@renderer/store/settings";
 
-const projectStore = useProjectStore()
 const route = useRoute()
+const projectStore = useProjectStore()
 const todayStore = useTodayStore()
+const settings = useSettingsStore()
 
 const intervalRef = ref()
 
 onMounted(() => {
-  if (autoUpdateDate) {
+  if (settings.autoUpdateDate) {
     console.debug('start auto update date')
     intervalRef.value = setInterval(() => {
       // todo 存在时区问题

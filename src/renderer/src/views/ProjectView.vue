@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {Graph, type IEdge, Menu, ModelConfig} from '@antv/g6'
-import type {EdgeConfig, IG6GraphEvent, INode, NodeConfig} from '@antv/g6-core'
+import {Graph, GraphData, type IEdge, Menu, ModelConfig} from '@antv/g6'
+import type {INode} from '@antv/g6-core'
 import {type Item} from '@antv/g6-core'
 import {v4 as uuidv4} from 'uuid'
 import {computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch} from 'vue'
@@ -9,16 +9,19 @@ import {date2Index, normalX} from '@renderer/util'
 import {Delete, Promotion, SetUp} from '@element-plus/icons-vue'
 import {useProjectStore} from '@renderer/store/project'
 import router from '@renderer/router'
-import {IProject, IRelation, ITask} from '@renderer/store'
+import {IPosEdge, IPosNode, IProject} from '@renderer/store'
 import {debounce} from '@antv/util'
 import {useTodayStore} from '@renderer/store/day'
 import {PossibleTimeBar} from '@renderer/g6/plugin/possibleTimeBar'
 import TitleBar from '@renderer/component/TitleBar.vue'
-import {Back, Local, More, Next} from '@icon-park/vue-next'
+import {Back, ExperimentOne, Local, More, Next, ArrowRight, ArrowLeft} from '@icon-park/vue-next'
+import {useSettingsStore} from "@renderer/store/settings";
 
 const props = defineProps<{ id: string }>()
 const projectStore = useProjectStore()
 const todayStore = useTodayStore()
+const settings = useSettingsStore()
+const intervalRef = ref()
 
 const container = ref<HTMLElement>()
 let graph: Graph | null = null
@@ -95,7 +98,7 @@ onMounted(() => {
   })
 
   const {x, y} = project.offset
-  graph.data(projectStore.data(props.id))
+  graph.data(project.data as unknown as GraphData)
   graph.render()
   graph.translate(x, y)
 
@@ -116,7 +119,7 @@ onMounted(() => {
   })
 
   graph.on('canvas:dblclick', (e) => {
-    const newTaskModel: ITask = {
+    const newTaskModel: IPosNode = {
       completedTime: undefined,
       createdTime: new Date(),
       id: uuidv4(),
@@ -181,35 +184,9 @@ onMounted(() => {
     project.offset.y = y
   })
 
-  graph.on('afterremoveitem', (e: IG6GraphEvent) => {
-    if (e.type === 'node') {
-      projectStore.deleteTask(props.id, (e.item as unknown as NodeConfig).id)
-    }
-    if (e.type === 'edge') {
-      projectStore.deleteRelation(props.id, (e.item as unknown as EdgeConfig).id as string)
-    }
-  })
-
-  graph.on('afteradditem', (e: IG6GraphEvent) => {
-    if (e.item?.getType() === 'node') {
-      projectStore.addTask(props.id, e.item.getModel() as unknown as ITask)
-    }
-    if (e.item?.getType() === 'edge') {
-      projectStore.addRelation(props.id, e.item.getModel() as unknown as IRelation)
-    }
-  })
-
-  graph.on(
-      'afterupdateitem',
-      debounce(function (e: IG6GraphEvent) {
-        if (e.item?.getType() === 'node') {
-          projectStore.updateTask(props.id, e.item.getModel() as unknown as ITask)
-        }
-        if (e.item?.getType() === 'edge') {
-          projectStore.updateRelation(props.id, e.item.getModel() as unknown as IRelation)
-        }
-      }, 500)
-  )
+  graph.on('afterremoveitem', debounceSaveGraphData)
+  graph.on('afteradditem', debounceSaveGraphData)
+  graph.on('afterupdateitem', debounceSaveGraphData)
 
   watch(todayStore, () => {
     graph?.updateLayout({
@@ -223,11 +200,37 @@ onMounted(() => {
       graph?.changeSize(container.value.clientWidth, container.value.clientHeight)
     }
   })
+
+  intervalRef.value = setInterval(debounceSaveGraphData, 30_000)
 })
+
+function saveGraphData() {
+  console.debug('save graph data', new Date(), project.name)
+  const data = graph?.save() as GraphData | undefined
+  if (!data) return
+  const {nodes, edges} = data
+  const posNodes = nodes?.map(({name, id, y, x, createdTime, completedTime, state, target, detail, note, taskType}) => {
+    return {
+      name, id, y, x, createdTime, completedTime, state, target, detail, note, taskType
+    } as IPosNode
+  }) ?? []
+  const posEdges = edges?.map(({id, source, target}) => {
+    return {id, source, target} as IPosEdge
+  }) ?? []
+  project.data = {
+    nodes: posNodes,
+    edges: posEdges
+  }
+}
+
+const debounceSaveGraphData = debounce(saveGraphData, 3000)
 
 onBeforeUnmount(() => {
   console.info('destroy graph')
+  clearInterval(intervalRef.value)
+  saveGraphData()
   graph?.destroy()
+  graph = null
 })
 
 /**
@@ -274,7 +277,7 @@ const editorModel = reactive({
 })
 
 const taskModel = computed(() => {
-  const task = ref<ITask | ModelConfig>(graph?.findById(editorModel.taskId).getModel() ?? {})
+  const task = ref<IPosNode | ModelConfig>(graph?.findById(editorModel.taskId).getModel() ?? {})
   return new Proxy(task.value, {
     get: (target, p) => {
       return Reflect.get(target, p)
@@ -287,32 +290,36 @@ const taskModel = computed(() => {
   })
 })
 
-// const moveRight = () => {
-//   console.log('move right today')
-//   const d = new Date(todayStore.today)
-//   d.setDate(d.getDate() + 1)
-//   todayStore.update(d)
-// }
-//
+function testGraph() {
+  console.log('test graph', JSON.stringify(project))
+}
+
+const moveRight = () => {
+  console.log('move right today')
+  const d = new Date(todayStore.today)
+  d.setDate(d.getDate() + 1)
+  todayStore.update(d)
+}
+
 // const rollback = () => {
 //   console.log('rollback today')
 //   const date = new Date()
 //   console.log('date', date)
 //   todayStore.update(date)
 // }
-//
-// const moveLeft = () => {
-//   console.log('move left today')
-//   const d = new Date(todayStore.today)
-//   d.setDate(d.getDate() - 1)
-//   todayStore.update(d)
-// }
+
+const moveLeft = () => {
+  console.log('move left today')
+  const d = new Date(todayStore.today)
+  d.setDate(d.getDate() - 1)
+  todayStore.update(d)
+}
 </script>
 
 <template>
   <div>
     <div class="main">
-      <title-bar/>
+      <title-bar :before-close="saveGraphData"/>
       <div class="header">
         <div class="header-content">
           <input
@@ -401,6 +408,12 @@ const taskModel = computed(() => {
           <local theme="outline" size="20" fill="#333" :strokeWidth="2" @click="move2Today" class="group-item"/>
           <back theme="outline" size="20" fill="#333" :strokeWidth="2" class="group-item"/>
           <next theme="outline" size="20" fill="#333" :strokeWidth="2" class="group-item"/>
+          <experiment-one v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
+                          class="group-item" @click="testGraph"/>
+          <arrow-left v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
+                      class="group-item" @click="moveLeft"/>
+          <arrow-right v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
+                       class="group-item" @click="moveRight"/>
         </div>
       </div>
     </div>

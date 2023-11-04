@@ -1,5 +1,5 @@
 import G6 from '@antv/g6'
-import { IRelation, ITask } from '@renderer/store'
+import { IPosEdge, IPosNode } from '@renderer/store'
 import { index2X } from '@renderer/util'
 import { EdgeConfig, NodeConfig } from '@antv/g6-core'
 
@@ -30,11 +30,11 @@ G6.registerLayout('possible-layout', {
       todayIndex: number
       nodeHeight: number
       gap: number
-      nodes: (ITask & NodeConfig)[]
-      edges: (EdgeConfig & IRelation)[]
+      nodes: (IPosNode & NodeConfig)[]
+      edges: (EdgeConfig & IPosEdge)[]
     } = this
 
-    const map = new Map<number, (ITask & NodeConfig)[]>()
+    const map = new Map<number, (IPosNode & NodeConfig)[]>()
 
     const edgesMap = new Map<string, string>()
 
@@ -42,7 +42,7 @@ G6.registerLayout('possible-layout', {
       edgesMap.set(edge.source, edge.target)
     })
 
-    const nodesMap = new Map<string, ITask & NodeConfig>()
+    const nodesMap = new Map<string, IPosNode & NodeConfig>()
 
     nodes.forEach((node) => {
       nodesMap.set(node.id, node)
@@ -50,7 +50,7 @@ G6.registerLayout('possible-layout', {
 
     const idx = index2X(todayIndex)
 
-    const handleNodeState = (node: ITask & NodeConfig, currentX: number) => {
+    const handleNodeState = (node: IPosNode & NodeConfig, currentX: number) => {
       if (node.state === 'normal' && node.taskType === 'general') {
         if (node.x < currentX) {
           node.x = currentX
@@ -65,10 +65,10 @@ G6.registerLayout('possible-layout', {
      * @param node
      * @param currentX
      */
-    const handleNode = (node: ITask & NodeConfig, currentX: number): boolean => {
+    const handleNode = (node: IPosNode & NodeConfig, currentX: number): boolean => {
       if (edgesMap.has(node.id)) {
         const nextId = edgesMap.get(node.id) as string
-        const nextNode = nodesMap.get(nextId) as ITask & NodeConfig
+        const nextNode = nodesMap.get(nextId) as IPosNode & NodeConfig
         if (handleNode(nextNode, currentX + 120)) {
           return handleNodeState(node, currentX)
         } else {
