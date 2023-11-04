@@ -1,10 +1,13 @@
 <script setup>
 import IconSvg from "@renderer/component/IconSvg.vue";
+import {useProjectStore} from "@renderer/store/project";
+import {computed} from "vue";
 
 const props = defineProps(['show'])
+const projectStore = useProjectStore()
 
 function handleClose() {
-  window.api.windowClose()
+  window.api.windowClose(JSON.stringify(projectStore.projects))
 }
 
 function handleMaximize() {
@@ -14,6 +17,11 @@ function handleMaximize() {
 function handleMinimize() {
   window.api.windowMinimize()
 }
+
+const windowIsMaximized = computed(() => {
+  console.debug('title bar windows maximized status')
+  return window.api.windowIsMaximized()
+})
 </script>
 
 <template>

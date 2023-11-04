@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 
 export const useTodayStore = defineStore('today', {
   state() {
@@ -14,6 +14,9 @@ export const useTodayStore = defineStore('today', {
   actions: {
     update(d: Date) {
       this.today = d
+    },
+    update2Now() {
+      this.today = new Date()
     }
   }
 })

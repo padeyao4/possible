@@ -75,7 +75,6 @@ onMounted(() => {
         {
           type: 'possible-drag-node',
           enableOptimize: true,
-          enableStack: false
         },
         {
           type: 'create-edge',
@@ -513,6 +512,7 @@ const moveLeft = () => {
     padding: 24px 24px 24px 24px;
     display: grid;
     grid-template-rows: 40px calc(100% - 40px);
+    box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 
     .time-bar {
       height: 100%;

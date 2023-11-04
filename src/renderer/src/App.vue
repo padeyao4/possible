@@ -196,8 +196,9 @@ const routeKey = computed(() => {
     }
 
     .list {
-      height: calc(var(--app-height) - 105px);
+      height: calc(var(--app-height) - 104px);
       overflow-y: auto;
+      box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 
       .list-item {
         display: flex;
