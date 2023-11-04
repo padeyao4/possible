@@ -113,7 +113,6 @@ const routeKey = computed(() => {
           <div style="display: inline-block; margin:0 8px 0 4px">我的一天</div>
         </div>
       </div>
-      <hr/>
       <div class="list">
         <template v-for="item in projectStore.list" :key="item.id">
           <div
@@ -175,7 +174,7 @@ const routeKey = computed(() => {
 
   .side {
     display: grid;
-    grid-template-rows: 24px 40px 1px 1fr 40px;
+    grid-template-rows: 24px 40px 1fr 40px;
 
     .my-day {
       width: 100%;
@@ -183,6 +182,7 @@ const routeKey = computed(() => {
       justify-content: center;
       align-items: center;
       -webkit-app-region: drag;
+      box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 
       .today-content {
         display: flex;
