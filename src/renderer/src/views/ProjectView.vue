@@ -280,9 +280,9 @@ onBeforeUnmount(() => {
 })
 
 /**
- * 回到今天时间点
+ * 窗口移动到今天对应的x轴
  */
-const back2Today = () => {
+const move2Today = () => {
   const dx = dataIndex() * 120 + project.offset.x
   graph?.translate(-dx, -project.offset.y)
 }
@@ -447,7 +447,7 @@ const taskModel = computed(() => {
       </div>
       <div class="footer">
         <div class="icon-group">
-          <local theme="outline" size="20" fill="#333" :strokeWidth="2" @click="back2Today" class="group-item"/>
+          <local theme="outline" size="20" fill="#333" :strokeWidth="2" @click="move2Today" class="group-item"/>
           <back theme="outline" size="20" fill="#333" :strokeWidth="2" class="group-item"/>
           <next theme="outline" size="20" fill="#333" :strokeWidth="2" class="group-item"/>
         </div>

@@ -1,5 +1,4 @@
 import './assets/main.css'
-import '@renderer/assets/iconfont/iconfont'
 import '@renderer/g6'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'

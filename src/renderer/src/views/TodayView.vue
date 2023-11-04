@@ -4,7 +4,7 @@ import {useTodayStore} from '@renderer/store/day'
 import {computed, ref} from 'vue'
 import {date2X} from '@renderer/util'
 import TitleBar from "@renderer/component/TitleBar.vue";
-import {Round,CheckOne} from "@icon-park/vue-next";
+import {Round, CheckOne, Right, Down} from "@icon-park/vue-next";
 
 const projectStore = useProjectStore()
 const todayStore = useTodayStore()
@@ -49,10 +49,10 @@ const openCompletedRef = ref(false)
           </div>
         </div>
         <div class="completed" @click="openCompletedRef = !openCompletedRef">
-          <el-icon style="margin: 0 4px 0 0">
-            <ArrowDown v-if="openCompletedRef"/>
-            <ArrowRight v-else/>
-          </el-icon>
+          <down v-if="openCompletedRef" theme="outline" size="24" fill="#333" :strokeWidth="2"
+                style="display: flex;justify-content: center;align-items: center"/>
+          <right v-else theme="outline" size="24" fill="#333" :strokeWidth="2"
+                 style="display: flex;justify-content: center;align-items: center"/>
           已完成 {{ completed.length }}
         </div>
         <div v-if="openCompletedRef">
@@ -104,9 +104,6 @@ const openCompletedRef = ref(false)
       display: flex;
       justify-content: center;
       align-items: center;
-      &:hover{
-        background: #d1825b;
-      }
     }
 
     .item {
