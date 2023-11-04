@@ -170,7 +170,7 @@ const routeKey = computed(() => {
   width: var(--app-width);
   height: var(--app-height);
   grid-template-columns: var(--side-width) var(--content-width);
-  box-shadow: rgba(9, 30, 66, 0.25) 0 1px 1px, rgba(9, 30, 66, 0.13) 0 0 1px 1px;
+  box-shadow: rgba(9, 30, 66, 0.3) 0 1px 1px, rgba(9, 30, 66, 0.25) 0 0 1px 1px;
 
   .side {
     display: grid;
