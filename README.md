@@ -33,6 +33,7 @@ $ pnpm build:mac
 $ pnpm build:linux
 ```
 
-### Reference
+### document
 
 - https://cn.electron-vite.org/guide/introduction
+- https://getcssscan.com/css-box-shadow-examples

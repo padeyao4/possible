@@ -449,11 +449,10 @@ const moveLeft = () => {
       </div>
       <div class="footer">
         <el-button @click="back2Today">today</el-button>
-        <!--        <p class="footer-label">{{ graphRef?.getCurrentMode() }}</p>-->
-        <el-button @click="moveLeft">left</el-button>
-        <el-button @click="rollback">back</el-button>
-        <el-button @click="moveRight">right</el-button>
-        <p class="footer-label">{{ project.offset }}</p>
+<!--        <el-button @click="moveLeft">left</el-button>-->
+<!--        <el-button @click="rollback">back</el-button>-->
+<!--        <el-button @click="moveRight">right</el-button>-->
+<!--        <p class="footer-label">{{ project.offset }}</p>-->
       </div>
     </div>
   </div>
