@@ -1,41 +1,20 @@
 <script setup>
 import {Close, Square, Minus} from '@icon-park/vue-next'
-import {useProjectStore} from "@renderer/store/project";
-import {computed} from "vue";
 
-const props = defineProps(['show', 'beforeClose'])
-const projectStore = useProjectStore()
-
-function handleClose() {
-  props.beforeClose?.()
-  window.api.windowClose(JSON.stringify(projectStore.projects))
-}
-
-function handleMaximize() {
-  window.api.windowMaximize()
-}
-
-function handleMinimize() {
-  window.api.windowMinimize()
-}
-
-const windowIsMaximized = computed(() => {
-  console.debug('title bar windows maximized status')
-  return window.api.windowIsMaximized()
-})
+const props = defineProps(['close', 'maximize', 'minimize'])
 </script>
 
 <template>
   <div>
     <div class="main">
-      <div v-if="props.show??true" class="container">
-        <div class="window-icon window-minimize" @click="handleMinimize">
+      <div class="container">
+        <div v-show="props.minimize" class="window-icon window-minimize" @click="()=>props.minimize?.()">
           <minus theme="outline" size="14" fill="#333" :strokeWidth="2" strokeLinecap="miter"/>
         </div>
-        <div class="window-icon window-maximize" @click="handleMaximize">
+        <div v-show="props.maximize" class="window-icon window-maximize" @click="()=>props.maximize?.()">
           <square theme="outline" size="14" fill="#333" :strokeWidth="2" strokeLinejoin="miter" strokeLinecap="square"/>
         </div>
-        <div class="window-icon window-close" @click="handleClose">
+        <div v-show="props.close" class="window-icon window-close" @click="()=>props.close?.()">
           <close theme="filled" size="14" fill="#333" :strokeWidth="2" strokeLinecap="miter"/>
         </div>
       </div>
@@ -67,15 +46,16 @@ const windowIsMaximized = computed(() => {
     }
 
     .window-maximize:hover {
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(33, 37, 118,0.1);
     }
 
     .window-minimize:hover {
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(33, 37, 118,0.1);
     }
 
     .window-close:hover {
       background: rgba(255, 0, 0, 0.5);
+      border-radius: 0 8px 0 0;
     }
   }
 }

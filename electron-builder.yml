@@ -41,11 +41,11 @@ npmRebuild: false
 publish:
   provider: generic
   url: https://example.com/auto-updates
-extraResources:
-  - from: node_modules/.prisma/client
-    to: node_modules/.prisma/client
-  - from: node_modules/@prisma/client
-    to: node_modules/@prisma/client
-extraFiles:
-  - from: prisma/possible.db
-    to: possible.db
+#extraResources:
+#  - from: node_modules/.prisma/client
+#    to: node_modules/.prisma/client
+#  - from: node_modules/@prisma/client
+#    to: node_modules/@prisma/client
+#extraFiles:
+#  - from: prisma/possible.db
+#    to: possible.db

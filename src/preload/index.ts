@@ -13,21 +13,30 @@ const api = {
     loadLocalData: (): Promise<IProject[] | undefined> => {
         return ipcRenderer.invoke('load')
     },
-    windowClose: (text: string) => {
-        ipcRenderer.send('window:close', text)
+    windowMainClose: (text: string) => {
+        ipcRenderer.send('window:main:close', text)
     },
-    windowMinimize: () => {
-        ipcRenderer.send('window:minimize')
+    windowMainMinimize: () => {
+        ipcRenderer.send('window:main:minimize')
     },
-    windowMaximize: () => {
-        ipcRenderer.send('window:maximize')
+    windowMainMaximize: () => {
+        ipcRenderer.send('window:main:maximize')
     },
     windowIsMaximized: () => {
         return ipcRenderer.invoke('window:isMaximized')
     },
+    createSettingsWindow: () => {
+        ipcRenderer.send('window:settings:create')
+    },
+    windowSettingsMinimize: () => {
+        ipcRenderer.send('window:settings:minimize')
+    },
+    windowSettingsClose: () => {
+        ipcRenderer.send('window:settings:close')
+    },
     platform: async (): Promise<string> => {
         return ipcRenderer.invoke('platform')
-    },
+    }
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

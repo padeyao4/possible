@@ -156,12 +156,12 @@ onMounted(() => {
 
     // 删除重复边
     const count = sourceNode
-      .getEdges()
-      .filter(
-        (e) =>
-          e.getTarget().getID() === targetNode.getID() ||
-          e.getSource().getID() === targetNode.getID()
-      ).length
+        .getEdges()
+        .filter(
+            (e) =>
+                e.getTarget().getID() === targetNode.getID() ||
+                e.getSource().getID() === targetNode.getID()
+        ).length
     if (count >= 2) {
       nextTick(() => {
         graph?.removeItem(edge)
@@ -329,21 +329,36 @@ const moveLeft = () => {
 }
 
 const projectSettingsHover = ref(false)
+
+function onClose() {
+  saveGraphData()
+  window.api.windowMainClose(JSON.stringify(projectStore.projects))
+}
+
+function onMaximize() {
+  window.api.windowMainMaximize()
+}
+
+function onMinimize() {
+  window.api.windowMainMinimize()
+}
+
 </script>
 
 <template>
   <div>
     <div class="main">
-      <title-bar :before-close="saveGraphData"/>
+      <title-bar :close="onClose" :maximize="onMaximize"
+                 :minimize="onMinimize"/>
       <div class="header">
         <div class="header-content">
           <input
-            v-if="titleEditEnable"
-            ref="titleRef"
-            v-model="project.name"
-            class="title-input"
-            @blur="submitTitle"
-            @keydown.enter="submitTitle"
+              v-if="titleEditEnable"
+              ref="titleRef"
+              v-model="project.name"
+              class="title-input"
+              @blur="submitTitle"
+              @keydown.enter="submitTitle"
           />
           <div v-else class="title" @dblclick="editTitle">
             {{ project.name ?? '' }}
@@ -385,10 +400,10 @@ const projectSettingsHover = ref(false)
       <div class="body">
         <Teleport to="body">
           <el-drawer
-            v-model="editorModel.visible"
-            :close-on-click-modal="false"
-            :show-close="true"
-            @close="editorModel.visible = false"
+              v-model="editorModel.visible"
+              :close-on-click-modal="false"
+              :show-close="true"
+              @close="editorModel.visible = false"
           >
             <el-form :model="taskModel">
               <el-form-item label="名称">
@@ -448,7 +463,7 @@ const projectSettingsHover = ref(false)
   background: var(--color-project);
   box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
   display: grid;
-  height: var(--app-height);
+  height: var(--win-height);
   grid-template-rows: 24px 40px 1fr 40px;
 
   .header {
@@ -505,7 +520,7 @@ const projectSettingsHover = ref(false)
     .container {
       position: relative;
       height: 100%;
-      width: calc(var(--app-width) - var(--side-width) - 48px);
+      width: calc(var(--win-width) - var(--side-width) - 48px);
       z-index: 1;
       background: var(--color-canvas);
     }

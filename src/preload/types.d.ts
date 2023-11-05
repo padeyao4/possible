@@ -8,10 +8,13 @@ declare global {
             exportProject: (project: IProject[]) => void
             importProject: () => Promise<IProject[] | undefined | 'cancel'>
             loadLocalData: () => Promise<IProject[] | undefined>
-            windowClose: (text: string) => void,
-            windowMinimize: () => void,
-            windowMaximize: () => void,
+            windowMainClose: (text: string) => void,
+            windowMainMinimize: () => void,
+            windowMainMaximize: () => void,
             windowIsMaximized: () => boolean,
+            createSettingsWindow: () => void,
+            windowSettingsMinimize: () => void,
+            windowSettingsClose: () => void,
             platform: () => Promise<string>
         }
     }

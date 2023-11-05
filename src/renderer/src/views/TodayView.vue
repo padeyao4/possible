@@ -12,24 +12,24 @@ const todayStore = useTodayStore()
 
 const todos = computed(() => {
   return projectStore.projects
-    .map((project) => {
-      const x = date2X(todayStore.today, project.initDate)
-      return project.data.nodes.filter(
-        (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
-      )
-    })
-    .flat().sort((n1, n2) => (n1?.orderIndex ?? 0) - (n2?.orderIndex ?? 0))
+      .map((project) => {
+        const x = date2X(todayStore.today, project.initDate)
+        return project.data.nodes.filter(
+            (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
+        )
+      })
+      .flat().sort((n1, n2) => (n1?.orderIndex ?? 0) - (n2?.orderIndex ?? 0))
 })
 
 const completed = computed(() => {
   return projectStore.projects
-    .map((project) => {
-      const x = date2X(todayStore.today, project.initDate)
-      return project.data.nodes.filter(
-        (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
-      )
-    })
-    .flat()
+      .map((project) => {
+        const x = date2X(todayStore.today, project.initDate)
+        return project.data.nodes.filter(
+            (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
+        )
+      })
+      .flat()
 })
 
 function onChange() {
@@ -52,11 +52,23 @@ function onEnd() {
 const openCompleted = ref(false)
 
 const itemHover = ref()
+
+function onWindowClose() {
+  window.api.windowMainClose(JSON.stringify(projectStore.projects))
+}
+
+function onMaximize() {
+  window.api.windowMainMaximize()
+}
+
+function onMinimize() {
+  window.api.windowMainMinimize()
+}
 </script>
 <template>
   <div>
     <div class="main">
-      <title-bar/>
+      <title-bar :close="onWindowClose" :maximize="onMaximize" :minimize="onMinimize"/>
       <div class="header">
         <div class="title">我的一天</div>
       </div>
@@ -102,7 +114,7 @@ const itemHover = ref()
 <style scoped>
 .main {
   background: var(--color-neptune);
-  height: var(--app-height);
+  height: var(--win-height);
   border-radius: 8px 0 0 0;
 
   .header {

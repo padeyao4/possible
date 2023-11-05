@@ -2,9 +2,9 @@
 :root {
   --padding-size: 1px;
   --side-width: 240px;
-  --app-height: calc(100vh - var(--padding-size) * 2);
-  --app-width: calc(100vw - var(--padding-size) * 2);
-  --content-width: calc(var(--app-width) - var(--side-width));
+  --win-height: calc(100vh - var(--padding-size) * 2);
+  --win-width: calc(100vw - var(--padding-size) * 2);
+  --content-width: calc(var(--win-width) - var(--side-width));
 
   /* 主题色 */
   --color-neptune: #82bbb5;
