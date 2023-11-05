@@ -469,6 +469,7 @@ const projectSettingsHover = ref(false)
         justify-content: center;
         margin-left: 24px;
         -webkit-app-region: no-drag;
+        user-select: none;
       }
 
       .title-input {
