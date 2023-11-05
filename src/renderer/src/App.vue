@@ -10,6 +10,7 @@ import {DAY_OF_MS} from '@renderer/util'
 import TitleBar from "@renderer/component/TitleBar.vue"
 import {Config, Plus, SunOne} from '@icon-park/vue-next'
 import {useSettingsStore} from "@renderer/store/settings";
+import {Theme} from "@icon-park/vue-next/es/runtime";
 
 const route = useRoute()
 const projectStore = useProjectStore()
@@ -101,6 +102,15 @@ const bottomVisible = ref(true)
 const routeKey = computed(() => {
   return route.fullPath
 })
+
+const myDayStyle = computed<{ theme: Theme, color: string }>(() => {
+  const active = activeId.value === 'default'
+  return {
+    theme: active ? 'filled' : 'outline',
+    color: active ? '#f2b439' : '#333'
+  }
+})
+
 </script>
 
 <template>
@@ -109,10 +119,10 @@ const routeKey = computed(() => {
       <title-bar :show="false"/>
       <div class="my-day">
         <div class="today-content" @click="handleTodayClick">
-          <sun-one :theme="activeId==='default'?'filled':'outline'" size="20"
-                   :fill="activeId==='default'?'#f2b439':'#333'" :strokeWidth="2"
+          <sun-one :theme="myDayStyle.theme" size="20"
+                   :fill="myDayStyle.color" :strokeWidth="2"
                    style="margin:0 4px 0 8px;display: flex; justify-content: center; align-items: center "/>
-          <div style="display: inline-block; margin:0 8px 0 4px" :style="{color:activeId==='default'?'#f2b439':'#333'}">
+          <div style="display: inline-block; margin:0 8px 0 4px" :style="{color:myDayStyle.color}">
             我的一天
           </div>
         </div>
@@ -120,21 +130,21 @@ const routeKey = computed(() => {
       <div class="list">
         <template v-for="item in projectStore.list" :key="item.id">
           <div
-              v-if="!inputVisible || item.id !== activeId"
-              class="list-item"
-              :class="{ active: item.id === activeId }"
-              @click="handleItemClick(item.id)"
+            v-if="!inputVisible || item.id !== activeId"
+            class="list-item"
+            :class="{ active: item.id === activeId }"
+            @click="handleItemClick(item.id)"
           >
             {{ item.name }}
           </div>
         </template>
         <div v-if="inputVisible" class="list-item active">
           <input
-              :ref="(e) => handleInputRef(e as HTMLInputElement)"
-              v-model="project.name"
-              class="item-input"
-              @blur="inputVisible = false"
-              @keydown.enter="inputVisible = false"
+            :ref="(e) => handleInputRef(e as HTMLInputElement)"
+            v-model="project.name"
+            class="item-input"
+            @blur="inputVisible = false"
+            @keydown.enter="inputVisible = false"
           />
         </div>
       </div>

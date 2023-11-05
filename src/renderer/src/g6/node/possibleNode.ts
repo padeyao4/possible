@@ -1,46 +1,46 @@
 import G6 from '@antv/g6'
 
 const stateMapper = {
-    completed: '#bdbbbb',
-    normal: '#70bffa',
-    timeout: '#c74e4e',
-    discard: '#7d849560'
+  completed: '#bdbbbb',
+  normal: '#70bffa',
+  timeout: '#c74e4e',
+  discard: '#7d849560'
 }
 
 G6.registerNode(
-    'task-node',
-    {
-        draw(cfg, group) {
-            const keyShape = group.addShape('rect', {
-                attrs: {
-                    x: -50,
-                    y: -20,
-                    width: 100,
-                    height: 40,
-                    radius: 8,
-                    fill: (cfg.state as string) === '' ? '#70bffa' : stateMapper[cfg.state as string],
-                    textAlign: 'center',
-                    ...cfg.style
-                },
-                name: 'base-rect',
-                draggable: true
-            })
-            group.addShape('text', {
-                attrs: {
-                    width: 100,
-                    height: 40,
-                    fill: '#fff',
-                    lineWidth: 0,
-                    textBaseline: 'middle',
-                    textAlign: 'center',
-                    text: cfg.name,
-                    fontSize: 14
-                },
-                draggable: true
-            })
-            return keyShape
+  'task-node',
+  {
+    draw(cfg, group) {
+      const keyShape = group.addShape('rect', {
+        attrs: {
+          x: -50,
+          y: -20,
+          width: 100,
+          height: 40,
+          radius: 8,
+          fill: (cfg.state as string) === '' ? '#70bffa' : stateMapper[cfg.state as string],
+          textAlign: 'center',
+          ...cfg.style
         },
-        update: undefined
+        name: 'base-rect',
+        draggable: true
+      })
+      group.addShape('text', {
+        attrs: {
+          width: 100,
+          height: 40,
+          fill: '#fff',
+          lineWidth: 0,
+          textBaseline: 'middle',
+          textAlign: 'center',
+          text: cfg.name,
+          fontSize: 14
+        },
+        draggable: true
+      })
+      return keyShape
     },
-    'rect'
+    update: undefined
+  },
+  'rect'
 )
