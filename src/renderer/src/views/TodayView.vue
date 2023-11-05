@@ -50,6 +50,8 @@ function onEnd() {
 }
 
 const openCompleted = ref(false)
+
+const itemHover = ref()
 </script>
 <template>
   <div>
@@ -67,8 +69,15 @@ const openCompleted = ref(false)
           <!--element 为固定写法-->
           <template #item="{element}">
             <div class="item">
-              <round theme="outline" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="icon-park"
-                     @click="element.state = 'completed'"/>
+              <div @mouseenter="itemHover=element.id" @mouseleave="itemHover=null">
+                <check-one v-if="itemHover===element.id" theme="outline" size="20" fill="#333" :strokeWidth="2"
+                           strokeLinecap="butt"
+                           class="icon-park"
+                           @click="element.state = 'completed'"/>
+                <round v-else theme="outline" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt"
+                       class="icon-park"
+                       @click="element.state = 'completed'"/>
+              </div>
               {{ element.name }}
             </div>
           </template>
