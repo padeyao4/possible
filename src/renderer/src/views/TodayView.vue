@@ -1,35 +1,53 @@
 <script setup lang="ts">
 import {useProjectStore} from '@renderer/store/project'
 import {useTodayStore} from '@renderer/store/day'
-import {computed, ref} from 'vue'
+import {computed, ref, toRaw} from 'vue'
 import {date2X} from '@renderer/util'
 import TitleBar from "@renderer/component/TitleBar.vue";
-import {Round, CheckOne, Right, Down} from "@icon-park/vue-next";
+import {CheckOne, Down, Right, Round} from "@icon-park/vue-next";
+import Draggable from 'vuedraggable/src/vuedraggable'
 
 const projectStore = useProjectStore()
 const todayStore = useTodayStore()
 
 const todos = computed(() => {
   return projectStore.projects
-      .map((project) => {
-        const x = date2X(todayStore.today, project.initDate)
-        return project.data.nodes.filter(
-            (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
-        )
-      })
-      .flat()
+    .map((project) => {
+      const x = date2X(todayStore.today, project.initDate)
+      return project.data.nodes.filter(
+        (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
+      )
+    })
+    .flat().sort((n1, n2) => (n1?.orderIndex ?? 0) - (n2?.orderIndex ?? 0))
 })
 
 const completed = computed(() => {
   return projectStore.projects
-      .map((project) => {
-        const x = date2X(todayStore.today, project.initDate)
-        return project.data.nodes.filter(
-            (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
-        )
-      })
-      .flat()
+    .map((project) => {
+      const x = date2X(todayStore.today, project.initDate)
+      return project.data.nodes.filter(
+        (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
+      )
+    })
+    .flat()
 })
+
+function onChange() {
+  todos.value.forEach((value, index) => {
+    value.orderIndex = index
+  })
+}
+
+let defaultMouseStyle = 'auto'
+
+function onStart() {
+  defaultMouseStyle = document.body.style.cursor
+  document.body.style.cursor = 'move'
+}
+
+function onEnd() {
+  document.body.style.cursor = defaultMouseStyle
+}
 
 const openCompleted = ref(false)
 </script>
@@ -41,13 +59,20 @@ const openCompleted = ref(false)
         <div class="title">我的一天</div>
       </div>
       <div class="body">
-        <div>
-          <div v-for="task in todos" :key="task.id" class="item">
-            <round theme="outline" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="icon-park"
-                   @click="task.state = 'completed'"/>
-            {{ task.name }}
-          </div>
-        </div>
+        <draggable :list="toRaw(todos)" animation="300" item-key="id" :forceFallback="true" ghost-class="ghost-class"
+                   @change="onChange"
+                   @start="onStart"
+                   @end="onEnd"
+                   drag-class="drag-class">
+          <!--element 为固定写法-->
+          <template #item="{element}">
+            <div class="item">
+              <round theme="outline" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="icon-park"
+                     @click="element.state = 'completed'"/>
+              {{ element.name }}
+            </div>
+          </template>
+        </draggable>
         <div class="completed" @click="openCompleted = !openCompleted">
           <down v-if="openCompleted" theme="outline" size="24" fill="#333" :strokeWidth="2"
                 style="display: flex;justify-content: center;align-items: center"/>
@@ -116,6 +141,15 @@ const openCompleted = ref(false)
       height: 48px;
       margin: 4px 0 4px 0;
       border-radius: 4px;
+    }
+
+    .ghost-class {
+      opacity: 0;
+    }
+
+    .drag-class {
+      box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+      opacity: 1 !important;
     }
 
     .completed-item {

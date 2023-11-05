@@ -62,7 +62,7 @@ onMounted(() => {
           graph?.removeItem(item)
           graph?.layout()
         }
-      }),
+      })
     ],
     modes: {
       default: [
@@ -70,18 +70,18 @@ onMounted(() => {
           type: 'drag-canvas',
           allowDragOnItem: false,
           enableOptimize: true,
-          scalableRange: 99,
+          scalableRange: 99
         },
         {
           type: 'possible-drag-node',
-          enableOptimize: true,
+          enableOptimize: true
         },
         {
           type: 'create-edge',
           trigger: 'drag',
           key: 'shift'
         }
-      ],
+      ]
     },
     defaultNode: {
       type: 'task-node'
@@ -156,12 +156,12 @@ onMounted(() => {
 
     // 删除重复边
     const count = sourceNode
-        .getEdges()
-        .filter(
-            (e) =>
-                e.getTarget().getID() === targetNode.getID() ||
-                e.getSource().getID() === targetNode.getID()
-        ).length
+      .getEdges()
+      .filter(
+        (e) =>
+          e.getTarget().getID() === targetNode.getID() ||
+          e.getSource().getID() === targetNode.getID()
+      ).length
     if (count >= 2) {
       nextTick(() => {
         graph?.removeItem(edge)
@@ -209,9 +209,22 @@ function saveGraphData() {
   const data = graph?.save() as GraphData | undefined
   if (!data) return
   const {nodes, edges} = data
-  const posNodes = nodes?.map(({name, id, y, x, createdTime, completedTime, state, target, detail, note, taskType}) => {
+  const posNodes = nodes?.map(({
+                                 name,
+                                 id,
+                                 y,
+                                 x,
+                                 createdTime,
+                                 completedTime,
+                                 state,
+                                 target,
+                                 detail,
+                                 note,
+                                 taskType,
+                                 orderIndex
+                               }) => {
     return {
-      name, id, y, x, createdTime, completedTime, state, target, detail, note, taskType
+      name, id, y, x, createdTime, completedTime, state, target, detail, note, taskType, orderIndex
     } as IPosNode
   }) ?? []
   const posEdges = edges?.map(({id, source, target}) => {
@@ -325,12 +338,12 @@ const projectSettingsHover = ref(false)
       <div class="header">
         <div class="header-content">
           <input
-              v-if="titleEditEnable"
-              ref="titleRef"
-              v-model="project.name"
-              class="title-input"
-              @blur="submitTitle"
-              @keydown.enter="submitTitle"
+            v-if="titleEditEnable"
+            ref="titleRef"
+            v-model="project.name"
+            class="title-input"
+            @blur="submitTitle"
+            @keydown.enter="submitTitle"
           />
           <div v-else class="title" @dblclick="editTitle">
             {{ project.name ?? '' }}
@@ -372,10 +385,10 @@ const projectSettingsHover = ref(false)
       <div class="body">
         <Teleport to="body">
           <el-drawer
-              v-model="editorModel.visible"
-              :close-on-click-modal="false"
-              :show-close="true"
-              @close="editorModel.visible = false"
+            v-model="editorModel.visible"
+            :close-on-click-modal="false"
+            :show-close="true"
+            @close="editorModel.visible = false"
           >
             <el-form :model="taskModel">
               <el-form-item label="名称">
