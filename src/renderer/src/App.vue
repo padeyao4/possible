@@ -223,6 +223,11 @@ const myDayStyle = computed<{ theme: Theme, color: string }>(() => {
         user-select: none;
         margin: 4px 8px;
 
+        &:hover {
+          border-radius: 4px;
+          background: var(--color-side-active);
+        }
+
         .item-input {
           outline-style: none;
           box-sizing: content-box;
