@@ -1,9 +1,10 @@
 <script setup lang="ts">
 
-import {Info, Plus, SaveOne, Upload} from "@icon-park/vue-next";
+import {Plus, SaveOne, Upload, Logout} from "@icon-park/vue-next";
 import SettingButton from "@renderer/views/LayoutView/SettingButton.vue";
 import {ref} from "vue";
 import {useProjectStore} from "@renderer/store/project";
+import AboutButton from "@renderer/views/LayoutView/AboutButton.vue";
 
 const props = defineProps(['onAddClick'])
 const projectStore = useProjectStore()
@@ -39,10 +40,13 @@ async function load() {
         </div>
         <setting-button @click="front=false"/>
       </div>
-      <div v-else class="backend" @mouseleave="front=true">
-        <upload theme="outline" size="20" fill="#333" :strokeWidth="2" @click="load"/>
-        <save-one theme="outline" size="20" fill="#333" :strokeWidth="2" @click="save"/>
-        <info theme="outline" size="20" fill="#333" :strokeWidth="2"/>
+      <div v-else class="backend">
+        <div class="icon-group">
+          <upload theme="outline" size="20" fill="#333" :strokeWidth="2" @click="load"/>
+          <save-one theme="outline" size="20" fill="#333" :strokeWidth="2" @click="save"/>
+          <about-button/>
+        </div>
+        <logout theme="outline" size="20" fill="#333" :strokeWidth="2" @click="front=true" class="exit-icon"/>
       </div>
     </div>
   </div>
@@ -52,7 +56,6 @@ async function load() {
 .main {
   height: 100%;
 
-
   .add-button {
     display: flex;
     justify-content: center;
@@ -60,6 +63,8 @@ async function load() {
     user-select: none;
     width: 200px;
     height: 100%;
+    box-shadow: rgba(27, 31, 35, 0.06) 1px 0 0,
+    rgba(255, 255, 255, 0.25) 1px 0 0 inset;
   }
 
   .front {
@@ -70,22 +75,38 @@ async function load() {
 
   .backend {
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 200px 40px;
 
-    > * {
+    .icon-group {
+      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 40px;
-      margin: 4px;
-      padding: 4px;
-      border-radius: 4px;
+      box-shadow: rgba(27, 31, 35, 0.06) 1px 0 0,
+      rgba(255, 255, 255, 0.25) 1px 0 0 inset;
+
+      > * {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 4px;
+        padding: 4px;
+        border-radius: 4px;
+
+        &:hover {
+          background: rgba(37, 159, 167, 0.1);
+        }
+      }
+    }
+
+    .exit-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
       &:hover {
         background: rgba(37, 159, 167, 0.1);
-        border-radius: 4px;
       }
     }
   }

@@ -37,3 +37,5 @@ $ pnpm build:linux
 
 - https://cn.electron-vite.org/guide/introduction
 - https://getcssscan.com/css-box-shadow-examples
+- https://element-plus.org/zh-CN/
+- https://github.com/antvis/g6

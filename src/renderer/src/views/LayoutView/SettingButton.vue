@@ -6,7 +6,7 @@ import {Config} from "@icon-park/vue-next";
   <div>
     <div class="settings-button">
       <config theme="outline" size="24" fill="#333" :strokeWidth="2"
-              style="display: flex;justify-content: center;align-items: center; width: 30px;height: 30px"/>
+              style="display: flex;justify-content: center;align-items: center;height: 100%;width: 100%"/>
     </div>
   </div>
 </template>
@@ -22,7 +22,6 @@ import {Config} from "@icon-park/vue-next";
 
   :hover {
     background: antiquewhite;
-    border-radius: 8px;
   }
 }
 </style>
