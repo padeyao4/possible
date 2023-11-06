@@ -171,29 +171,6 @@ function handleRename() {
       }
     }
 
-    .list {
-      height: calc(var(--win-height) - 104px);
-      overflow-y: auto;
-      box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
-
-      .list-item {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 40px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        user-select: none;
-        margin: 4px 8px;
-
-        &:hover {
-          border-radius: 4px;
-          background: var(--color-side-active);
-        }
-      }
-    }
-
     .side-bottom {
       height: 100%;
       display: flex;
