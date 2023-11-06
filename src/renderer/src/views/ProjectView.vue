@@ -331,7 +331,7 @@ function onMinimize() {
 
 <template>
   <div>
-    <div class="main">
+    <div class="settings-button">
       <title-bar :close="onClose" :maximize="onMaximize"
                  :minimize="onMinimize"/>
       <div class="header">
@@ -443,7 +443,7 @@ function onMinimize() {
 </template>
 
 <style scoped>
-.main {
+.settings-button {
   overflow: hidden;
   border-radius: 8px 0 0 0;
   background: var(--color-project);

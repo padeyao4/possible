@@ -6,7 +6,7 @@ const props = defineProps(['close', 'maximize', 'minimize'])
 
 <template>
   <div>
-    <div class="main">
+    <div class="settings-button">
       <div class="container">
         <div v-show="props.minimize" class="window-icon window-minimize" @click="()=>props.minimize?.()">
           <minus theme="outline" size="14" fill="#333" :strokeWidth="2" strokeLinecap="miter"/>
@@ -23,7 +23,7 @@ const props = defineProps(['close', 'maximize', 'minimize'])
 </template>
 
 <style scoped>
-.main {
+.settings-button {
   display: flex;
   height: 24px;
   -webkit-app-region: drag;

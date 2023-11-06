@@ -2,7 +2,7 @@ import {createRouter, createWebHistory} from 'vue-router'
 import TodayView from '@renderer/views/TodayView.vue'
 import ProjectView from '@renderer/views/ProjectView.vue'
 import SettingsVue from "@renderer/views/SettingsVue.vue";
-import LayoutView from "@renderer/views/LayoutView.vue";
+import LayoutView from "@renderer/views/LayoutView/index.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),

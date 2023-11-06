@@ -4,11 +4,12 @@ import {RouterView, useRoute} from 'vue-router'
 import {computed, onMounted, onUnmounted, ref} from 'vue'
 import {useProjectStore} from '@renderer/store/project'
 import {useDateStore} from '@renderer/store/date'
-import {IProject} from '@renderer/store'
 import TitleBar from "@renderer/component/TitleBar.vue"
-import {Config, Plus, SunOne} from '@icon-park/vue-next'
+import {Plus, SunOne} from '@icon-park/vue-next'
 import {useSettingsStore} from "@renderer/store/settings";
 import {Theme} from "@icon-park/vue-next/es/runtime";
+import SettingButton from "@renderer/views/LayoutView/SettingButton.vue";
+import SideList from "@renderer/views/LayoutView/SideList.vue";
 
 const route = useRoute()
 const projectStore = useProjectStore()
@@ -42,16 +43,9 @@ const handleTodayClick = () => {
   })
 }
 
-const handleItemClick = (id: string) => {
-  router.push({
-    path: `/possible/project/${id}`,
-    replace: true
-  })
-}
-
 const addButtonClick = () => {
   const projectId = projectStore.createByName('新任务列表')
-  inputVisible.value = true
+  renaming.value = true
   router.push({
     path: `/possible/project/${projectId}`
   })
@@ -81,16 +75,6 @@ const addButtonClick = () => {
 //   })
 // }
 
-const inputVisible = ref(false)
-
-const handleInputRef = (e: HTMLInputElement | undefined) => {
-  e?.focus()
-}
-
-const project = computed<IProject>(() => {
-  return projectStore.get(activeId.value)
-})
-
 // const bottomVisible = ref(true)
 
 const routeKey = computed(() => {
@@ -105,14 +89,16 @@ const myDayStyle = computed<{ theme: Theme, color: string }>(() => {
   }
 })
 
-function createSettingsWindow() {
-  window.api.createSettingsWindow()
+const renaming = ref(false)
+
+function handleRename() {
+  renaming.value = false
 }
 
 </script>
 
 <template>
-  <div class="main">
+  <div class="settings-button">
     <div class="side">
       <title-bar/>
       <div class="my-day">
@@ -125,38 +111,18 @@ function createSettingsWindow() {
           </div>
         </div>
       </div>
-      <div class="list">
-        <template v-for="item in projectStore.list" :key="item.id">
-          <div
-            v-if="!inputVisible || item.id !== activeId"
-            class="list-item"
-            :class="{ active: item.id === activeId }"
-            @click="handleItemClick(item.id)"
-          >
-            {{ item.name }}
-          </div>
-        </template>
-        <div v-if="inputVisible" class="list-item active">
-          <input
-            :ref="(e) => handleInputRef(e as HTMLInputElement)"
-            v-model="project.name"
-            class="item-input"
-            @blur="inputVisible = false"
-            @keydown.enter="inputVisible = false"
-          />
-        </div>
-      </div>
+      <side-list :rename="renaming?handleRename:undefined"/>
       <div class="side-bottom">
-        <!--        <template v-if="bottomVisible">-->
         <div class="add-button" @click="addButtonClick">
           <plus theme="filled" size="24" fill="#333" :strokeWidth="2"
                 style="display: flex;justify-content: center; align-items: center"/>
           <div style="padding: 0 0 2px 4px">新建项目</div>
         </div>
-        <div class="import-button" @click="createSettingsWindow">
-          <config theme="outline" size="24" fill="#333" :strokeWidth="2"
-                  style="display: flex;justify-content: center;align-items: center; width: 30px;height: 30px"/>
-        </div>
+        <setting-button @mouseenter=""/>
+        <!--        <div class="import-button" @click="createSettingsWindow">-->
+        <!--          <config theme="outline" size="24" fill="#333" :strokeWidth="2"-->
+        <!--                  style="display: flex;justify-content: center;align-items: center; width: 30px;height: 30px"/>-->
+        <!--        </div>-->
         <!--        </template>-->
         <!--        <div v-else class="bottom-settings">-->
         <!--          <el-button text @click="importProjects">导入</el-button>-->
@@ -172,7 +138,7 @@ function createSettingsWindow() {
 </template>
 
 <style scoped>
-.main {
+.settings-button {
   overflow: hidden;
   background: var(--color-background);
   display: grid;
@@ -225,22 +191,7 @@ function createSettingsWindow() {
           border-radius: 4px;
           background: var(--color-side-active);
         }
-
-        .item-input {
-          outline-style: none;
-          box-sizing: content-box;
-          text-align: center;
-          border: 0;
-          font-size: 15px;
-          background-color: rgba(0, 0, 0, 0);
-        }
       }
-
-    }
-
-    .active {
-      border-radius: 4px;
-      background: var(--color-side-active);
     }
 
     .side-bottom {
@@ -255,20 +206,6 @@ function createSettingsWindow() {
         user-select: none;
         width: 200px;
         height: 100%;
-      }
-
-      .import-button {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        user-select: none;
-        width: 40px;
-        height: 100%;
-
-        :hover {
-          background: antiquewhite;
-          border-radius: 8px;
-        }
       }
 
       .bottom-settings {

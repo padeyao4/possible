@@ -11,3 +11,12 @@
     border: 1px solid #e2e2e2;
     border-radius: 4px;
 }
+
+.ghost-class {
+    opacity: 0;
+}
+
+.drag-class {
+    box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+    opacity: 1 !important;
+}

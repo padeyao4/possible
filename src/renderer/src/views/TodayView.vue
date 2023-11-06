@@ -67,7 +67,7 @@ function onMinimize() {
 </script>
 <template>
   <div>
-    <div class="main">
+    <div class="settings-button">
       <title-bar :close="onClose" :maximize="onMaximize" :minimize="onMinimize"/>
       <div class="header">
         <div class="title">我的一天</div>
@@ -112,7 +112,7 @@ function onMinimize() {
   </div>
 </template>
 <style scoped>
-.main {
+.settings-button {
   background: var(--color-neptune);
   height: var(--win-height);
   border-radius: 8px 0 0 0;
@@ -162,15 +162,6 @@ function onMinimize() {
       height: 48px;
       margin: 4px 0 4px 0;
       border-radius: 4px;
-    }
-
-    .ghost-class {
-      opacity: 0;
-    }
-
-    .drag-class {
-      box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
-      opacity: 1 !important;
     }
 
     .completed-item {

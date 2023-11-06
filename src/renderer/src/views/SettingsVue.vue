@@ -12,7 +12,7 @@ function minimize() {
 
 <template>
   <div>
-    <div class="main">
+    <div class="settings-button">
       <title-bar :close="close" :minimize="minimize"/>
       <div>
         <el-text>
@@ -25,7 +25,7 @@ function minimize() {
 </template>
 
 <style scoped>
-.main {
+.settings-button {
   background: var(--color-background);
   width: var(--win-width);
   height: var(--win-height);
