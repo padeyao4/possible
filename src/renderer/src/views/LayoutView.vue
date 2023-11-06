@@ -3,9 +3,8 @@ import router from '@renderer/router'
 import {RouterView, useRoute} from 'vue-router'
 import {computed, onMounted, onUnmounted, ref} from 'vue'
 import {useProjectStore} from '@renderer/store/project'
-import {useTodayStore} from '@renderer/store/day'
+import {useDateStore} from '@renderer/store/date'
 import {IProject} from '@renderer/store'
-import {DAY_OF_MS} from '@renderer/util'
 import TitleBar from "@renderer/component/TitleBar.vue"
 import {Config, Plus, SunOne} from '@icon-park/vue-next'
 import {useSettingsStore} from "@renderer/store/settings";
@@ -13,21 +12,17 @@ import {Theme} from "@icon-park/vue-next/es/runtime";
 
 const route = useRoute()
 const projectStore = useProjectStore()
-const todayStore = useTodayStore()
+const dateStore = useDateStore()
 const settings = useSettingsStore()
 
 const intervalRef = ref()
 
 onMounted(() => {
+  console.debug('interval update date')
   if (settings.autoUpdateDate) {
     console.debug('start auto update date')
     intervalRef.value = setInterval(() => {
-      // todo 存在时区问题
-      const now = Math.floor(new Date().getTime() / DAY_OF_MS)
-      const today = Math.floor(todayStore.today.getTime() / DAY_OF_MS)
-      if (now !== today) {
-        todayStore.update(new Date())
-      }
+      dateStore.update2Now()
     }, 30_000)
   }
 })
@@ -133,21 +128,21 @@ function createSettingsWindow() {
       <div class="list">
         <template v-for="item in projectStore.list" :key="item.id">
           <div
-              v-if="!inputVisible || item.id !== activeId"
-              class="list-item"
-              :class="{ active: item.id === activeId }"
-              @click="handleItemClick(item.id)"
+            v-if="!inputVisible || item.id !== activeId"
+            class="list-item"
+            :class="{ active: item.id === activeId }"
+            @click="handleItemClick(item.id)"
           >
             {{ item.name }}
           </div>
         </template>
         <div v-if="inputVisible" class="list-item active">
           <input
-              :ref="(e) => handleInputRef(e as HTMLInputElement)"
-              v-model="project.name"
-              class="item-input"
-              @blur="inputVisible = false"
-              @keydown.enter="inputVisible = false"
+            :ref="(e) => handleInputRef(e as HTMLInputElement)"
+            v-model="project.name"
+            class="item-input"
+            @blur="inputVisible = false"
+            @keydown.enter="inputVisible = false"
           />
         </div>
       </div>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useProjectStore} from '@renderer/store/project'
-import {useTodayStore} from '@renderer/store/day'
+import {useDateStore} from '@renderer/store/date'
 import {computed, ref, toRaw} from 'vue'
 import {date2X} from '@renderer/util'
 import TitleBar from "@renderer/component/TitleBar.vue";
@@ -8,12 +8,12 @@ import {CheckOne, Down, Right, Round} from "@icon-park/vue-next";
 import Draggable from 'vuedraggable/src/vuedraggable'
 
 const projectStore = useProjectStore()
-const todayStore = useTodayStore()
+const dateStore = useDateStore()
 
 const todos = computed(() => {
   return projectStore.projects
       .map((project) => {
-        const x = date2X(todayStore.today, project.initDate)
+        const x = date2X(dateStore.now, project.initDate)
         return project.data.nodes.filter(
             (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
         )
@@ -24,7 +24,7 @@ const todos = computed(() => {
 const completed = computed(() => {
   return projectStore.projects
       .map((project) => {
-        const x = date2X(todayStore.today, project.initDate)
+        const x = date2X(dateStore.now, project.initDate)
         return project.data.nodes.filter(
             (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
         )
@@ -53,7 +53,7 @@ const openCompleted = ref(false)
 
 const itemHover = ref()
 
-function onWindowClose() {
+function onClose() {
   window.api.windowMainClose(JSON.stringify(projectStore.projects))
 }
 
@@ -68,7 +68,7 @@ function onMinimize() {
 <template>
   <div>
     <div class="main">
-      <title-bar :close="onWindowClose" :maximize="onMaximize" :minimize="onMinimize"/>
+      <title-bar :close="onClose" :maximize="onMaximize" :minimize="onMinimize"/>
       <div class="header">
         <div class="title">我的一天</div>
       </div>

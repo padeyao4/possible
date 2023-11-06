@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import TitleBar from "@renderer/component/TitleBar.vue";
 
 function close() {

@@ -8,7 +8,6 @@ G6.registerLayout('possible-layout', {
    * 定义自定义行为的默认参数，会与用户传入的参数进行合并
    */
   getDefaultCfg() {
-    console.debug('layout: get default cfg')
     return {
       todayIndex: this.todayIndex,
       nodeHeight: 80,
@@ -20,7 +19,6 @@ G6.registerLayout('possible-layout', {
    * 执行布局
    */
   execute() {
-    console.debug('layout execute')
     const {
       todayIndex,
       gap,

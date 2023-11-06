@@ -2,8 +2,9 @@ import {IGraph, IGroup} from '@antv/g6'
 import {modifyCSS} from '@antv/dom-util'
 import {Canvas, ShapeCfg} from '@antv/g-canvas'
 import {DAY_OF_MS, timeBarShow} from '@renderer/util'
-import {useTodayStore} from '@renderer/store/day'
+import {useDateStore} from '@renderer/store/date'
 import {IProject} from '@renderer/store'
+import {getZoneTimeMs} from "@renderer/util/time";
 
 export class PossibleTimeBar {
   objs: Record<string, unknown>
@@ -13,7 +14,7 @@ export class PossibleTimeBar {
   project: IProject
   timeBar: HTMLElement
 
-  todayStore = useTodayStore()
+  dateStore = useDateStore()
 
   constructor(project: IProject, timeBar: HTMLElement) {
     this.startIndex = 0
@@ -86,7 +87,6 @@ export class PossibleTimeBar {
   }
 
   destroyPlugin() {
-    console.log('destroy possible time bar')
     const graph = this.get('graph') as IGraph
     graph.off('viewportchange', this.viewportUpdate)
   }
@@ -97,8 +97,8 @@ export class PossibleTimeBar {
    */
   todayIndex = () => {
     return (
-      Math.floor(new Date(this.todayStore.today).getTime() / DAY_OF_MS) -
-      Math.floor(new Date(this.project.initDate).getTime() / DAY_OF_MS) +
+      Math.floor(getZoneTimeMs(this.dateStore.now) / DAY_OF_MS) -
+      Math.floor(getZoneTimeMs(this.project.initDate) / DAY_OF_MS) +
       2
     )
   }
@@ -123,7 +123,7 @@ export class PossibleTimeBar {
       name: 'possible-time-bar-group'
     })
 
-    this.todayStore.$subscribe(() => {
+    this.dateStore.$subscribe(() => {
       group.emit('possible-today', {index: this.todayIndex()})
     })
 

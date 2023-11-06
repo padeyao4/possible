@@ -11,15 +11,15 @@ import {useProjectStore} from '@renderer/store/project'
 import router from '@renderer/router'
 import {IPosEdge, IPosNode, IProject} from '@renderer/store'
 import {debounce} from '@antv/util'
-import {useTodayStore} from '@renderer/store/day'
+import {useDateStore} from '@renderer/store/date'
 import {PossibleTimeBar} from '@renderer/g6/plugin/possibleTimeBar'
 import TitleBar from '@renderer/component/TitleBar.vue'
-import {Back, ExperimentOne, Local, More, Next, ArrowRight, ArrowLeft} from '@icon-park/vue-next'
+import {ArrowLeft, ArrowRight, Back, ExperimentOne, Local, More, Next, Aiming} from '@icon-park/vue-next'
 import {useSettingsStore} from "@renderer/store/settings";
 
 const props = defineProps<{ id: string }>()
 const projectStore = useProjectStore()
-const todayStore = useTodayStore()
+const dateStore = useDateStore()
 const settings = useSettingsStore()
 const intervalRef = ref()
 
@@ -32,7 +32,7 @@ const project = projectStore.get(props.id) as IProject
  * 由于todayStore数据不是实时同步，会出现当前时间小于创建时间的错误，误差在1以内
  */
 const dataIndex = () => {
-  return date2Index(todayStore.today) - date2Index(project.initDate)
+  return date2Index(dateStore.now) - date2Index(project.initDate)
 }
 
 /**
@@ -126,6 +126,8 @@ onMounted(() => {
       name: 'untitled',
       x: normalX(e.x),
       y: e.y,
+      ix: 0,
+      iy: 0,
       state: 'normal',
       detail: '',
       note: '',
@@ -156,12 +158,12 @@ onMounted(() => {
 
     // 删除重复边
     const count = sourceNode
-        .getEdges()
-        .filter(
-            (e) =>
-                e.getTarget().getID() === targetNode.getID() ||
-                e.getSource().getID() === targetNode.getID()
-        ).length
+      .getEdges()
+      .filter(
+        (e) =>
+          e.getTarget().getID() === targetNode.getID() ||
+          e.getSource().getID() === targetNode.getID()
+      ).length
     if (count >= 2) {
       nextTick(() => {
         graph?.removeItem(edge)
@@ -188,7 +190,7 @@ onMounted(() => {
   graph.on('afteradditem', debounceSaveGraphData)
   graph.on('afterupdateitem', debounceSaveGraphData)
 
-  watch(todayStore, () => {
+  watch(dateStore, () => {
     graph?.updateLayout({
       todayIndex: dataIndex()
     })
@@ -212,6 +214,8 @@ function saveGraphData() {
   const posNodes = nodes?.map(({
                                  name,
                                  id,
+                                 ix,
+                                 iy,
                                  y,
                                  x,
                                  createdTime,
@@ -224,7 +228,7 @@ function saveGraphData() {
                                  orderIndex
                                }) => {
     return {
-      name, id, y, x, createdTime, completedTime, state, target, detail, note, taskType, orderIndex
+      name, id, ix, iy, y, x, createdTime, completedTime, state, target, detail, note, taskType, orderIndex
     } as IPosNode
   }) ?? []
   const posEdges = edges?.map(({id, source, target}) => {
@@ -304,28 +308,7 @@ const taskModel = computed(() => {
 })
 
 function testGraph() {
-  console.log('test graph', JSON.stringify(project))
-}
-
-const moveRight = () => {
-  console.log('move right today')
-  const d = new Date(todayStore.today)
-  d.setDate(d.getDate() + 1)
-  todayStore.update(d)
-}
-
-// const rollback = () => {
-//   console.log('rollback today')
-//   const date = new Date()
-//   console.log('date', date)
-//   todayStore.update(date)
-// }
-
-const moveLeft = () => {
-  console.log('move left today')
-  const d = new Date(todayStore.today)
-  d.setDate(d.getDate() - 1)
-  todayStore.update(d)
+  console.debug(dateStore.now)
 }
 
 const projectSettingsHover = ref(false)
@@ -353,12 +336,12 @@ function onMinimize() {
       <div class="header">
         <div class="header-content">
           <input
-              v-if="titleEditEnable"
-              ref="titleRef"
-              v-model="project.name"
-              class="title-input"
-              @blur="submitTitle"
-              @keydown.enter="submitTitle"
+            v-if="titleEditEnable"
+            ref="titleRef"
+            v-model="project.name"
+            class="title-input"
+            @blur="submitTitle"
+            @keydown.enter="submitTitle"
           />
           <div v-else class="title" @dblclick="editTitle">
             {{ project.name ?? '' }}
@@ -400,10 +383,10 @@ function onMinimize() {
       <div class="body">
         <Teleport to="body">
           <el-drawer
-              v-model="editorModel.visible"
-              :close-on-click-modal="false"
-              :show-close="true"
-              @close="editorModel.visible = false"
+            v-model="editorModel.visible"
+            :close-on-click-modal="false"
+            :show-close="true"
+            @close="editorModel.visible = false"
           >
             <el-form :model="taskModel">
               <el-form-item label="名称">
@@ -447,9 +430,11 @@ function onMinimize() {
           <experiment-one v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
                           class="group-item" @click="testGraph"/>
           <arrow-left v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
-                      class="group-item" @click="moveLeft"/>
+                      class="group-item" @click="() => {dateStore.addDay(-1)}"/>
+          <aiming v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
+                  class="group-item" @click="() => {dateStore.update2Now()}"/>
           <arrow-right v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
-                       class="group-item" @click="moveRight"/>
+                       class="group-item" @click="() => {dateStore.addDay(1)}"/>
         </div>
       </div>
     </div>
