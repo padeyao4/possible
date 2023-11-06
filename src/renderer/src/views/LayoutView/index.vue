@@ -5,11 +5,11 @@ import {computed, onMounted, onUnmounted, ref} from 'vue'
 import {useProjectStore} from '@renderer/store/project'
 import {useDateStore} from '@renderer/store/date'
 import TitleBar from "@renderer/component/TitleBar.vue"
-import {Plus, SunOne} from '@icon-park/vue-next'
+import {SunOne} from '@icon-park/vue-next'
 import {useSettingsStore} from "@renderer/store/settings";
 import {Theme} from "@icon-park/vue-next/es/runtime";
-import SettingButton from "@renderer/views/LayoutView/SettingButton.vue";
 import SideList from "@renderer/views/LayoutView/SideList.vue";
+import SideBottom from "@renderer/views/LayoutView/SideBottom.vue";
 
 const route = useRoute()
 const projectStore = useProjectStore()
@@ -51,31 +51,6 @@ const addButtonClick = () => {
   })
 }
 
-/**
- * 导出所有项目数据
- */
-// function exportAllProjects() {
-//   window.api.exportProject(JSON.parse(JSON.stringify(projectStore.projects)))
-// }
-
-/**
- * 根据文件格式导入数据
- */
-// const importProjects = async () => {
-//   const projects = await window.api.importProject()
-//   if (projects === 'cancel') {
-//     return
-//   }
-//   const res = projectStore.push(projects)
-//   ElNotification({
-//     message: res ? `成功导入` : '导入失败!文件格式异常或项目已存在',
-//     type: res ? 'success' : 'error',
-//     offset: 120,
-//     duration: 3000
-//   })
-// }
-
-// const bottomVisible = ref(true)
 
 const routeKey = computed(() => {
   return route.fullPath
@@ -98,47 +73,32 @@ function handleRename() {
 </script>
 
 <template>
-  <div class="settings-button">
-    <div class="side">
-      <title-bar/>
-      <div class="my-day">
-        <div class="today-content" @click="handleTodayClick">
-          <sun-one :theme="myDayStyle.theme" size="20"
-                   :fill="myDayStyle.color" :strokeWidth="2"
-                   style="margin:0 4px 0 8px;display: flex; justify-content: center; align-items: center "/>
-          <div style="display: inline-block; margin:0 8px 0 4px" :style="{color:myDayStyle.color}">
-            我的一天
+  <div>
+    <div class="main">
+      <div class="side">
+        <title-bar/>
+        <div class="my-day">
+          <div class="today-content" @click="handleTodayClick">
+            <sun-one :theme="myDayStyle.theme" size="20"
+                     :fill="myDayStyle.color" :strokeWidth="2"
+                     style="margin:0 4px 0 8px;display: flex; justify-content: center; align-items: center "/>
+            <div style="display: inline-block; margin:0 8px 0 4px" :style="{color:myDayStyle.color}">
+              我的一天
+            </div>
           </div>
         </div>
+        <side-list :rename="renaming?handleRename:undefined"/>
+        <side-bottom :on-add-click="addButtonClick"/>
       </div>
-      <side-list :rename="renaming?handleRename:undefined"/>
-      <div class="side-bottom">
-        <div class="add-button" @click="addButtonClick">
-          <plus theme="filled" size="24" fill="#333" :strokeWidth="2"
-                style="display: flex;justify-content: center; align-items: center"/>
-          <div style="padding: 0 0 2px 4px">新建项目</div>
-        </div>
-        <setting-button @mouseenter=""/>
-        <!--        <div class="import-button" @click="createSettingsWindow">-->
-        <!--          <config theme="outline" size="24" fill="#333" :strokeWidth="2"-->
-        <!--                  style="display: flex;justify-content: center;align-items: center; width: 30px;height: 30px"/>-->
-        <!--        </div>-->
-        <!--        </template>-->
-        <!--        <div v-else class="bottom-settings">-->
-        <!--          <el-button text @click="importProjects">导入</el-button>-->
-        <!--          <el-button text @click="exportAllProjects">导出</el-button>-->
-        <!--          <el-button text @click="bottomVisible = true">返回</el-button>-->
-        <!--        </div>-->
+      <div class="content">
+        <router-view :key="routeKey"/>
       </div>
-    </div>
-    <div class="content">
-      <router-view :key="routeKey"/>
     </div>
   </div>
 </template>
 
 <style scoped>
-.settings-button {
+.main {
   overflow: hidden;
   background: var(--color-background);
   display: grid;

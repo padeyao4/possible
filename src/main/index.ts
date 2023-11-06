@@ -2,7 +2,6 @@ import {electronApp, is, optimizer} from '@electron-toolkit/utils'
 import {app, BrowserWindow, dialog, ipcMain, shell} from 'electron'
 import {join} from 'path'
 import icon from '../../resources/icon.png?asset'
-import {IProject} from '../renderer/src/store'
 import * as fs from 'fs'
 
 // close security warnings
@@ -110,7 +109,6 @@ function createWindow(): void {
         try {
             let file = join(POSSIBLE_HOME, 'data.json');
             if (fs.existsSync(file)) {
-                // todo 保存半年的文件
                 const backupFile = Math.floor(new Date().getTime() / 1000)
                 fs.copyFileSync(file, join(POSSIBLE_HOME, backupFile.toString()))
             }
@@ -175,14 +173,13 @@ app
         /**
          * 导出项目
          */
-        ipcMain.on('export:project', (_, projects: IProject[]) => {
-            const fileName = projects.length === 1 ? `${projects[0].name}` : 'untitled'
+        ipcMain.on('export:project', (_, s: string) => {
             const exportPath = dialog.showSaveDialogSync({
-                title: `导出${fileName}`,
-                defaultPath: `${USER_HOME}/Desktop/${fileName}.json`
+                title: `导出`,
+                defaultPath: `${USER_HOME}/Desktop/untitled.json`
             })
             if (exportPath !== undefined) {
-                fs.writeFile(exportPath, JSON.stringify(projects), (err) => {
+                fs.writeFile(exportPath, s, (err) => {
                     console.error(err)
                 })
             }

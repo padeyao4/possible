@@ -5,7 +5,7 @@ declare global {
     export interface Window {
         electron: ElectronAPI
         api: {
-            exportProject: (project: IProject[]) => void
+            exportProject: (s: string) => void
             importProject: () => Promise<IProject[] | undefined | 'cancel'>
             loadLocalData: () => Promise<IProject[] | undefined>
             windowMainClose: (text: string) => void,

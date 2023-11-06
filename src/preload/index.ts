@@ -4,8 +4,8 @@ import {IProject} from '../renderer/src/store'
 
 // Custom APIs for renderer
 const api = {
-    exportProject: (projects: IProject[]) => {
-        ipcRenderer.send('export:project', projects)
+    exportProject: (s: string) => {
+        ipcRenderer.send('export:project', s)
     },
     importProject: async (): Promise<IProject[] | undefined | 'cancel'> => {
         return ipcRenderer.invoke('import:project')

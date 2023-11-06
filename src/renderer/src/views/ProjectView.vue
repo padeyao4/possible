@@ -159,12 +159,12 @@ onMounted(() => {
 
     // 删除重复边
     const count = sourceNode
-      .getEdges()
-      .filter(
-        (e) =>
-          e.getTarget().getID() === targetNode.getID() ||
-          e.getSource().getID() === targetNode.getID()
-      ).length
+        .getEdges()
+        .filter(
+            (e) =>
+                e.getTarget().getID() === targetNode.getID() ||
+                e.getSource().getID() === targetNode.getID()
+        ).length
     if (count >= 2) {
       nextTick(() => {
         graph?.removeItem(edge)
@@ -274,8 +274,7 @@ const editTitle = () => {
  * 调用electron导出项目数据
  */
 function exportProject() {
-  const project = projectStore.get(props.id)
-  window.api.exportProject(JSON.parse(JSON.stringify([project])))
+  window.api.exportProject(JSON.stringify([projectStore.get(props.id)]))
 }
 
 const submitTitle = () => {
@@ -337,12 +336,12 @@ function onMinimize() {
       <div class="header">
         <div class="header-content">
           <input
-            v-if="titleEditEnable"
-            ref="titleRef"
-            v-model="project.name"
-            class="title-input"
-            @blur="submitTitle"
-            @keydown.enter="submitTitle"
+              v-if="titleEditEnable"
+              ref="titleRef"
+              v-model="project.name"
+              class="title-input"
+              @blur="submitTitle"
+              @keydown.enter="submitTitle"
           />
           <div v-else class="title" @dblclick="editTitle">
             {{ project.name ?? '' }}
@@ -384,10 +383,10 @@ function onMinimize() {
       <div class="body">
         <Teleport to="body">
           <el-drawer
-            v-model="editorModel.visible"
-            :close-on-click-modal="false"
-            :show-close="true"
-            @close="editorModel.visible = false"
+              v-model="editorModel.visible"
+              :close-on-click-modal="false"
+              :show-close="true"
+              @close="editorModel.visible = false"
           >
             <el-form :model="taskModel">
               <el-form-item label="名称">
@@ -425,17 +424,17 @@ function onMinimize() {
       </div>
       <div class="footer">
         <div class="icon-group">
-          <local theme="outline" size="20" fill="#333" :strokeWidth="2" @click="move2Today" class="group-item"/>
-          <back theme="outline" size="20" fill="#333" :strokeWidth="2" class="group-item"/>
-          <next theme="outline" size="20" fill="#333" :strokeWidth="2" class="group-item"/>
+          <local theme="outline" size="20" fill="#333" :strokeWidth="2" @click="move2Today"/>
+          <back theme="outline" size="20" fill="#333" :strokeWidth="2"/>
+          <next theme="outline" size="20" fill="#333" :strokeWidth="2"/>
           <experiment-one v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
-                          class="group-item" @click="testGraph"/>
+                          @click="testGraph"/>
           <arrow-left v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
-                      class="group-item" @click="() => {dateStore.addDay(-1)}"/>
+                      @click="() => {dateStore.addDay(-1)}"/>
           <aiming v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
-                  class="group-item" @click="() => {dateStore.update2Now()}"/>
+                  @click="() => {dateStore.update2Now()}"/>
           <arrow-right v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
-                       class="group-item" @click="() => {dateStore.addDay(1)}"/>
+                       @click="() => {dateStore.addDay(1)}"/>
         </div>
       </div>
     </div>
@@ -524,7 +523,7 @@ function onMinimize() {
       display: flex;
       align-items: center;
 
-      .group-item {
+      > * {
         padding: 4px;
         margin: 0 4px;
         width: 40px;

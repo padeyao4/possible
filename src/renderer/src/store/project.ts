@@ -20,8 +20,8 @@ export const useProjectStore = defineStore('project', {
                 .map((project: IProject) => ({name: project.name, id: project.id}))
         },
         get: (state) => {
-            return (id: string) => state.projects.find((value) => value.id === id) ?? ({} as IProject)
-        },
+            return (id: string) => state.projects.find((value) => value.id === id) ?? {} as IProject
+        }
     },
     actions: {
         createByName(name: string): string {
@@ -68,6 +68,20 @@ export const useProjectStore = defineStore('project', {
                 }
             })
             return !e
+        },
+        /**
+         * 合并数据，会覆盖已存在数据
+         * @param projects
+         */
+        merge(projects: IProject[] | undefined) {
+            if (projects === undefined) return
+            projects.forEach(project => {
+                const exits = this.projects.find(p => p.id === project.id)
+                if (exits) {
+                    this.delete(project.id)
+                }
+                this.projects.push(project)
+            })
         }
     },
     persist: true

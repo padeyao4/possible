@@ -103,7 +103,8 @@ function onMinimize() {
         </div>
         <div v-if="openCompleted">
           <div v-for="task in completed" :key="task.id" class="item completed-item">
-            <check-one theme="filled" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="icon-park"/>
+            <check-one theme="filled" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="icon-park"
+                       @click="task.state='normal'"/>
             <del>{{ task.name }}</del>
           </div>
         </div>
@@ -166,6 +167,10 @@ function onMinimize() {
 
     .completed-item {
       color: #b2b4b4;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.98);
+      }
     }
   }
 }

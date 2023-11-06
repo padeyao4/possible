@@ -37,12 +37,12 @@ function onEnd() {
 </script>
 
 <template>
-  <div>
-    <div class="main">
+    <div class="main-side-list">
       <draggable :list="projectStore.projects" item-key="id" animation="300"
                  :forceFallback="true" ghost-class="ghost-class" drag-class="drag-class"
                  @start="onStart"
                  @end="onEnd"
+                 delay="100"
       >
         <template #item="{element}">
           <div
@@ -65,12 +65,11 @@ function onEnd() {
         />
       </div>
     </div>
-  </div>
 </template>
 
 <style scoped>
-.main {
-  height: calc(var(--win-height) - 104px);
+.main-side-list {
+  height: calc(var(--win-height) - 104px) !important;
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 
   .list-item {
