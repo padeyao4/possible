@@ -5,7 +5,7 @@ import {type Item} from '@antv/g6-core'
 import {v4 as uuidv4} from 'uuid'
 import {computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch} from 'vue'
 import PossibleGrid from '@renderer/g6/plugin/possibleGrid'
-import {date2Index, normalX} from '@renderer/util'
+import {normalX} from '@renderer/util'
 import {Delete, Promotion, SetUp} from '@element-plus/icons-vue'
 import {useProjectStore} from '@renderer/store/project'
 import router from '@renderer/router'
@@ -14,8 +14,9 @@ import {debounce} from '@antv/util'
 import {useDateStore} from '@renderer/store/date'
 import {PossibleTimeBar} from '@renderer/g6/plugin/possibleTimeBar'
 import TitleBar from '@renderer/component/TitleBar.vue'
-import {ArrowLeft, ArrowRight, Back, ExperimentOne, Local, More, Next, Aiming} from '@icon-park/vue-next'
+import {Aiming, ArrowLeft, ArrowRight, Back, ExperimentOne, Local, More, Next} from '@icon-park/vue-next'
 import {useSettingsStore} from "@renderer/store/settings";
+import {deltaIndex} from "@renderer/util/time";
 
 const props = defineProps<{ id: string }>()
 const projectStore = useProjectStore()
@@ -32,7 +33,7 @@ const project = projectStore.get(props.id) as IProject
  * 由于todayStore数据不是实时同步，会出现当前时间小于创建时间的错误，误差在1以内
  */
 const dataIndex = () => {
-  return date2Index(dateStore.now) - date2Index(project.initDate)
+  return deltaIndex(dateStore.now, project.initDate)
 }
 
 /**
@@ -254,7 +255,7 @@ onBeforeUnmount(() => {
  * 窗口移动到今天对应的x轴
  */
 const move2Today = () => {
-  const dx = dataIndex() * 120 + project.offset.x
+  const dx = dataIndex() * settings.cellWidth + project.offset.x
   graph?.translate(-dx, -project.offset.y)
 }
 

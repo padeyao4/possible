@@ -1,10 +1,11 @@
 import {IGraph, IGroup} from '@antv/g6'
 import {modifyCSS} from '@antv/dom-util'
 import {Canvas, ShapeCfg} from '@antv/g-canvas'
-import {DAY_OF_MS, timeBarShow} from '@renderer/util'
+import {timeBarShow} from '@renderer/util'
 import {useDateStore} from '@renderer/store/date'
 import {IProject} from '@renderer/store'
 import {getZoneTimeMs} from "@renderer/util/time";
+import {DAY_OF_MS} from "@renderer/util/constant";
 
 export class PossibleTimeBar {
   objs: Record<string, unknown>

@@ -1,9 +1,5 @@
-import { EdgeConfig, IBBox, IPoint, NodeConfig } from '@antv/g6-core'
-
-/**
- * 一天等于86400000秒
- */
-export const DAY_OF_MS = 86400_000
+import {EdgeConfig, IBBox, IPoint, NodeConfig} from '@antv/g6-core'
+import {DAY_OF_MS} from "@renderer/util/constant";
 
 /**
  * 将index还原为x点

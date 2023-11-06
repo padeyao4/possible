@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia'
-import {DAY_OF_MS} from "@renderer/util";
+import {DAY_OF_MS} from "@renderer/util/constant";
+import {deltaIndex} from "@renderer/util/time";
 
 export const useDateStore = defineStore('today', {
   state() {
@@ -18,9 +19,8 @@ export const useDateStore = defineStore('today', {
     },
     update2Now() {
       const now = new Date()
-      // todo
-      // 时间相差30分钟更新
-      if (Math.abs(now.getTime() - this.now.getTime()) >= 1800_000) {
+      // 时间相差30分钟更新 或者 天数变化
+      if (Math.abs(now.getTime() - this.now.getTime()) >= 1800_000 || deltaIndex(now, this.now) > 0) {
         this.now = now
       }
     },
