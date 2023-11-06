@@ -2,34 +2,35 @@
 import {useProjectStore} from '@renderer/store/project'
 import {useDateStore} from '@renderer/store/date'
 import {computed, ref, toRaw} from 'vue'
-import {date2X} from '@renderer/util'
 import TitleBar from "@renderer/component/TitleBar.vue";
 import {CheckOne, Down, Right, Round} from "@icon-park/vue-next";
 import Draggable from 'vuedraggable/src/vuedraggable'
+import {deltaIndex} from "@renderer/util/time";
+import {index2X} from "@renderer/util";
 
 const projectStore = useProjectStore()
 const dateStore = useDateStore()
 
 const todos = computed(() => {
   return projectStore.projects
-      .map((project) => {
-        const x = date2X(dateStore.now, project.initDate)
-        return project.data.nodes.filter(
-            (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
-        )
-      })
-      .flat().sort((n1, n2) => (n1?.orderIndex ?? 0) - (n2?.orderIndex ?? 0))
+    .map((project) => {
+      const x = index2X(deltaIndex(dateStore.now, project.initDate))
+      return project.data.nodes.filter(
+        (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
+      )
+    })
+    .flat().sort((n1, n2) => (n1?.orderIndex ?? 0) - (n2?.orderIndex ?? 0))
 })
 
 const completed = computed(() => {
   return projectStore.projects
-      .map((project) => {
-        const x = date2X(dateStore.now, project.initDate)
-        return project.data.nodes.filter(
-            (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
-        )
-      })
-      .flat()
+    .map((project) => {
+      const x = index2X(deltaIndex(dateStore.now, project.initDate))
+      return project.data.nodes.filter(
+        (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
+      )
+    })
+    .flat()
 })
 
 function onChange() {
