@@ -45,7 +45,7 @@ function openGithub() {
               </div>
             </div>
           </div>
-          <div style="margin-top: 16px;">版本号: 0.0.xx</div>
+          <div style="margin-top: 16px;">版本: 0.0.xx</div>
         </el-space>
       </el-dialog>
     </Teleport>
