@@ -40,6 +40,5 @@ body {
   text-rendering: optimizeLegibility;
   border-radius: 8px;
   overflow: hidden;
-  margin: var(--offset-size);
-  box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0, rgba(27, 31, 35, 0.15) 0 0 0 1px;
+  border: solid 1px #58585860;
 }
