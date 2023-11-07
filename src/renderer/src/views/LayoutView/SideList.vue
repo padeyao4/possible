@@ -34,37 +34,44 @@ function onStart() {
 function onEnd() {
   document.body.style.cursor = defaultMouseStyle
 }
+
+function handleInput() {
+  if (project.value.name === '') {
+    project.value.name = 'untitled'
+  }
+  props.rename?.()
+}
 </script>
 
 <template>
-    <div class="main-side-list">
-      <draggable :list="projectStore.projects" item-key="id" animation="300"
-                 :forceFallback="true" ghost-class="ghost-class" drag-class="drag-class"
-                 @start="onStart"
-                 @end="onEnd"
-                 delay="100"
-      >
-        <template #item="{element}">
-          <div
-              v-show="!(element.id === project.id&&props.rename)"
-              class="list-item"
-              :class="{ 'active': element.id === active }"
-              @click="()=>{handleItemClick(element.id)}"
-          >
-            {{ element.name }}
-          </div>
-        </template>
-      </draggable>
-      <div v-show="rename" class="list-item active">
-        <input
-            :ref="(e) => {(e as HTMLInputElement)?.focus()}"
-            v-model="project.name"
-            class="item-input"
-            @blur="()=>{rename?.()}"
-            @keydown.enter="()=>{rename?.()}"
-        />
-      </div>
+  <div class="main-side-list">
+    <draggable :list="projectStore.projects" item-key="id" animation="300"
+               :forceFallback="true" ghost-class="ghost-class" drag-class="drag-class"
+               @start="onStart"
+               @end="onEnd"
+               delay="100"
+    >
+      <template #item="{element}">
+        <div
+            v-show="!(element.id === project.id&&props.rename)"
+            class="list-item"
+            :class="{ 'active': element.id === active }"
+            @click="()=>{handleItemClick(element.id)}"
+        >
+          {{ element.name }}
+        </div>
+      </template>
+    </draggable>
+    <div v-show="props.rename" class="list-item active">
+      <input
+          :ref="(e) => {(e as HTMLInputElement)?.focus()}"
+          v-model="project.name"
+          class="item-input"
+          @blur="handleInput"
+          @keydown.enter="handleInput"
+      />
     </div>
+  </div>
 </template>
 
 <style scoped>

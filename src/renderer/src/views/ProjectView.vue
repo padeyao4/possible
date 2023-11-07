@@ -9,7 +9,7 @@ import {normalX} from '@renderer/util'
 import {Delete, Promotion, SetUp} from '@element-plus/icons-vue'
 import {useProjectStore} from '@renderer/store/project'
 import router from '@renderer/router'
-import {IPosEdge, IPosNode, IProject} from '@renderer/store'
+import {IPosEdge, IPosNode} from '@renderer/store'
 import {debounce} from '@antv/util'
 import {useDateStore} from '@renderer/store/date'
 import {PossibleTimeBar} from '@renderer/g6/plugin/possibleTimeBar'
@@ -27,7 +27,7 @@ const intervalRef = ref()
 const container = ref<HTMLElement>()
 let graph: Graph | null = null
 
-const project = projectStore.get(props.id) as IProject
+const project = projectStore.get(props.id)
 
 /**
  * 由于todayStore数据不是实时同步，会出现当前时间小于创建时间的错误，误差在1以内
@@ -159,12 +159,12 @@ onMounted(() => {
 
     // 删除重复边
     const count = sourceNode
-      .getEdges()
-      .filter(
-        (e) =>
-          e.getTarget().getID() === targetNode.getID() ||
-          e.getSource().getID() === targetNode.getID()
-      ).length
+        .getEdges()
+        .filter(
+            (e) =>
+                e.getTarget().getID() === targetNode.getID() ||
+                e.getSource().getID() === targetNode.getID()
+        ).length
     if (count >= 2) {
       nextTick(() => {
         graph?.removeItem(edge)
@@ -278,6 +278,9 @@ function exportProject() {
 }
 
 const submitTitle = () => {
+  if (project.name === '') {
+    project.name = 'untitled'
+  }
   titleEditEnable.value = false
 }
 
@@ -336,15 +339,15 @@ function onMinimize() {
       <div class="header">
         <div class="header-content">
           <input
-            v-if="titleEditEnable"
-            ref="titleRef"
-            v-model="project.name"
-            class="title-input"
-            @blur="submitTitle"
-            @keydown.enter="submitTitle"
+              v-if="titleEditEnable"
+              ref="titleRef"
+              v-model="project.name"
+              class="title-input"
+              @blur="submitTitle"
+              @keydown.enter="submitTitle"
           />
           <div v-else class="title" @dblclick="editTitle">
-            {{ project.name ?? '' }}
+            {{ project.name }}
           </div>
           <el-dropdown class="operation-list" trigger="click">
             <div style="height: 40px; display: flex; align-items: end">
@@ -383,12 +386,12 @@ function onMinimize() {
       <div class="body">
         <Teleport to="body">
           <el-drawer
-            v-model="editorModel.visible"
-            :close-on-click-modal="false"
-            :show-close="true"
-            modal-class="modal-class"
-            class="editor-class"
-            @close="editorModel.visible = false"
+              v-model="editorModel.visible"
+              :close-on-click-modal="false"
+              :show-close="true"
+              modal-class="modal-class"
+              class="editor-class"
+              @close="editorModel.visible = false"
           >
             <el-form :model="taskModel">
               <el-form-item label="名称">
