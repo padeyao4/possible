@@ -26,7 +26,7 @@ function openGithub() {
                  modal-class="modal-class"
       >
         <el-space direction="vertical" style="width: 100%;height: 100%">
-          <div style="display: flex;flex-direction: row;justify-content: center;align-items: center">
+          <div class="one-line-text">
             喜欢就点一个小星星吧
             <github theme="filled" :size="githubSize" fill="#bd10e0"
                     class="github"
@@ -34,9 +34,16 @@ function openGithub() {
                     @mouseenter="githubSize=26"
                     @mouseleave="githubSize=24"/>
           </div>
-          <div>
-            欢迎闲聊和摸
-            <fish-one theme="filled" size="20" fill="#f8e71c" style="margin: 4px"/>
+          <div class="one-line-text">
+            <div>欢迎闲聊和摸</div>
+            <div style="display: flex;flex-direction: row-reverse; justify-items: center;align-items: center">
+              <div class="fish-box">
+                <fish-one theme="filled" size="24" fill="#f8e71c" class="fish"/>
+              </div>
+              <div class="air-box">
+                <fish-one theme="filled" size="24" fill="#f8e71c" class="air"/>
+              </div>
+            </div>
           </div>
           <div style="margin-top: 16px;">版本号: 0.0.xx</div>
         </el-space>
@@ -53,6 +60,13 @@ function openGithub() {
   align-items: center;
 }
 
+.one-line-text {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center
+}
+
 .github {
   display: flex;
   align-items: center;
@@ -60,4 +74,46 @@ function openGithub() {
   width: 40px;
   height: 40px;
 }
+
+.fish {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+}
+
+.fish-box {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+
+  &:hover + .air-box > .air {
+    visibility: visible;
+  }
+
+  &:hover .fish {
+    visibility: hidden;
+  }
+}
+
+.air-box {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  margin-left: 4px;
+
+  &:hover + .fish-box > .fish {
+    visibility: visible;
+  }
+
+  &:hover .air {
+    visibility: hidden;
+  }
+}
+
+.air {
+  visibility: hidden;
+  display: flex;
+  align-items: center;
+}
+
 </style>
