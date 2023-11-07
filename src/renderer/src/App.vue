@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import LayoutView from '@renderer/views/LayoutView/index.vue'
-import {useRoute, RouterView, useRouter} from "vue-router";
+import {useRoute, RouterView} from "vue-router";
 import {onMounted} from "vue";
+import router from "@renderer/router";
 
 const route = useRoute()
-const router = useRouter()
 onMounted(() => {
   router.push({
     name: 'today'
