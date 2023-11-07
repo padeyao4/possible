@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import {DAY_OF_MS} from "@renderer/util/constant";
-import {deltaIndex, getZoneTimeMs} from "@renderer/util/time";
+import {deltaIndex} from "@renderer/util/time";
 
 export const useDateStore = defineStore('today', {
     state() {
@@ -17,8 +17,7 @@ export const useDateStore = defineStore('today', {
          * @param state
          */
         night: (state) => {
-            const hours = new Date(getZoneTimeMs(state.now)).getHours()
-            console.debug('hours')
+            const hours = state.now.getHours()
             return hours < 6 || hours > 18
         }
     },

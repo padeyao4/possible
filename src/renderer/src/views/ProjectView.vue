@@ -278,7 +278,7 @@ function exportProject() {
 }
 
 const submitTitle = () => {
-  if (project.name === '') {
+  if (project.name.trim() === '') {
     project.name = 'untitled'
   }
   titleEditEnable.value = false
@@ -347,7 +347,7 @@ function onMinimize() {
               @keydown.enter="submitTitle"
           />
           <div v-else class="title" @dblclick="editTitle">
-            {{ project.name }}
+            <div class="text">{{ project.name }}</div>
           </div>
           <el-dropdown class="operation-list" trigger="click">
             <div style="height: 40px; display: flex; align-items: end">
@@ -471,10 +471,19 @@ function onMinimize() {
       .title {
         font-size: 20px;
         display: flex;
-        justify-content: center;
         margin-left: 24px;
         -webkit-app-region: no-drag;
         user-select: none;
+        max-width: calc(var(--content-width) - 150px) !important;
+      }
+
+      .text {
+        width: 100%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        text-align: center;
+        word-break: break-all;
+        white-space: nowrap;
       }
 
       .title-input {
