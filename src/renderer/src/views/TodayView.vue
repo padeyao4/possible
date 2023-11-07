@@ -137,7 +137,7 @@ function onMinimize() {
   }
 
   .body {
-    padding: 16px 24px 24px 24px;
+    padding: 16px 24px 40px 24px;
     height: calc(var(--win-height) - 64px) !important;
     overflow-y: auto;
 
