@@ -11,7 +11,7 @@ const projectStore = useProjectStore()
 
 const handleItemClick = (id: string) => {
   router.push({
-    path: `/possible/project/${id}`,
+    path: `/project/${id}`,
     replace: true
   })
 }

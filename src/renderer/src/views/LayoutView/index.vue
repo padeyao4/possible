@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import router from '@renderer/router'
-import {RouterView, useRoute} from 'vue-router'
+import {useRoute} from 'vue-router'
 import {computed, onMounted, onUnmounted, ref} from 'vue'
 import {useProjectStore} from '@renderer/store/project'
 import {useDateStore} from '@renderer/store/date'
@@ -38,7 +38,7 @@ const activeId = computed(() => {
 
 const handleTodayClick = () => {
   router.push({
-    path: '/possible/today',
+    name: 'today',
     replace: true
   })
 }
@@ -47,14 +47,14 @@ const addButtonClick = () => {
   const projectId = projectStore.createByName('新任务列表')
   renaming.value = true
   router.push({
-    path: `/possible/project/${projectId}`
+    path: `/project/${projectId}`
   })
 }
 
 
-const routeKey = computed(() => {
-  return route.fullPath
-})
+// const routeKey = computed(() => {
+//   return route.fullPath
+// })
 
 const myDayStyle = computed<{ theme: Theme, color: string }>(() => {
   const active = activeId.value === 'default'
@@ -91,7 +91,7 @@ function handleRename() {
         <side-bottom :on-add-click="addButtonClick"/>
       </div>
       <div class="content">
-        <router-view :key="routeKey"/>
+        <slot/>
       </div>
     </div>
   </div>
@@ -128,29 +128,6 @@ function handleRename() {
         height: 40px;
         width: max-content;
         -webkit-app-region: no-drag;
-      }
-    }
-
-    .side-bottom {
-      height: 100%;
-      display: flex;
-      flex-direction: row;
-
-      .add-button {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        user-select: none;
-        width: 200px;
-        height: 100%;
-      }
-
-      .bottom-settings {
-        display: flex;
-        width: 100%;
-        justify-content: center;
-        align-items: center;
-        padding: 0 8px 0 8px;
       }
     }
   }
