@@ -110,27 +110,36 @@ function onMinimize() {
           </div>
         </div>
       </div>
+      <div class="footer"></div>
     </div>
   </div>
 </template>
 <style scoped>
 .settings-button {
+  display: grid;
+  grid-template-rows: 24px 40px calc(var(--win-height) - 104px) 40px;
   background: var(--color-neptune);
-  height: var(--win-height);
   border-radius: 8px 0 0 0;
 
   .header {
     -webkit-app-region: drag;
+    display: flex;
+    justify-items: center;
 
     .title {
-      display: inline-block;
+      display: flex;
+      justify-items: center;
+      align-items: center;
+      width: max-content;
       font-size: 20px;
       margin-left: 24px;
     }
   }
 
   .body {
-    margin: 16px 24px 24px 24px;
+    padding: 16px 24px 24px 24px;
+    height: calc(var(--win-height) - 64px) !important;
+    overflow-y: auto;
 
     .completed {
       display: flex;
@@ -173,6 +182,11 @@ function onMinimize() {
         background: rgba(255, 255, 255, 0.98);
       }
     }
+  }
+
+  .footer {
+    height: 40px;
+    background: var(--color-neptune);
   }
 }
 </style>
