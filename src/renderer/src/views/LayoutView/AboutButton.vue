@@ -11,7 +11,7 @@ onBeforeUnmount(() => {
 
 const githubSize = ref(24)
 
-function openGithub(){
+function openGithub() {
   window.open('https://github.com/padeyao4/possible')
 }
 
@@ -22,7 +22,9 @@ function openGithub(){
     <Teleport to="body">
       <el-dialog v-model="visible" :align-center="true" title="关于"
                  :width="300"
-                 :style="{'border-radius':'8px','overflow':'hide'}">
+                 :style="{'border-radius':'8px','overflow':'hide'}"
+                 modal-class="modal-class"
+      >
         <el-space direction="vertical" style="width: 100%;height: 100%">
           <div style="display: flex;flex-direction: row;justify-content: center;align-items: center">
             喜欢就点一个小星星吧

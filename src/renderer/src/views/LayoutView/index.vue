@@ -51,11 +51,6 @@ const addButtonClick = () => {
   })
 }
 
-
-// const routeKey = computed(() => {
-//   return route.fullPath
-// })
-
 const myDayStyle = computed<{ theme: Theme, color: string }>(() => {
   const active = activeId.value === 'default'
   return {
@@ -106,7 +101,6 @@ function handleRename() {
   height: var(--win-height);
   grid-template-columns: var(--side-width) var(--content-width);
   border-radius: 8px;
-  box-shadow: rgba(9, 30, 66, 0.3) 0 1px 1px, rgba(9, 30, 66, 0.25) 0 0 1px 1px;
 
   .side {
     display: grid;

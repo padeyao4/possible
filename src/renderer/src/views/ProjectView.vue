@@ -159,12 +159,12 @@ onMounted(() => {
 
     // 删除重复边
     const count = sourceNode
-        .getEdges()
-        .filter(
-            (e) =>
-                e.getTarget().getID() === targetNode.getID() ||
-                e.getSource().getID() === targetNode.getID()
-        ).length
+      .getEdges()
+      .filter(
+        (e) =>
+          e.getTarget().getID() === targetNode.getID() ||
+          e.getSource().getID() === targetNode.getID()
+      ).length
     if (count >= 2) {
       nextTick(() => {
         graph?.removeItem(edge)
@@ -336,12 +336,12 @@ function onMinimize() {
       <div class="header">
         <div class="header-content">
           <input
-              v-if="titleEditEnable"
-              ref="titleRef"
-              v-model="project.name"
-              class="title-input"
-              @blur="submitTitle"
-              @keydown.enter="submitTitle"
+            v-if="titleEditEnable"
+            ref="titleRef"
+            v-model="project.name"
+            class="title-input"
+            @blur="submitTitle"
+            @keydown.enter="submitTitle"
           />
           <div v-else class="title" @dblclick="editTitle">
             {{ project.name ?? '' }}
@@ -383,10 +383,12 @@ function onMinimize() {
       <div class="body">
         <Teleport to="body">
           <el-drawer
-              v-model="editorModel.visible"
-              :close-on-click-modal="false"
-              :show-close="true"
-              @close="editorModel.visible = false"
+            v-model="editorModel.visible"
+            :close-on-click-modal="false"
+            :show-close="true"
+            modal-class="modal-class"
+            class="editor-class"
+            @close="editorModel.visible = false"
           >
             <el-form :model="taskModel">
               <el-form-item label="名称">

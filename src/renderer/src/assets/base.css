@@ -1,9 +1,9 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
-  --padding-size: 1px;
+  --offset-size: 1px;
   --side-width: 240px;
-  --win-height: calc(100vh - var(--padding-size) * 2);
-  --win-width: calc(100vw - var(--padding-size) * 2);
+  --win-height: calc(100vh - var(--offset-size) * 2);
+  --win-width: calc(100vw - var(--offset-size) * 2);
   --content-width: calc(var(--win-width) - var(--side-width));
 
   /* 主题色 */
@@ -40,5 +40,6 @@ body {
   text-rendering: optimizeLegibility;
   border-radius: 8px;
   overflow: hidden;
-  padding: var(--padding-size);
+  margin: var(--offset-size);
+  box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0, rgba(27, 31, 35, 0.15) 0 0 0 1px;
 }
