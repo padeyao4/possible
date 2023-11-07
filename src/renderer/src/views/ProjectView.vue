@@ -346,7 +346,7 @@ function onMinimize() {
               @blur="submitTitle"
               @keydown.enter="submitTitle"
           />
-          <div v-else class="title" @dblclick="editTitle">
+          <div v-else class="title" @click="editTitle">
             <div class="text">{{ project.name }}</div>
           </div>
           <el-dropdown class="operation-list" trigger="click">
@@ -484,6 +484,10 @@ function onMinimize() {
         text-align: center;
         word-break: break-all;
         white-space: nowrap;
+
+        &:hover {
+          cursor: text;
+        }
       }
 
       .title-input {

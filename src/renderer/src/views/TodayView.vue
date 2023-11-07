@@ -13,24 +13,24 @@ const dateStore = useDateStore()
 
 const todos = computed(() => {
   return projectStore.projects
-    .map((project) => {
-      const x = index2X(deltaIndex(dateStore.now, project.initDate))
-      return project.data.nodes.filter(
-        (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
-      )
-    })
-    .flat().sort((n1, n2) => (n1?.orderIndex ?? 0) - (n2?.orderIndex ?? 0))
+      .map((project) => {
+        const x = index2X(deltaIndex(dateStore.now, project.initDate))
+        return project.data.nodes.filter(
+            (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
+        )
+      })
+      .flat().sort((n1, n2) => (n1?.orderIndex ?? 0) - (n2?.orderIndex ?? 0))
 })
 
 const completed = computed(() => {
   return projectStore.projects
-    .map((project) => {
-      const x = index2X(deltaIndex(dateStore.now, project.initDate))
-      return project.data.nodes.filter(
-        (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
-      )
-    })
-    .flat()
+      .map((project) => {
+        const x = index2X(deltaIndex(dateStore.now, project.initDate))
+        return project.data.nodes.filter(
+            (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
+        )
+      })
+      .flat()
 })
 
 function onChange() {
