@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import TodayView from '@renderer/views/TodayView.vue'
+import TodayView from '@renderer/views/TodayView/index.vue'
 import ProjectView from '@renderer/views/ProjectView.vue'
 
 const router = createRouter({

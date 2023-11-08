@@ -3,10 +3,11 @@ import {useProjectStore} from '@renderer/store/project'
 import {useDateStore} from '@renderer/store/date'
 import {computed, ref, toRaw} from 'vue'
 import TitleBar from "@renderer/component/TitleBar.vue";
-import {CheckOne, Down, Right, Round} from "@icon-park/vue-next";
+import {CheckOne, Down, Right} from "@icon-park/vue-next";
 import Draggable from 'vuedraggable/src/vuedraggable'
 import {deltaIndex} from "@renderer/util/time";
 import {index2X} from "@renderer/util";
+import TodoItem from "@renderer/views/TodayView/TodoItem.vue";
 
 const projectStore = useProjectStore()
 const dateStore = useDateStore()
@@ -52,7 +53,6 @@ function onEnd() {
 
 const openCompleted = ref(false)
 
-const itemHover = ref()
 
 function onClose() {
   window.api.windowMainClose(JSON.stringify(projectStore.projects))
@@ -74,25 +74,17 @@ function onMinimize() {
         <div class="title">我的一天</div>
       </div>
       <div class="body">
-        <draggable :list="toRaw(todos)" animation="300" item-key="id" :forceFallback="true" ghost-class="ghost-class"
+        <draggable :list="toRaw(todos)" animation="300" item-key="id" :forceFallback="true"
                    @change="onChange"
                    @start="onStart"
                    @end="onEnd"
+                   ghost-class="ghost-class"
+                   handle=".mover"
+                   chosenClass="chosen-class"
                    drag-class="drag-class">
           <!--element 为固定写法-->
           <template #item="{element}">
-            <div class="item">
-              <div @mouseenter="itemHover=element.id" @mouseleave="itemHover=null">
-                <check-one v-if="itemHover===element.id" theme="outline" size="20" fill="#333" :strokeWidth="2"
-                           strokeLinecap="butt"
-                           class="icon-park"
-                           @click="element.state = 'completed'"/>
-                <round v-else theme="outline" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt"
-                       class="icon-park"
-                       @click="element.state = 'completed'"/>
-              </div>
-              {{ element.name }}
-            </div>
+            <todo-item :element="element"/>
           </template>
         </draggable>
         <div class="completed" @click="openCompleted = !openCompleted">
@@ -155,14 +147,6 @@ function onMinimize() {
       user-select: none;
     }
 
-    .icon-park {
-      margin: 0 8px 0 4px;
-      color: #b2b4b4;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
     .item {
       display: flex;
       align-items: center;
@@ -173,6 +157,14 @@ function onMinimize() {
       height: 48px;
       margin: 4px 0 4px 0;
       border-radius: 4px;
+    }
+
+    .icon-park {
+      margin: 0 8px 0 4px;
+      color: #b2b4b4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .completed-item {

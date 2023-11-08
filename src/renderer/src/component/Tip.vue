@@ -7,8 +7,8 @@ const props = defineProps<{
 <template>
   <el-tooltip :content="props.content"
               placement="top"
-              offset="4"
-              show-after="200"
+              :show-after="200"
+              :offset="4"
               popper-class="tip-class"
               :enterable="false"
   >
