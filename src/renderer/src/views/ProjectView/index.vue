@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {ModelConfig} from '@antv/g6'
-import {computed, nextTick, reactive, ref} from 'vue'
+import {IGraph} from '@antv/g6'
+import {nextTick, ref} from 'vue'
 import {Delete, Promotion, SetUp} from '@element-plus/icons-vue'
 import {useProjectStore} from '@renderer/store/project'
 import router from '@renderer/router'
@@ -11,8 +11,12 @@ import {Aiming, ArrowLeft, ArrowRight, Back, ExperimentOne, Local, More, Next} f
 import {useSettingsStore} from "@renderer/store/settings";
 import {deltaIndex} from "@renderer/util/time";
 import {useGraph} from "@renderer/g6";
+import NodeEditor from "@renderer/views/ProjectView/NodeEditor.vue";
+import {IG6GraphEvent, NodeConfig} from "@antv/g6-core";
 
-const props = defineProps<{ id: string }>()
+const props = defineProps<{
+  id: string
+}>()
 const projectStore = useProjectStore()
 const dateStore = useDateStore()
 const settings = useSettingsStore()
@@ -21,7 +25,27 @@ const container = ref<HTMLElement>()
 const timeBar = ref<HTMLElement>()
 const project = projectStore.get(props.id)
 
-const {graphCall, saveGraphData} = useGraph(container, timeBar, project)
+const editor = {
+  visible: ref(false),
+  model: {} as IPosNode
+}
+
+function onNodeClick(e: IG6GraphEvent, graph: IGraph | null) {
+  editor.visible.value = true
+  const node = (graph?.findById(e.item?.getID() as string).getModel() ?? {}) as unknown as IPosNode
+  editor.model = new Proxy<IPosNode>(node, {
+    get: (target, p) => {
+      return Reflect.get(target, p)
+    },
+    set: (target, p, newValue) => {
+      Reflect.set(target, p, newValue)
+      graph?.updateItem(target.id, target as unknown as Partial<NodeConfig>)
+      return true
+    }
+  })
+}
+
+const {call, save} = useGraph(container, timeBar, project, onNodeClick)
 
 /**
  * 由于todayStore数据不是实时同步，会出现当前时间小于创建时间的错误，误差在1以内
@@ -34,7 +58,7 @@ const dataIndex = () => {
  * 窗口移动到今天对应的x轴
  */
 const move2Today = () => {
-  graphCall((graph) => {
+  call((graph) => {
     const dx = dataIndex() * settings.cellWidth + project.offset.x
     graph?.translate(-dx, -project.offset.y)
   })()
@@ -72,28 +96,6 @@ const handleDelete = () => {
   projectStore.delete(props.id)
 }
 
-const editorModel = reactive({
-  taskId: '',
-  visible: false
-})
-
-const taskModel = computed(() => {
-  const task = graphCall((graph) => {
-    return ref<IPosNode | ModelConfig>(graph?.findById(editorModel.taskId).getModel() ?? {})
-  })()
-  return new Proxy(task.value, {
-    get: (target, p) => {
-      return Reflect.get(target, p)
-    },
-    set: (target, p, newValue) => {
-      Reflect.set(target, p, newValue)
-      graphCall((graph) => {
-        graph?.updateItem(target.id as string, target)
-      })()
-      return true
-    }
-  })
-})
 
 function testGraph() {
   console.debug(dateStore.now)
@@ -102,7 +104,7 @@ function testGraph() {
 const projectSettingsHover = ref(false)
 
 function onClose() {
-  saveGraphData()
+  save()
   window.api.windowMainClose(JSON.stringify(projectStore.projects))
 }
 
@@ -170,44 +172,7 @@ function onMinimize() {
       </div>
       <div class="body">
         <Teleport to="body">
-          <el-drawer
-              v-model="editorModel.visible"
-              :close-on-click-modal="false"
-              :show-close="true"
-              modal-class="modal-class"
-              class="editor-class"
-              @close="editorModel.visible = false"
-          >
-            <el-form :model="taskModel">
-              <el-form-item label="名称">
-                <el-input v-model="taskModel.name"/>
-              </el-form-item>
-              <el-form-item label="目标">
-                <el-input v-model="taskModel.target"/>
-              </el-form-item>
-              <el-form-item label="详情">
-                <el-input v-model="taskModel.detail" type="textarea"/>
-              </el-form-item>
-              <el-form-item label="记录">
-                <el-input v-model="taskModel.note" type="textarea"/>
-              </el-form-item>
-              <el-form-item label="类型">
-                <el-radio-group v-model="taskModel.taskType">
-                  <el-radio label="period">周期</el-radio>
-                  <el-radio label="schedule">定时</el-radio>
-                  <el-radio label="general">一般</el-radio>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item label="状态">
-                <el-radio-group v-model="taskModel.state">
-                  <el-radio label="completed">完成</el-radio>
-                  <el-radio label="timeout">超时</el-radio>
-                  <el-radio label="discard">放弃</el-radio>
-                  <el-radio label="normal">正常</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-form>
-          </el-drawer>
+          <node-editor v-model:visible="editor.visible.value" v-model:node="editor.model"/>
         </Teleport>
         <div id="timeBar" ref="timeBar" class="time-bar"></div>
         <div id="container" ref="container" class="container"></div>

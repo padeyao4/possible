@@ -6,7 +6,7 @@ import {nextTick, onBeforeUnmount, onMounted, Ref, ref} from "vue";
 import {Graph, GraphData, IEdge, IGraph, Menu, ModelConfig} from "@antv/g6";
 import PossibleGrid from "@renderer/g6/plugin/possibleGrid";
 import {PossibleTimeBar} from "@renderer/g6/plugin/possibleTimeBar";
-import {INode, Item} from "@antv/g6-core";
+import {IG6GraphEvent, INode, Item} from "@antv/g6-core";
 import {deltaIndex} from "@renderer/util/time";
 import {useDateStore} from "@renderer/store/date";
 import {IPosEdge, IPosNode, IProject} from "@renderer/store";
@@ -14,7 +14,10 @@ import {v4 as uuidv4} from "uuid";
 import {normalX} from "@renderer/util";
 import {debounce} from "@antv/util";
 
-export function useGraph(container: Ref<HTMLElement | undefined>, timeBar: Ref<HTMLElement | undefined>, project: IProject) {
+export function useGraph(container: Ref<HTMLElement | undefined>,
+                         timeBar: Ref<HTMLElement | undefined>,
+                         project: IProject,
+                         nodeDblClick: undefined | ((e: IG6GraphEvent, graph: null | IGraph) => void)) {
     const dateStore = useDateStore()
 
     let graph: null | IGraph;
@@ -32,12 +35,8 @@ export function useGraph(container: Ref<HTMLElement | undefined>, timeBar: Ref<H
         })
 
         // open drawer editor
-        graph.on('node:dblclick', (_) => {
-            if (graph.getCurrentMode() === 'default') {
-                // todo
-                // editorModel.visible = true
-                // editorModel.taskId = (e.item as Item).getID()
-            }
+        graph.on('node:dblclick', (e) => {
+            nodeDblClick?.(e, graph)
         })
 
         graph.on('canvas:dblclick', (e) => {
@@ -110,14 +109,14 @@ export function useGraph(container: Ref<HTMLElement | undefined>, timeBar: Ref<H
             project.offset.y = y
         })
 
-        graph.on('afterremoveitem', debounceSaveGraphData)
-        graph.on('afteradditem', debounceSaveGraphData)
-        graph.on('afterupdateitem', debounceSaveGraphData)
+        graph.on('afterremoveitem', debounceSave)
+        graph.on('afteradditem', debounceSave)
+        graph.on('afterupdateitem', debounceSave)
     }
 
-    const debounceSaveGraphData = debounce(saveGraphData, 3000)
+    const debounceSave = debounce(save, 3000)
 
-    function saveGraphData() {
+    function save() {
         const data = graph?.save() as GraphData | undefined
         if (!data) return
         const {nodes, edges} = data
@@ -246,21 +245,21 @@ export function useGraph(container: Ref<HTMLElement | undefined>, timeBar: Ref<H
                 graph?.changeSize(container.value.clientWidth, container.value.clientHeight)
             }
         })
-        interval.value = setInterval(debounceSaveGraphData, 30_000)
+        interval.value = setInterval(debounceSave, 30_000)
     })
 
     const interval = ref()
 
     onBeforeUnmount(() => {
         clearInterval(interval.value)
-        saveGraphData()
+        save()
         graph?.destroy()
         graph = null
     })
 
-    function graphCall(callback: (graph: IGraph | null) => any) {
+    function call(callback: (graph: IGraph | null) => any) {
         return callback?.(graph)
     }
 
-    return {graphCall, saveGraphData}
+    return {call, save}
 }
