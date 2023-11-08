@@ -58,10 +58,34 @@ onMounted(() => {
       new Menu({
         offsetX: -(container.value?.offsetLeft ?? 0),
         offsetY: -(container.value?.offsetTop ?? 0),
-        getContent: () => '删除',
-        handleMenuClick: (_: HTMLElement, item: Item) => {
-          graph?.removeItem(item)
-          graph?.layout()
+        getContent: () => {
+          const menu = document.createElement('div')
+          menu.className = 'graph-menu'
+          menu.innerHTML = `<ul>
+                              <li title="delay">延期</li>
+                              <li title="move">平移</li>
+                              <li title="delete">删除</li>
+                            </ul>`
+          return menu
+        },
+        handleMenuClick: (el: HTMLElement, item: Item) => {
+          console.debug(el.title)
+          switch (el.title) {
+            case 'delay': {
+              console.log('delay')
+              break
+            }
+            case 'move': {
+              console.log('move')
+              break
+            }
+            case 'delete': {
+              console.log('delete')
+              graph?.removeItem(item)
+              graph?.layout()
+              break
+            }
+          }
         }
       })
     ],
@@ -208,7 +232,6 @@ onMounted(() => {
 })
 
 function saveGraphData() {
-  console.debug('save graph data', new Date(), project.name)
   const data = graph?.save() as GraphData | undefined
   if (!data) return
   const {nodes, edges} = data
@@ -244,7 +267,6 @@ function saveGraphData() {
 const debounceSaveGraphData = debounce(saveGraphData, 3000)
 
 onBeforeUnmount(() => {
-  console.info('destroy graph')
   clearInterval(intervalRef.value)
   saveGraphData()
   graph?.destroy()

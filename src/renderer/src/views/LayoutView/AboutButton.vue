@@ -1,13 +1,9 @@
 <script setup lang="ts">
 
-import {Info, Github, FishOne} from "@icon-park/vue-next";
-import {onBeforeUnmount, ref} from "vue";
+import {FishOne, Github, Info} from "@icon-park/vue-next";
+import {ref} from "vue";
 
 const visible = ref(false)
-
-onBeforeUnmount(() => {
-  console.log('unmount', visible.value)
-})
 
 const githubSize = ref(24)
 
