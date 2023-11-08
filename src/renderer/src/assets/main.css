@@ -29,6 +29,11 @@
   height: var(--win-height);
 }
 
+.tip-class {
+  border: 0 !important;
+  opacity: 0.7;
+}
+
 /* 卡片编辑器弹框样式 */
 .editor-class {
   background: #82bbb5;

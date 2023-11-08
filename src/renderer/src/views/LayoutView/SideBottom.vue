@@ -5,6 +5,7 @@ import SettingButton from "@renderer/views/LayoutView/SettingButton.vue";
 import {ref} from "vue";
 import {useProjectStore} from "@renderer/store/project";
 import AboutButton from "@renderer/views/LayoutView/AboutButton.vue";
+import Tip from "@renderer/component/Tip.vue";
 
 const props = defineProps(['onAddClick'])
 const projectStore = useProjectStore()
@@ -38,15 +39,25 @@ async function load() {
                 style="display: flex;justify-content: center; align-items: center"/>
           <div style="padding: 0 0 2px 4px">新建项目</div>
         </div>
-        <setting-button @click="front=false"/>
+        <tip content="设置">
+          <setting-button @click="front=false"/>
+        </tip>
       </div>
       <div v-else class="backend">
         <div class="icon-group">
-          <upload theme="outline" size="20" fill="#333" :strokeWidth="2" @click="load"/>
-          <save-one theme="outline" size="20" fill="#333" :strokeWidth="2" @click="save"/>
-          <about-button/>
+          <tip content="导入">
+            <upload theme="outline" size="20" fill="#333" :strokeWidth="2" @click="load"/>
+          </tip>
+          <tip content="保存">
+            <save-one theme="outline" size="20" fill="#333" :strokeWidth="2" @click="save"/>
+          </tip>
+          <tip content="关于">
+            <about-button/>
+          </tip>
         </div>
-        <logout theme="outline" size="20" fill="#333" :strokeWidth="2" @click="front=true" class="exit-icon"/>
+        <tip content="返回">
+          <logout theme="outline" size="20" fill="#333" :strokeWidth="2" @click="front=true" class="exit-icon"/>
+        </tip>
       </div>
     </div>
   </div>
