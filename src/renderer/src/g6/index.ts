@@ -1,3 +1,4 @@
+import '@renderer/assets/graph.css'
 import './layout/possibleLayout'
 import './node/possibleNode'
 import './behavior/possibleNodeDrag'
@@ -6,19 +7,23 @@ import {nextTick, onBeforeUnmount, onMounted, Ref, ref} from "vue";
 import {Graph, GraphData, IEdge, IGraph, Menu, ModelConfig} from "@antv/g6";
 import PossibleGrid from "@renderer/g6/plugin/possibleGrid";
 import {PossibleTimeBar} from "@renderer/g6/plugin/possibleTimeBar";
-import {IG6GraphEvent, INode, Item} from "@antv/g6-core";
+import {IG6GraphEvent, INode, Item, NodeConfig} from "@antv/g6-core";
 import {deltaIndex} from "@renderer/util/time";
 import {useDateStore} from "@renderer/store/date";
 import {IPosEdge, IPosNode, IProject} from "@renderer/store";
 import {v4 as uuidv4} from "uuid";
 import {normalX} from "@renderer/util";
 import {debounce} from "@antv/util";
+import {useSettingsStore} from "@renderer/store/settings";
+
+type N = NodeConfig & IPosNode
 
 export function useGraph(container: Ref<HTMLElement | undefined>,
                          timeBar: Ref<HTMLElement | undefined>,
                          project: IProject,
                          nodeDblClick: undefined | ((e: IG6GraphEvent, graph: null | IGraph) => void)) {
     const dateStore = useDateStore()
+    const settings = useSettingsStore()
 
     let graph: null | IGraph;
     const dataIndex = () => {
@@ -180,15 +185,14 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
                         console.debug(el.title)
                         switch (el.title) {
                             case 'delay': {
-                                console.log('delay')
+                                delay(item)
                                 break
                             }
                             case 'move': {
-                                console.log('move')
+                                move(item)
                                 break
                             }
                             case 'delete': {
-                                console.log('delete')
                                 graph?.removeItem(item)
                                 graph?.layout()
                                 break
@@ -247,6 +251,52 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
         })
         interval.value = setInterval(debounceSave, 30_000)
     })
+
+    function move(item: Item) {
+        function moveItem(item: Item) {
+            const id = item.getID()
+            const node = graph?.findById(id).getModel() as N
+            const hors = graph?.getNeighbors(node.id, "target")
+            hors?.map(h => moveItem(h))
+            node.x += settings.cellWidth
+            graph?.update(item.getID(), node)
+        }
+
+        moveItem(item)
+        graph?.layout()
+    }
+
+    /**
+     * 普通正常任务延期
+     * @param item
+     */
+    function delay(item: Item) {
+        function delayItem(item: Item) {
+            const id = item.getID()
+            const node = graph?.findById(id).getModel() as N
+            if (node.taskType !== 'general') return false
+            if (node.state !== 'normal') return false
+            const hors = graph?.getNeighbors(node.id, "target").filter(h => (h.getModel()?.x ?? 0) - node.x === settings.cellWidth)
+            if (hors?.length === 0) {
+                node.x += settings.cellWidth
+                graph?.update(item.getID(), node)
+                return true
+            } else {
+                const ans = hors?.map(h => delayItem(h)).filter(v => !v)
+                if (ans?.length !== 0) {
+                    return false
+                } else {
+                    node.x += settings.cellWidth
+                    graph?.update(item.getID(), node)
+                    return true
+                }
+            }
+        }
+
+        delayItem(item)
+        graph?.layout()
+    }
+
 
     const interval = ref()
 
