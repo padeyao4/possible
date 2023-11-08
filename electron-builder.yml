@@ -1,4 +1,4 @@
-appId: com.electron.app
+appId: com.github.padeyao4.possible.app
 productName: possible
 directories:
   buildResources: build
@@ -13,6 +13,7 @@ asarUnpack:
   - resources/**
 win:
   executableName: possible
+#  icon: resource/possible.ico
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
