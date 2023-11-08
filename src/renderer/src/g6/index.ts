@@ -2,7 +2,7 @@ import './layout/possibleLayout'
 import './node/possibleNode'
 import './behavior/possibleNodeDrag'
 
-import {nextTick, onBeforeUnmount, onMounted, ref} from "vue";
+import {nextTick, onBeforeUnmount, onMounted, Ref, ref} from "vue";
 import {Graph, GraphData, IEdge, IGraph, Menu, ModelConfig} from "@antv/g6";
 import PossibleGrid from "@renderer/g6/plugin/possibleGrid";
 import {PossibleTimeBar} from "@renderer/g6/plugin/possibleTimeBar";
@@ -14,7 +14,7 @@ import {v4 as uuidv4} from "uuid";
 import {normalX} from "@renderer/util";
 import {debounce} from "@antv/util";
 
-export function useGraph(container: HTMLElement, timeBar: HTMLElement, project: IProject) {
+export function useGraph(container: Ref<HTMLElement | undefined>, timeBar: Ref<HTMLElement | undefined>, project: IProject) {
     const dateStore = useDateStore()
 
     let graph: null | IGraph;
@@ -163,10 +163,10 @@ export function useGraph(container: HTMLElement, timeBar: HTMLElement, project: 
             },
             plugins: [
                 new PossibleGrid(),
-                new PossibleTimeBar(project, timeBar),
+                new PossibleTimeBar(project, timeBar.value as HTMLElement),
                 new Menu({
-                    offsetX: -container.offsetLeft,
-                    offsetY: -container.offsetTop,
+                    offsetX: -(container.value as HTMLElement).offsetLeft,
+                    offsetY: -(container.value as HTMLElement).offsetTop,
                     getContent: () => {
                         const menu = document.createElement('div')
                         menu.className = 'graph-menu'
@@ -242,8 +242,8 @@ export function useGraph(container: HTMLElement, timeBar: HTMLElement, project: 
             graph?.emit('possible-update', {x: project.offset.x})
         })
         window.addEventListener('resize', () => {
-            if (container) {
-                graph?.changeSize(container.clientWidth, container.clientHeight)
+            if (container.value) {
+                graph?.changeSize(container.value.clientWidth, container.value.clientHeight)
             }
         })
         interval.value = setInterval(debounceSaveGraphData, 30_000)
@@ -258,9 +258,9 @@ export function useGraph(container: HTMLElement, timeBar: HTMLElement, project: 
         graph = null
     })
 
-    function callGraph(callback: (graph: IGraph | null) => any) {
+    function graphCall(callback: (graph: IGraph | null) => any) {
         return callback?.(graph)
     }
 
-    return callGraph
+    return {graphCall, saveGraphData}
 }
