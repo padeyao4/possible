@@ -32,8 +32,8 @@ const editor = {
 
 function onNodeClick(e: IG6GraphEvent, graph: IGraph | null) {
   editor.visible.value = true
-  const node = (graph?.findById(e.item?.getID() as string).getModel() ?? {}) as unknown as IPosNode
-  editor.model = new Proxy<IPosNode>(node, {
+  const node = ref((graph?.findById(e.item?.getID() as string).getModel() ?? {}) as unknown as IPosNode)
+  editor.model = new Proxy<IPosNode>(node.value, {
     get: (target, p) => {
       return Reflect.get(target, p)
     },

@@ -89,7 +89,7 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
             if (count >= 2) {
                 nextTick(() => {
                     graph?.removeItem(edge)
-                })
+                }).then(undefined)
                 return
             }
 
