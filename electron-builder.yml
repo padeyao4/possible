@@ -44,8 +44,9 @@ appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  provider: github
+  owner: padeyao4
+  repo: possible
 #extraResources:
 #  - from: node_modules/.prisma/client
 #    to: node_modules/.prisma/client
