@@ -33,11 +33,15 @@ const index = ref(0)
   align-items: center;
   padding-left: 8px;
   text-align: center;
-  background-color: var(--color-side-active);
+  background: rgba(255, 255, 255, 0.9);
   width: 100%;
   height: 48px;
   margin: 4px 0 4px 0;
   border-radius: 4px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.7);
+  }
 
   & > :nth-child(2) {
     width: max-content;

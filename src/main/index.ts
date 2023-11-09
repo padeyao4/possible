@@ -9,8 +9,11 @@ process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
 // 获取用户home目录
 const USER_HOME = process.env.HOME || process.env.USERPROFILE || '~/'
 
+// 判断是不是开发环境
+const dev = is.dev && process.env['ELECTRON_RENDERER_URL']
+
 // 检查possible_home变量是否存在
-const POSSIBLE_HOME = process.env.POSSIBLE_HOME || join(USER_HOME, '.possible')
+const POSSIBLE_HOME = dev ? join(USER_HOME, '.possible-dev') : (process.env.POSSIBLE_HOME || join(USER_HOME, '.possible'))
 
 ;(function () {
   if (!fs.existsSync(POSSIBLE_HOME)) {
@@ -76,7 +79,7 @@ function createSettingsWindow() {
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+  if (dev) {
     settingsWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + '/settings').then((r) => console.log(r))
   } else {
     settingsWindow.loadFile(join(__dirname, '../renderer/settings.html')).then((r) => console.log(r))
