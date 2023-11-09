@@ -1,23 +1,17 @@
-import {electronApp, is, optimizer} from '@electron-toolkit/utils'
+import {electronApp, optimizer} from '@electron-toolkit/utils'
 import {app, BrowserWindow, dialog, ipcMain} from 'electron'
 import {join} from 'path'
 import * as fs from 'fs'
 import {createSettingsWindow} from "./windows/createSettingsWindow";
 import {createMainWindow} from "./windows/createMainWindow";
 import {updater} from "./ipc";
+import {getPossibleHome, getUserHome} from "./util";
 
 // close security warnings
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
-// 获取用户home目录
-const USER_HOME = process.env.HOME || process.env.USERPROFILE || '~/'
-
-// 判断是不是开发环境
-const dev = is.dev && process.env['ELECTRON_RENDERER_URL']
-
-// 检查possible_home变量是否存在
-const POSSIBLE_HOME = dev ? join(USER_HOME, '.possible-dev') : (process.env.POSSIBLE_HOME || join(USER_HOME, '.possible'))
 
 ;(function () {
+    const POSSIBLE_HOME = getPossibleHome()
     if (!fs.existsSync(POSSIBLE_HOME)) {
         fs.mkdirSync(POSSIBLE_HOME)
     }
@@ -50,6 +44,7 @@ app
          * 导出项目
          */
         ipcMain.on('export:project', (_, s: string) => {
+            const USER_HOME = getUserHome()
             const exportPath = dialog.showSaveDialogSync({
                 title: `导出`,
                 defaultPath: `${USER_HOME}/Desktop/untitled.json`
@@ -65,6 +60,7 @@ app
          * 导入项目
          */
         ipcMain.handle('import:project', () => {
+            const USER_HOME = getUserHome()
             const importPath = dialog.showOpenDialogSync({
                 title: '导入项目',
                 defaultPath: `${USER_HOME}/Desktop/`
@@ -89,6 +85,7 @@ app
         ipcMain.handle('load', () => {
             console.log(new Date(), 'load local data')
             try {
+                const POSSIBLE_HOME = getPossibleHome()
                 let file = join(POSSIBLE_HOME, 'data.json');
                 if (fs.existsSync(file)) {
                     return JSON.parse(fs.readFileSync(file).toString())
@@ -125,9 +122,6 @@ app
             // dock icon is clicked and there are no other windows open.
             if (BrowserWindow.getAllWindows().length === 0) createMainWindow(windowDict)
         })
-
-        updater()
-
     })
     .catch((reason) => {
         console.log('reason', reason)
@@ -144,3 +138,4 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+updater()

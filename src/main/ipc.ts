@@ -8,18 +8,18 @@ export function updater() {
         autoUpdater.checkForUpdates().then(r => console.debug(r));
     });
 
-// 设置自动下载为false(默认为true，检测到有更新就自动下载)
+    // 设置自动下载为false(默认为true，检测到有更新就自动下载)
     autoUpdater.autoDownload = false;
-// 检测下载错误
+    // 检测下载错误
     autoUpdater.on('error', (error) => {
         console.error('更新异常', error);
     });
 
-// 检测是否需要更新
+    // 检测是否需要更新
     autoUpdater.on('checking-for-update', () => {
         console.info('正在检查更新……');
     });
-// 检测到可以更新时
+    // 检测到可以更新时
     autoUpdater.on('update-available', (releaseInfo: UpdateInfo) => {
         console.info('检测到新版本，确认是否下载');
         const releaseNotes = releaseInfo.releaseNotes;

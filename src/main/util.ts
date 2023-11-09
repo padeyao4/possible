@@ -24,3 +24,10 @@ export function getPossibleHome() {
     // 检查possible_home变量是否存在
     return dev ? join(USER_HOME, '.possible-dev') : (process.env.POSSIBLE_HOME || join(USER_HOME, '.possible'))
 }
+
+/**
+ * 获取家目录
+ */
+export function getUserHome() {
+    return process.env.HOME || process.env.USERPROFILE || '~/'
+}
