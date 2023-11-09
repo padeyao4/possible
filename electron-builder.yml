@@ -13,12 +13,16 @@ asarUnpack:
   - resources/**
 win:
   executableName: possible
-#  icon: resource/possible.ico
+  icon: resources/icon.ico
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
+  installerIcon: resources/icon.ico
+  installerHeader: ./resources/icon.ico
+  installerHeaderIcon: ./resources/icon.ico
+  uninstallerIcon: resources/icon.ico
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
