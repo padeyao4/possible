@@ -43,7 +43,7 @@ app
         /**
          * 导出项目
          */
-        ipcMain.on('export:project', (_, s: string) => {
+        ipcMain.on('export-data', (_, s: string) => {
             const USER_HOME = getUserHome()
             const exportPath = dialog.showSaveDialogSync({
                 title: `导出`,
@@ -59,7 +59,7 @@ app
         /**
          * 导入项目
          */
-        ipcMain.handle('import:project', () => {
+        ipcMain.handle('import-data', () => {
             const USER_HOME = getUserHome()
             const importPath = dialog.showOpenDialogSync({
                 title: '导入项目',
@@ -68,31 +68,28 @@ app
             if (importPath !== undefined) {
                 console.log('import path', importPath)
                 try {
-                    const data = fs.readFileSync(importPath[0]).toString()
-                    // todo 校验数据是否符合IProject
-                    return JSON.parse(data)
+                    return fs.readFileSync(importPath[0]).toString()
                 } catch (e) {
                     console.error(e)
                 }
-            } else {
-                return 'cancel'
             }
+            return null
         })
 
         /**
          * 启动加载
          */
-        ipcMain.handle('load', () => {
+        ipcMain.handle('load-local-backup-data', () => {
             console.log(new Date(), 'load local data')
             try {
-                const POSSIBLE_HOME = getPossibleHome()
-                let file = join(POSSIBLE_HOME, 'data.json');
+                let file = join(getPossibleHome(), 'data.json');
                 if (fs.existsSync(file)) {
-                    return JSON.parse(fs.readFileSync(file).toString())
+                    return fs.readFileSync(file).toString()
                 }
             } catch (e) {
                 console.error('write file failed', e)
             }
+            return null
         })
 
         /**

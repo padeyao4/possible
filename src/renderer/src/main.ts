@@ -9,6 +9,8 @@ import 'default-passive-events'
 import {useProjectStore} from "@renderer/store/project";
 import ElementPlus from 'element-plus' // 必须在其他项导入之后
 import 'element-plus/dist/index.css'
+import {PossibleData} from "@renderer/types";
+import {useSettingsStore} from "@renderer/store/settings";
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -19,10 +21,16 @@ app.use(router)
 app.mount('#app')
 
 ;(async function () {
-    const projectStore = useProjectStore()
-    if (projectStore.projects.length === 0) {
-      const projects = await window.api.loadLocalData()
-      projectStore.push(projects)
-    }
-  }()
+        const projectStore = useProjectStore()
+        const settings = useSettingsStore()
+        if (projectStore.projects.length === 0) {
+            const s = await window.api.loadLocalData()
+            if (s !== null) {
+                const data: PossibleData = JSON.parse(s)
+                if(data.version=== settings.currentDataVersion){
+                    projectStore.push(data.projects)
+                }
+            }
+        }
+    }()
 )

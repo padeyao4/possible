@@ -79,7 +79,12 @@ const editTitle = () => {
  * 调用electron导出项目数据
  */
 function exportProject() {
-  window.api.exportProject(JSON.stringify([projectStore.get(props.id)]))
+  const data = {
+    projects: [projectStore.get(props.id)],
+    time: new Date().getTime(),
+    version: settings.currentDataVersion
+  }
+  window.api.exportData(JSON.stringify(data))
 }
 
 const submitTitle = () => {

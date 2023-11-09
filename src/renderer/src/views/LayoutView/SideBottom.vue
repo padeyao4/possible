@@ -6,27 +6,38 @@ import {ref} from "vue";
 import {useProjectStore} from "@renderer/store/project";
 import AboutButton from "@renderer/views/LayoutView/AboutButton.vue";
 import Tip from "@renderer/component/Tip.vue";
+import {PossibleData} from "@renderer/types";
+import {useSettingsStore} from "@renderer/store/settings";
 
 const props = defineProps(['onAddClick'])
 const projectStore = useProjectStore()
+const settings = useSettingsStore()
 const front = ref(true)
 
 /**
  * 导出所有项目数据
  */
 function save() {
-  window.api.exportProject(JSON.stringify(projectStore.projects))
+  const d: PossibleData = {
+    projects: projectStore.projects,
+    time: new Date().getTime(),
+    version: settings.currentDataVersion
+  }
+  const s = JSON.stringify(d);
+  window.api.exportData(s)
 }
 
 /**
  * 根据文件格式导入数据
  */
 async function load() {
-  const projects = await window.api.importProject()
-  if (projects === 'cancel') {
-    return
+  const s = await window.api.importData()
+  if (s !== null) {
+    const d: PossibleData = JSON.parse(s)
+    if (d.version === settings.currentDataVersion) {
+      projectStore.merge(d.projects)
+    }
   }
-  projectStore.merge(projects)
 }
 </script>
 

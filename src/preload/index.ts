@@ -1,17 +1,16 @@
 import {contextBridge, ipcRenderer} from 'electron'
 import {electronAPI} from '@electron-toolkit/preload'
-import {IProject} from '../renderer/src/store'
 
 // Custom APIs for renderer
 const api = {
-    exportProject: (s: string) => {
-        ipcRenderer.send('export:project', s)
+    exportData: (s: string) => {
+        ipcRenderer.send('export-data', s)
     },
-    importProject: async (): Promise<IProject[] | undefined | 'cancel'> => {
-        return ipcRenderer.invoke('import:project')
+    importData: async (): Promise<string | null> => {
+        return ipcRenderer.invoke('import-data')
     },
-    loadLocalData: (): Promise<IProject[] | undefined> => {
-        return ipcRenderer.invoke('load')
+    loadLocalData: (): Promise<string | null> => {
+        return ipcRenderer.invoke('load-local-backup-data')
     },
     windowMainClose: (text: string) => {
         ipcRenderer.send('window:main:close', text)
