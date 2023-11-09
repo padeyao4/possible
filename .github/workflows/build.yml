@@ -1,6 +1,10 @@
 name: build
 run-name: ${{ github.actor }} 🚀
-on: [ push ]
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - "*-release" # Push events to matching v*, i.e. v1.0, v20.15.10
 jobs:
   Explore-GitHub-Actions:
     runs-on: windows-latest
@@ -9,22 +13,38 @@ jobs:
         node-version: [ '18.x' ]
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+
       - name: Check out repository code
         uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+
       - uses: pnpm/action-setup@0609f0983b7a228f052f81ef4c3d6510cae254ad
         with:
           version: 6.10.0
-      - run: pnpm install
-      - run: pnpm run build:win
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
+
+      - run: |
+          pnpm install
+          pnpm run build:win
+
+      - name: Create Release and Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          tag_name: ${{ github.ref }}
+          name: Release ${{ github.ref }}
+          body: test github action release.
+          draft: false
+          prerelease: false
+          files: |
+            ./dist/*.exe
+            ./dist/*.exe.blockmap
+            ./latest.yml
+
       - run: echo "🍏 This job's status is ${{ job.status }}."
