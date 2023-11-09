@@ -43,17 +43,17 @@ const visible = computed({
       </el-form-item>
       <el-form-item label="类型">
         <el-radio-group v-model="node.taskType">
+          <el-radio label="general">一般</el-radio>
           <el-radio label="period">周期</el-radio>
           <el-radio label="schedule">定时</el-radio>
-          <el-radio label="general">一般</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="状态">
         <el-radio-group v-model="node.state">
+          <el-radio label="normal">正常</el-radio>
           <el-radio label="completed">完成</el-radio>
           <el-radio label="timeout">超时</el-radio>
           <el-radio label="discard">放弃</el-radio>
-          <el-radio label="normal">正常</el-radio>
         </el-radio-group>
       </el-form-item>
     </el-form>
