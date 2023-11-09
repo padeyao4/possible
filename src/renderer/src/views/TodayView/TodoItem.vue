@@ -2,24 +2,28 @@
 
 import {CheckOne, Round, Drag} from "@icon-park/vue-next";
 import {IPosNode} from "@renderer/store";
-import {ref} from "vue";
+// import {ref} from "vue";
 
 defineProps<{
   element: IPosNode
 }>()
 
-const components = [
-  Round, CheckOne
-]
-
-const index = ref(0)
+// const components = [
+//   Round, CheckOne
+// ]
+//
+// const index = ref(0)
 
 </script>
 
 <template>
   <div class="todo-item">
-    <component :is="components[index]" theme="outline" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt"
-               class="icon-park" @click="element.state = 'completed'" @mouseenter="index=1" @mouseleave="index=0"/>
+    <!--    <component :is="components[index]" theme="outline" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt"-->
+    <!--               class="icon-park" @click="element.state = 'completed'" @mouseenter="index=1" @mouseleave="index=0"/>-->
+    <div @click="element.state = 'completed'" class="completed-button">
+      <Round theme="outline" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="round"/>
+      <CheckOne theme="outline" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="check"/>
+    </div>
     <div>
       {{ element.name }}
     </div>
@@ -47,6 +51,34 @@ const index = ref(0)
     width: max-content;
     flex-grow: 1;
     text-align: start;
+  }
+
+  .completed-button {
+    display: flex;
+    height: 30px;
+    width: 30px;
+    justify-items: center;
+    align-items: center;
+
+    .check {
+      display: none;
+    }
+
+    & > * {
+      margin: 0 8px 0 4px;
+      color: #b2b4b4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &:hover .round {
+      display: none;
+    }
+
+    &:hover .check {
+      display: flex;
+    }
   }
 }
 
