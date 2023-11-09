@@ -45,6 +45,6 @@ jobs:
           files: |
             ./dist/*.exe
             ./dist/*.exe.blockmap
-            ./latest.yml
+            ./dist/latest.yml
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
