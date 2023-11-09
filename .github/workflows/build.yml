@@ -39,7 +39,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           name: Release ${{ github.ref }}
-          body: test github action release.
+          body: update.
           draft: false
           prerelease: false
           files: |
