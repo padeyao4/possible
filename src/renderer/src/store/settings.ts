@@ -15,7 +15,6 @@ export const useSettingsStore = defineStore('settings', {
             nodeHeight: 80,
             widthGap: 20,
             heightGap: 80,
-            currentDataVersion: 'v1-alpha'
         }
     },
     getters: {
