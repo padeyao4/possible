@@ -10,7 +10,7 @@ import {PossibleTimeBar} from "@renderer/g6/plugin/possibleTimeBar";
 import {IG6GraphEvent, INode, Item, NodeConfig} from "@antv/g6-core";
 import {deltaIndex} from "@renderer/util/time";
 import {useDateStore} from "@renderer/store/date";
-import {IPosEdge, IPosNode, IProject} from "@renderer/store";
+import {IPosNode, IProject} from "@renderer/store";
 import {v4 as uuidv4} from "uuid";
 import {normalX} from "@renderer/util";
 import {debounce} from "@antv/util";
@@ -121,34 +121,7 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
     const debounceSave = debounce(save, 3000)
 
     function save() {
-        const data = graph?.save() as GraphData | undefined
-        if (!data) return
-        const {nodes, edges} = data
-        const posNodes = nodes?.map(({
-                                         name,
-                                         id,
-                                         y,
-                                         x,
-                                         createdTime,
-                                         completedTime,
-                                         state,
-                                         target,
-                                         detail,
-                                         note,
-                                         taskType,
-                                         orderIndex
-                                     }) => {
-            return {
-                name, id, y, x, createdTime, completedTime, state, target, detail, note, taskType, orderIndex
-            } as IPosNode
-        }) ?? []
-        const posEdges = edges?.map(({id, source, target}) => {
-            return {id, source, target} as IPosEdge
-        }) ?? []
-        project.data = {
-            nodes: posNodes,
-            edges: posEdges
-        }
+        project.data = graph!.save() as GraphData
     }
 
     onMounted(() => {
@@ -250,6 +223,10 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
         graphRef.value = graph
     })
 
+    /**
+     * 项目及后续项目平移
+     * @param item
+     */
     function move(item: Item) {
         function moveItem(item: Item) {
             const id = item.getID()

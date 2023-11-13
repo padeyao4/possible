@@ -7,9 +7,6 @@ export interface IProject {
     createdTime: Date
     offset: Point,
     data: GraphData
-    /**
-     * 初始时间
-     */
     initDate: Date
     completedDate?: Date
     completed?: boolean

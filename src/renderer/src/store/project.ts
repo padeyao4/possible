@@ -2,7 +2,7 @@ import {defineStore} from 'pinia'
 import {IProject} from '@renderer/store/index'
 import {v4 as uuidv4} from 'uuid'
 
-export const useProjectStore = defineStore('project', {
+export const useProjectStore = defineStore<string, { projects: IProject[] }>('project', {
     state(): {
         projects: IProject[]
     } {
@@ -17,7 +17,6 @@ export const useProjectStore = defineStore('project', {
                     (project1, project2) =>
                         new Date(project1.createdTime).getTime() - new Date(project2.createdTime).getTime()
                 )
-                .map((project: IProject) => ({name: project.name, id: project.id}))
         },
         get: (state) => {
             return (id: string) => state.projects.find((value) => value.id === id) ?? {} as IProject
@@ -78,18 +77,11 @@ export const useProjectStore = defineStore('project', {
             projects.forEach(project => {
                 const exits = this.projects.find(p => p.id === project.id)
                 if (exits) {
-                    this.delete(project.id)
+                    const projects = this.projects.filter((p) => p.id !== project.id)
+                    this.$patch({projects})
                 }
                 this.projects.push(project)
             })
-        },
-
-        toData() {
-            return {
-                data: this.projects,
-                time: new Date().getTime(),
-                version: 'v1-alpha'
-            }
         }
     },
     persist: true
