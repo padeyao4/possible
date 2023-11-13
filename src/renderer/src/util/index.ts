@@ -1,5 +1,5 @@
 import {EdgeConfig, IBBox, IPoint, NodeConfig} from '@antv/g6-core'
-import {DAY_OF_MS} from "@renderer/util/constant";
+import {DAY_OF_MS} from "@renderer/common/constant";
 
 /**
  * 将index还原为x点

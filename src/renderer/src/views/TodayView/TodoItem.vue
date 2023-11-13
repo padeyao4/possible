@@ -1,25 +1,16 @@
 <script setup lang="ts">
 
-import {CheckOne, Round, Drag} from "@icon-park/vue-next";
+import {CheckOne, Drag, Round} from "@icon-park/vue-next";
 import {IPosNode} from "@renderer/store";
-// import {ref} from "vue";
 
 defineProps<{
   element: IPosNode
 }>()
 
-// const components = [
-//   Round, CheckOne
-// ]
-//
-// const index = ref(0)
-
 </script>
 
 <template>
   <div class="todo-item">
-    <!--    <component :is="components[index]" theme="outline" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt"-->
-    <!--               class="icon-park" @click="element.state = 'completed'" @mouseenter="index=1" @mouseleave="index=0"/>-->
     <div @click="element.state = 'completed'" class="completed-button">
       <Round theme="outline" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="round"/>
       <CheckOne theme="outline" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="check"/>

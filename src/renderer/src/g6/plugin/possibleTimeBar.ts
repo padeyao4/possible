@@ -5,7 +5,7 @@ import {timeBarShow} from '@renderer/util'
 import {useDateStore} from '@renderer/store/date'
 import {IProject} from '@renderer/store'
 import {getZoneTimeMs} from "@renderer/util/time";
-import {DAY_OF_MS} from "@renderer/util/constant";
+import {DAY_OF_MS} from "@renderer/common/constant";
 
 export class PossibleTimeBar {
   objs: Record<string, unknown>

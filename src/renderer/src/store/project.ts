@@ -82,6 +82,14 @@ export const useProjectStore = defineStore('project', {
                 }
                 this.projects.push(project)
             })
+        },
+
+        toData() {
+            return {
+                data: this.projects,
+                time: new Date().getTime(),
+                version: 'v1-alpha'
+            }
         }
     },
     persist: true

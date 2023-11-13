@@ -1,4 +1,4 @@
-import {DAY_OF_MS} from "@renderer/util/constant";
+import {DAY_OF_MS} from "@renderer/common/constant";
 
 type D = Date | number | string
 

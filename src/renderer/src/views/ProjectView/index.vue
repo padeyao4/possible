@@ -13,6 +13,7 @@ import {deltaIndex} from "@renderer/util/time";
 import {useGraph} from "@renderer/g6";
 import NodeEditor from "@renderer/views/ProjectView/NodeEditor.vue";
 import {IG6GraphEvent, NodeConfig} from "@antv/g6-core";
+import {dumps} from "@renderer/util/data";
 
 const props = defineProps<{
   id: string
@@ -45,7 +46,7 @@ function onNodeClick(e: IG6GraphEvent, graph: IGraph | null) {
   })
 }
 
-const {call, save} = useGraph(container, timeBar, project, onNodeClick)
+const {save, graphRef} = useGraph(container, timeBar, project, onNodeClick)
 
 /**
  * 由于todayStore数据不是实时同步，会出现当前时间小于创建时间的错误，误差在1以内
@@ -58,10 +59,8 @@ const dataIndex = () => {
  * 窗口移动到今天对应的x轴
  */
 const move2Today = () => {
-  call((graph) => {
-    const dx = dataIndex() * settings.cellWidth + project.offset.x
-    graph?.translate(-dx, -project.offset.y)
-  })()
+  const dx = dataIndex() * settings.cellWidth + project.offset.x
+  graphRef.value?.translate(-dx, -project.offset.y)
 }
 
 // ------------------------ project title ---------------------------
@@ -79,12 +78,7 @@ const editTitle = () => {
  * 调用electron导出项目数据
  */
 function exportProject() {
-  const data = {
-    projects: [projectStore.get(props.id)],
-    time: new Date().getTime(),
-    version: settings.currentDataVersion
-  }
-  window.api.exportData(JSON.stringify(data))
+  window.api.exportData(dumps(props.id))
 }
 
 const submitTitle = () => {
@@ -107,27 +101,12 @@ function testGraph() {
 }
 
 const projectSettingsHover = ref(false)
-
-function onClose() {
-  save()
-  window.api.windowMainClose(JSON.stringify(projectStore.projects))
-}
-
-function onMaximize() {
-  window.api.windowMainMaximize()
-}
-
-function onMinimize() {
-  window.api.windowMainMinimize()
-}
-
 </script>
 
 <template>
   <div>
     <div class="settings-button">
-      <title-bar :close="onClose" :maximize="onMaximize"
-                 :minimize="onMinimize"/>
+      <title-bar :visible="true" :on-before-close="save"/>
       <div class="header">
         <div class="header-content">
           <input

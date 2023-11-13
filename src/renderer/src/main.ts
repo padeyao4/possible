@@ -10,7 +10,7 @@ import {useProjectStore} from "@renderer/store/project";
 import ElementPlus from 'element-plus' // 必须在其他项导入之后
 import 'element-plus/dist/index.css'
 import {PossibleData} from "@renderer/types";
-import {useSettingsStore} from "@renderer/store/settings";
+import {CURRENT_DATA_VERSION} from "@renderer/common/constant";
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -22,12 +22,11 @@ app.mount('#app')
 
 ;(async function () {
         const projectStore = useProjectStore()
-        const settings = useSettingsStore()
         if (projectStore.projects.length === 0) {
             const s = await window.api.loadLocalData()
             if (s !== null) {
                 const data: PossibleData = JSON.parse(s)
-                if(data.version=== settings.currentDataVersion){
+                if(data.version=== CURRENT_DATA_VERSION){
                     projectStore.push(data.projects)
                 }
             }

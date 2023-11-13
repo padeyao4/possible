@@ -24,8 +24,6 @@ export interface IPosNode {
     id: string
     y: number
     x: number,
-    ix: number, // 节点所在时间距离原点时间的单位距离。此距离乘以单位长度为节点x轴坐标
-    iy: number, // 节点高度除以单位长度
     createdTime: Date
     completedTime: Date | undefined
     state: 'completed' | 'timeout' | 'discard' | 'normal'

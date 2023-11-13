@@ -1,21 +1,39 @@
-<script setup>
-import {Close, Square, Minus} from '@icon-park/vue-next'
+<script setup lang="ts">
+import {Close, Minus, Square} from '@icon-park/vue-next'
+import {dumps} from "@renderer/util/data";
 
-const props = defineProps(['close', 'maximize', 'minimize'])
+// const props = defineProps(['close', 'maximize', 'minimize'])
+const props = defineProps<{
+  visible?: boolean
+  onBeforeClose?: () => void
+}>()
+
+function winMin() {
+  window.api.windowMainMinimize()
+}
+
+function winMax() {
+  window.api.windowMainMaximize()
+}
+
+function winClose() {
+  props.onBeforeClose?.()
+  window.api.windowMainClose(dumps())
+}
 </script>
 
 <template>
   <div>
     <div class="settings-button">
       <div class="container">
-        <div v-show="props.minimize" class="window-icon window-minimize" @click="()=>props.minimize?.()">
-          <minus theme="outline" size="14" fill="#333" :strokeWidth="2" strokeLinecap="miter"/>
+        <div v-show="visible" class="window-icon window-minimize" @click="winMin">
+          <minus theme="outline" size="14" fill="#333" :strokeWidth="2"/>
         </div>
-        <div v-show="props.maximize" class="window-icon window-maximize" @click="()=>props.maximize?.()">
+        <div v-show="visible" class="window-icon window-maximize" @click="winMax">
           <square theme="outline" size="14" fill="#333" :strokeWidth="2" strokeLinejoin="miter" strokeLinecap="square"/>
         </div>
-        <div v-show="props.close" class="window-icon window-close" @click="()=>props.close?.()">
-          <close theme="filled" size="14" fill="#333" :strokeWidth="2" strokeLinecap="miter"/>
+        <div v-show="visible" class="window-icon window-close" @click="winClose">
+          <close theme="filled" size="14" fill="#333" :strokeWidth="2"/>
         </div>
       </div>
     </div>
@@ -46,11 +64,11 @@ const props = defineProps(['close', 'maximize', 'minimize'])
     }
 
     .window-maximize:hover {
-      background: rgba(33, 37, 118,0.1);
+      background: rgba(33, 37, 118, 0.1);
     }
 
     .window-minimize:hover {
-      background: rgba(33, 37, 118,0.1);
+      background: rgba(33, 37, 118, 0.1);
     }
 
     .window-close:hover {

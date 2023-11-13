@@ -2,12 +2,12 @@
 import {useProjectStore} from '@renderer/store/project'
 import {useDateStore} from '@renderer/store/date'
 import {computed, ref, toRaw} from 'vue'
-import TitleBar from "@renderer/component/TitleBar.vue";
 import {CheckOne, Down, Right} from "@icon-park/vue-next";
 import Draggable from 'vuedraggable/src/vuedraggable'
 import {deltaIndex} from "@renderer/util/time";
 import {index2X} from "@renderer/util";
 import TodoItem from "@renderer/views/TodayView/TodoItem.vue";
+import TitleBar from "@renderer/component/TitleBar.vue";
 
 const projectStore = useProjectStore()
 const dateStore = useDateStore()
@@ -54,22 +54,11 @@ function onEnd() {
 const openCompleted = ref(false)
 
 
-function onClose() {
-  window.api.windowMainClose(JSON.stringify(projectStore.projects))
-}
-
-function onMaximize() {
-  window.api.windowMainMaximize()
-}
-
-function onMinimize() {
-  window.api.windowMainMinimize()
-}
 </script>
 <template>
   <div>
     <div class="settings-button">
-      <title-bar :close="onClose" :maximize="onMaximize" :minimize="onMinimize"/>
+      <title-bar :visible="true"/>
       <div class="header">
         <div class="title">我的一天</div>
       </div>

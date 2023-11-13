@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia'
-import {DAY_OF_MS} from "@renderer/util/constant";
+import {DAY_OF_MS} from "@renderer/common/constant";
 import {deltaIndex} from "@renderer/util/time";
 
 export const useDateStore = defineStore('today', {
