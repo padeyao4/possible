@@ -1,16 +1,12 @@
 import {Point} from '@antv/g-base'
-
-export interface IPosData {
-    nodes: IPosNode[],
-    edges: IPosEdge[]
-}
+import {GraphData} from "@antv/g6";
 
 export interface IProject {
     name: string
     id: string
     createdTime: Date
     offset: Point,
-    data: IPosData
+    data: GraphData
     /**
      * 初始时间
      */

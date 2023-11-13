@@ -1,43 +1,27 @@
 <script setup lang="ts">
 
-import {Plus, SaveOne, Upload, Logout} from "@icon-park/vue-next";
+import {Logout, Plus, SaveOne, Upload} from "@icon-park/vue-next";
 import SettingButton from "@renderer/views/LayoutView/SettingButton.vue";
 import {ref} from "vue";
-import {useProjectStore} from "@renderer/store/project";
 import AboutButton from "@renderer/views/LayoutView/AboutButton.vue";
 import Tip from "@renderer/component/Tip.vue";
-import {PossibleData} from "@renderer/types";
-import {useSettingsStore} from "@renderer/store/settings";
+import {dumps, loads} from "@renderer/util/data";
 
 const props = defineProps(['onAddClick'])
-const projectStore = useProjectStore()
-const settings = useSettingsStore()
 const front = ref(true)
 
 /**
  * 导出所有项目数据
  */
 function save() {
-  const d: PossibleData = {
-    projects: projectStore.projects,
-    time: new Date().getTime(),
-    version: settings.currentDataVersion
-  }
-  const s = JSON.stringify(d);
-  window.api.exportData(s)
+  window.api.exportData(dumps())
 }
 
 /**
  * 根据文件格式导入数据
  */
 async function load() {
-  const s = await window.api.importData()
-  if (s !== null) {
-    const d: PossibleData = JSON.parse(s)
-    if (d.version === settings.currentDataVersion) {
-      projectStore.merge(d.projects)
-    }
-  }
+  loads(await window.api.importData())
 }
 </script>
 

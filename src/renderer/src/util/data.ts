@@ -12,3 +12,10 @@ export function dumps(id: string | undefined = undefined) {
         version: CURRENT_DATA_VERSION
     })
 }
+
+export function loads(text: string | undefined | null) {
+    if (text === undefined || text === null) return
+    const content = JSON.parse(text)
+    if (content.version !== CURRENT_DATA_VERSION) return;
+    useProjectStore().merge(content.data)
+}
