@@ -13,6 +13,10 @@ export function dumps(id: string | undefined = undefined) {
     })
 }
 
+/**
+ * 加载字符串数据
+ * @param text
+ */
 export function loads(text: string | undefined | null) {
     if (text === undefined || text === null) return
     const content = JSON.parse(text)
