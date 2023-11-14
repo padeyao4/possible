@@ -37,7 +37,7 @@ export class PossibleTimeBar {
         textAlign: 'center',
         text: timeBarShow(this.project.initDate, index - 2),
         textBaseline: 'top',
-        fontSize: 15
+        fontSize: 14
       },
       capture: false,
       id: index.toString()
