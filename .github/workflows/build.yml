@@ -2,9 +2,8 @@ name: build
 run-name: ${{ github.actor }} 🚀
 on:
   push:
-    # Sequence of patterns matched against refs/tags
     tags:
-      - "*-release" # Push events to matching v*, i.e. v1.0, v20.15.10
+      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
 jobs:
   Explore-GitHub-Actions:
     runs-on: windows-latest
