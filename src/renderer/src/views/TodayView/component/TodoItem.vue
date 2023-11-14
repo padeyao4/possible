@@ -49,6 +49,7 @@ function handleClick(projectId: string) {
   .project-name {
     color: rgb(0, 0, 0, 0.8);
     cursor: pointer;
+    width: max-content;
   }
 
   &:hover {
