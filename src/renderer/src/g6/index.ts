@@ -192,7 +192,7 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
       }
     })
     const {x, y} = project.offset
-    graph.data(project.data as unknown as GraphData)
+    graph.data(project.data as GraphData)
     graph.render()
     graph.translate(x, y)
     addListen(graph)
