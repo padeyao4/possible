@@ -10,7 +10,7 @@ export function createMainWindow(windowDict: Map<string, BrowserWindow>): void {
         width: 1200,
         minWidth: 1000,
         height: 800,
-        minHeight: 800,
+        minHeight: 600,
         show: false,
         title: 'possible',
         transparent: true,
