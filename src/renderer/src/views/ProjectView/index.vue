@@ -10,7 +10,7 @@ import TitleBar from '@renderer/component/TitleBar.vue'
 import {Aiming, ArrowLeft, ArrowRight, Back, ExperimentOne, More, Next} from '@icon-park/vue-next'
 import {useSettingsStore} from "@renderer/store/settings";
 import {useGraph} from "@renderer/g6";
-import NodeEditor from "@renderer/views/ProjectView/NodeEditor.vue";
+import NodeEditor from "@renderer/views/ProjectView/component/NodeEditor.vue";
 import {IG6GraphEvent, NodeConfig} from "@antv/g6-core";
 import {dumps} from "@renderer/util/data";
 import CalendarButton from "@renderer/views/ProjectView/component/CalendarButton.vue";
