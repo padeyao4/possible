@@ -1,19 +1,22 @@
-<script setup lang="ts">
+<script setup lang="ts" xmlns="">
 import {IGraph} from '@antv/g6'
-import {nextTick, ref} from 'vue'
+import {nextTick, ref, toRaw} from 'vue'
 import {Delete, Promotion, SetUp} from '@element-plus/icons-vue'
 import {useProjectStore} from '@renderer/store/project'
 import router from '@renderer/router'
 import {INode} from '@renderer/model'
 import {useDateStore} from '@renderer/store/date'
 import TitleBar from '@renderer/component/TitleBar.vue'
-import {Aiming, ArrowLeft, ArrowRight, Back, ExperimentOne, Local, More, Next} from '@icon-park/vue-next'
+import {Aiming, ArrowLeft, ArrowRight, Back, ExperimentOne, More, Next} from '@icon-park/vue-next'
 import {useSettingsStore} from "@renderer/store/settings";
-import {deltaIndex} from "@renderer/util/time";
 import {useGraph} from "@renderer/g6";
 import NodeEditor from "@renderer/views/ProjectView/NodeEditor.vue";
 import {IG6GraphEvent, NodeConfig} from "@antv/g6-core";
 import {dumps} from "@renderer/util/data";
+import CalendarButton from "@renderer/views/ProjectView/component/CalendarButton.vue";
+import TodayButton from "@renderer/views/ProjectView/component/TodayButton.vue";
+import {Possible} from "@renderer/model/project";
+import Project = Possible.Project;
 
 const props = defineProps<{
   id: string
@@ -47,21 +50,6 @@ function onNodeClick(e: IG6GraphEvent, graph: IGraph | null) {
 }
 
 const {save, graphRef} = useGraph(container, timeBar, project, onNodeClick)
-
-/**
- * 由于todayStore数据不是实时同步，会出现当前时间小于创建时间的错误，误差在1以内
- */
-const dataIndex = () => {
-  return deltaIndex(dateStore.now, project.initDate)
-}
-
-/**
- * 窗口移动到今天对应的x轴
- */
-const move2Today = () => {
-  const dx = dataIndex() * settings.cellWidth + project.offset.x
-  graphRef.value?.translate(-dx, -project.offset.y)
-}
 
 // ------------------------ project title ---------------------------
 const titleEditEnable = ref<boolean>(false)
@@ -163,7 +151,8 @@ const projectSettingsHover = ref(false)
       </div>
       <div class="footer">
         <div class="icon-group">
-          <local theme="outline" size="20" fill="#333" :strokeWidth="2" @click="move2Today"/>
+          <today-button :graph="graphRef" :project="project"/>
+          <calendar-button :graph="graphRef" :project="project"/>
           <back theme="outline" size="20" fill="#333" :strokeWidth="2"/>
           <next theme="outline" size="20" fill="#333" :strokeWidth="2"/>
           <experiment-one v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"

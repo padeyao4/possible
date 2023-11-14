@@ -10,6 +10,9 @@ export interface IProject {
   initDate: Date
   completedDate: Date
   completed: boolean
+  nodeWidth: number
+  nodeHeight: number
+  nodeMargin: number[]
 }
 
 export interface INode extends NodeConfig {

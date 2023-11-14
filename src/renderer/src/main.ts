@@ -9,6 +9,7 @@ import 'default-passive-events'
 import {useProjectStore} from "@renderer/store/project";
 import ElementPlus from 'element-plus' // 必须在其他项导入之后
 import 'element-plus/dist/index.css'
+import '@renderer/util/browser-patch'
 import {PossibleData} from "@renderer/types";
 import {CURRENT_DATA_VERSION} from "@renderer/common/constant";
 
@@ -26,7 +27,7 @@ app.mount('#app')
             const s = await window.api.loadLocalData()
             if (s !== null) {
                 const data: PossibleData = JSON.parse(s)
-                if(data.version=== CURRENT_DATA_VERSION){
+                if (data.version === CURRENT_DATA_VERSION) {
                     projectStore.push(data.projects)
                 }
             }

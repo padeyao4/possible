@@ -12,6 +12,9 @@ export namespace Possible {
     id: string;
     initDate: Date;
     offset: Point;
+    nodeHeight: number;
+    nodeMargin: number[];
+    nodeWidth: number;
 
 
     constructor(name: string) {
@@ -23,6 +26,13 @@ export namespace Possible {
       this.id = v4()
       this.initDate = new Date()
       this.offset = {x: 0, y: 0}
+      this.nodeHeight = 40
+      this.nodeWidth = 100
+      this.nodeMargin = [40, 10, 40, 10]
+    }
+
+    get cellWidth() {
+      return this.nodeWidth + this.nodeMargin[1] + this.nodeMargin[3]
     }
   }
 }
