@@ -2,11 +2,19 @@
 
 import {CheckOne, Drag, Round} from "@icon-park/vue-next";
 import {INode, IProject} from "@renderer/model";
+import router from "@renderer/router";
 
 defineProps<{
   element: INode,
   projectMap: Map<string, IProject>
 }>()
+
+function handleClick(projectId: string) {
+  router.push({
+    path: `/project/${projectId}`,
+    replace: true
+  })
+}
 
 </script>
 
@@ -18,7 +26,7 @@ defineProps<{
     </div>
     <div>
       <div>{{ element.name }}</div>
-      <div class="project-name">
+      <div class="project-name" @click="()=>{handleClick(element.projectId)}">
         {{ projectMap.get(element.projectId)?.name }}
       </div>
     </div>
@@ -40,6 +48,7 @@ defineProps<{
 
   .project-name {
     color: rgb(0, 0, 0, 0.8);
+    cursor: pointer;
   }
 
   &:hover {
