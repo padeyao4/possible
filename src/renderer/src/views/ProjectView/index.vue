@@ -1,6 +1,6 @@
 <script setup lang="ts" xmlns="">
 import {IGraph} from '@antv/g6'
-import {nextTick, ref, toRaw} from 'vue'
+import {nextTick, ref} from 'vue'
 import {Delete, Promotion, SetUp} from '@element-plus/icons-vue'
 import {useProjectStore} from '@renderer/store/project'
 import router from '@renderer/router'
@@ -15,8 +15,6 @@ import {IG6GraphEvent, NodeConfig} from "@antv/g6-core";
 import {dumps} from "@renderer/util/data";
 import CalendarButton from "@renderer/views/ProjectView/component/CalendarButton.vue";
 import TodayButton from "@renderer/views/ProjectView/component/TodayButton.vue";
-import {Possible} from "@renderer/model/project";
-import Project = Possible.Project;
 
 const props = defineProps<{
   id: string
