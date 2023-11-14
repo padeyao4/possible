@@ -2,12 +2,14 @@
 import {useProjectStore} from '@renderer/store/project'
 import {useDateStore} from '@renderer/store/date'
 import {computed, ref, toRaw} from 'vue'
-import {CheckOne, Down, Right} from "@icon-park/vue-next";
+import {Down, Right} from "@icon-park/vue-next";
 import Draggable from 'vuedraggable/src/vuedraggable'
 import {deltaIndex} from "@renderer/util/time";
 import {index2X} from "@renderer/util";
-import TodoItem from "@renderer/views/TodayView/TodoItem.vue";
+import TodoItem from "@renderer/views/TodayView/component/TodoItem.vue";
 import TitleBar from "@renderer/component/TitleBar.vue";
+import CompletedList from "@renderer/views/TodayView/component/CompletedList.vue";
+import {IProject} from "@renderer/model";
 
 const projectStore = useProjectStore()
 const dateStore = useDateStore()
@@ -32,6 +34,15 @@ const completed = computed(() => {
         )
       })
       .flat()
+})
+
+const projectMap = computed(() => {
+  const map = new Map<string, IProject>()
+  projectStore.projects.forEach(project => {
+    console.log(project)
+    map.set(project.id, project)
+  })
+  return map
 })
 
 function onChange() {
@@ -73,7 +84,7 @@ const openCompleted = ref(false)
                    drag-class="drag-class">
           <!--element 为固定写法-->
           <template #item="{element}">
-            <todo-item :element="element"/>
+            <todo-item :element="element" :project-map="projectMap"/>
           </template>
         </draggable>
         <div class="completed" @click="openCompleted = !openCompleted">
@@ -84,11 +95,7 @@ const openCompleted = ref(false)
           已完成 {{ completed.length }}
         </div>
         <div v-if="openCompleted">
-          <div v-for="task in completed" :key="task.id" class="item completed-item">
-            <check-one theme="filled" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="icon-park"
-                       @click="task.state='normal'"/>
-            <del>{{ task.name }}</del>
-          </div>
+          <completed-list :list="completed" :project-map="projectMap"/>
         </div>
       </div>
       <div class="footer"></div>
@@ -134,34 +141,6 @@ const openCompleted = ref(false)
       text-align: center;
       padding: 0 8px;
       user-select: none;
-    }
-
-    .item {
-      display: flex;
-      align-items: center;
-      padding-left: 8px;
-      text-align: center;
-      background-color: var(--color-side-active);
-      width: 100%;
-      height: 48px;
-      margin: 4px 0 4px 0;
-      border-radius: 4px;
-    }
-
-    .icon-park {
-      margin: 0 8px 0 4px;
-      color: #b2b4b4;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .completed-item {
-      color: #b2b4b4;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.98);
-      }
     }
   }
 

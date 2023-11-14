@@ -5,7 +5,6 @@ import fs from "fs";
 import {is} from "@electron-toolkit/utils";
 
 export function createMainWindow(windowDict: Map<string, BrowserWindow>): void {
-    // Create the browser window.
     const mainWindow = new BrowserWindow({
         width: 1200,
         minWidth: 1000,

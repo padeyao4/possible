@@ -1,10 +1,11 @@
 <script setup lang="ts">
 
 import {CheckOne, Drag, Round} from "@icon-park/vue-next";
-import {INode} from "@renderer/model";
+import {INode, IProject} from "@renderer/model";
 
 defineProps<{
-  element: INode
+  element: INode,
+  projectMap: Map<string, IProject>
 }>()
 
 </script>
@@ -16,7 +17,10 @@ defineProps<{
       <CheckOne theme="outline" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="check"/>
     </div>
     <div>
-      {{ element.name }}
+      <div>{{ element.name }}</div>
+      <div class="project-name">
+        {{ projectMap.get(element.projectId)?.name }}
+      </div>
     </div>
     <drag theme="outline" size="20" fill="#333" :strokeWidth="2" class="drag-icon mover"/>
   </div>
@@ -30,9 +34,13 @@ defineProps<{
   text-align: center;
   background: rgba(255, 255, 255, 0.9);
   width: 100%;
-  height: 48px;
+  height: 56px;
   margin: 4px 0 4px 0;
   border-radius: 4px;
+
+  .project-name {
+    color: rgb(0, 0, 0, 0.8);
+  }
 
   &:hover {
     background: rgba(255, 255, 255, 0.7);
@@ -46,10 +54,11 @@ defineProps<{
 
   .completed-button {
     display: flex;
-    height: 30px;
+    height: 40px;
     width: 30px;
+    padding-top: 0;
     justify-items: center;
-    align-items: center;
+    align-items: start;
 
     .check {
       display: none;
@@ -71,14 +80,6 @@ defineProps<{
       display: flex;
     }
   }
-}
-
-.icon-park {
-  margin: 0 8px 0 4px;
-  color: #b2b4b4;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .drag-icon {
