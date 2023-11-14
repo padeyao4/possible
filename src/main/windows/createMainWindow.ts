@@ -7,10 +7,10 @@ import {is} from "@electron-toolkit/utils";
 export function createMainWindow(windowDict: Map<string, BrowserWindow>): void {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
-        width: 1440,
-        minWidth: 900,
-        height: 900,
-        minHeight: 600,
+        width: 1200,
+        minWidth: 1000,
+        height: 800,
+        minHeight: 800,
         show: false,
         title: 'possible',
         transparent: true,
