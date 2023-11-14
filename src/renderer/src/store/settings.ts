@@ -6,7 +6,7 @@ export const useSettingsStore = defineStore('settings', {
             /**
              * 是否开启实验功能
              */
-            experiment: true,
+            experiment: false,
             /**
              * 开启自动更新时间
              */

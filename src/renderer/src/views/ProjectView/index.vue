@@ -151,8 +151,8 @@ const projectSettingsHover = ref(false)
         <div class="icon-group">
           <today-button :graph="graphRef" :project="project"/>
           <calendar-button :graph="graphRef" :project="project"/>
-          <back theme="outline" size="20" fill="#333" :strokeWidth="2"/>
-          <next theme="outline" size="20" fill="#333" :strokeWidth="2"/>
+          <back v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
+          <next v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
           <experiment-one v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
                           @click="testGraph"/>
           <arrow-left v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"

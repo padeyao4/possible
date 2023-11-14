@@ -25,14 +25,14 @@ function handleGraph() {
 </script>
 
 <template>
-  <el-date-picker
-      v-model="date"
-      type="date"
-      placeholder="Pick a day"
-      size="small"
-      @keydown.enter="(e)=>handleBlur(e)"
-      @blur="handleGraph"
-  />
+    <el-date-picker
+        v-model="date"
+        type="date"
+        placeholder="Pick a day"
+        size="small"
+        @keydown.enter="(e)=>handleBlur(e)"
+        @blur="handleGraph"
+    />
 </template>
 
 <style scoped>
