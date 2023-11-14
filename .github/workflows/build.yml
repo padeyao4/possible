@@ -46,7 +46,7 @@ jobs:
             ./dist/*.exe
             ./dist/*.exe.blockmap
             ./dist/latest.yml
-          env:
-            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
