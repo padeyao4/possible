@@ -2,9 +2,8 @@ name: build
 run-name: ${{ github.actor }} 🚀
 on:
   push:
-    # Sequence of patterns matched against refs/tags
     tags:
-      - "*-release" # Push events to matching v*, i.e. v1.0, v20.15.10
+      - "v*" # Push events to matching v*, i.e. v1.0, v20.15.10
 jobs:
   Explore-GitHub-Actions:
     runs-on: windows-latest
@@ -12,12 +11,6 @@ jobs:
       matrix:
         node-version: [ '18.x' ]
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-
       - name: Check out repository code
         uses: actions/checkout@v4
 
@@ -29,9 +22,9 @@ jobs:
         with:
           version: 6.10.0
 
-      - run: |
-          pnpm install
-          pnpm run build:win
+      - run: pnpm install
+
+      - run: pnpm run build:win
 
       - name: Create Release and Upload Release Asset
         uses: softprops/action-gh-release@v1
@@ -39,7 +32,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           name: Release ${{ github.ref }}
-          body: update.
+          body: update
           draft: false
           prerelease: false
           files: |
