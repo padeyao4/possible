@@ -15,6 +15,9 @@ export namespace Possible {
     updatedTime: Date;
     x: number;
     y: number;
+    height: number;
+    width: number;
+    margin: number[];
 
     [key: string]: any
 
@@ -31,6 +34,9 @@ export namespace Possible {
       this.updatedTime = new Date()
       this.x = 0
       this.y = 0
+      this.height = 40
+      this.width = 100
+      this.margin = [40, 10, 40, 10]
     }
 
     get position() {
@@ -40,6 +46,19 @@ export namespace Possible {
     set position(p: { x: number, y: number }) {
       this.x = p.x
       this.y = p.y
+    }
+
+    get cellWidth() {
+      return this.width + this.margin[1] + this.margin[3]
+    }
+
+    get cellHeight() {
+      return this.height + this.margin[0] + this.margin[2]
+    }
+
+    normalXY(x: number, y: number) {
+      this.x = Math.floor(x / this.cellWidth) * this.cellWidth + Math.floor(this.cellWidth / 2)
+      this.y = y
     }
   }
 }

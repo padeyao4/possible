@@ -11,7 +11,6 @@ import {IG6GraphEvent, INode as G6INode, Item, NodeConfig} from "@antv/g6-core";
 import {deltaIndex} from "@renderer/util/time";
 import {useDateStore} from "@renderer/store/date";
 import {INode, IProject} from "@renderer/model";
-import {normalX} from "@renderer/util";
 import {debounce} from "@antv/util";
 import {useSettingsStore} from "@renderer/store/settings";
 import {Possible} from "@renderer/model/node";
@@ -47,7 +46,7 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
 
     graph.on('canvas:dblclick', (e) => {
       const node = new Possible.Node('untitled')
-      node.position = {x: normalX(e.x), y: e.y}
+      node.normalXY(e.x, e.y)
       graph?.addItem('node', node)
       graph?.layout()
     })

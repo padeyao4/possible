@@ -31,6 +31,9 @@ export interface INode extends NodeConfig {
    * 用于排序
    */
   orderIndex: number
+  width: number,
+  height: number,
+  margin: number[] // 数组长度为4,上右下左
 }
 
 export interface IEdge extends EdgeConfig {

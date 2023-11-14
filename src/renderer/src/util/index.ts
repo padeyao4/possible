@@ -1,5 +1,6 @@
 import {EdgeConfig, IBBox, IPoint, NodeConfig} from '@antv/g6-core'
 import {DAY_OF_MS} from "@renderer/common/constant";
+import {date2Day} from "@renderer/util/time";
 
 /**
  * 将index还原为x点
@@ -9,33 +10,6 @@ export const index2X = (index: number) => {
   return index * 120 + 60
 }
 
-/**
- * x点转index
- * @param x
- */
-export const x2Index = (x: number) => {
-  return Math.floor(x / 120)
-}
-
-/**
- * 将x点正则化，统一x点
- * @param x
- */
-export const normalX = (x: number) => {
-  return Math.floor(x / 120) * 120 + 60
-}
-
-/**
- * 将index转为date
- * @param index
- */
-export function index2Date(index: number) {
-  if (isNaN(index)) {
-    return new Date()
-  } else {
-    return new Date(index * DAY_OF_MS)
-  }
-}
 
 /**
  * 将date转为index
@@ -61,23 +35,6 @@ export function date2X(current: Date, base: Date) {
  */
 export function dateFormat(date: Date) {
   return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
-}
-
-/**
- * 获取星期
- * @param date
- */
-export function date2Day(date: Date) {
-  const mapper = {
-    '0': '日',
-    '1': '一',
-    '2': '二',
-    '3': '三',
-    '4': '四',
-    '5': '五',
-    '6': '六'
-  }
-  return '星期' + mapper[date.getDay()]
 }
 
 /**

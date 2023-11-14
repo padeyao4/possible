@@ -27,3 +27,20 @@ export function getOriginIndex(d: D) {
 export function deltaIndex(d: D, o: D) {
   return getOriginIndex(d) - getOriginIndex(o)
 }
+
+/**
+ * 获取星期
+ * @param date
+ */
+export function date2Day(date: Date) {
+    const mapper = {
+        '0': '日',
+        '1': '一',
+        '2': '二',
+        '3': '三',
+        '4': '四',
+        '5': '五',
+        '6': '六'
+    }
+    return '星期' + mapper[date.getDay()]
+}
