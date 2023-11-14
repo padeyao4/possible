@@ -4,7 +4,7 @@ import {nextTick, ref} from 'vue'
 import {Delete, Promotion, SetUp} from '@element-plus/icons-vue'
 import {useProjectStore} from '@renderer/store/project'
 import router from '@renderer/router'
-import {IPosNode} from '@renderer/model'
+import {INode} from '@renderer/model'
 import {useDateStore} from '@renderer/store/date'
 import TitleBar from '@renderer/component/TitleBar.vue'
 import {Aiming, ArrowLeft, ArrowRight, Back, ExperimentOne, Local, More, Next} from '@icon-park/vue-next'
@@ -28,13 +28,13 @@ const project = projectStore.get(props.id)
 
 const editor = {
   visible: ref(false),
-  model: {} as IPosNode
+  model: {} as INode
 }
 
 function onNodeClick(e: IG6GraphEvent, graph: IGraph | null) {
   editor.visible.value = true
-  const node = ref((graph?.findById(e.item?.getID() as string).getModel() ?? {}) as unknown as IPosNode)
-  editor.model = new Proxy<IPosNode>(node.value, {
+  const node = ref((graph?.findById(e.item?.getID() as string).getModel() ?? {}) as unknown as INode)
+  editor.model = new Proxy<INode>(node.value, {
     get: (target, p) => {
       return Reflect.get(target, p)
     },

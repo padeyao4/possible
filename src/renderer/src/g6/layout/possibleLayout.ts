@@ -1,5 +1,5 @@
 import G6 from '@antv/g6'
-import { IPosEdge, IPosNode } from '@renderer/model'
+import { IEdge, INode } from '@renderer/model'
 import { index2X } from '@renderer/util'
 import { EdgeConfig, NodeConfig } from '@antv/g6-core'
 
@@ -28,11 +28,11 @@ G6.registerLayout('possible-layout', {
       todayIndex: number
       nodeHeight: number
       gap: number
-      nodes: (IPosNode & NodeConfig)[]
-      edges: (EdgeConfig & IPosEdge)[]
+      nodes: (INode & NodeConfig)[]
+      edges: (EdgeConfig & IEdge)[]
     } = this
 
-    const map = new Map<number, (IPosNode & NodeConfig)[]>()
+    const map = new Map<number, (INode & NodeConfig)[]>()
 
     const edgesMap = new Map<string, string>()
 
@@ -40,7 +40,7 @@ G6.registerLayout('possible-layout', {
       edgesMap.set(edge.source, edge.target)
     })
 
-    const nodesMap = new Map<string, IPosNode & NodeConfig>()
+    const nodesMap = new Map<string, INode & NodeConfig>()
 
     nodes.forEach((node) => {
       nodesMap.set(node.id, node)
@@ -48,7 +48,7 @@ G6.registerLayout('possible-layout', {
 
     const idx = index2X(todayIndex)
 
-    const handleNodeState = (node: IPosNode & NodeConfig, currentX: number) => {
+    const handleNodeState = (node: INode & NodeConfig, currentX: number) => {
       if (node.state === 'normal' && node.taskType === 'general') {
         if (node.x < currentX) {
           node.x = currentX
@@ -63,10 +63,10 @@ G6.registerLayout('possible-layout', {
      * @param node
      * @param currentX
      */
-    const handleNode = (node: IPosNode & NodeConfig, currentX: number): boolean => {
+    const handleNode = (node: INode & NodeConfig, currentX: number): boolean => {
       if (edgesMap.has(node.id)) {
         const nextId = edgesMap.get(node.id) as string
-        const nextNode = nodesMap.get(nextId) as IPosNode & NodeConfig
+        const nextNode = nodesMap.get(nextId) as INode & NodeConfig
         if (handleNode(nextNode, currentX + 120)) {
           return handleNodeState(node, currentX)
         } else {

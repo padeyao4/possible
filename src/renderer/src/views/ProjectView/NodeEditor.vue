@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {IPosNode} from "@renderer/model";
+import {INode} from "@renderer/model";
 import {computed} from "vue";
 
 const props = defineProps<{
-  node: IPosNode,
+  node: INode,
   visible: boolean
 }>()
 

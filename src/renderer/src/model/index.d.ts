@@ -1,4 +1,5 @@
 import {Point} from '@antv/g-base'
+import {EdgeConfig, NodeConfig} from "@antv/g6-core";
 
 export interface IProject {
   name: string
@@ -11,13 +12,13 @@ export interface IProject {
   completed: boolean
 }
 
-export interface IPosNode {
+export interface INode extends NodeConfig {
   name: string
   id: string
   y: number
   x: number,
   createdTime: Date
-  completedTime: Date | undefined
+  updatedTime: Date
   state: 'completed' | 'timeout' | 'discard' | 'normal'
   target: string // 任务目标
   detail: string // 任务详情
@@ -29,10 +30,10 @@ export interface IPosNode {
   /**
    * 用于排序
    */
-  orderIndex?: number
+  orderIndex: number
 }
 
-export interface IPosEdge {
+export interface IEdge extends EdgeConfig {
   id: string
   source: string // task id
   target: string // task id

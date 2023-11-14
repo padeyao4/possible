@@ -1,10 +1,10 @@
 <script setup lang="ts">
 
 import {CheckOne, Drag, Round} from "@icon-park/vue-next";
-import {IPosNode} from "@renderer/model";
+import {INode} from "@renderer/model";
 
 defineProps<{
-  element: IPosNode
+  element: INode
 }>()
 
 </script>
