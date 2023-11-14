@@ -39,7 +39,6 @@ const completed = computed(() => {
 const projectMap = computed(() => {
   const map = new Map<string, IProject>()
   projectStore.projects.forEach(project => {
-    console.log(project)
     map.set(project.id, project)
   })
   return map
