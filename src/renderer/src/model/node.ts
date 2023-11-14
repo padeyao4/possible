@@ -56,6 +56,10 @@ export namespace Possible {
       return this.height + this.margin[0] + this.margin[2]
     }
 
+    get index() {
+      return (this.x - Math.floor(this.cellWidth / 2)) / this.cellWidth
+    }
+
     normalXY(x: number, y: number) {
       this.x = Math.floor(x / this.cellWidth) * this.cellWidth + Math.floor(this.cellWidth / 2)
       this.y = y
