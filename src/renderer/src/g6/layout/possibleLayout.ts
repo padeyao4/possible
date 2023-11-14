@@ -1,5 +1,5 @@
 import G6 from '@antv/g6'
-import { IPosEdge, IPosNode } from '@renderer/store'
+import { IPosEdge, IPosNode } from '@renderer/model'
 import { index2X } from '@renderer/util'
 import { EdgeConfig, NodeConfig } from '@antv/g6-core'
 

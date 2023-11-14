@@ -1,4 +1,4 @@
-import {IProject} from "@renderer/store";
+import {IProject} from "@renderer/model";
 
 declare module 'default-passive-events'
 declare module '*.vue' {

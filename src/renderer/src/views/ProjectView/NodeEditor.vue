@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {IPosNode} from "@renderer/store";
+import {IPosNode} from "@renderer/model";
 import {computed} from "vue";
 
 const props = defineProps<{

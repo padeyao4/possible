@@ -10,7 +10,7 @@ import {PossibleTimeBar} from "@renderer/g6/plugin/possibleTimeBar";
 import {IG6GraphEvent, INode, Item, NodeConfig} from "@antv/g6-core";
 import {deltaIndex} from "@renderer/util/time";
 import {useDateStore} from "@renderer/store/date";
-import {IPosNode, IProject} from "@renderer/store";
+import {IPosNode, IProject} from "@renderer/model";
 import {v4 as uuidv4} from "uuid";
 import {normalX} from "@renderer/util";
 import {debounce} from "@antv/util";
