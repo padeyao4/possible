@@ -10,6 +10,7 @@ import TodoItem from "@renderer/views/TodayView/component/TodoItem.vue";
 import TitleBar from "@renderer/component/TitleBar.vue";
 import CompletedList from "@renderer/views/TodayView/component/CompletedList.vue";
 import {IProject} from "@renderer/model";
+import TimeLabel from "@renderer/views/TodayView/component/TimeLabel.vue";
 
 const projectStore = useProjectStore()
 const dateStore = useDateStore()
@@ -62,8 +63,6 @@ function onEnd() {
 }
 
 const openCompleted = ref(false)
-
-
 </script>
 <template>
   <div>
@@ -71,6 +70,7 @@ const openCompleted = ref(false)
       <title-bar :visible="true"/>
       <div class="header">
         <div class="title">我的一天</div>
+        <time-label/>
       </div>
       <div class="body">
         <draggable :list="toRaw(todos)" animation="300" item-key="id" :forceFallback="true"
@@ -104,17 +104,19 @@ const openCompleted = ref(false)
 <style scoped>
 .settings-button {
   display: grid;
-  grid-template-rows: 24px 40px calc(var(--win-height) - 104px) 40px;
+  grid-template-rows: 24px 72px calc(var(--win-height) - 136px) 40px;
   background: var(--color-neptune);
   border-radius: 8px 0 0 0;
 
   .header {
     -webkit-app-region: drag;
     display: flex;
-    justify-items: center;
+    flex-direction: column;
+    height: 72px;
 
     .title {
       display: flex;
+      height: 40px;
       justify-items: center;
       align-items: center;
       width: max-content;
@@ -124,8 +126,8 @@ const openCompleted = ref(false)
   }
 
   .body {
-    padding: 16px 24px 40px 24px;
-    height: calc(var(--win-height) - 64px) !important;
+    margin: 8px 0 40px 0;
+    padding: 0 24px 0 24px;
     overflow-y: auto;
 
     .completed {
@@ -149,3 +151,4 @@ const openCompleted = ref(false)
   }
 }
 </style>
+<!--//height: calc(var(&#45;&#45;win-height) - 96px) !important;-->
