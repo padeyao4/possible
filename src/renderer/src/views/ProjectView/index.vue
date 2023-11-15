@@ -15,6 +15,7 @@ import {IG6GraphEvent, NodeConfig} from "@antv/g6-core";
 import {dumps} from "@renderer/util/data";
 import CalendarButton from "@renderer/views/ProjectView/component/CalendarButton.vue";
 import TodayButton from "@renderer/views/ProjectView/component/TodayButton.vue";
+import CanvasMoveButtons from "@renderer/views/ProjectView/component/CanvasMoveButtons.vue";
 
 const props = defineProps<{
   id: string
@@ -96,12 +97,12 @@ const projectSettingsHover = ref(false)
       <div class="header">
         <div class="header-content">
           <input
-              v-if="titleEditEnable"
-              ref="titleRef"
-              v-model="project.name"
-              class="title-input"
-              @blur="submitTitle"
-              @keydown.enter="submitTitle"
+            v-if="titleEditEnable"
+            ref="titleRef"
+            v-model="project.name"
+            class="title-input"
+            @blur="submitTitle"
+            @keydown.enter="submitTitle"
           />
           <div v-else class="title" @click="editTitle">
             <div class="text">{{ project.name }}</div>
@@ -151,6 +152,7 @@ const projectSettingsHover = ref(false)
         <div class="icon-group">
           <today-button :graph="graphRef" :project="project"/>
           <calendar-button :graph="graphRef" :project="project"/>
+          <canvas-move-buttons :graph="graphRef"/>
           <back v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
           <next v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
           <experiment-one v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
@@ -261,20 +263,6 @@ const projectSettingsHover = ref(false)
     .icon-group {
       display: flex;
       align-items: center;
-
-      > * {
-        padding: 4px;
-        margin: 0 4px;
-        width: 40px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        &:hover {
-          background: rgba(37, 159, 167, 0.1);
-          border-radius: 4px;
-        }
-      }
     }
   }
 }
