@@ -27,6 +27,7 @@ function handleGraph() {
 <template>
     <el-date-picker
         v-model="date"
+        style="width: 120px"
         type="date"
         placeholder="Pick a day"
         size="small"
