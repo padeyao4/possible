@@ -6,7 +6,7 @@ import moment from "moment";
 const now = ref(new Date())
 
 const timeShow = computed(() => {
-  return moment(now.value).locale('zh-cn')
+  return moment(now.value).format('MM月DD日, 星期d')
 })
 
 const interval = ref()
