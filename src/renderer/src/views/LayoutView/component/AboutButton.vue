@@ -8,7 +8,6 @@ const visible = ref(false)
 
 const githubSize = ref(24)
 
-
 function openGithub() {
   window.open(homepage)
 }

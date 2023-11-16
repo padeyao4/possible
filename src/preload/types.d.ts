@@ -15,7 +15,8 @@ declare global {
             windowSettingsMinimize: () => void,
             windowSettingsClose: () => void,
             platform: () => Promise<string>
-            possibleVersion: () => Promise<string>
+            possibleVersion: () => Promise<string>,
+            checkForUpdates: () => void
         }
     }
 }

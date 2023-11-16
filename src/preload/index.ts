@@ -38,6 +38,9 @@ const api = {
     },
     platform: async (): Promise<string> => {
         return ipcRenderer.invoke('platform')
+    },
+    checkForUpdates() {
+        ipcRenderer.send('check-for-update')
     }
 }
 

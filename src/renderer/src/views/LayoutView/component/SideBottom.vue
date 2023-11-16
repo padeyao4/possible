@@ -1,11 +1,12 @@
 <script setup lang="ts">
 
 import {Logout, Plus, SaveOne, Upload} from "@icon-park/vue-next";
-import SettingButton from "@renderer/views/LayoutView/SettingButton.vue";
+import SettingButton from "@renderer/views/LayoutView/component/SettingButton.vue";
 import {ref} from "vue";
-import AboutButton from "@renderer/views/LayoutView/AboutButton.vue";
+import AboutButton from "@renderer/views/LayoutView/component/AboutButton.vue";
 import Tip from "@renderer/component/Tip.vue";
 import {dumps, loads} from "@renderer/util/data";
+import UpdateButton from "@renderer/views/LayoutView/component/UpdateButton.vue";
 
 const props = defineProps(['onAddClick'])
 const front = ref(true)
@@ -45,6 +46,9 @@ async function load() {
           </tip>
           <tip content="保存">
             <save-one theme="outline" size="20" fill="#333" :strokeWidth="2" @click="save"/>
+          </tip>
+          <tip content="检查更新">
+            <update-button/>
           </tip>
           <tip content="关于">
             <about-button/>

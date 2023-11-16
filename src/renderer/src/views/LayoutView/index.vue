@@ -5,9 +5,9 @@ import {useProjectStore} from '@renderer/store/project'
 import {useDateStore} from '@renderer/store/date'
 import TitleBar from "@renderer/component/TitleBar.vue"
 import {useSettingsStore} from "@renderer/store/settings";
-import SideList from "@renderer/views/LayoutView/SideList.vue";
-import SideBottom from "@renderer/views/LayoutView/SideBottom.vue";
-import SummeryButton from "@renderer/views/LayoutView/SummeryButton.vue";
+import SideList from "@renderer/views/LayoutView/component/SideList.vue";
+import SideBottom from "@renderer/views/LayoutView/component/SideBottom.vue";
+import SummeryButton from "@renderer/views/LayoutView/component/SummeryButton.vue";
 
 const projectStore = useProjectStore()
 const dateStore = useDateStore()
