@@ -4,7 +4,7 @@ import {join} from 'path'
 import * as fs from 'fs'
 import {createSettingsWindow} from "./windows/createSettingsWindow";
 import {createMainWindow} from "./windows/createMainWindow";
-import {updater} from "./ipc";
+import {systemCaller, updater} from "./ipc";
 import {getPossibleHome, getUserHome} from "./util";
 
 // close security warnings
@@ -132,6 +132,8 @@ app.on('window-all-closed', () => {
         app.quit()
     }
 })
+
+systemCaller()
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

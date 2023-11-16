@@ -1,14 +1,23 @@
 <script setup lang="ts">
 
 import {FishOne, Github, Info} from "@icon-park/vue-next";
-import {ref} from "vue";
+import {ref, watchEffect} from "vue";
 
 const visible = ref(false)
 
 const githubSize = ref(24)
 
+const packageObj = ref()
+
+watchEffect(() => {
+  window.api.possibleVersion().then(value => {
+    packageObj.value = JSON.parse(value)
+  })
+})
+
+
 function openGithub() {
-  window.open('https://github.com/padeyao4/possible')
+  window.open(packageObj.value['homepage'])
 }
 
 </script>
@@ -41,7 +50,7 @@ function openGithub() {
               </div>
             </div>
           </div>
-          <div style="margin-top: 16px;">版本: 0.0.xx</div>
+          <div style="margin-top: 16px;">版本: {{ packageObj['version'] }}</div>
         </el-space>
       </el-dialog>
     </Teleport>

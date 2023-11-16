@@ -1,5 +1,6 @@
 import {autoUpdater, UpdateInfo} from 'electron-updater';
 import {dialog, ipcMain} from "electron";
+import fs from 'fs'
 
 export function updater() {
     // 触发检查更新(此方法用于被渲染线程调用，例如页面点击检查更新按钮来调用此方法)
@@ -72,4 +73,10 @@ export function updater() {
                 setImmediate(() => autoUpdater.quitAndInstall());
             });
     });
+}
+
+export function systemCaller() {
+    ipcMain.handle('possible-version', () => {
+        return fs.readFileSync('package.json').toString()
+    })
 }

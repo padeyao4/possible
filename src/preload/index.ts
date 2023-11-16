@@ -33,6 +33,9 @@ const api = {
     windowSettingsClose: () => {
         ipcRenderer.send('window:settings:close')
     },
+    possibleVersion: (): Promise<string> => {
+        return ipcRenderer.invoke('possible-version')
+    },
     platform: async (): Promise<string> => {
         return ipcRenderer.invoke('platform')
     }
