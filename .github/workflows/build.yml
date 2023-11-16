@@ -25,6 +25,9 @@ jobs:
       - run: pnpm install
 
       - run: pnpm run build:win
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Create Release and Upload Release Asset
         uses: softprops/action-gh-release@v1
@@ -39,7 +42,5 @@ jobs:
             ./dist/*.exe
             ./dist/*.exe.blockmap
             ./dist/latest.yml
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
