@@ -26,7 +26,6 @@ jobs:
 
       - run: pnpm run build:win
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Create Release and Upload Release Asset
