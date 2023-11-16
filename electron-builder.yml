@@ -50,8 +50,7 @@ publish:
   repo: possible
 releaseInfo:
   releaseNotes: |
-    这是更新日志
-    测试electron updater
+    fix bugs
 #extraResources:
 #  - from: node_modules/.prisma/client
 #    to: node_modules/.prisma/client
