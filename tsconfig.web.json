@@ -5,7 +5,8 @@
     "src/renderer/src/*.ts",
     "src/renderer/src/**/*",
     "src/renderer/src/**/*.vue",
-    "src/renderer/src/*.vue"
+    "src/renderer/src/*.vue",
+    "package.json"
   ],
   "compilerOptions": {
     "composite": true,
@@ -14,6 +15,9 @@
     "paths": {
       "@renderer/*": [
         "src/renderer/src/*"
+      ],
+      "@root/*": [
+        "*"
       ]
     }
   }

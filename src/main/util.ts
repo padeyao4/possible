@@ -16,6 +16,13 @@ export function getIcon() {
 }
 
 /**
+ * 判断是不是开发环境
+ */
+export function isDev() {
+    return is.dev && process.env['ELECTRON_RENDERER_URL']
+}
+
+/**
  * 获取possible home目录地址
  */
 export function getPossibleHome() {

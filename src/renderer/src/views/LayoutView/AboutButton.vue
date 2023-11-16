@@ -1,23 +1,16 @@
 <script setup lang="ts">
 
 import {FishOne, Github, Info} from "@icon-park/vue-next";
-import {ref, watchEffect} from "vue";
+import {ref} from "vue";
+import {homepage, version as possibleVersion} from '@root/package.json'
 
 const visible = ref(false)
 
 const githubSize = ref(24)
 
-const packageObj = ref()
-
-watchEffect(() => {
-  window.api.possibleVersion().then(value => {
-    packageObj.value = JSON.parse(value)
-  })
-})
-
 
 function openGithub() {
-  window.open(packageObj.value['homepage'])
+  window.open(homepage)
 }
 
 </script>
@@ -50,7 +43,7 @@ function openGithub() {
               </div>
             </div>
           </div>
-          <div style="margin-top: 16px;">版本: {{ packageObj['version'] }}</div>
+          <div style="margin-top: 16px;">版本: {{ possibleVersion }}</div>
         </el-space>
       </el-dialog>
     </Teleport>
