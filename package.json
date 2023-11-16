@@ -1,6 +1,6 @@
 {
   "name": "possible",
-  "version": "0.0.38",
+  "version": "v0.0.40-alpha",
   "description": "todo list",
   "main": "./out/main/index.js",
   "author": "guojian_k@qq.com",

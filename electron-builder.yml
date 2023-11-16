@@ -23,6 +23,7 @@ nsis:
   installerHeader: ./resources/icon.ico
   installerHeaderIcon: ./resources/icon.ico
   uninstallerIcon: resources/icon.ico
+  allowElevation: true
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
@@ -47,6 +48,10 @@ publish:
   provider: github
   owner: padeyao4
   repo: possible
+releaseInfo:
+  releaseNotes: |
+    这是更新日志
+    测试electron updater
 #extraResources:
 #  - from: node_modules/.prisma/client
 #    to: node_modules/.prisma/client
