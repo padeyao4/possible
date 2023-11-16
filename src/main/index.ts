@@ -6,7 +6,9 @@ import {createSettingsWindow} from "./windows/createSettingsWindow";
 import {createMainWindow} from "./windows/createMainWindow";
 import {systemCaller, updater} from "./ipc";
 import {getPossibleHome, getUserHome} from "./util";
+import log from "electron-log";
 
+log.initialize({ spyRendererConsole: true })
 // close security warnings
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
 

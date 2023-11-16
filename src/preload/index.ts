@@ -1,5 +1,6 @@
 import {contextBridge, ipcRenderer} from 'electron'
 import {electronAPI} from '@electron-toolkit/preload'
+import {UpdateCheckResult} from "electron-updater";
 
 // Custom APIs for renderer
 const api = {
@@ -39,8 +40,8 @@ const api = {
     platform: async (): Promise<string> => {
         return ipcRenderer.invoke('platform')
     },
-    checkForUpdates() {
-        ipcRenderer.send('check-for-update')
+    checkForUpdates(): Promise<UpdateCheckResult | null> {
+        return ipcRenderer.invoke('check-for-update')
     }
 }
 

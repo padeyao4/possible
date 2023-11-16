@@ -1,9 +1,11 @@
 <script setup lang="ts">
 
 import {UpdateRotation} from '@icon-park/vue-next'
+import log from 'electron-log'
 
-function checkUpdate() {
-  window.api.checkForUpdates()
+async function checkUpdate() {
+  const result = await window.api.checkForUpdates()
+  log.info(result)
 }
 
 </script>

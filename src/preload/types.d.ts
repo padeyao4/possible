@@ -1,4 +1,5 @@
 import {ElectronAPI} from '@electron-toolkit/preload'
+import {UpdateCheckResult} from "electron-updater";
 
 declare global {
     export interface Window {
@@ -16,7 +17,7 @@ declare global {
             windowSettingsClose: () => void,
             platform: () => Promise<string>
             possibleVersion: () => Promise<string>,
-            checkForUpdates: () => void
+            checkForUpdates: () => Promise<UpdateCheckResult | null>
         }
     }
 }

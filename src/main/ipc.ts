@@ -4,9 +4,9 @@ import log from 'electron-log/main'
 
 export function updater() {
     // 触发检查更新(此方法用于被渲染线程调用，例如页面点击检查更新按钮来调用此方法)
-    ipcMain.on('check-for-update', () => {
+    ipcMain.handle('check-for-update', () => {
         log.info('触发检查更新');
-        autoUpdater.checkForUpdates().then(r => log.debug(r));
+        return autoUpdater.checkForUpdates()
     });
 
     // 设置自动下载为false(默认为true，检测到有更新就自动下载)
