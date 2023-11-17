@@ -48,8 +48,7 @@ export const useProjectStore = defineStore<string, State, Getters, Actions>('pro
             return project.id
         },
         delete(id: string) {
-            const projects = this.projects.filter((p) => p.id !== id)
-            this.$patch({projects})
+            this.projects = this.projects.filter((p) => p.id !== id)
         },
 
         /**

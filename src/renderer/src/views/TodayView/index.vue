@@ -9,8 +9,10 @@ import {index2X} from "@renderer/util";
 import TodoItem from "@renderer/views/TodayView/component/TodoItem.vue";
 import TitleBar from "@renderer/component/TitleBar.vue";
 import CompletedList from "@renderer/views/TodayView/component/CompletedList.vue";
-import {IProject} from "@renderer/model";
 import TimeLabel from "@renderer/views/TodayView/component/TimeLabel.vue";
+import {Possible} from "@renderer/model";
+import WelcomeCard from "@renderer/views/TodayView/component/WelcomeCard.vue";
+import IProject = Possible.IProject;
 
 const projectStore = useProjectStore()
 const dateStore = useDateStore()
@@ -40,7 +42,7 @@ const completed = computed(() => {
 const projectMap = computed(() => {
   const map = new Map<string, IProject>()
   projectStore.projects.forEach(project => {
-    map.set(project.id, project)
+    map.set(project.id, project as IProject)
   })
   return map
 })
@@ -63,49 +65,72 @@ function onEnd() {
 }
 
 const openCompleted = ref(false)
+
+const isEmpty = computed(() => {
+  return projectStore.projects.length === 0
+})
+
 </script>
 <template>
-  <div>
-    <div class="settings-button">
+  <div class="today-bg">
+    <div class="settings-button" :class="{'welcome-bg':isEmpty}">
       <title-bar :visible="true"/>
       <div class="header">
         <div class="title">我的一天</div>
         <time-label/>
       </div>
       <div class="body">
-        <draggable :list="toRaw(todos)" animation="300" item-key="id" :forceFallback="true"
-                   @change="onChange"
-                   @start="onStart"
-                   @end="onEnd"
-                   ghost-class="ghost-class"
-                   handle=".mover"
-                   chosenClass="chosen-class"
-                   drag-class="drag-class">
-          <!--element 为固定写法-->
-          <template #item="{element}">
-            <todo-item :element="element" :project-map="projectMap"/>
-          </template>
-        </draggable>
-        <div class="completed" @click="openCompleted = !openCompleted">
-          <down v-if="openCompleted" theme="outline" size="24" fill="#333" :strokeWidth="2"
-                style="display: flex;justify-content: center;align-items: center"/>
-          <right v-else theme="outline" size="24" fill="#333" :strokeWidth="2"
-                 style="display: flex;justify-content: center;align-items: center"/>
-          已完成 {{ completed.length }}
-        </div>
-        <div v-if="openCompleted">
-          <completed-list :list="completed" :project-map="projectMap"/>
-        </div>
+        <template v-if="isEmpty">
+          <welcome-card/>
+        </template>
+        <template v-else>
+          <draggable :list="toRaw(todos)" animation="300" item-key="id" :forceFallback="true"
+                     @change="onChange"
+                     @start="onStart"
+                     @end="onEnd"
+                     ghost-class="ghost-class"
+                     handle=".mover"
+                     chosenClass="chosen-class"
+                     drag-class="drag-class">
+            <!--element 为固定写法-->
+            <template #item="{element}">
+              <todo-item :element="element" :project-map="projectMap"/>
+            </template>
+          </draggable>
+          <div class="completed" @click="openCompleted = !openCompleted">
+            <down v-if="openCompleted" theme="outline" size="24" fill="#333" :strokeWidth="2"
+                  style="display: flex;justify-content: center;align-items: center"/>
+            <right v-else theme="outline" size="24" fill="#333" :strokeWidth="2"
+                   style="display: flex;justify-content: center;align-items: center"/>
+            已完成 {{ completed.length }}
+          </div>
+          <div v-if="openCompleted">
+            <completed-list :list="completed" :project-map="projectMap"/>
+          </div>
+        </template>
       </div>
       <div class="footer"></div>
     </div>
   </div>
 </template>
 <style scoped>
+
+.today-bg {
+  background: var(--color-neptune);
+  border-radius: 8px 0 0 0;
+}
+
+.welcome-bg {
+  background-image: radial-gradient(transparent, var(--color-neptune)), url("@renderer/assets/images/beach.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: normal;
+}
+
 .settings-button {
   display: grid;
   grid-template-rows: 24px 72px calc(var(--win-height) - 136px) 40px;
-  background: var(--color-neptune);
   border-radius: 8px 0 0 0;
 
   .header {
@@ -147,7 +172,6 @@ const openCompleted = ref(false)
 
   .footer {
     height: 40px;
-    background: var(--color-neptune);
   }
 }
 </style>

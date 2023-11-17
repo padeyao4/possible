@@ -32,12 +32,13 @@ onUnmounted(() => {
 <style scoped>
 .time-pane {
   display: flex;
-  align-items: end;
+  align-items: start;
   height: 32px;
   margin-right: 24px;
   margin-left: 24px;
   font-size: 14px;
   padding-bottom: 6px;
   color: rgba(0, 0, 0, 0.8);
+  font-weight: 1;
 }
 </style>
