@@ -34,7 +34,7 @@ G6.registerLayout('possible-layout', {
             edges: IEdge[]
         } = this
 
-        const map = new Map<number, (INode & NodeConfig)[]>()
+        const map = new Map<number, INode[]>()
 
         const edgesMap = new Map<string, string>()
 
@@ -42,7 +42,7 @@ G6.registerLayout('possible-layout', {
             edgesMap.set(edge.source, edge.target)
         })
 
-        const nodesMap = new Map<string, INode & NodeConfig>()
+        const nodesMap = new Map<string, INode>()
 
         nodes.forEach((node) => {
             nodesMap.set(node.id, node)
@@ -65,10 +65,10 @@ G6.registerLayout('possible-layout', {
          * @param node
          * @param currentX
          */
-        const handleNode = (node: INode & NodeConfig, currentX: number): boolean => {
+        const handleNode = (node: INode, currentX: number): boolean => {
             if (edgesMap.has(node.id)) {
                 const nextId = edgesMap.get(node.id) as string
-                const nextNode = nodesMap.get(nextId) as INode & NodeConfig
+                const nextNode = nodesMap.get(nextId) as INode
                 if (handleNode(nextNode, currentX + 120)) {
                     return handleNodeState(node, currentX)
                 } else {
