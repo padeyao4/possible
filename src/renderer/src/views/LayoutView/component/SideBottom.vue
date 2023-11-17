@@ -1,14 +1,15 @@
 <script setup lang="ts">
 
-import {Logout, Plus, SaveOne, Upload} from "@icon-park/vue-next";
+import {Logout, SaveOne, Upload} from "@icon-park/vue-next";
 import SettingButton from "@renderer/views/LayoutView/component/SettingButton.vue";
 import {ref} from "vue";
 import AboutButton from "@renderer/views/LayoutView/component/AboutButton.vue";
 import Tip from "@renderer/component/Tip.vue";
 import {dumps, loads} from "@renderer/util/data";
 import UpdateButton from "@renderer/views/LayoutView/component/UpdateButton.vue";
+import AddButton from "@renderer/views/LayoutView/component/AddButton.vue";
 
-const props = defineProps(['onAddClick'])
+defineProps(['onAddClick'])
 const front = ref(true)
 
 /**
@@ -30,11 +31,7 @@ async function load() {
   <div>
     <div class="main">
       <div v-if="front" class="front">
-        <div class="add-button" @click="()=>{props.onAddClick?.()}">
-          <plus theme="filled" size="24" fill="#333" :strokeWidth="2"
-                style="display: flex;justify-content: center; align-items: center"/>
-          <div style="padding: 0 0 2px 4px">新建项目</div>
-        </div>
+        <add-button :on-add-click="onAddClick"/>
         <tip content="设置">
           <setting-button @click="front=false"/>
         </tip>
@@ -65,17 +62,6 @@ async function load() {
 <style scoped>
 .main {
   height: 100%;
-
-  .add-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    user-select: none;
-    width: 200px;
-    height: 100%;
-    box-shadow: rgba(27, 31, 35, 0.06) 1px 0 0,
-    rgba(255, 255, 255, 0.25) 1px 0 0 inset;
-  }
 
   .front {
     height: 100%;

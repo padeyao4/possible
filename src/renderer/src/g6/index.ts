@@ -42,7 +42,7 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
         })
 
         graph.on('canvas:dblclick', (e) => {
-            const node = new Possible.Node('[新建节点]', project.id)
+            const node = new Possible.Node('未命名', project.id)
             node.normalXY(e.x, e.y)
             graph?.addItem('node', node)
             graph?.layout()
