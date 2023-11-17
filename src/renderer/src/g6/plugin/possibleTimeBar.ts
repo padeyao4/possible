@@ -3,9 +3,10 @@ import {modifyCSS} from '@antv/dom-util'
 import {Canvas, ShapeCfg} from '@antv/g-canvas'
 import {timeBarShow} from '@renderer/util'
 import {useDateStore} from '@renderer/store/date'
-import {IProject} from '@renderer/model'
 import {getZoneTimeMs} from "@renderer/util/time";
 import {DAY_OF_MS} from "@renderer/common/constant";
+import {Possible} from "@renderer/model";
+import IProject = Possible.IProject;
 
 export class PossibleTimeBar {
   objs: Record<string, unknown>

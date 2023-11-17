@@ -2,7 +2,6 @@
 import {Close, Minus, Square} from '@icon-park/vue-next'
 import {dumps} from "@renderer/util/data";
 
-// const props = defineProps(['close', 'maximize', 'minimize'])
 const props = defineProps<{
   visible?: boolean
   onBeforeClose?: () => void

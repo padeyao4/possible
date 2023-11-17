@@ -4,8 +4,9 @@ import {Local} from "@icon-park/vue-next";
 import {deltaIndex} from "@renderer/util/time";
 import {useDateStore} from "@renderer/store/date";
 import {IGraph} from "@antv/g6";
-import {IProject} from "@renderer/model";
 import Tip from "@renderer/component/Tip.vue";
+import {Possible} from "@renderer/model";
+import IProject = Possible.IProject;
 
 const props = defineProps<{
   project: IProject,

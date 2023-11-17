@@ -2,7 +2,8 @@
 import {IGraph} from "@antv/g6";
 import {ref} from "vue";
 import {deltaIndex} from "@renderer/util/time";
-import {IProject} from "@renderer/model";
+import {Possible} from "@renderer/model";
+import IProject = Possible.IProject;
 
 const props = defineProps<{
   graph: IGraph | null

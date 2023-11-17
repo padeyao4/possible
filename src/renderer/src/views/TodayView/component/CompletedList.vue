@@ -1,7 +1,9 @@
 <script setup lang="ts">
 
 import {CheckOne} from "@icon-park/vue-next";
-import {INode, IProject} from "@renderer/model";
+import {Possible} from "@renderer/model";
+import INode = Possible.INode;
+import IProject = Possible.IProject;
 
 defineProps<{
   list: INode[],

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 
 import {CheckOne, Drag, Round} from "@icon-park/vue-next";
-import {INode, IProject} from "@renderer/model";
 import router from "@renderer/router";
+import {Possible} from "@renderer/model";
+import INode = Possible.INode;
+import IProject = Possible.IProject;
 
 defineProps<{
   element: INode,

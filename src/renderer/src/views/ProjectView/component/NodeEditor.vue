@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import {INode} from "@renderer/model";
 import {computed} from "vue";
+import {Possible} from "@renderer/model";
+import INode = Possible.INode;
 
 const props = defineProps<{
   node: INode,

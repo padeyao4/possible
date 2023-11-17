@@ -4,7 +4,6 @@ import {nextTick, ref} from 'vue'
 import {Delete, Promotion, SetUp} from '@element-plus/icons-vue'
 import {useProjectStore} from '@renderer/store/project'
 import router from '@renderer/router'
-import {INode} from '@renderer/model'
 import {useDateStore} from '@renderer/store/date'
 import TitleBar from '@renderer/component/TitleBar.vue'
 import {Aiming, ArrowLeft, ArrowRight, Back, ExperimentOne, More, Next} from '@icon-park/vue-next'
@@ -16,6 +15,8 @@ import {dumps} from "@renderer/util/data";
 import CalendarButton from "@renderer/views/ProjectView/component/CalendarButton.vue";
 import TodayButton from "@renderer/views/ProjectView/component/TodayButton.vue";
 import CanvasMoveButtons from "@renderer/views/ProjectView/component/CanvasMoveButtons.vue";
+import {Possible} from "@renderer/model";
+import INode = Possible.INode;
 
 const props = defineProps<{
   id: string
