@@ -21,6 +21,7 @@
   padding: 30px;
 
   .card {
+    visibility: hidden;
     padding: 24px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 16px;

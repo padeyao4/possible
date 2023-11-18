@@ -121,7 +121,7 @@ const isEmpty = computed(() => {
 }
 
 .welcome-bg {
-  background-image: radial-gradient(transparent, var(--color-neptune)), url("@renderer/assets/images/beach.jpg");
+  background-image: radial-gradient(transparent -50%, var(--color-neptune)), url("@renderer/assets/images/beach.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
