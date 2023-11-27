@@ -12,6 +12,7 @@ import CompletedList from "@renderer/views/TodayView/component/CompletedList.vue
 import TimeLabel from "@renderer/views/TodayView/component/TimeLabel.vue";
 import {Possible} from "@renderer/model";
 import WelcomeCard from "@renderer/views/TodayView/component/WelcomeCard.vue";
+import CreateTaskInput from "@renderer/views/TodayView/component/CreateTaskInput.vue";
 import IProject = Possible.IProject;
 
 const projectStore = useProjectStore()
@@ -19,24 +20,24 @@ const dateStore = useDateStore()
 
 const todos = computed(() => {
   return projectStore.projects
-      .map((project) => {
-        const x = index2X(deltaIndex(dateStore.now, project.initDate))
-        return project.data.nodes.filter(
-            (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
-        )
-      })
-      .flat().sort((n1, n2) => (n1?.orderIndex ?? 0) - (n2?.orderIndex ?? 0))
+    .map((project) => {
+      const x = index2X(deltaIndex(dateStore.now, project.initDate))
+      return project.data.nodes.filter(
+        (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
+      )
+    })
+    .flat().sort((n1, n2) => (n1?.orderIndex ?? 0) - (n2?.orderIndex ?? 0))
 })
 
 const completed = computed(() => {
   return projectStore.projects
-      .map((project) => {
-        const x = index2X(deltaIndex(dateStore.now, project.initDate))
-        return project.data.nodes.filter(
-            (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
-        )
-      })
-      .flat()
+    .map((project) => {
+      const x = index2X(deltaIndex(dateStore.now, project.initDate))
+      return project.data.nodes.filter(
+        (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
+      )
+    })
+    .flat()
 })
 
 const projectMap = computed(() => {
@@ -109,7 +110,9 @@ const isEmpty = computed(() => {
           </div>
         </template>
       </div>
-      <div class="footer"></div>
+      <div class="footer">
+        <create-task-input/>
+      </div>
     </div>
   </div>
 </template>
@@ -129,15 +132,18 @@ const isEmpty = computed(() => {
 }
 
 .settings-button {
+  --drag-h: 24px;
+  --title-h: 72px;
+  --footer-h: 64px;
   display: grid;
-  grid-template-rows: 24px 72px calc(var(--win-height) - 136px) 40px;
+  grid-template-rows: var(--drag-h) var(--title-h) calc(var(--win-height) - var(--drag-h) - var(--title-h) - var(--footer-h)) var(--footer-h);
   border-radius: 8px 0 0 0;
 
   .header {
     -webkit-app-region: drag;
     display: flex;
     flex-direction: column;
-    height: 72px;
+    height: var(--title-h);
 
     .title {
       display: flex;
@@ -151,7 +157,7 @@ const isEmpty = computed(() => {
   }
 
   .body {
-    margin: 8px 0 40px 0;
+    margin: 8px 0 8px 0;
     padding: 0 24px 0 24px;
     overflow-y: auto;
 
@@ -171,7 +177,7 @@ const isEmpty = computed(() => {
   }
 
   .footer {
-    height: 40px;
+    background: rgba(0, 0, 0, 0);
   }
 }
 </style>
