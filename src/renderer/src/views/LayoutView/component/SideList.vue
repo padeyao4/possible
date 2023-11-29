@@ -3,7 +3,8 @@ import {useProjectStore} from "@renderer/store/project";
 import Draggable from 'vuedraggable/src/vuedraggable'
 import router from "@renderer/router";
 import {useRoute} from "vue-router";
-import {computed} from "vue";
+import {computed, reactive} from "vue";
+import ListContextMenu from "@renderer/views/LayoutView/component/ListContextMenu.vue";
 
 const props = defineProps<{ rename: Function | undefined }>()
 const route = useRoute()
@@ -41,10 +42,30 @@ function handleInput() {
   }
   props.rename?.()
 }
+
+const context = reactive({
+  x: 0,
+  y: 0,
+  visible: false,
+  projectId: ''
+})
+
+function showContextMenu(e: any, id: string) {
+  console.log(e, id)
+  context.x = e.x
+  context.y = e.y
+  context.visible = true
+  context.projectId = id
+}
+
 </script>
 
 <template>
   <div class="main-side-list">
+    <teleport to="body">
+      <list-context-menu :x="context.x" :y="context.y" v-model:visible="context.visible"
+                         :project-id="context.projectId"/>
+    </teleport>
     <draggable :list="projectStore.projects" item-key="id" animation="300"
                :forceFallback="true" ghost-class="ghost-class" drag-class="drag-class"
                @start="onStart"
@@ -57,6 +78,8 @@ function handleInput() {
             class="list-item"
             :class="{ 'active': element.id === active }"
             @click="()=>{handleItemClick(element.id)}"
+            :key="element.id"
+            @contextmenu.prevent="(e)=>showContextMenu(e,element.id)"
         >
           <div class="text">
             {{ element.name }}
@@ -65,13 +88,13 @@ function handleInput() {
       </template>
     </draggable>
     <div v-show="props.rename" class="list-item active">
-        <input
-            :ref="(e) => {(e as HTMLInputElement)?.focus()}"
-            v-model="project.name"
-            class="item-input"
-            @blur="handleInput"
-            @keydown.enter="handleInput"
-        />
+      <input
+          :ref="(e) => {(e as HTMLInputElement)?.focus()}"
+          v-model="project.name"
+          class="item-input"
+          @blur="handleInput"
+          @keydown.enter="handleInput"
+      />
     </div>
   </div>
 </template>
