@@ -2,12 +2,14 @@
 
 import {computed, ref, watch} from "vue";
 import {useProjectStore} from "@renderer/store/project";
+import router from "@renderer/router";
 
 const props = defineProps<{
   x: number,
   y: number,
   visible: boolean,
-  projectId: string
+  projectId: string,
+  active: string
 }>()
 
 const emit = defineEmits(['update:visible'])
@@ -33,6 +35,9 @@ const project = computed(() => {
 const deleteDialogVisible = ref(false)
 
 function handleProjectDelete() {
+  if (props.projectId === props.active) {
+    router.push({name: 'today'})
+  }
   projectStore.delete(props.projectId)
   deleteDialogVisible.value = false
 }

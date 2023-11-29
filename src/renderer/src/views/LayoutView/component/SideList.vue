@@ -47,7 +47,8 @@ const context = reactive({
   x: 0,
   y: 0,
   visible: false,
-  projectId: ''
+  projectId: '',
+  active: ''
 })
 
 function showContextMenu(e: any, id: string) {
@@ -56,6 +57,7 @@ function showContextMenu(e: any, id: string) {
   context.y = e.y
   context.visible = true
   context.projectId = id
+  context.active = active.value
 }
 
 </script>
@@ -64,6 +66,7 @@ function showContextMenu(e: any, id: string) {
   <div class="main-side-list">
     <teleport to="body">
       <list-context-menu :x="context.x" :y="context.y" v-model:visible="context.visible"
+                         :active="context.active"
                          :project-id="context.projectId"/>
     </teleport>
     <draggable :list="projectStore.projects" item-key="id" animation="300"

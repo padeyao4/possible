@@ -5,7 +5,10 @@ import {ListAdd, Plus, Round} from "@icon-park/vue-next";
 <template>
   <div class="create-task-input">
     <div class="footer-input">
-      <list-add theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon"/>
+      <div class="addon">
+        <list-add theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon"/>
+        <div class="text">默认</div>
+      </div>
       <input class="input" placeholder="添加任务"/>
       <plus theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon plus"/>
       <Round theme="outline" size="24" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="icon round"/>
@@ -25,6 +28,19 @@ import {ListAdd, Plus, Round} from "@icon-park/vue-next";
     height: 100%;
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.7);
+
+    .addon {
+      display: flex;
+      .text{
+        font-weight: 1;
+        font-size: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 4px;
+        width: max-content;
+      }
+    }
 
     .icon {
       display: flex;
