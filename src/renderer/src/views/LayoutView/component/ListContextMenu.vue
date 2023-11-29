@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import {useProjectStore} from "@renderer/store/project";
 
 const props = defineProps<{
@@ -26,7 +26,9 @@ watch(() => props.visible, () => {
   }
 })
 
-const project = projectStore.get(props.projectId)
+const project = computed(() => {
+  return projectStore.get(props.projectId)
+})
 
 const deleteDialogVisible = ref(false)
 
