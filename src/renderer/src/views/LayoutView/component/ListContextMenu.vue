@@ -34,6 +34,7 @@ const deleteDialogVisible = ref(false)
 
 function handleProjectDelete() {
   projectStore.delete(props.projectId)
+  deleteDialogVisible.value = false
 }
 
 function handleList(e: any) {
