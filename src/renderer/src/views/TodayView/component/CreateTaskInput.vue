@@ -7,10 +7,6 @@ import IProject = Possible.IProject;
 
 const projectStore = useProjectStore()
 
-const projects = computed(() => {
-  return projectStore.list
-})
-
 const addonVisible = ref(false)
 
 function changeAddonVisible() {
@@ -27,12 +23,13 @@ watch(addonVisible, () => {
 
 const listItemHeight = 30;
 
-const selectValue = ref<IProject>(projectStore.list?.[0])
-watch(() => projectStore.list, () => {
+const selectValue = ref(projectStore.projects?.[0])
+
+watch(projectStore.projects, () => {
   const id = selectValue.value?.id
   selectValue.value = projectStore.get(id as string)
   if (!selectValue.value?.id) {
-    selectValue.value = projectStore.list?.[0]
+    selectValue.value = projectStore.projects?.[0]
   }
 })
 
@@ -55,6 +52,10 @@ function handleSubmit() {
   inputValue.value = ''
 }
 
+const offsetHeight = computed(() => {
+  return projectStore.projects.length * listItemHeight
+})
+
 </script>
 
 <template>
@@ -62,13 +63,13 @@ function handleSubmit() {
     <div class="footer-input">
       <div class="addon" @click.stop="addonVisible=!addonVisible">
         <div class="list" v-show="addonVisible"
-             :style="{'top':`calc(${projects.length * listItemHeight}px * -1 - 4px)`,'height':`${projects.length * listItemHeight}px`}">
-          <div v-for="item in projects" :style="{'height':listItemHeight}" class="item"
-               @click="()=>{handleClickAddon(item)}">{{ item.name }}
+             :style="{'top':`calc(${offsetHeight}px * -1 - 4px)`,'height':`${offsetHeight}px`}">
+          <div v-for="item in projectStore.projects" :style="{'height':listItemHeight}" class="item"
+               @click="()=>{handleClickAddon(item as IProject)}">{{ item.name }}
           </div>
         </div>
         <list-add theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon"/>
-        <div class="text">{{ selectValue?.name ?? '默认' }}</div>
+        <div class="text">{{ selectValue.name ?? '默认' }}</div>
       </div>
       <input class="input" v-model="inputValue" placeholder="添加任务" @keydown.enter="handleSubmit"/>
       <plus theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon plus"/>
