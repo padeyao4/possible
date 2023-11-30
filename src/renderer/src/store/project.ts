@@ -72,8 +72,7 @@ export const useProjectStore = defineStore<string, State, Getters, Actions>('pro
       projects.forEach(project => {
         const exits = this.projects.find(p => p.id === project.id)
         if (exits) {
-          const projects = this.projects.filter((p) => p.id !== project.id)
-          this.$patch({projects})
+          this.projects = this.projects.filter((p) => p.id !== project.id)
         }
         this.projects.push(project)
       })
