@@ -1,6 +1,6 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
-  --offset-size: 1px;
+  --offset-size: 0px;
   --side-width: 240px;
   --win-height: calc(100vh - var(--offset-size) * 2);
   --win-width: calc(100vw - var(--offset-size) * 2);
@@ -40,5 +40,4 @@ body {
   text-rendering: optimizeLegibility;
   border-radius: 8px;
   overflow: hidden;
-  border: solid 1px #58585860;
 }

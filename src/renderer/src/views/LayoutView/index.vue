@@ -68,6 +68,7 @@ function handleRename() {
   height: var(--win-height);
   grid-template-columns: var(--side-width) var(--content-width);
   border-radius: 8px;
+  border: solid 1px #58585860;
 
   .side {
     display: grid;
