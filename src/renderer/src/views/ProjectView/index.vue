@@ -16,7 +16,7 @@ import CalendarButton from "@renderer/views/ProjectView/component/CalendarButton
 import TodayButton from "@renderer/views/ProjectView/component/TodayButton.vue";
 import CanvasMoveButtons from "@renderer/views/ProjectView/component/CanvasMoveButtons.vue";
 import {Possible} from "@renderer/model";
-import {useRoute} from "vue-router";
+import {useProject} from "@renderer/util/project";
 import INode = Possible.INode;
 
 const store = useStore()
@@ -25,8 +25,7 @@ const settings = useSettingsStore()
 
 const container = ref<HTMLElement>()
 const timeBar = ref<HTMLElement>()
-const projectId = useRoute().params.id as string;
-const project = store.projects.get(projectId)!
+const project = useProject()!
 
 const editor = {
   visible: ref(false),
@@ -48,7 +47,7 @@ function onNodeClick(e: IG6GraphEvent, graph: IGraph | null) {
   })
 }
 
-const {save, graph} = useGraph(container, timeBar, project, onNodeClick)
+const {save, graph} = useGraph(container, timeBar, onNodeClick)
 
 // ------------------------ project title ---------------------------
 const titleEditEnable = ref<boolean>(false)

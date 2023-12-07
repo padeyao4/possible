@@ -12,15 +12,17 @@ import {deltaIndex} from "@renderer/util/time";
 import {useDateStore} from "@renderer/store/date";
 import {debounce} from "@antv/util";
 import {Possible} from "@renderer/model";
-import IProject = Possible.IProject;
+import {useStore} from "@renderer/store/project";
+import {useRoute} from "vue-router";
 
 
 export function useGraph(container: Ref<HTMLElement | undefined>,
                          timeBar: Ref<HTMLElement | undefined>,
-                         project: IProject,
                          nodeDblClick: undefined | ((e: IG6GraphEvent, graph: null | IGraph) => void)) {
   const dateStore = useDateStore()
   const graph = shallowRef<IGraph>()
+  const project = useStore().projects.get(useRoute().params.id as string)!
+
   const dataIndex = () => {
     return deltaIndex(dateStore.now, project.initDate)
   }
@@ -137,7 +139,6 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
             return menu
           },
           handleMenuClick: (el: HTMLElement, item: Item) => {
-            console.debug(el.title)
             switch (el.title) {
               case 'delay': {
                 delay(item)
