@@ -8,7 +8,7 @@ import ListContextMenu from "@renderer/views/LayoutView/component/ListContextMen
 
 const props = defineProps<{ rename: Function | undefined }>()
 const route = useRoute()
-const projectStore = useStore()
+const store = useStore()
 
 const handleItemClick = (id: string) => {
   router.push({
@@ -22,7 +22,7 @@ const active = computed(() => {
 })
 
 const project = computed(() => {
-  return projectStore.get(active.value)
+  return store.get(active.value)
 })
 
 let defaultMouseStyle = 'auto'
@@ -69,7 +69,7 @@ function showContextMenu(e: any, id: string) {
                          :active="context.active"
                          :project-id="context.projectId"/>
     </teleport>
-    <draggable :list="projectStore.projects" item-key="id" animation="300"
+    <draggable :list="store.projects" item-key="id" animation="300"
                :forceFallback="true" ghost-class="ghost-class" drag-class="drag-class"
                @start="onStart"
                @end="onEnd"

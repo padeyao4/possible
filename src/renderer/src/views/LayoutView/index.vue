@@ -45,14 +45,14 @@ function handleRename() {
 
 <template>
   <div>
-    <div class="main">
-      <div class="side">
+    <div class="layout-main">
+      <div class="layout-side">
         <title-bar/>
         <summery-button/>
         <side-list :rename="renaming?handleRename:undefined"/>
         <side-bottom :on-add-click="addButtonClick"/>
       </div>
-      <div class="content">
+      <div class="layout-content">
         <slot/>
       </div>
     </div>
@@ -60,7 +60,7 @@ function handleRename() {
 </template>
 
 <style scoped>
-.main {
+.layout-main {
   overflow: hidden;
   background: var(--color-background);
   display: grid;
@@ -70,12 +70,12 @@ function handleRename() {
   border-radius: 8px;
   border: solid 1px #58585860;
 
-  .side {
+  .layout-side {
     display: grid;
     grid-template-rows: 24px 40px 1fr 40px;
   }
 
-  .content {
+  .layout-content {
     width: 100%;
   }
 }
