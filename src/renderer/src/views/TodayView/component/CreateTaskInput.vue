@@ -69,7 +69,7 @@ const offsetHeight = computed(() => {
           </div>
         </div>
         <list-add theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon"/>
-        <div class="text">{{ selectValue.name ?? '默认' }}</div>
+        <div class="text">{{ selectValue?.name ?? '默认' }}</div>
       </div>
       <input class="input" v-model="inputValue" placeholder="添加任务" @keydown.enter="handleSubmit"/>
       <plus theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon plus"/>
