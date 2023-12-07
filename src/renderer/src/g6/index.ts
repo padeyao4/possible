@@ -16,8 +16,8 @@ import {useStore} from "@renderer/store/project";
 import {useRoute} from "vue-router";
 
 
-export function useGraph(container: Ref<HTMLElement | undefined>,
-                         timeBar: Ref<HTMLElement | undefined>,
+export function useGraph(container: Ref<HTMLElement>,
+                         timeBar: Ref<HTMLElement>,
                          nodeDblClick: undefined | ((e: IG6GraphEvent, graph: null | IGraph) => void)) {
   const dateStore = useDateStore()
   const graph = shallowRef<IGraph>()
@@ -111,7 +111,7 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
 
   onMounted(() => {
     graph.value = new Graph({
-      container: 'container',
+      container: container.value,
       animate: true,
       animateCfg: {
         duration: 300
@@ -124,10 +124,10 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
       },
       plugins: [
         new PossibleGrid(),
-        new PossibleTimeBar(timeBar.value as HTMLElement),
+        new PossibleTimeBar(timeBar.value),
         new Menu({
-          offsetX: -(container.value as HTMLElement).offsetLeft,
-          offsetY: -(container.value as HTMLElement).offsetTop,
+          offsetX: -container.value.offsetLeft,
+          offsetY: -container.value.offsetTop,
           getContent: () => {
             const menu = document.createElement('div')
             menu.className = 'graph-menu'
@@ -190,7 +190,7 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
       }
     })
     const {x, y} = project.offset
-    graph.value.data(project.data as GraphData)
+    graph.value.data((project.data ?? {}) as GraphData)
     graph.value.render()
     graph.value.translate(x, y)
     addListen(graph.value)

@@ -7,7 +7,7 @@ import {Aiming, ArrowLeft, ArrowRight, Back, Next} from '@icon-park/vue-next'
 import {useSettingsStore} from "@renderer/store/settings";
 import {useGraph} from "@renderer/g6";
 import NodeEditor from "@renderer/views/ProjectView/component/NodeEditor.vue";
-import {IG6GraphEvent, NodeConfig} from "@antv/g6-core";
+import {IG6GraphEvent} from "@antv/g6-core";
 import CalendarButton from "@renderer/views/ProjectView/component/CalendarButton.vue";
 import TodayButton from "@renderer/views/ProjectView/component/TodayButton.vue";
 import CanvasMoveButtons from "@renderer/views/ProjectView/component/CanvasMoveButtons.vue";
@@ -30,28 +30,28 @@ const editor = {
 
 function onNodeClick(e: IG6GraphEvent, graph: IGraph | null) {
   editor.visible.value = true
-  const node = ref((graph?.findById(e.item?.getID() as string).getModel() ?? {}) as unknown as INode)
+  const node = ref((graph?.findById(e.item?.getID() as string).getModel() ?? {}) as any)
   editor.model = new Proxy<INode>(node.value, {
     get: (target, p) => {
       return Reflect.get(target, p)
     },
     set: (target, p, newValue) => {
       Reflect.set(target, p, newValue)
-      graph?.updateItem(target.id, target as unknown as Partial<NodeConfig>)
+      graph?.updateItem(target.id, target)
       return true
     }
   })
 }
 
-const {save, graph} = useGraph(container, timeBar, onNodeClick)
+const {graph} = useGraph(container as any, timeBar as any, onNodeClick)
 
 </script>
 
 <template>
   <div class="project-view">
-    <title-bar :visible="true" :on-before-close="save"/>
+    <title-bar :visible="true" :on-before-close="undefined"/>
     <project-header/>
-    <div class="body">
+    <div class="project-body">
       <Teleport to="body">
         <node-editor v-model:visible="editor.visible.value" v-model:node="editor.model"/>
       </Teleport>
@@ -86,7 +86,7 @@ const {save, graph} = useGraph(container, timeBar, onNodeClick)
   height: var(--win-height);
   grid-template-rows: 24px 40px 1fr 40px;
 
-  .body {
+  .project-body {
     overflow: hidden;
     height: 100%;
     padding: 24px 24px 24px 24px;
