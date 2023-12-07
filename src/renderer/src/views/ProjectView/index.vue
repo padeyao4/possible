@@ -49,7 +49,7 @@ const {graph} = useGraph(container as any, timeBar as any, onNodeClick)
 
 <template>
   <div class="project-view">
-    <title-bar :visible="true" :on-before-close="undefined"/>
+    <title-bar :visible="true"/>
     <project-header/>
     <div class="project-body">
       <Teleport to="body">

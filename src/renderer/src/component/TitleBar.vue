@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {Close, Minus, Square} from '@icon-park/vue-next'
-import {dumps} from "@renderer/util/data";
 
 const props = defineProps<{
   visible?: boolean
@@ -17,7 +16,7 @@ function winMax() {
 
 function winClose() {
   props.onBeforeClose?.()
-  window.api.windowMainClose(dumps())
+  window.api.windowMainClose()
 }
 </script>
 
