@@ -20,9 +20,7 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
                          project: IProject,
                          nodeDblClick: undefined | ((e: IG6GraphEvent, graph: null | IGraph) => void)) {
   const dateStore = useDateStore()
-
-  const graphRef = shallowRef<IGraph | null>(null)
-  let graph: IGraph | null;
+  const graph = shallowRef<IGraph>()
   const dataIndex = () => {
     return deltaIndex(dateStore.now, project.initDate)
   }
@@ -106,11 +104,11 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
   const debounceSave = debounce(save, 3000)
 
   function save() {
-    project.data = graph!.save() as Possible.IData
+    project.data = graph.value?.save() as Possible.IData
   }
 
   onMounted(() => {
-    graph = new Graph({
+    graph.value = new Graph({
       container: 'container',
       animate: true,
       animateCfg: {
@@ -150,8 +148,8 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
                 break
               }
               case 'delete': {
-                graph?.removeItem(item)
-                graph?.layout()
+                graph.value?.removeItem(item)
+                graph.value?.layout()
                 break
               }
             }
@@ -191,23 +189,22 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
       }
     })
     const {x, y} = project.offset
-    graph.data(project.data as GraphData)
-    graph.render()
-    graph.translate(x, y)
-    addListen(graph)
+    graph.value.data(project.data as GraphData)
+    graph.value.render()
+    graph.value.translate(x, y)
+    addListen(graph.value)
     dateStore.$subscribe(() => {
-      graph?.updateLayout({
+      graph.value?.updateLayout({
         todayIndex: dataIndex()
       })
-      graph?.emit('possible-update', {x: project.offset.x})
+      graph.value?.emit('possible-update', {x: project.offset.x})
     })
     window.addEventListener('resize', () => {
       if (container.value) {
-        graph?.changeSize(container.value.clientWidth, container.value.clientHeight)
+        graph.value?.changeSize(container.value.clientWidth, container.value.clientHeight)
       }
     })
     interval.value = setInterval(debounceSave, 30_000)
-    graphRef.value = graph
   })
 
   /**
@@ -217,15 +214,15 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
   function move(item: Item) {
     function moveItem(item: Item) {
       const id = item.getID()
-      const node: Possible.Node = Object.assign(new Possible.Node(), graph!.findById(id).getModel())
-      const hors = graph?.getNeighbors(node.id, "target")
+      const node: Possible.Node = Object.assign(new Possible.Node(), graph.value!.findById(id).getModel())
+      const hors = graph.value?.getNeighbors(node.id, "target")
       hors?.map(h => moveItem(h))
       node.x += node.cellWidth
-      graph?.update(item.getID(), node)
+      graph.value?.update(item.getID(), node)
     }
 
     moveItem(item)
-    graph?.layout()
+    graph.value?.layout()
   }
 
   /**
@@ -235,13 +232,13 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
   function delay(item: Item) {
     function delayItem(item: Item) {
       const id = item.getID()
-      const node = Object.assign(new Possible.Node(), graph?.findById(id).getModel())
+      const node = Object.assign(new Possible.Node(), graph.value?.findById(id).getModel())
       if (node.taskType !== 'general') return false
       if (node.state !== 'normal') return false
-      const hors = graph?.getNeighbors(node.id, "target").filter(h => (h.getModel()?.x ?? 0) - node.x === node.cellWidth)
+      const hors = graph.value?.getNeighbors(node.id, "target").filter(h => (h.getModel()?.x ?? 0) - node.x === node.cellWidth)
       if (hors?.length === 0) {
         node.x += node.cellWidth
-        graph?.update(item.getID(), node)
+        graph.value?.update(item.getID(), node)
         return true
       } else {
         const ans = hors?.map(h => delayItem(h)).filter(v => !v)
@@ -249,14 +246,14 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
           return false
         } else {
           node.x += node.cellWidth
-          graph?.update(item.getID(), node)
+          graph.value?.update(item.getID(), node)
           return true
         }
       }
     }
 
     delayItem(item)
-    graph?.layout()
+    graph.value?.layout()
   }
 
 
@@ -265,10 +262,9 @@ export function useGraph(container: Ref<HTMLElement | undefined>,
   onBeforeUnmount(() => {
     clearInterval(interval.value)
     save()
-    graph?.destroy()
-    graph = null
-    graphRef.value = null
+    graph.value?.destroy()
+    graph.value = undefined
   })
 
-  return {save, graphRef}
+  return {save, graph}
 }

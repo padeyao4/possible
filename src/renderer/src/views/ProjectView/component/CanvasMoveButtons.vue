@@ -4,7 +4,7 @@ import {IGraph} from "@antv/g6";
 import {ref} from "vue";
 
 const props = defineProps<{
-  graph: IGraph | null
+  graph: IGraph | undefined
 }>()
 
 const stepSize = 10

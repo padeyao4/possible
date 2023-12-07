@@ -10,7 +10,7 @@ import IProject = Possible.IProject;
 
 const props = defineProps<{
   project: IProject,
-  graph: IGraph | null
+  graph: IGraph | undefined
 }>()
 
 const dateStore = useDateStore()

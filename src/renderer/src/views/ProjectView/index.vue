@@ -48,7 +48,7 @@ function onNodeClick(e: IG6GraphEvent, graph: IGraph | null) {
   })
 }
 
-const {save, graphRef} = useGraph(container, timeBar, project, onNodeClick)
+const {save, graph} = useGraph(container, timeBar, project, onNodeClick)
 
 // ------------------------ project title ---------------------------
 const titleEditEnable = ref<boolean>(false)
@@ -150,9 +150,9 @@ const projectSettingsHover = ref(false)
       </div>
       <div class="footer">
         <div class="icon-group">
-          <today-button :graph="graphRef" :project="project"/>
-          <calendar-button :graph="graphRef" :project="project"/>
-          <canvas-move-buttons :graph="graphRef"/>
+          <today-button :graph="graph" :project="project"/>
+          <calendar-button :graph="graph" :project="project"/>
+          <canvas-move-buttons :graph="graph"/>
           <back v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
           <next v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
           <experiment-one v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"

@@ -6,7 +6,7 @@ import {Possible} from "@renderer/model";
 import IProject = Possible.IProject;
 
 const props = defineProps<{
-  graph: IGraph | null
+  graph: IGraph | undefined
   project: IProject
 }>()
 
