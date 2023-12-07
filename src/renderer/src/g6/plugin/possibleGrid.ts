@@ -45,7 +45,19 @@ export default class PossibleGrid {
       `<div class="g6-grid-container" style="position:absolute;overflow:hidden;z-index: -1;"></div>`
     )
     const gridContainer = createDom(
-      `<div class="g6-grid"></div>`
+      `<div class="g6-grid" style="    position: absolute;
+            user-select: none;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(
+                    90deg,
+                    black 0px,
+                    black 1px,
+                    transparent 1px,
+                    transparent 120px
+            );
+            background-size: 120px 120px;
+            opacity: 0.05;"></div>`
     )
     this.set('container', container)
     this.set('gridContainer', gridContainer)
