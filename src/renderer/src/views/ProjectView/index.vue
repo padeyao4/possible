@@ -90,86 +90,84 @@ const projectSettingsHover = ref(false)
 </script>
 
 <template>
-  <div>
-    <div class="settings-button">
-      <title-bar :visible="true" :on-before-close="save"/>
-      <div class="header">
-        <div class="header-content">
-          <input
-            v-if="titleEditEnable"
-            ref="titleRef"
-            v-model="project.name"
-            class="title-input"
-            @blur="submitTitle"
-            @keydown.enter="submitTitle"
-          />
-          <div v-else class="title" @click="editTitle">
-            <div class="text">{{ project.name }}</div>
-          </div>
-          <el-dropdown class="operation-list" trigger="click">
-            <div style="height: 40px; display: flex; align-items: end">
-              <div @mouseover="projectSettingsHover=true" @mouseleave="projectSettingsHover=false">
-                <more v-if="projectSettingsHover" theme="outline" size="20" fill="#33333360" :strokeWidth="2"
-                      style="display: flex;justify-content: center;align-items: center;"/>
-                <more v-else theme="outline" size="20" fill="#333" :strokeWidth="2"
-                      style="display: flex;justify-content: center;align-items: center;"/>
-              </div>
+  <div class="project-view">
+    <title-bar :visible="true" :on-before-close="save"/>
+    <div class="header">
+      <div class="header-content">
+        <input
+          v-if="titleEditEnable"
+          ref="titleRef"
+          v-model="project.name"
+          class="title-input"
+          @blur="submitTitle"
+          @keydown.enter="submitTitle"
+        />
+        <div v-else class="title" @click="editTitle">
+          <div class="text">{{ project.name }}</div>
+        </div>
+        <el-dropdown class="operation-list" trigger="click">
+          <div style="height: 40px; display: flex; align-items: end">
+            <div @mouseover="projectSettingsHover=true" @mouseleave="projectSettingsHover=false">
+              <more v-if="projectSettingsHover" theme="outline" size="20" fill="#33333360" :strokeWidth="2"
+                    style="display: flex;justify-content: center;align-items: center;"/>
+              <more v-else theme="outline" size="20" fill="#333" :strokeWidth="2"
+                    style="display: flex;justify-content: center;align-items: center;"/>
             </div>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item :icon="Delete" @click="deleteDialogVisible = true"
-                >删除
-                </el-dropdown-item>
-                <el-dropdown-item :icon="SetUp" @click="editTitle">重命名</el-dropdown-item>
-                <el-dropdown-item :icon="Promotion" @click="exportProject">导出</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-          <Teleport to="body">
-            <el-dialog v-model="deleteDialogVisible" title="警告" width="30%" align-center>
+          </div>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item :icon="Delete" @click="deleteDialogVisible = true"
+              >删除
+              </el-dropdown-item>
+              <el-dropdown-item :icon="SetUp" @click="editTitle">重命名</el-dropdown-item>
+              <el-dropdown-item :icon="Promotion" @click="exportProject">导出</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+        <Teleport to="body">
+          <el-dialog v-model="deleteDialogVisible" title="警告" width="30%" align-center>
               <span
               >确定删除 <i style="font-size: large">{{ project.name ?? '' }} </i> 计划吗</span
               >
-              <template #footer>
+            <template #footer>
                 <span class="dialog-footer">
                   <el-button type="primary" @click="deleteDialogVisible = false">取消</el-button>
                   <el-button @click="handleDelete"> 确定 </el-button>
                 </span>
-              </template>
-            </el-dialog>
-          </Teleport>
-        </div>
-      </div>
-      <div class="body">
-        <Teleport to="body">
-          <node-editor v-model:visible="editor.visible.value" v-model:node="editor.model"/>
+            </template>
+          </el-dialog>
         </Teleport>
-        <div id="timeBar" ref="timeBar" class="time-bar"></div>
-        <div id="container" ref="container" class="container"></div>
       </div>
-      <div class="footer">
-        <div class="icon-group">
-          <today-button :graph="graph" :project="project"/>
-          <calendar-button :graph="graph" :project="project"/>
-          <canvas-move-buttons :graph="graph"/>
-          <back v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
-          <next v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
-          <experiment-one v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
-                          @click="testGraph"/>
-          <arrow-left v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
-                      @click="() => {dateStore.addDay(-1)}"/>
-          <aiming v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
-                  @click="() => {dateStore.update2Now()}"/>
-          <arrow-right v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
-                       @click="() => {dateStore.addDay(1)}"/>
-        </div>
+    </div>
+    <div class="body">
+      <Teleport to="body">
+        <node-editor v-model:visible="editor.visible.value" v-model:node="editor.model"/>
+      </Teleport>
+      <div id="timeBar" ref="timeBar" class="time-bar"></div>
+      <div id="container" ref="container" class="container"></div>
+    </div>
+    <div class="footer">
+      <div class="icon-group">
+        <today-button :graph="graph" :project="project"/>
+        <calendar-button :graph="graph" :project="project"/>
+        <canvas-move-buttons :graph="graph"/>
+        <back v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
+        <next v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
+        <experiment-one v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
+                        @click="testGraph"/>
+        <arrow-left v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
+                    @click="() => {dateStore.addDay(-1)}"/>
+        <aiming v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
+                @click="() => {dateStore.update2Now()}"/>
+        <arrow-right v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
+                     @click="() => {dateStore.addDay(1)}"/>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.settings-button {
+.project-view {
   overflow: hidden;
   border-radius: 8px 0 0 0;
   background: var(--color-project);
@@ -264,9 +262,5 @@ const projectSettingsHover = ref(false)
       align-items: center;
     }
   }
-}
-
-.dialog-footer button:first-child {
-  margin-right: 10px;
 }
 </style>
