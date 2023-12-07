@@ -15,34 +15,32 @@ import WelcomeCard from "@renderer/views/TodayView/component/WelcomeCard.vue";
 import CreateTaskInput from "@renderer/views/TodayView/component/CreateTaskInput.vue";
 import IProject = Possible.IProject;
 
-const projectStore = useStore()
+const store = useStore()
 const dateStore = useDateStore()
 
 const todos = computed(() => {
-  return projectStore.projects
-    .map((project) => {
-      const x = index2X(deltaIndex(dateStore.now, project.initDate))
-      return project.data.nodes.filter(
-        (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
-      )
-    })
+  return store.list.map((project) => {
+    const x = index2X(deltaIndex(dateStore.now, project.initDate))
+    return project.data.nodes.filter(
+      (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
+    )
+  })
     .flat().sort((n1, n2) => (n1?.orderIndex ?? 0) - (n2?.orderIndex ?? 0))
 })
 
 const completed = computed(() => {
-  return projectStore.projects
-    .map((project) => {
-      const x = index2X(deltaIndex(dateStore.now, project.initDate))
-      return project.data.nodes.filter(
-        (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
-      )
-    })
+  return store.list.map((project) => {
+    const x = index2X(deltaIndex(dateStore.now, project.initDate))
+    return project.data.nodes.filter(
+      (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
+    )
+  })
     .flat()
 })
 
 const projectMap = computed(() => {
   const map = new Map<string, IProject>()
-  projectStore.projects.forEach(project => {
+  store.projects.forEach(project => {
     map.set(project.id, project as IProject)
   })
   return map
@@ -68,7 +66,7 @@ function onEnd() {
 const openCompleted = ref(false)
 
 const isEmpty = computed(() => {
-  return projectStore.projects.length === 0
+  return store.projects.size === 0
 })
 
 </script>

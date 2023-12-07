@@ -5,7 +5,7 @@ import {computed, ref, watch} from "vue";
 import {Possible} from "@renderer/model";
 import IProject = Possible.IProject;
 
-const projectStore = useStore()
+const store = useStore()
 
 const addonVisible = ref(false)
 
@@ -23,13 +23,13 @@ watch(addonVisible, () => {
 
 const listItemHeight = 30;
 
-const selectValue = ref(projectStore.projects?.[0])
+const selectValue = ref(store.projects?.[0])
 
-watch(projectStore.projects, () => {
+watch(store.projects, () => {
   const id = selectValue.value?.id
-  selectValue.value = projectStore.get(id as string)
+  selectValue.value = store.projects.get(id as string)
   if (!selectValue.value?.id) {
-    selectValue.value = projectStore.projects?.[0]
+    selectValue.value = store.projects?.[0]
   }
 })
 
@@ -45,15 +45,15 @@ function handleSubmit() {
     const node = new Possible.Node(inputValue.value, selectValue.value.id)
     selectValue.value.data.nodes.push(node)
   } else {
-    const projectId = projectStore.createByName('默认')
+    const projectId = store.createByName('默认')
     const node = new Possible.Node(inputValue.value, projectId)
-    projectStore.get(projectId).data.nodes.push(node)
+    store.projects.get(projectId)!.data.nodes.push(node)
   }
   inputValue.value = ''
 }
 
 const offsetHeight = computed(() => {
-  return projectStore.projects.length * listItemHeight
+  return store.projects.size * listItemHeight
 })
 
 </script>
@@ -64,8 +64,8 @@ const offsetHeight = computed(() => {
       <div class="addon" @click.stop="addonVisible=!addonVisible">
         <div class="list" v-show="addonVisible"
              :style="{'top':`calc(${offsetHeight}px * -1 - 4px)`,'height':`${offsetHeight}px`}">
-          <div v-for="item in projectStore.projects" :style="{'height':listItemHeight}" class="item"
-               @click="()=>{handleClickAddon(item as IProject)}">{{ item.name }}
+          <div v-for="item in store.list" :style="{'height':listItemHeight}" class="item"
+               @click="()=>{handleClickAddon(item as any)}">{{ item.name }}
           </div>
         </div>
         <list-add theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon"/>

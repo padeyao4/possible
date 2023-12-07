@@ -1,4 +1,4 @@
-<script setup lang="ts" xmlns="">
+<script setup lang="ts">
 import {IGraph} from '@antv/g6'
 import {nextTick, ref} from 'vue'
 import {Delete, Promotion, SetUp} from '@element-plus/icons-vue'
@@ -16,18 +16,17 @@ import CalendarButton from "@renderer/views/ProjectView/component/CalendarButton
 import TodayButton from "@renderer/views/ProjectView/component/TodayButton.vue";
 import CanvasMoveButtons from "@renderer/views/ProjectView/component/CanvasMoveButtons.vue";
 import {Possible} from "@renderer/model";
+import {useRoute} from "vue-router";
 import INode = Possible.INode;
 
-const props = defineProps<{
-  id: string
-}>()
-const projectStore = useStore()
+const store = useStore()
 const dateStore = useDateStore()
 const settings = useSettingsStore()
 
 const container = ref<HTMLElement>()
 const timeBar = ref<HTMLElement>()
-const project = projectStore.get(props.id)
+const projectId = useRoute().params.id as string;
+const project = store.projects.get(projectId)!
 
 const editor = {
   visible: ref(false),
@@ -66,7 +65,7 @@ const editTitle = () => {
  * 调用electron导出项目数据
  */
 function exportProject() {
-  window.api.exportData(dumps(props.id))
+  window.api.exportData(dumps(project.id))
 }
 
 const submitTitle = () => {
@@ -80,7 +79,7 @@ const deleteDialogVisible = ref(false)
 
 const handleDelete = () => {
   router.push({name: 'today'})
-  projectStore.delete(props.id)
+  store.delete(project.id)
 }
 
 

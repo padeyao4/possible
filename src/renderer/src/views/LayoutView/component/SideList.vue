@@ -1,28 +1,24 @@
 <script setup lang="ts">
-import {useStore} from "@renderer/store/project";
 import Draggable from 'vuedraggable/src/vuedraggable'
 import router from "@renderer/router";
 import {useRoute} from "vue-router";
 import {computed, reactive} from "vue";
 import ListContextMenu from "@renderer/views/LayoutView/component/ListContextMenu.vue";
+import {useStore} from "@renderer/store/project";
+import {Possible} from "@renderer/model";
+import IProject = Possible.IProject;
 
-const props = defineProps<{ rename: Function | undefined }>()
-const route = useRoute()
 const store = useStore()
+const route = useRoute()
 
 const handleItemClick = (id: string) => {
   router.push({
-    path: `/project/${id}`,
-    replace: true
+    path: `/project/${id}`
   })
 }
 
 const active = computed(() => {
   return (route.params.id ?? 'default') as string
-})
-
-const project = computed(() => {
-  return store.get(active.value)
 })
 
 let defaultMouseStyle = 'auto'
@@ -36,11 +32,11 @@ function onEnd() {
   document.body.style.cursor = defaultMouseStyle
 }
 
-function handleInput() {
-  if (project.value.name.trim() === '') {
-    project.value.name = 'untitled'
+function handleInput(project: IProject) {
+  if (project.name.trim() === '') {
+    project.name = 'untitled'
   }
-  props.rename?.()
+  project.renaming = false
 }
 
 const context = reactive({
@@ -52,12 +48,21 @@ const context = reactive({
 })
 
 function showContextMenu(e: any, id: string) {
-  console.log(e, id)
   context.x = e.x
   context.y = e.y
   context.visible = true
   context.projectId = id
   context.active = active.value
+}
+
+const projects = computed(() => {
+  return store.list
+})
+
+function onUpdate() {
+  projects.value.forEach((project, index) => {
+    project.order = index
+  })
 }
 
 </script>
@@ -69,36 +74,37 @@ function showContextMenu(e: any, id: string) {
                          :active="context.active"
                          :project-id="context.projectId"/>
     </teleport>
-    <draggable :list="store.projects" item-key="id" animation="300"
+    <draggable :list="projects" item-key="id" animation="300"
                :forceFallback="true" ghost-class="ghost-class" drag-class="drag-class"
                @start="onStart"
+               @update="onUpdate"
                @end="onEnd"
-               delay="100"
+               delay="50"
     >
       <template #item="{element}">
         <div
-            v-show="!(element.id === project.id&&props.rename)"
-            class="list-item"
-            :class="{ 'active': element.id === active }"
-            @click="()=>{handleItemClick(element.id)}"
-            :key="element.id"
-            @contextmenu.prevent="(e)=>showContextMenu(e,element.id)"
+          class="list-item"
+          :class="{'active': element.id === active }"
+          :key="element.id"
         >
-          <div class="text">
+          <input
+            v-if="element.renaming"
+            :ref="(e) => {(e as HTMLInputElement)?.focus()}"
+            v-model="element.name"
+            class="item-input"
+            @blur="()=>handleInput(element)"
+            @keydown.enter="()=>handleInput(element)"
+          />
+          <div
+            v-else
+            class="text"
+            @click="()=>{handleItemClick(element.id)}"
+            @contextmenu.prevent="(e)=>showContextMenu(e,element.id)">
             {{ element.name }}
           </div>
         </div>
       </template>
     </draggable>
-    <div v-show="props.rename" class="list-item active">
-      <input
-          :ref="(e) => {(e as HTMLInputElement)?.focus()}"
-          v-model="project.name"
-          class="item-input"
-          @blur="handleInput"
-          @keydown.enter="handleInput"
-      />
-    </div>
   </div>
 </template>
 

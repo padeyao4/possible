@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import router from '@renderer/router'
 import {onMounted, onUnmounted, ref} from 'vue'
-import {useStore} from '@renderer/store/project'
 import {useDateStore} from '@renderer/store/date'
 import TitleBar from "@renderer/component/TitleBar.vue"
 import {useSettingsStore} from "@renderer/store/settings";
@@ -9,7 +7,6 @@ import SideList from "@renderer/views/LayoutView/component/SideList.vue";
 import SideBottom from "@renderer/views/LayoutView/component/SideBottom.vue";
 import SummeryButton from "@renderer/views/LayoutView/component/SummeryButton.vue";
 
-const projectStore = useStore()
 const dateStore = useDateStore()
 const settings = useSettingsStore()
 
@@ -27,20 +24,6 @@ onUnmounted(() => {
   if (intervalRef.value !== undefined) clearInterval(intervalRef.value)
 })
 
-const addButtonClick = () => {
-  const projectId = projectStore.createByName('新任务列表')
-  renaming.value = true
-  router.push({
-    path: `/project/${projectId}`
-  })
-}
-
-const renaming = ref(false)
-
-function handleRename() {
-  renaming.value = false
-}
-
 </script>
 
 <template>
@@ -49,8 +32,8 @@ function handleRename() {
       <div class="layout-side">
         <title-bar/>
         <summery-button/>
-        <side-list :rename="renaming?handleRename:undefined"/>
-        <side-bottom :on-add-click="addButtonClick"/>
+        <side-list/>
+        <side-bottom/>
       </div>
       <div class="layout-content">
         <slot/>

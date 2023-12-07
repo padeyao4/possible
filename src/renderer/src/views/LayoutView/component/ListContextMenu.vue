@@ -14,7 +14,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:visible'])
 
-const projectStore = useStore()
+const store = useStore()
 
 function closeContext() {
   emit('update:visible', false)
@@ -29,7 +29,7 @@ watch(() => props.visible, () => {
 })
 
 const project = computed(() => {
-  return projectStore.get(props.projectId)
+  return store.projects.get(props.projectId)
 })
 
 const deleteDialogVisible = ref(false)
@@ -38,7 +38,7 @@ function handleProjectDelete() {
   if (props.projectId === props.active) {
     router.push({name: 'today'})
   }
-  projectStore.delete(props.projectId)
+  store.delete(props.projectId)
   deleteDialogVisible.value = false
 }
 
@@ -64,7 +64,7 @@ function handleList(e: any) {
     <Teleport to="body">
       <el-dialog v-model="deleteDialogVisible" title="警告" width="30%" align-center>
               <span
-              >确定删除 <i style="font-size: large">{{ project.name ?? '' }} </i> 计划吗</span
+              >确定删除 <i style="font-size: large">{{ project?.name ?? '' }} </i> 计划吗</span
               >
         <template #footer>
                 <span class="dialog-footer">

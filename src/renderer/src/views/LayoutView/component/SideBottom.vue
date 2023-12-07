@@ -9,7 +9,6 @@ import {dumps, loads} from "@renderer/util/data";
 import UpdateButton from "@renderer/views/LayoutView/component/UpdateButton.vue";
 import AddButton from "@renderer/views/LayoutView/component/AddButton.vue";
 
-defineProps(['onAddClick'])
 const front = ref(true)
 
 /**
@@ -28,39 +27,37 @@ async function load() {
 </script>
 
 <template>
-  <div>
-    <div class="main">
-      <div v-if="front" class="front">
-        <add-button :on-add-click="onAddClick"/>
-        <tip content="设置">
-          <setting-button @click="front=false"/>
+  <div class="layout-side-bottom">
+    <div v-if="front" class="front">
+      <add-button/>
+      <tip content="设置">
+        <setting-button @click="front=false"/>
+      </tip>
+    </div>
+    <div v-else class="backend">
+      <div class="icon-group">
+        <tip content="导入">
+          <upload theme="outline" size="20" fill="#333" :strokeWidth="2" @click="load"/>
+        </tip>
+        <tip content="保存">
+          <save-one theme="outline" size="20" fill="#333" :strokeWidth="2" @click="save"/>
+        </tip>
+        <tip content="检查更新">
+          <update-button/>
+        </tip>
+        <tip content="关于">
+          <about-button/>
         </tip>
       </div>
-      <div v-else class="backend">
-        <div class="icon-group">
-          <tip content="导入">
-            <upload theme="outline" size="20" fill="#333" :strokeWidth="2" @click="load"/>
-          </tip>
-          <tip content="保存">
-            <save-one theme="outline" size="20" fill="#333" :strokeWidth="2" @click="save"/>
-          </tip>
-          <tip content="检查更新">
-            <update-button/>
-          </tip>
-          <tip content="关于">
-            <about-button/>
-          </tip>
-        </div>
-        <tip content="返回">
-          <logout theme="outline" size="20" fill="#333" :strokeWidth="2" @click="front=true" class="exit-icon"/>
-        </tip>
-      </div>
+      <tip content="返回">
+        <logout theme="outline" size="20" fill="#333" :strokeWidth="2" @click="front=true" class="exit-icon"/>
+      </tip>
     </div>
   </div>
 </template>
 
 <style scoped>
-.main {
+.layout-side-bottom {
   height: 100%;
 
   .front {

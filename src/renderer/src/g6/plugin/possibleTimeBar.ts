@@ -14,7 +14,7 @@ export class PossibleTimeBar {
   endIndex: number
   timeItems: number[]
   store = useStore()
-  project = this.store.get(useRoute().params.id as string)!
+  project = this.store.projects.get(useRoute().params.id as string)!
   timeBar: HTMLElement
 
   dateStore = useDateStore()
