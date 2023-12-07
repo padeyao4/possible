@@ -1,25 +1,21 @@
 <script setup lang="ts">
 import {IGraph} from '@antv/g6'
-import {nextTick, ref} from 'vue'
-import {Delete, Promotion, SetUp} from '@element-plus/icons-vue'
-import {useStore} from '@renderer/store/project'
-import router from '@renderer/router'
+import {ref} from 'vue'
 import {useDateStore} from '@renderer/store/date'
 import TitleBar from '@renderer/component/TitleBar.vue'
-import {Aiming, ArrowLeft, ArrowRight, Back, ExperimentOne, More, Next} from '@icon-park/vue-next'
+import {Aiming, ArrowLeft, ArrowRight, Back, Next} from '@icon-park/vue-next'
 import {useSettingsStore} from "@renderer/store/settings";
 import {useGraph} from "@renderer/g6";
 import NodeEditor from "@renderer/views/ProjectView/component/NodeEditor.vue";
 import {IG6GraphEvent, NodeConfig} from "@antv/g6-core";
-import {dumps} from "@renderer/util/data";
 import CalendarButton from "@renderer/views/ProjectView/component/CalendarButton.vue";
 import TodayButton from "@renderer/views/ProjectView/component/TodayButton.vue";
 import CanvasMoveButtons from "@renderer/views/ProjectView/component/CanvasMoveButtons.vue";
 import {Possible} from "@renderer/model";
 import {useProject} from "@renderer/util/project";
+import ProjectHeader from "@renderer/views/ProjectView/component/ProjectHeader.vue";
 import INode = Possible.INode;
 
-const store = useStore()
 const dateStore = useDateStore()
 const settings = useSettingsStore()
 
@@ -49,96 +45,12 @@ function onNodeClick(e: IG6GraphEvent, graph: IGraph | null) {
 
 const {save, graph} = useGraph(container, timeBar, onNodeClick)
 
-// ------------------------ project title ---------------------------
-const titleEditEnable = ref<boolean>(false)
-const titleRef = ref()
-
-const editTitle = () => {
-  titleEditEnable.value = true
-  nextTick(() => {
-    titleRef.value.focus()
-  })
-}
-
-/**
- * 调用electron导出项目数据
- */
-function exportProject() {
-  window.api.exportData(dumps(project.id))
-}
-
-const submitTitle = () => {
-  if (project.name.trim() === '') {
-    project.name = 'untitled'
-  }
-  titleEditEnable.value = false
-}
-
-const deleteDialogVisible = ref(false)
-
-const handleDelete = () => {
-  router.push({name: 'today'})
-  store.delete(project.id)
-}
-
-
-function testGraph() {
-  console.debug(dateStore.now)
-}
-
-const projectSettingsHover = ref(false)
 </script>
 
 <template>
   <div class="project-view">
     <title-bar :visible="true" :on-before-close="save"/>
-    <div class="header">
-      <div class="header-content">
-        <input
-          v-if="titleEditEnable"
-          ref="titleRef"
-          v-model="project.name"
-          class="title-input"
-          @blur="submitTitle"
-          @keydown.enter="submitTitle"
-        />
-        <div v-else class="title" @click="editTitle">
-          <div class="text">{{ project.name }}</div>
-        </div>
-        <el-dropdown class="operation-list" trigger="click">
-          <div style="height: 40px; display: flex; align-items: end">
-            <div @mouseover="projectSettingsHover=true" @mouseleave="projectSettingsHover=false">
-              <more v-if="projectSettingsHover" theme="outline" size="20" fill="#33333360" :strokeWidth="2"
-                    style="display: flex;justify-content: center;align-items: center;"/>
-              <more v-else theme="outline" size="20" fill="#333" :strokeWidth="2"
-                    style="display: flex;justify-content: center;align-items: center;"/>
-            </div>
-          </div>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item :icon="Delete" @click="deleteDialogVisible = true"
-              >删除
-              </el-dropdown-item>
-              <el-dropdown-item :icon="SetUp" @click="editTitle">重命名</el-dropdown-item>
-              <el-dropdown-item :icon="Promotion" @click="exportProject">导出</el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
-        <Teleport to="body">
-          <el-dialog v-model="deleteDialogVisible" title="警告" width="30%" align-center>
-              <span
-              >确定删除 <i style="font-size: large">{{ project.name ?? '' }} </i> 计划吗</span
-              >
-            <template #footer>
-                <span class="dialog-footer">
-                  <el-button type="primary" @click="deleteDialogVisible = false">取消</el-button>
-                  <el-button @click="handleDelete"> 确定 </el-button>
-                </span>
-            </template>
-          </el-dialog>
-        </Teleport>
-      </div>
-    </div>
+    <project-header/>
     <div class="body">
       <Teleport to="body">
         <node-editor v-model:visible="editor.visible.value" v-model:node="editor.model"/>
@@ -153,8 +65,6 @@ const projectSettingsHover = ref(false)
         <canvas-move-buttons :graph="graph"/>
         <back v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
         <next v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
-        <experiment-one v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
-                        @click="testGraph"/>
         <arrow-left v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
                     @click="() => {dateStore.addDay(-1)}"/>
         <aiming v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
@@ -175,57 +85,6 @@ const projectSettingsHover = ref(false)
   display: grid;
   height: var(--win-height);
   grid-template-rows: 24px 40px 1fr 40px;
-
-  .header {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    -webkit-app-region: drag;
-
-    .header-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-
-      .title {
-        font-size: 20px;
-        display: flex;
-        margin-left: 24px;
-        -webkit-app-region: no-drag;
-        user-select: none;
-        max-width: calc(var(--content-width) - 150px) !important;
-      }
-
-      .text {
-        width: 100%;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        text-align: center;
-        word-break: break-all;
-        white-space: nowrap;
-
-        &:hover {
-          cursor: text;
-        }
-      }
-
-      .title-input {
-        outline-style: none;
-        border: 0;
-        border-radius: 4px;
-        font-size: 20px;
-        background: #e2e2e2;
-        margin-left: 24px;
-        -webkit-app-region: no-drag;
-      }
-
-      .operation-list {
-        margin-right: 24px;
-        -webkit-app-region: no-drag;
-      }
-    }
-  }
 
   .body {
     overflow: hidden;
