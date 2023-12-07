@@ -3,13 +3,14 @@
 import {CheckOne, Drag, Round} from "@icon-park/vue-next";
 import router from "@renderer/router";
 import {Possible} from "@renderer/model";
+import {useStore} from "@renderer/store/project";
 import INode = Possible.INode;
-import IProject = Possible.IProject;
 
 defineProps<{
   element: INode,
-  projectMap: Map<string, IProject>
 }>()
+
+const store = useStore()
 
 function handleClick(projectId: string) {
   router.push({
@@ -29,7 +30,7 @@ function handleClick(projectId: string) {
     <div>
       <div>{{ element.name }}</div>
       <div class="project-name" @click="()=>{handleClick(element.projectId)}">
-        {{ projectMap.get(element.projectId)?.name }}
+        {{ store.projects.get(element.projectId)?.name }}
       </div>
     </div>
     <drag theme="outline" size="20" fill="#333" :strokeWidth="2" class="drag-icon mover"/>

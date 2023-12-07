@@ -3,18 +3,16 @@ import './layout/possibleLayout'
 import './node/possibleNode'
 import './behavior/possibleNodeDrag'
 
-import {nextTick, onBeforeUnmount, onMounted, Ref, ref, shallowRef} from "vue";
-import {Graph, GraphData, IEdge, IGraph, Menu} from "@antv/g6";
+import {nextTick, onBeforeUnmount, onMounted, Ref, shallowRef} from "vue";
+import {Graph, IEdge, IGraph, Menu} from "@antv/g6";
 import PossibleGrid from "@renderer/g6/plugin/possibleGrid";
 import {PossibleTimeBar} from "@renderer/g6/plugin/possibleTimeBar";
 import {IG6GraphEvent, INode as G6INode, Item} from "@antv/g6-core";
 import {deltaIndex} from "@renderer/util/time";
 import {useDateStore} from "@renderer/store/date";
-import {debounce} from "@antv/util";
 import {Possible} from "@renderer/model";
 import {useStore} from "@renderer/store/project";
 import {useRoute} from "vue-router";
-
 
 export function useGraph(container: Ref<HTMLElement>,
                          timeBar: Ref<HTMLElement>,
@@ -98,15 +96,14 @@ export function useGraph(container: Ref<HTMLElement>,
       project.offset.y = y
     })
 
-    graph.on('afterremoveitem', debounceSave)
-    graph.on('afteradditem', debounceSave)
-    graph.on('afterupdateitem', debounceSave)
+    graph.on('afterremoveitem', save)
+    graph.on('afteradditem', save)
+    graph.on('afterupdateitem', save)
   }
 
-  const debounceSave = debounce(save, 3000)
 
   function save() {
-    project.data = graph.value?.save() as Possible.IData
+    project.data = graph.value?.save() as any
   }
 
   onMounted(() => {
@@ -190,7 +187,7 @@ export function useGraph(container: Ref<HTMLElement>,
       }
     })
     const {x, y} = project.offset
-    graph.value.data((project.data ?? {}) as GraphData)
+    graph.value.data(project.data as any)
     graph.value.render()
     graph.value.translate(x, y)
     addListen(graph.value)
@@ -205,7 +202,6 @@ export function useGraph(container: Ref<HTMLElement>,
         graph.value?.changeSize(container.value.clientWidth, container.value.clientHeight)
       }
     })
-    interval.value = setInterval(debounceSave, 30_000)
   })
 
   /**
@@ -257,11 +253,7 @@ export function useGraph(container: Ref<HTMLElement>,
     graph.value?.layout()
   }
 
-
-  const interval = ref()
-
   onBeforeUnmount(() => {
-    clearInterval(interval.value)
     save()
     graph.value?.destroy()
     graph.value = undefined

@@ -3,12 +3,13 @@
 import {CheckOne} from "@icon-park/vue-next";
 import {Possible} from "@renderer/model";
 import INode = Possible.INode;
-import IProject = Possible.IProject;
+import {useStore} from "@renderer/store/project";
 
 defineProps<{
   list: INode[],
-  projectMap: Map<string, IProject>
 }>()
+
+const store = useStore()
 
 </script>
 
@@ -18,7 +19,7 @@ defineProps<{
                @click="task.state='normal'"/>
     <del class="text-wrap">
       <div>{{ task.name }}</div>
-      <div class="project-name">{{ projectMap.get(task.projectId)?.name }}</div>
+      <div class="project-name">{{ store.projects.get(task.projectId)?.name }}</div>
     </del>
   </div>
 </template>

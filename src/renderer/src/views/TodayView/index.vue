@@ -10,10 +10,8 @@ import TodoItem from "@renderer/views/TodayView/component/TodoItem.vue";
 import TitleBar from "@renderer/component/TitleBar.vue";
 import CompletedList from "@renderer/views/TodayView/component/CompletedList.vue";
 import TimeLabel from "@renderer/views/TodayView/component/TimeLabel.vue";
-import {Possible} from "@renderer/model";
 import WelcomeCard from "@renderer/views/TodayView/component/WelcomeCard.vue";
 import CreateTaskInput from "@renderer/views/TodayView/component/CreateTaskInput.vue";
-import IProject = Possible.IProject;
 
 const store = useStore()
 const dateStore = useDateStore()
@@ -21,29 +19,21 @@ const dateStore = useDateStore()
 const todos = computed(() => {
   return store.list.map((project) => {
     const x = index2X(deltaIndex(dateStore.now, project.initDate))
-    return project.data?.nodes.filter(
+    return project.data.nodes.filter(
       (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
     )
   })
-    .flat().sort((n1, n2) => (n1?.orderIndex ?? 0) - (n2?.orderIndex ?? 0)) ?? []
+    .flat().sort((n1, n2) => (n1?.orderIndex ?? 0) - (n2?.orderIndex ?? 0))
 })
 
 const completed = computed(() => {
   return store.list.map((project) => {
     const x = index2X(deltaIndex(dateStore.now, project.initDate))
-    return project.data?.nodes.filter(
+    return project.data.nodes.filter(
       (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
     )
   })
-    .flat() ?? []
-})
-
-const projectMap = computed(() => {
-  const map = new Map<string, IProject>()
-  store.projects.forEach(project => {
-    map.set(project.id, project as IProject)
-  })
-  return map
+    .flat()
 })
 
 function onChange() {
@@ -93,7 +83,7 @@ const isEmpty = computed(() => {
                      drag-class="drag-class">
             <!--element 为固定写法-->
             <template #item="{element}">
-              <todo-item :element="element" :project-map="projectMap"/>
+              <todo-item :element="element"/>
             </template>
           </draggable>
           <div class="completed" @click="openCompleted = !openCompleted">
@@ -104,7 +94,7 @@ const isEmpty = computed(() => {
             已完成 {{ completed.length }}
           </div>
           <div v-if="openCompleted">
-            <completed-list :list="completed" :project-map="projectMap"/>
+            <completed-list :list="completed"/>
           </div>
         </template>
       </div>
