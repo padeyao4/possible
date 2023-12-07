@@ -23,9 +23,9 @@ watch(addonVisible, () => {
 
 const listItemHeight = 30;
 
-const selectValue = ref(store.projects?.[0])
+const selectValue = ref<IProject | undefined>(store.list?.[0])
 
-watch(store.projects, () => {
+watch(store.list, () => {
   const id = selectValue.value?.id
   selectValue.value = store.projects.get(id as string)
   if (!selectValue.value?.id) {
