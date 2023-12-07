@@ -5,18 +5,16 @@ import {timeBarShow} from '@renderer/util'
 import {useDateStore} from '@renderer/store/date'
 import {getZoneTimeMs} from "@renderer/util/time";
 import {DAY_OF_MS} from "@renderer/common/constant";
-import {Possible} from "@renderer/model";
-import {useProjectStore} from "@renderer/store/project";
+import {useStore} from "@renderer/store/project";
 import {useRoute} from "vue-router";
-import IProject = Possible.IProject;
 
 export class PossibleTimeBar {
   objs: Record<string, unknown>
   startIndex: number
   endIndex: number
   timeItems: number[]
-  projectStore = useProjectStore()
-  project: IProject = this.projectStore.get(useRoute().params.id as string)!
+  store = useStore()
+  project = this.store.get(useRoute().params.id as string)!
   timeBar: HTMLElement
 
   dateStore = useDateStore()

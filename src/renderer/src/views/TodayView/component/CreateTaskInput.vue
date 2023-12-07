@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import {ListAdd, Plus, Round} from "@icon-park/vue-next";
-import {useProjectStore} from "@renderer/store/project";
+import {useStore} from "@renderer/store/project";
 import {computed, ref, watch} from "vue";
 import {Possible} from "@renderer/model";
 import IProject = Possible.IProject;
 
-const projectStore = useProjectStore()
+const projectStore = useStore()
 
 const addonVisible = ref(false)
 

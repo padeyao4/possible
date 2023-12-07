@@ -2,7 +2,7 @@
 import {IGraph} from '@antv/g6'
 import {nextTick, ref} from 'vue'
 import {Delete, Promotion, SetUp} from '@element-plus/icons-vue'
-import {useProjectStore} from '@renderer/store/project'
+import {useStore} from '@renderer/store/project'
 import router from '@renderer/router'
 import {useDateStore} from '@renderer/store/date'
 import TitleBar from '@renderer/component/TitleBar.vue'
@@ -21,7 +21,7 @@ import INode = Possible.INode;
 const props = defineProps<{
   id: string
 }>()
-const projectStore = useProjectStore()
+const projectStore = useStore()
 const dateStore = useDateStore()
 const settings = useSettingsStore()
 

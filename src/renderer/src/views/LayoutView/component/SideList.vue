@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useProjectStore} from "@renderer/store/project";
+import {useStore} from "@renderer/store/project";
 import Draggable from 'vuedraggable/src/vuedraggable'
 import router from "@renderer/router";
 import {useRoute} from "vue-router";
@@ -8,7 +8,7 @@ import ListContextMenu from "@renderer/views/LayoutView/component/ListContextMen
 
 const props = defineProps<{ rename: Function | undefined }>()
 const route = useRoute()
-const projectStore = useProjectStore()
+const projectStore = useStore()
 
 const handleItemClick = (id: string) => {
   router.push({

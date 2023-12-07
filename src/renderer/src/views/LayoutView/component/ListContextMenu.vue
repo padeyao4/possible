@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import {computed, ref, watch} from "vue";
-import {useProjectStore} from "@renderer/store/project";
+import {useStore} from "@renderer/store/project";
 import router from "@renderer/router";
 
 const props = defineProps<{
@@ -14,7 +14,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:visible'])
 
-const projectStore = useProjectStore()
+const projectStore = useStore()
 
 function closeContext() {
   emit('update:visible', false)

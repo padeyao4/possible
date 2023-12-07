@@ -3,33 +3,16 @@ import {Possible} from "@renderer/model";
 import IProject = Possible.IProject;
 import Project = Possible.Project;
 
-
-type State = {
-  projects: IProject[]
-}
-
-type Getters = {
-  get: (state: any) => (id: string) => IProject,
-  [key: string]: any
-}
-
-type Actions = {
-  createByName: (name: string) => string
-  delete: (id: string) => void
-  push: (projects: IProject[] | undefined) => boolean
-  merge: (projects: IProject[] | undefined) => void
-}
-
-export const useProjectStore = defineStore<string, State, Getters, Actions>('project', {
-  state(): State {
+export const useStore = defineStore('project', {
+  state() {
     return {
-      projects: []
+      projects: [] as IProject[]
     }
   },
   getters: {
     get: (state) => {
       return (id: string) => {
-        return state.projects.find((value: IProject) => value.id === id) ?? {} as IProject
+        return state.projects.find((value) => value.id === id) ?? {} as IProject
       }
     }
   },

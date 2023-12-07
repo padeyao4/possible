@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useProjectStore} from '@renderer/store/project'
+import {useStore} from '@renderer/store/project'
 import {useDateStore} from '@renderer/store/date'
 import {computed, ref, toRaw} from 'vue'
 import {Down, Right} from "@icon-park/vue-next";
@@ -15,7 +15,7 @@ import WelcomeCard from "@renderer/views/TodayView/component/WelcomeCard.vue";
 import CreateTaskInput from "@renderer/views/TodayView/component/CreateTaskInput.vue";
 import IProject = Possible.IProject;
 
-const projectStore = useProjectStore()
+const projectStore = useStore()
 const dateStore = useDateStore()
 
 const todos = computed(() => {
