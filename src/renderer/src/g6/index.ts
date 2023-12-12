@@ -10,7 +10,7 @@ import {PossibleTimeBar} from "@renderer/g6/plugin/possibleTimeBar";
 import {INode as G6INode, Item} from "@antv/g6-core";
 import {deltaIndex} from "@renderer/util/time";
 import {useDateStore} from "@renderer/store/date";
-import {Possible} from "@renderer/model";
+import {PNode} from "@renderer/model";
 import {useProject} from "@renderer/util/project";
 
 export function useGraph(container: Ref<HTMLElement>,
@@ -42,7 +42,7 @@ export function useGraph(container: Ref<HTMLElement>,
     })
 
     graph.on('canvas:dblclick', (e) => {
-      const node = new Possible.Node('未命名', project.id)
+      const node = new PNode('未命名', project.id)
       node.normalXY(e.x, e.y)
       graph?.addItem('node', node)
       graph?.layout()
@@ -217,7 +217,7 @@ export function useGraph(container: Ref<HTMLElement>,
   function move(item: Item) {
     function moveItem(item: Item) {
       const id = item.getID()
-      const node: Possible.Node = Object.assign(new Possible.Node(), graph.value!.findById(id).getModel())
+      const node: PNode = Object.assign(new PNode(), graph.value!.findById(id).getModel())
       const hors = graph.value?.getNeighbors(node.id, "target")
       hors?.map(h => moveItem(h))
       node.x += node.cellWidth
@@ -235,7 +235,7 @@ export function useGraph(container: Ref<HTMLElement>,
   function delay(item: Item) {
     function delayItem(item: Item) {
       const id = item.getID()
-      const node = Object.assign(new Possible.Node(), graph.value?.findById(id).getModel())
+      const node = Object.assign(new PNode(), graph.value?.findById(id).getModel())
       if (node.taskType !== 'general') return false
       if (node.state !== 'normal') return false
       const hors = graph.value?.getNeighbors(node.id, "target").filter(h => (h.getModel()?.x ?? 0) - node.x === node.cellWidth)

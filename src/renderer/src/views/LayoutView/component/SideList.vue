@@ -5,8 +5,7 @@ import {useRoute} from "vue-router";
 import {computed, reactive} from "vue";
 import ListContextMenu from "@renderer/views/LayoutView/component/ListContextMenu.vue";
 import {useStore} from "@renderer/store/project";
-import {Possible} from "@renderer/model";
-import Project = Possible.Project;
+import {PProject} from "@renderer/model";
 
 const store = useStore()
 const route = useRoute()
@@ -32,7 +31,7 @@ function onEnd() {
   document.body.style.cursor = defaultMouseStyle
 }
 
-function handleInput(project: Project) {
+function handleInput(project: PProject) {
   if (project.name.trim() === '') {
     project.name = 'untitled'
   }

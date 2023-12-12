@@ -1,12 +1,11 @@
 <script setup lang="ts">
 
 import {CheckOne} from "@icon-park/vue-next";
-import {Possible} from "@renderer/model";
-import INode = Possible.INode;
 import {useStore} from "@renderer/store/project";
+import {PNode} from "@renderer/model";
 
 defineProps<{
-  list: INode[],
+  list: PNode[],
 }>()
 
 const store = useStore()
@@ -37,7 +36,7 @@ const store = useStore()
   border-radius: 4px;
 }
 
-.text-wrap{
+.text-wrap {
   text-align: start;
 }
 

@@ -1,5 +1,4 @@
-import {Possible} from "@renderer/model";
-import Project = Possible.Project;
+import {PProject} from "@renderer/model";
 
 declare module 'default-passive-events'
 declare module '*.vue' {
@@ -9,7 +8,7 @@ declare module '*.vue' {
 }
 
 type PossibleData = {
-  projects: Project[],
+  projects: PProject[],
   time: number,
   version: string
 }

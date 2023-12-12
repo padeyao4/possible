@@ -2,12 +2,11 @@
 
 import {CheckOne, Drag, Round} from "@icon-park/vue-next";
 import router from "@renderer/router";
-import {Possible} from "@renderer/model";
 import {useStore} from "@renderer/store/project";
-import INode = Possible.INode;
+import {PNode} from "@renderer/model";
 
 defineProps<{
-  element: INode,
+  element: PNode,
 }>()
 
 const store = useStore()

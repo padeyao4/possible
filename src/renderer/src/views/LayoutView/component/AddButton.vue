@@ -3,12 +3,12 @@
 import {Plus} from "@icon-park/vue-next";
 import router from "@renderer/router";
 import {useStore} from "@renderer/store/project";
-import {Possible} from "@renderer/model";
+import {PProject} from "@renderer/model";
 
 const store = useStore()
 
 function createProject() {
-  const project = new Possible.Project('新建项目')
+  const project = new PProject('新建项目')
   project.renaming = true
   store.set(project)
   router.push({

@@ -5,11 +5,10 @@ import {deltaIndex} from "@renderer/util/time";
 import {useDateStore} from "@renderer/store/date";
 import {IGraph} from "@antv/g6";
 import Tip from "@renderer/component/Tip.vue";
-import {Possible} from "@renderer/model";
-import Project = Possible.Project;
+import {PProject} from "@renderer/model";
 
 const props = defineProps<{
-  project: Project,
+  project: PProject,
   graph: IGraph | undefined
 }>()
 

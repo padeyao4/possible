@@ -2,8 +2,7 @@
 import {ListAdd, Plus, Round} from "@icon-park/vue-next";
 import {useStore} from "@renderer/store/project";
 import {computed, ref, watch} from "vue";
-import {Possible} from "@renderer/model";
-import Project = Possible.Project;
+import {PNode, PProject} from "@renderer/model";
 
 const store = useStore()
 
@@ -23,7 +22,7 @@ watch(addonVisible, () => {
 
 const listItemHeight = 30;
 
-const selectValue = ref<Project | undefined>(store.list?.[0])
+const selectValue = ref<PProject | undefined>(store.list?.[0])
 
 watch(store.list, () => {
   const id = selectValue.value?.id
@@ -33,7 +32,7 @@ watch(store.list, () => {
   }
 })
 
-function handleClickAddon(project: Project) {
+function handleClickAddon(project: PProject) {
   selectValue.value = project
 }
 
@@ -42,11 +41,11 @@ const inputValue = ref('')
 function handleSubmit() {
   console.log(inputValue.value, selectValue.value?.name)
   if (selectValue.value?.id) {
-    const node = new Possible.Node(inputValue.value, selectValue.value.id)
+    const node = new PNode(inputValue.value, selectValue.value.id)
     selectValue.value.data.nodes.push(node)
   } else {
     const projectId = store.createByName('默认')
-    const node = new Possible.Node(inputValue.value, projectId)
+    const node = new PNode(inputValue.value, projectId)
     store.projects.get(projectId)!.data.nodes.push(node)
   }
   inputValue.value = ''

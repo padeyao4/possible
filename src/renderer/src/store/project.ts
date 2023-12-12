@@ -1,11 +1,10 @@
 import {defineStore} from 'pinia'
-import {Possible} from "@renderer/model";
-import Project = Possible.Project;
+import {PProject} from "@renderer/model";
 
 export const useStore = defineStore('project', {
   state() {
     return {
-      projects: new Map<string, Project>()
+      projects: new Map<string, PProject>()
     }
   },
   getters: {
@@ -15,14 +14,14 @@ export const useStore = defineStore('project', {
   },
   actions: {
     createByName(name: string): string {
-      const project = new Project(name)
+      const project = new PProject(name)
       this.projects.set(project.id, project)
       return project.id
     },
     delete(id: string) {
       this.projects.delete(id)
     },
-    set(project: Project) {
+    set(project: PProject) {
       this.projects.set(project.id, project)
     },
 
@@ -30,7 +29,7 @@ export const useStore = defineStore('project', {
      * 合并数据，会覆盖已存在数据
      * @param projects
      */
-    merge(projects: Project[] | undefined) {
+    merge(projects: PProject[] | undefined) {
       projects?.forEach(p => {
         this.projects.set(p.id, p)
       })
