@@ -3,7 +3,6 @@ import {ref} from 'vue'
 import {useDateStore} from '@renderer/store/date'
 import TitleBar from '@renderer/component/TitleBar.vue'
 import {Aiming, ArrowLeft, ArrowRight, Back, Next} from '@icon-park/vue-next'
-import {useSettingsStore} from "@renderer/store/settings";
 import {useGraph} from "@renderer/g6";
 import NodeEditor from "@renderer/views/ProjectView/component/NodeEditor.vue";
 import CalendarButton from "@renderer/views/ProjectView/component/CalendarButton.vue";
@@ -11,9 +10,10 @@ import TodayButton from "@renderer/views/ProjectView/component/TodayButton.vue";
 import CanvasMoveButtons from "@renderer/views/ProjectView/component/CanvasMoveButtons.vue";
 import {useProject} from "@renderer/util/project";
 import ProjectHeader from "@renderer/views/ProjectView/component/ProjectHeader.vue";
+import {useSettings} from "@renderer/store/project";
 
 const dateStore = useDateStore()
-const settings = useSettingsStore()
+const settings = useSettings()
 
 const container = ref<HTMLElement>()
 const timeBar = ref<HTMLElement>()

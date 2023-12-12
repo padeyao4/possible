@@ -1,4 +1,3 @@
-import {Point} from "@antv/g-base";
 import {v4} from "uuid";
 
 export class PEdge {
@@ -16,15 +15,15 @@ export class PEdge {
 export class PProject {
   name: string;
   completed: boolean;
-  completedTime: Date;
-  createdTime: Date;
+  completedTime: number;
+  createdTime: number;
   data: {
     nodes: PNode[]
     edges: PEdge[]
   };
   id: string;
-  baseTime: Date;
-  offset: Point;
+  baseTime: number;
+  offset: { x: number, y: number };
   nodeHeight: number;
   nodeMargin: number[];
   nodeWidth: number;
@@ -34,11 +33,11 @@ export class PProject {
   constructor(name: string) {
     this.name = name;
     this.completed = false
-    this.completedTime = new Date()
-    this.createdTime = new Date()
+    this.completedTime = new Date().getTime()
+    this.createdTime = new Date().getTime()
     this.data = {nodes: [], edges: []}
     this.id = v4()
-    this.baseTime = new Date()
+    this.baseTime = new Date().getTime()
     this.offset = {x: 0, y: 0}
     this.nodeHeight = 40
     this.nodeWidth = 100
@@ -54,7 +53,7 @@ export class PProject {
 
 export class PNode {
   name: string;
-  createdTime: Date;
+  createdTime: number;
   detail: string;
   id: string;
   note: string;
@@ -62,7 +61,7 @@ export class PNode {
   state: "completed" | "timeout" | "discard" | "normal";
   target: string;
   taskType: "period" | "schedule" | "general";
-  updatedTime: Date;
+  updatedTime: number;
   x: number;
   y: number;
   height: number;
@@ -74,7 +73,7 @@ export class PNode {
 
   constructor(name: string = '', projectId: string = '') {
     this.name = name;
-    this.createdTime = new Date()
+    this.createdTime = new Date().getTime()
     this.detail = ''
     this.id = v4()
     this.note = ''
@@ -82,7 +81,7 @@ export class PNode {
     this.state = 'normal'
     this.target = ''
     this.taskType = 'general'
-    this.updatedTime = new Date()
+    this.updatedTime = new Date().getTime()
     this.x = 0
     this.y = 0
     this.height = 40

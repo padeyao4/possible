@@ -2,13 +2,13 @@
 import {onMounted, onUnmounted, ref} from 'vue'
 import {useDateStore} from '@renderer/store/date'
 import TitleBar from "@renderer/component/TitleBar.vue"
-import {useSettingsStore} from "@renderer/store/settings";
 import SideList from "@renderer/views/LayoutView/component/SideList.vue";
 import SideBottom from "@renderer/views/LayoutView/component/SideBottom.vue";
 import SummeryButton from "@renderer/views/LayoutView/component/SummeryButton.vue";
+import {useSettings} from "@renderer/store/project";
 
 const dateStore = useDateStore()
-const settings = useSettingsStore()
+const settings = useSettings()
 
 const intervalRef = ref()
 

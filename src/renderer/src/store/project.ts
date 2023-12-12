@@ -37,3 +37,18 @@ export const useStore = defineStore('project', {
   }
   // persist: true
 })
+
+export const useSettings = defineStore('settings', {
+  state() {
+    return {
+      /**
+       * 是否开启实验功能
+       */
+      experiment: false,
+      /**
+       * 开启自动更新时间
+       */
+      autoUpdateDate: true
+    }
+  }
+})
