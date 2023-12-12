@@ -18,7 +18,7 @@ const dateStore = useDateStore()
 
 const todos = computed(() => {
   return store.list.map((project) => {
-    const x = index2X(deltaIndex(dateStore.now, project.initDate))
+    const x = index2X(deltaIndex(dateStore.now, project.baseTime))
     return project.data.nodes.filter(
       (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
     )
@@ -28,7 +28,7 @@ const todos = computed(() => {
 
 const completed = computed(() => {
   return store.list.map((project) => {
-    const x = index2X(deltaIndex(dateStore.now, project.initDate))
+    const x = index2X(deltaIndex(dateStore.now, project.baseTime))
     return project.data.nodes.filter(
       (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
     )

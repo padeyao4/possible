@@ -25,7 +25,7 @@ export function useGraph(container: Ref<HTMLElement>,
   const active = ref<string>()
 
   const dataIndex = () => {
-    return deltaIndex(dateStore.now, project.initDate)
+    return deltaIndex(dateStore.now, project.baseTime)
   }
 
   function clearActive() {

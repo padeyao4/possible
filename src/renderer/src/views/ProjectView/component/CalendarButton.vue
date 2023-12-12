@@ -19,7 +19,7 @@ function handleBlur(e) {
 
 function handleGraph() {
   if (!date.value) return
-  const dx = deltaIndex(date.value, props.project.initDate) * (props.project.nodeWidth + props.project.nodeMargin[1] + props.project.nodeMargin[3]) + props.project.offset.x
+  const dx = deltaIndex(date.value, props.project.baseTime) * (props.project.nodeWidth + props.project.nodeMargin[1] + props.project.nodeMargin[3]) + props.project.offset.x
   props.graph?.translate(-dx, -props.project.offset.y)
 }
 

@@ -34,7 +34,7 @@ export class PossibleTimeBar {
         x: 120 * index - 180,
         y: 5,
         textAlign: 'center',
-        text: timeBarShow(this.project.initDate, index - 2),
+        text: timeBarShow(this.project.baseTime, index - 2),
         textBaseline: 'top',
         fontSize: 14
       },
@@ -98,7 +98,7 @@ export class PossibleTimeBar {
   todayIndex = () => {
     return (
       Math.floor(getZoneTimeMs(this.dateStore.now) / DAY_OF_MS) -
-      Math.floor(getZoneTimeMs(this.project.initDate) / DAY_OF_MS) +
+      Math.floor(getZoneTimeMs(this.project.baseTime) / DAY_OF_MS) +
       2
     )
   }

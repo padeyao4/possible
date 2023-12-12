@@ -16,7 +16,7 @@ const props = defineProps<{
 const dateStore = useDateStore()
 
 const today = () => {
-  const dx = deltaIndex(dateStore.now, props.project.initDate) * (props.project.nodeWidth + props.project.nodeMargin[1] + props.project.nodeMargin[3]) + props.project.offset.x
+  const dx = deltaIndex(dateStore.now, props.project.baseTime) * (props.project.nodeWidth + props.project.nodeMargin[1] + props.project.nodeMargin[3]) + props.project.offset.x
   props.graph?.translate(-dx, -props.project.offset.y)
 }
 </script>

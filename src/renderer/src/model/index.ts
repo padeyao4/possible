@@ -44,7 +44,7 @@ export namespace Possible {
     createdTime: Date
     offset: Point,
     data: IData
-    initDate: Date
+    baseTime: Date
     completedDate: Date
     completed: boolean
     nodeWidth: number
@@ -61,7 +61,7 @@ export namespace Possible {
     createdTime: Date;
     data: IData;
     id: string;
-    initDate: Date;
+    baseTime: Date;
     offset: Point;
     nodeHeight: number;
     nodeMargin: number[];
@@ -76,7 +76,7 @@ export namespace Possible {
       this.createdTime = new Date()
       this.data = {nodes: [], edges: []}
       this.id = v4()
-      this.initDate = new Date()
+      this.baseTime = new Date()
       this.offset = {x: 0, y: 0}
       this.nodeHeight = 40
       this.nodeWidth = 100
