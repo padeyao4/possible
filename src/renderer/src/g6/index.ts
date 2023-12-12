@@ -3,25 +3,33 @@ import './layout/possibleLayout'
 import './node/possibleNode'
 import './behavior/possibleNodeDrag'
 
-import {nextTick, onBeforeUnmount, onMounted, Ref, shallowRef} from "vue";
+import {nextTick, onBeforeUnmount, onMounted, ref, Ref, shallowRef} from "vue";
 import {Graph, IEdge, IGraph, Menu} from "@antv/g6";
 import PossibleGrid from "@renderer/g6/plugin/possibleGrid";
 import {PossibleTimeBar} from "@renderer/g6/plugin/possibleTimeBar";
-import {IG6GraphEvent, INode as G6INode, Item} from "@antv/g6-core";
+import {INode as G6INode, Item} from "@antv/g6-core";
 import {deltaIndex} from "@renderer/util/time";
 import {useDateStore} from "@renderer/store/date";
 import {Possible} from "@renderer/model";
 import {useProject} from "@renderer/util/project";
 
 export function useGraph(container: Ref<HTMLElement>,
-                         timeBar: Ref<HTMLElement>,
-                         nodeDblClick: undefined | ((e: IG6GraphEvent, graph: null | IGraph) => void)) {
+                         timeBar: Ref<HTMLElement>) {
   const dateStore = useDateStore()
   const graph = shallowRef<IGraph>()
   const project = useProject()!
 
+  /**
+   * witch node has active
+   */
+  const active = ref<string>()
+
   const dataIndex = () => {
     return deltaIndex(dateStore.now, project.initDate)
+  }
+
+  function clearActive() {
+    active.value = undefined
   }
 
   function addListen(graph: IGraph) {
@@ -33,17 +41,15 @@ export function useGraph(container: Ref<HTMLElement>,
       graph.setItemState(e.item as Item, 'hover', false)
     })
 
-
-    // open drawer editor
-    graph.on('node:dblclick', (e) => {
-      nodeDblClick?.(e, graph)
-    })
-
     graph.on('canvas:dblclick', (e) => {
       const node = new Possible.Node('未命名', project.id)
       node.normalXY(e.x, e.y)
       graph?.addItem('node', node)
       graph?.layout()
+    })
+
+    graph.on('node:dblclick', (e) => {
+      active.value = e.item?.getID?.()
     })
 
     graph.on('node:dragend', () => {
@@ -259,5 +265,5 @@ export function useGraph(container: Ref<HTMLElement>,
     graph.value = undefined
   })
 
-  return {save, graph}
+  return {graph, active, clearActive}
 }

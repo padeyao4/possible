@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {IGraph} from '@antv/g6'
 import {ref} from 'vue'
 import {useDateStore} from '@renderer/store/date'
 import TitleBar from '@renderer/component/TitleBar.vue'
@@ -7,14 +6,11 @@ import {Aiming, ArrowLeft, ArrowRight, Back, Next} from '@icon-park/vue-next'
 import {useSettingsStore} from "@renderer/store/settings";
 import {useGraph} from "@renderer/g6";
 import NodeEditor from "@renderer/views/ProjectView/component/NodeEditor.vue";
-import {IG6GraphEvent} from "@antv/g6-core";
 import CalendarButton from "@renderer/views/ProjectView/component/CalendarButton.vue";
 import TodayButton from "@renderer/views/ProjectView/component/TodayButton.vue";
 import CanvasMoveButtons from "@renderer/views/ProjectView/component/CanvasMoveButtons.vue";
-import {Possible} from "@renderer/model";
 import {useProject} from "@renderer/util/project";
 import ProjectHeader from "@renderer/views/ProjectView/component/ProjectHeader.vue";
-import INode = Possible.INode;
 
 const dateStore = useDateStore()
 const settings = useSettingsStore()
@@ -22,29 +18,7 @@ const settings = useSettingsStore()
 const container = ref<HTMLElement>()
 const timeBar = ref<HTMLElement>()
 const project = useProject()!
-
-const editor = {
-  visible: ref(false),
-  model: {} as INode
-}
-
-function onNodeClick(e: IG6GraphEvent, graph: IGraph | null) {
-  editor.visible.value = true
-  const node = ref((graph?.findById(e.item?.getID() as string).getModel() ?? {}) as any)
-  editor.model = new Proxy<INode>(node.value, {
-    get: (target, p) => {
-      return Reflect.get(target, p)
-    },
-    set: (target, p, newValue) => {
-      Reflect.set(target, p, newValue)
-      graph?.updateItem(target.id, target)
-      return true
-    }
-  })
-}
-
-const {graph} = useGraph(container as any, timeBar as any, onNodeClick)
-
+const {graph, active, clearActive} = useGraph(container as any, timeBar as any)
 </script>
 
 <template>
@@ -70,9 +44,9 @@ const {graph} = useGraph(container as any, timeBar as any, onNodeClick)
                      @click="() => {dateStore.addDay(1)}"/>
       </div>
     </div>
-    <Teleport to="body">
-      <node-editor v-model:visible="editor.visible.value" v-model:node="editor.model"/>
-    </Teleport>
+    <teleport to="body">
+      <node-editor :node-id="active" :reset-node-id="clearActive" :graph="graph"/>
+    </teleport>
   </div>
 </template>
 

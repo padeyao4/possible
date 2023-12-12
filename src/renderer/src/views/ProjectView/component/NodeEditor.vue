@@ -1,33 +1,47 @@
 <script setup lang="ts">
-import {computed} from "vue";
-import {Possible} from "@renderer/model";
-import INode = Possible.INode;
+import {computed, ref} from "vue";
+import {IGraph} from "@antv/g6";
 
 const props = defineProps<{
-  node: INode,
-  visible: boolean
+  nodeId: string | undefined,
+  resetNodeId: () => void,
+  graph: IGraph | undefined
 }>()
-
-const emit = defineEmits(['update:visible', 'update:node'])
 
 const visible = computed({
   get: () => {
-    return props.visible
+    return props.nodeId != undefined
   },
-  set: (value) => {
-    return emit('update:visible', value)
+  set: () => {
+    props.resetNodeId()
   }
 })
+
+const node = computed(() => {
+  const model = ref(props.graph?.findById(props.nodeId as string)?.getModel() ?? {})
+  return new Proxy(model.value as any, {
+    get: (target, p) => {
+      return Reflect.get(target, p)
+    },
+    set: (target, p, newValue) => {
+      Reflect.set(target, p, newValue)
+      props.graph?.updateItem(target.id, target)
+      return true
+    }
+  })
+})
+
+
 </script>
 
 <template>
   <el-drawer
-      v-model="visible"
-      :close-on-click-modal="false"
-      :show-close="true"
-      modal-class="modal-class"
-      class="editor-class"
-      @close="visible = false"
+    v-model="visible"
+    :close-on-click-modal="false"
+    :show-close="true"
+    modal-class="modal-class"
+    class="editor-class"
+    @close="visible = false"
   >
     <el-form :model="node">
       <el-form-item label="名称">

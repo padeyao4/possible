@@ -6,7 +6,7 @@ import Project = Possible.Project;
 export const useStore = defineStore('project', {
   state() {
     return {
-      projects: new Map<string, IProject>()
+      projects: new Map<string, IProject>(),
     }
   },
   getters: {
