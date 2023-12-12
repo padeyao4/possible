@@ -52,9 +52,6 @@ const {graph} = useGraph(container as any, timeBar as any, onNodeClick)
     <title-bar :visible="true"/>
     <project-header/>
     <div class="project-body">
-      <Teleport to="body">
-        <node-editor v-model:visible="editor.visible.value" v-model:node="editor.model"/>
-      </Teleport>
       <div id="timeBar" ref="timeBar" class="time-bar"></div>
       <div id="container" ref="container" class="container"></div>
     </div>
@@ -73,6 +70,9 @@ const {graph} = useGraph(container as any, timeBar as any, onNodeClick)
                      @click="() => {dateStore.addDay(1)}"/>
       </div>
     </div>
+    <Teleport to="body">
+      <node-editor v-model:visible="editor.visible.value" v-model:node="editor.model"/>
+    </Teleport>
   </div>
 </template>
 

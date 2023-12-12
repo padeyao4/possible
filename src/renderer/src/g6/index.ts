@@ -11,15 +11,14 @@ import {IG6GraphEvent, INode as G6INode, Item} from "@antv/g6-core";
 import {deltaIndex} from "@renderer/util/time";
 import {useDateStore} from "@renderer/store/date";
 import {Possible} from "@renderer/model";
-import {useStore} from "@renderer/store/project";
-import {useRoute} from "vue-router";
+import {useProject} from "@renderer/util/project";
 
 export function useGraph(container: Ref<HTMLElement>,
                          timeBar: Ref<HTMLElement>,
                          nodeDblClick: undefined | ((e: IG6GraphEvent, graph: null | IGraph) => void)) {
   const dateStore = useDateStore()
   const graph = shallowRef<IGraph>()
-  const project = useStore().projects.get(useRoute().params.id as string)!
+  const project = useProject()!
 
   const dataIndex = () => {
     return deltaIndex(dateStore.now, project.initDate)
@@ -33,6 +32,7 @@ export function useGraph(container: Ref<HTMLElement>,
     graph.on('edge:mouseout', (e) => {
       graph.setItemState(e.item as Item, 'hover', false)
     })
+
 
     // open drawer editor
     graph.on('node:dblclick', (e) => {
