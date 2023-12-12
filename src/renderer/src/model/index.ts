@@ -1,16 +1,14 @@
 import {Point} from "@antv/g-base";
 import {v4} from "uuid";
-import {GraphData} from "@antv/g6";
-import {EdgeConfig, NodeConfig} from "@antv/g6-core";
 
 export namespace Possible {
-  export interface IEdge extends EdgeConfig {
+  export interface IEdge {
     id: string
     source: string // task id
     target: string // task id
   }
 
-  export interface INode extends NodeConfig {
+  export interface INode {
     name: string
     id: string
     y: number
@@ -35,7 +33,7 @@ export namespace Possible {
     projectId: string
   }
 
-  export interface IData extends GraphData {
+  export interface IData {
     nodes: INode[]
     edges: IEdge[]
   }
