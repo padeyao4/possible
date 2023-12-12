@@ -6,10 +6,10 @@ import {useDateStore} from "@renderer/store/date";
 import {IGraph} from "@antv/g6";
 import Tip from "@renderer/component/Tip.vue";
 import {Possible} from "@renderer/model";
-import IProject = Possible.IProject;
+import Project = Possible.Project;
 
 const props = defineProps<{
-  project: IProject,
+  project: Project,
   graph: IGraph | undefined
 }>()
 

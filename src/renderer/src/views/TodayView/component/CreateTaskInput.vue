@@ -3,7 +3,7 @@ import {ListAdd, Plus, Round} from "@icon-park/vue-next";
 import {useStore} from "@renderer/store/project";
 import {computed, ref, watch} from "vue";
 import {Possible} from "@renderer/model";
-import IProject = Possible.IProject;
+import Project = Possible.Project;
 
 const store = useStore()
 
@@ -23,7 +23,7 @@ watch(addonVisible, () => {
 
 const listItemHeight = 30;
 
-const selectValue = ref<IProject | undefined>(store.list?.[0])
+const selectValue = ref<Project | undefined>(store.list?.[0])
 
 watch(store.list, () => {
   const id = selectValue.value?.id
@@ -33,7 +33,7 @@ watch(store.list, () => {
   }
 })
 
-function handleClickAddon(project: IProject) {
+function handleClickAddon(project: Project) {
   selectValue.value = project
 }
 

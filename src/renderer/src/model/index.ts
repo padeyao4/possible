@@ -33,33 +33,35 @@ export namespace Possible {
     projectId: string
   }
 
-  export interface IData {
-    nodes: INode[]
-    edges: IEdge[]
-  }
 
-  export interface IProject {
-    name: string
-    id: string
-    createdTime: Date
-    offset: Point,
-    data: IData
-    baseTime: Date
-    completedDate: Date
-    completed: boolean
-    nodeWidth: number
-    nodeHeight: number
-    nodeMargin: number[]
-    renaming: boolean
-    order: number
-  }
+  // export interface IProject {
+  //   name: string
+  //   id: string
+  //   createdTime: Date
+  //   offset: Point,
+  //   data: {
+  //     nodes: INode[]
+  //     edges: IEdge[]
+  //   }
+  //   baseTime: Date
+  //   completedTime: Date
+  //   completed: boolean
+  //   nodeWidth: number
+  //   nodeHeight: number
+  //   nodeMargin: number[]
+  //   renaming: boolean
+  //   order: number
+  // }
 
-  export class Project implements IProject {
+  export class Project {
     name: string;
     completed: boolean;
-    completedDate: Date;
+    completedTime: Date;
     createdTime: Date;
-    data: IData;
+    data: {
+      nodes: INode[]
+      edges: IEdge[]
+    };
     id: string;
     baseTime: Date;
     offset: Point;
@@ -72,7 +74,7 @@ export namespace Possible {
     constructor(name: string) {
       this.name = name;
       this.completed = false
-      this.completedDate = new Date()
+      this.completedTime = new Date()
       this.createdTime = new Date()
       this.data = {nodes: [], edges: []}
       this.id = v4()

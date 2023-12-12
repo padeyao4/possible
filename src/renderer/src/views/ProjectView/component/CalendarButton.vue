@@ -3,11 +3,11 @@ import {IGraph} from "@antv/g6";
 import {ref} from "vue";
 import {deltaIndex} from "@renderer/util/time";
 import {Possible} from "@renderer/model";
-import IProject = Possible.IProject;
+import Project = Possible.Project;
 
 const props = defineProps<{
   graph: IGraph | undefined
-  project: IProject
+  project: Project
 }>()
 
 const date = ref()
