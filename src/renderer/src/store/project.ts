@@ -5,7 +5,10 @@ import {delayLayout} from "@renderer/util/data";
 export const useStore = defineStore('project', {
   state() {
     return {
-      projects: new Map<string, PProject>()
+      projects: new Map<string, PProject>(),
+      time: new Date().getTime(), // 现在时间 todo
+      experiment: false, // 是否开启实验功能
+      autoUpdateDate: true // 时间自动更新
     }
   },
   getters: {
@@ -48,19 +51,4 @@ export const useStore = defineStore('project', {
     }
   }
   // persist: true
-})
-
-export const useSettings = defineStore('settings', {
-  state() {
-    return {
-      /**
-       * 是否开启实验功能
-       */
-      experiment: false,
-      /**
-       * 开启自动更新时间
-       */
-      autoUpdateDate: true
-    }
-  }
 })

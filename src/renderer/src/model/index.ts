@@ -1,15 +1,9 @@
 import {v4} from "uuid";
 
 export class PEdge {
-  id: string
-  source: string // task id
-  target: string // task id
-
-  constructor(id: string, source: string, target: string) {
-    this.id = id;
-    this.source = source;
-    this.target = target;
-  }
+  id: string = ''
+  source: string = '' // task id
+  target: string = '' // task id
 }
 
 export class PProject {
@@ -17,10 +11,7 @@ export class PProject {
   completed: boolean = false;
   completedTime: number = new Date().getTime();
   createdTime: number = new Date().getTime();
-  data: {
-    nodes: PNode[]
-    edges: PEdge[]
-  } = {nodes: [], edges: []};
+  data: { nodes: PNode[], edges: PEdge[] } = {nodes: [], edges: []};
   id: string = v4();
   baseTime: number = new Date().getTime();
   offset: { x: number, y: number } = {x: 0, y: 0}; // 用于graph定位

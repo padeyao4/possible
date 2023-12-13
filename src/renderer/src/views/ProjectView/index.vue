@@ -10,11 +10,10 @@ import TodayButton from "@renderer/views/ProjectView/component/TodayButton.vue";
 import CanvasMoveButtons from "@renderer/views/ProjectView/component/CanvasMoveButtons.vue";
 import {useProject} from "@renderer/util/project";
 import ProjectHeader from "@renderer/views/ProjectView/component/ProjectHeader.vue";
-import {useSettings} from "@renderer/store/project";
+import {useStore} from "@renderer/store/project";
 
 const dateStore = useDateStore()
-const settings = useSettings()
-
+const store = useStore()
 const container = ref<HTMLElement>()
 const timeBar = ref<HTMLElement>()
 const project = useProject()!
@@ -34,13 +33,13 @@ const {graph, active, clearActive} = useGraph(container as any, timeBar as any)
         <today-button :graph="graph" :project="project"/>
         <calendar-button :graph="graph" :project="project"/>
         <canvas-move-buttons :graph="graph"/>
-        <back v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
-        <next v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
-        <arrow-left v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
+        <back v-show="store.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
+        <next v-show="store.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
+        <arrow-left v-show="store.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
                     @click="() => {dateStore.addDay(-1)}"/>
-        <aiming v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
+        <aiming v-show="store.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
                 @click="() => {dateStore.update2Now()}"/>
-        <arrow-right v-show="settings.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
+        <arrow-right v-show="store.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
                      @click="() => {dateStore.addDay(1)}"/>
       </div>
     </div>

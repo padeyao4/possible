@@ -96,7 +96,7 @@ function onUpdate() {
           />
           <div
             v-else
-            class="text"
+            class="item-text"
             @click="()=>{handleItemClick(element.id)}"
             @contextmenu.prevent="(e)=>showContextMenu(e,element.id)">
             {{ element.name }}
@@ -119,9 +119,8 @@ function onUpdate() {
     align-items: center;
     height: 40px;
     user-select: none;
-    margin: 4px 8px;
-    padding: 0 8px 0 8px;
     background: var(--color-background);
+    margin: 4px 8px;
 
     &:hover {
       border-radius: 4px;
@@ -129,8 +128,12 @@ function onUpdate() {
     }
   }
 
-  .text {
+  .item-text {
     width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-overflow: ellipsis;
     overflow: hidden;
     text-align: center;
