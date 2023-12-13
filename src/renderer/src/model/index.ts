@@ -13,91 +13,43 @@ export class PEdge {
 }
 
 export class PProject {
-  name: string;
-  completed: boolean;
-  completedTime: number;
-  createdTime: number;
+  name: string = '';
+  completed: boolean = false;
+  completedTime: number = new Date().getTime();
+  createdTime: number = new Date().getTime();
   data: {
     nodes: PNode[]
     edges: PEdge[]
-  };
-  id: string;
-  baseTime: number;
-  offset: { x: number, y: number };
-  nodeHeight: number;
-  nodeMargin: number[];
-  nodeWidth: number;
-  renaming: boolean
-  order: number
-
-  constructor(name: string) {
-    this.name = name;
-    this.completed = false
-    this.completedTime = new Date().getTime()
-    this.createdTime = new Date().getTime()
-    this.data = {nodes: [], edges: []}
-    this.id = v4()
-    this.baseTime = new Date().getTime()
-    this.offset = {x: 0, y: 0}
-    this.nodeHeight = 40
-    this.nodeWidth = 100
-    this.nodeMargin = [40, 10, 40, 10]
-    this.order = 9999999
-    this.renaming = false
-  }
-
-  get cellWidth() {
-    return this.nodeWidth + this.nodeMargin[1] + this.nodeMargin[3]
-  }
+  } = {nodes: [], edges: []};
+  id: string = v4();
+  baseTime: number = new Date().getTime();
+  offset: { x: number, y: number } = {x: 0, y: 0}; // 用于graph定位
+  nodeHeight: number = 40;
+  nodeMargin: number[] = [40, 10, 40, 10];
+  nodeWidth: number = 100;
+  renaming: boolean = false
+  order: number = 9999999 // 用于项目排序
 }
 
 export class PNode {
-  name: string;
-  createdTime: number;
-  detail: string;
-  id: string;
-  note: string;
-  orderIndex: number;
-  state: "completed" | "timeout" | "discard" | "normal";
-  target: string;
-  taskType: "period" | "schedule" | "general";
-  updatedTime: number;
-  x: number;
-  y: number;
-  height: number;
-  width: number;
-  margin: number[];
-  projectId: string
+  name: string = '';
+  createdTime: number = new Date().getTime();
+  detail: string = '';
+  id: string = v4();
+  note: string = '';
+  order: number = 0; // 用于排序
+  state: "completed" | "timeout" | "discard" | "normal" = 'normal';
+  target: string = '';
+  taskType: "period" | "schedule" | "general" = 'general';
+  updatedTime: number = new Date().getTime();
+  x: number = 0; // 只用于graph显示,修改无效
+  y: number = 0; // 只用于graph显示,修改无效
+  height: number = 40;
+  width: number = 100;
+  margin: number[] = [40, 10, 40, 10]; // 上右下左
+  projectId: string = '';
+  dn: number = 0 // 时间按天的序列号
 
-  [key: string]: any
-
-  constructor(name: string = '', projectId: string = '') {
-    this.name = name;
-    this.createdTime = new Date().getTime()
-    this.detail = ''
-    this.id = v4()
-    this.note = ''
-    this.orderIndex = 0
-    this.state = 'normal'
-    this.target = ''
-    this.taskType = 'general'
-    this.updatedTime = new Date().getTime()
-    this.x = 0
-    this.y = 0
-    this.height = 40
-    this.width = 100
-    this.margin = [40, 10, 40, 10]
-    this.projectId = projectId
-  }
-
-  get position() {
-    return {x: this.x, y: this.y}
-  }
-
-  set position(p: { x: number, y: number }) {
-    this.x = p.x
-    this.y = p.y
-  }
 
   get cellWidth() {
     return this.width + this.margin[1] + this.margin[3]
@@ -105,10 +57,6 @@ export class PNode {
 
   get cellHeight() {
     return this.height + this.margin[0] + this.margin[2]
-  }
-
-  get index() {
-    return (this.x - Math.floor(this.cellWidth / 2)) / this.cellWidth
   }
 
   static from(node: Partial<PNode>) {

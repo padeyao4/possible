@@ -39,15 +39,17 @@ function handleClickAddon(project: PProject) {
 const inputValue = ref('')
 
 function handleSubmit() {
-  console.log(inputValue.value, selectValue.value?.name)
+  const node = new PNode()
+  node.name = inputValue.value
   if (selectValue.value?.id) {
-    const node = new PNode(inputValue.value, selectValue.value.id)
+    node.projectId = selectValue.value.id
     selectValue.value.data.nodes.push(node)
   } else {
     const projectId = store.createByName('默认')
-    const node = new PNode(inputValue.value, projectId)
+    node.projectId = projectId
     store.projects.get(projectId)!.data.nodes.push(node)
   }
+  // store.update(new Date().getTime())
   inputValue.value = ''
 }
 
@@ -68,7 +70,7 @@ const offsetHeight = computed(() => {
           </div>
         </div>
         <list-add theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon"/>
-        <div class="text">{{ selectValue?.name ?? '默认' }}</div>
+        <div class="text">{{ (selectValue as PProject)?.name ?? '默认' }}</div>
       </div>
       <input class="input" v-model="inputValue" placeholder="添加任务" @keydown.enter="handleSubmit"/>
       <plus theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon plus"/>

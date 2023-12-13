@@ -30,7 +30,7 @@ function handleClick() {
   <div>
     <div class="main">
       <div class="content" @click="handleClick">
-        <moon v-if="dateStore.night" :theme="style.theme" size="20" :fill="style.color" :strokeWidth="2" class="icon"/>
+        <moon v-if="dateStore.isNight" :theme="style.theme" size="20" :fill="style.color" :strokeWidth="2" class="icon"/>
         <sun-one v-else :theme="style.theme" size="20" :fill="style.color" :strokeWidth="2" class="icon"/>
         <div style="display: inline-block; margin:0 8px 0 4px" :style="{color: style.color}">
           我的一天

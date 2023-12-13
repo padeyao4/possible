@@ -23,7 +23,7 @@ const todos = computed(() => {
       (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
     )
   })
-    .flat().sort((n1, n2) => (n1?.orderIndex ?? 0) - (n2?.orderIndex ?? 0))
+    .flat().sort((n1, n2) => (n1?.order ?? 0) - (n2?.order ?? 0))
 })
 
 const completed = computed(() => {
@@ -38,7 +38,7 @@ const completed = computed(() => {
 
 function onChange() {
   todos.value.forEach((value, index) => {
-    value.orderIndex = index
+    value.order = index
   })
 }
 

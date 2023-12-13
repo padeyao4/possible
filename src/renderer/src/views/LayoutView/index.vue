@@ -5,17 +5,20 @@ import TitleBar from "@renderer/component/TitleBar.vue"
 import SideList from "@renderer/views/LayoutView/component/SideList.vue";
 import SideBottom from "@renderer/views/LayoutView/component/SideBottom.vue";
 import SummeryButton from "@renderer/views/LayoutView/component/SummeryButton.vue";
-import {useSettings} from "@renderer/store/project";
+import {useSettings, useStore} from "@renderer/store/project";
 
 const dateStore = useDateStore()
 const settings = useSettings()
-
+const store = useStore()
 const intervalRef = ref()
 
 onMounted(() => {
   if (settings.autoUpdateDate) {
     intervalRef.value = setInterval(() => {
-      dateStore.update2Now()
+      const isUpdate = dateStore.update2Now()
+      if (isUpdate) {
+        // store.update(dateStore.now.getTime())
+      }
     }, 30_000)
   }
 })

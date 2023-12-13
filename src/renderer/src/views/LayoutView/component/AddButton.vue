@@ -8,7 +8,8 @@ import {PProject} from "@renderer/model";
 const store = useStore()
 
 function createProject() {
-  const project = new PProject('新建项目')
+  const project = new PProject()
+  project.name = '新建项目'
   project.renaming = true
   store.set(project)
   router.push({

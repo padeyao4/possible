@@ -42,9 +42,11 @@ export function useGraph(container: Ref<HTMLElement>,
     })
 
     graph.on('canvas:dblclick', (e) => {
-      const node = new PNode('未命名', project.id)
+      const node = new PNode()
+      node.name = '未命名'
+      node.projectId = project.id
       node.normalXY(e.x, e.y)
-      graph?.addItem('node', node)
+      graph?.addItem('node', node as any)
       graph?.layout()
     })
 
@@ -221,7 +223,7 @@ export function useGraph(container: Ref<HTMLElement>,
       const hors = graph.value?.getNeighbors(node.id, "target")
       hors?.map(h => moveItem(h))
       node.x += node.cellWidth
-      graph.value?.update(item.getID(), node)
+      graph.value?.update(item.getID(), node as any)
     }
 
     moveItem(item)
