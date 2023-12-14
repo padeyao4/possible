@@ -111,13 +111,15 @@ export function useGraph(container: Ref<HTMLElement>,
 
   function save() {
     const graphData = graph.value?.save() as GraphData
+    project.data.nodes.clear()
     graphData?.nodes?.forEach(node => {
       const pNode = PNode.from(node)
       pNode.x2dn()
       project.data.nodes.set(node.id, pNode)
     })
+    project.data.edges.clear()
     graphData?.edges?.forEach(edge => {
-      project.data.nodes.set(edge.id as string, edge as any)
+      project.data.edges.set(edge.id as string, edge as any)
     })
   }
 
