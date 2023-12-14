@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import {IGraph} from "@antv/g6";
 import {ref} from "vue";
-import {deltaIndex} from "@renderer/util/time";
-import {PProject} from "@renderer/model";
+import {useProject} from "@renderer/util/project";
+import {originIndex} from "@renderer/util/time";
 
 const props = defineProps<{
   graph: IGraph | undefined
-  project: PProject
 }>()
+
+const project = useProject()!
 
 const date = ref()
 
@@ -18,8 +19,8 @@ function handleBlur(e) {
 
 function handleGraph() {
   if (!date.value) return
-  const dx = deltaIndex(date.value, props.project.baseTime) * (props.project.nodeWidth + props.project.nodeMargin[1] + props.project.nodeMargin[3]) + props.project.offset.x
-  props.graph?.translate(-dx, -props.project.offset.y)
+  const dx = (originIndex(date.value) - project.origin) * (project.nodeWidth + project.nodeMargin[1] + project.nodeMargin[3]) + project.offset.x
+  props.graph?.translate(-dx, -project.offset.y)
 }
 
 </script>
@@ -28,7 +29,7 @@ function handleGraph() {
   <el-date-picker
     v-model="date"
     style="width: 120px; margin: 0 4px 0 4px ; user-select: none"
-    type="dates"
+    type="date"
     placeholder="Pick a day"
     size="small"
     @keydown.enter="(e)=>handleBlur(e)"

@@ -1,4 +1,5 @@
 import {v4} from "uuid";
+import {originIndex} from "@renderer/util/time";
 
 export class PEdge {
   id: string = ''
@@ -13,7 +14,7 @@ export class PProject {
   createdTime: number = new Date().getTime();
   data: { nodes: PNode[], edges: PEdge[] } = {nodes: [], edges: []};
   id: string = v4();
-  baseTime: number = new Date().getTime();
+  origin: number = originIndex(new Date()); // 距离1970的天数
   offset: { x: number, y: number } = {x: 0, y: 0}; // 用于graph定位
   nodeHeight: number = 40;
   nodeMargin: number[] = [40, 10, 40, 10];

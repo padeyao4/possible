@@ -3,21 +3,20 @@ import './layout/possibleLayout'
 import './node/possibleNode'
 import './behavior/possibleNodeDrag'
 
-import {nextTick, onBeforeUnmount, onMounted, ref, Ref, shallowRef} from "vue";
+import {nextTick, onBeforeUnmount, onMounted, ref, Ref, shallowRef, watch} from "vue";
 import {Graph, IEdge, IGraph, Menu} from "@antv/g6";
 import PossibleGrid from "@renderer/g6/plugin/possibleGrid";
 import {PossibleTimeBar} from "@renderer/g6/plugin/possibleTimeBar";
 import {INode as G6INode, Item} from "@antv/g6-core";
-import {deltaIndex} from "@renderer/util/time";
-import {useDateStore} from "@renderer/store/date";
 import {PNode} from "@renderer/model";
 import {useProject} from "@renderer/util/project";
+import {useStore} from "@renderer/store/project";
 
 export function useGraph(container: Ref<HTMLElement>,
                          timeBar: Ref<HTMLElement>) {
-  const dateStore = useDateStore()
   const graph = shallowRef<IGraph>()
   const project = useProject()!
+  const store = useStore()
 
   /**
    * witch node has active
@@ -25,7 +24,7 @@ export function useGraph(container: Ref<HTMLElement>,
   const active = ref<string>()
 
   const dataIndex = () => {
-    return deltaIndex(dateStore.now, project.baseTime)
+    return store.dn - project.origin
   }
 
   function clearActive() {
@@ -199,7 +198,7 @@ export function useGraph(container: Ref<HTMLElement>,
     graph.value.render()
     graph.value.translate(x, y)
     addListen(graph.value)
-    dateStore.$subscribe(() => {
+    watch(() => store.dn, () => {
       graph.value?.updateLayout({
         todayIndex: dataIndex()
       })

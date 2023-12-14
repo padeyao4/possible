@@ -6,7 +6,7 @@ type D = Date | number | string
  * 已本地时间作为标准时间，获取毫秒值
  * @param d
  */
-export function getZoneTimeMs(d: D) {
+export function localMs(d: D) {
   const o = new Date(d)
   return o.getTime() - o.getTimezoneOffset() * 60_000
 }
@@ -15,8 +15,8 @@ export function getZoneTimeMs(d: D) {
  * 本地时间到1970年的天数
  * @param d
  */
-export function getOriginIndex(d: D) {
-  return Math.floor(getZoneTimeMs(d) / DAY_OF_MS)
+export function originIndex(d: D) {
+  return Math.floor(localMs(d) / DAY_OF_MS)
 }
 
 /**
@@ -24,8 +24,8 @@ export function getOriginIndex(d: D) {
  * @param d
  * @param o
  */
-export function deltaIndex(d: D, o: D) {
-  return getOriginIndex(d) - getOriginIndex(o)
+export function dist(d: D, o: D) {
+  return originIndex(d) - originIndex(o)
 }
 
 /**
@@ -33,14 +33,20 @@ export function deltaIndex(d: D, o: D) {
  * @param date
  */
 export function date2Day(date: Date) {
-    const mapper = {
-        '0': '日',
-        '1': '一',
-        '2': '二',
-        '3': '三',
-        '4': '四',
-        '5': '五',
-        '6': '六'
-    }
-    return '星期' + mapper[date.getDay()]
+  const mapper = {
+    '0': '日',
+    '1': '一',
+    '2': '二',
+    '3': '三',
+    '4': '四',
+    '5': '五',
+    '6': '六'
+  }
+  return '星期' + mapper[date.getDay()]
+}
+
+
+export function isNight() {
+  const hours = new Date().getHours()
+  return hours < 6 || hours > 18
 }

@@ -1,22 +1,21 @@
 <script setup lang="ts">
 
 import {Local} from "@icon-park/vue-next";
-import {deltaIndex} from "@renderer/util/time";
-import {useDateStore} from "@renderer/store/date";
 import {IGraph} from "@antv/g6";
 import Tip from "@renderer/component/Tip.vue";
-import {PProject} from "@renderer/model";
+import {useStore} from "@renderer/store/project";
+import {useProject} from "@renderer/util/project";
 
 const props = defineProps<{
-  project: PProject,
   graph: IGraph | undefined
 }>()
 
-const dateStore = useDateStore()
+const store = useStore()
+const project = useProject()!
 
 const today = () => {
-  const dx = deltaIndex(dateStore.now, props.project.baseTime) * (props.project.nodeWidth + props.project.nodeMargin[1] + props.project.nodeMargin[3]) + props.project.offset.x
-  props.graph?.translate(-dx, -props.project.offset.y)
+  const dx = (store.dn - project.origin) * (project.nodeWidth + project.nodeMargin[1] + project.nodeMargin[3]) + project.offset.x
+  props.graph?.translate(-dx, -project.offset.y)
 }
 </script>
 

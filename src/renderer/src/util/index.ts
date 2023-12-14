@@ -104,17 +104,8 @@ export function createBBoxByNodeCfg(node: NodeConfig) {
   return createBBoxXY(node.x as number, node.y as number, 100, 80)
 }
 
-/**
- * 添加天数
- * @param base
- * @param n
- */
-export function dateAdd(base: Date | string | number, n: number) {
-  return new Date(new Date(base).getTime() + n * DAY_OF_MS)
-}
-
-export function timeBarShow(base: Date | string | number, n: number) {
-  const date = dateAdd(base, n)
+export function timeBarShow(n: number) {
+  const date = new Date(n * DAY_OF_MS)
   return new Intl.DateTimeFormat('zh-Hans').format(date) + '\n' + date2Day(date)
 }
 

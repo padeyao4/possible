@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import {useStore} from '@renderer/store/project'
-import {useDateStore} from '@renderer/store/date'
 import {computed, ref, toRaw} from 'vue'
 import {Down, Right} from "@icon-park/vue-next";
 import Draggable from 'vuedraggable/src/vuedraggable'
-import {deltaIndex} from "@renderer/util/time";
 import {index2X} from "@renderer/util";
 import TodoItem from "@renderer/views/TodayView/component/TodoItem.vue";
 import TitleBar from "@renderer/component/TitleBar.vue";
@@ -14,11 +12,10 @@ import WelcomeCard from "@renderer/views/TodayView/component/WelcomeCard.vue";
 import CreateTaskInput from "@renderer/views/TodayView/component/CreateTaskInput.vue";
 
 const store = useStore()
-const dateStore = useDateStore()
 
 const todos = computed(() => {
   return store.list.map((project) => {
-    const x = index2X(deltaIndex(dateStore.now, project.baseTime))
+    const x = index2X(store.dn - project.origin)
     return project.data.nodes.filter(
       (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
     )
@@ -28,7 +25,7 @@ const todos = computed(() => {
 
 const completed = computed(() => {
   return store.list.map((project) => {
-    const x = index2X(deltaIndex(dateStore.now, project.baseTime))
+    const x = index2X(store.dn - project.origin)
     return project.data.nodes.filter(
       (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
     )

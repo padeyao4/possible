@@ -1,12 +1,13 @@
 import {defineStore} from 'pinia'
 import {PProject} from "@renderer/model";
 import {delayLayout} from "@renderer/util/data";
+import {originIndex} from "@renderer/util/time";
 
 export const useStore = defineStore('project', {
   state() {
     return {
       projects: new Map<string, PProject>(),
-      time: new Date().getTime(), // 现在时间 todo
+      dn: originIndex(new Date()), // 现在时间1970年的天数
       experiment: false, // 是否开启实验功能
       autoUpdateDate: true // 时间自动更新
     }

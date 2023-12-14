@@ -1,23 +1,19 @@
 <script setup lang="ts">
 import {onMounted, onUnmounted, ref} from 'vue'
-import {useDateStore} from '@renderer/store/date'
 import TitleBar from "@renderer/component/TitleBar.vue"
 import SideList from "@renderer/views/LayoutView/component/SideList.vue";
 import SideBottom from "@renderer/views/LayoutView/component/SideBottom.vue";
 import SummeryButton from "@renderer/views/LayoutView/component/SummeryButton.vue";
 import {useStore} from "@renderer/store/project";
+import {originIndex} from "@renderer/util/time";
 
-const dateStore = useDateStore()
 const store = useStore()
 const intervalRef = ref()
 
 onMounted(() => {
   if (store.autoUpdateDate) {
     intervalRef.value = setInterval(() => {
-      const isUpdate = dateStore.update2Now()
-      if (isUpdate) {
-        // store.update(dateStore.now.getTime())
-      }
+      store.dn = originIndex(new Date())
     }, 30_000)
   }
 })

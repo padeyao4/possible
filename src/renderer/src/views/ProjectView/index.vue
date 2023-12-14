@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {ref} from 'vue'
-import {useDateStore} from '@renderer/store/date'
 import TitleBar from '@renderer/component/TitleBar.vue'
 import {Aiming, ArrowLeft, ArrowRight, Back, Next} from '@icon-park/vue-next'
 import {useGraph} from "@renderer/g6";
@@ -8,15 +7,13 @@ import NodeEditor from "@renderer/views/ProjectView/component/NodeEditor.vue";
 import CalendarButton from "@renderer/views/ProjectView/component/CalendarButton.vue";
 import TodayButton from "@renderer/views/ProjectView/component/TodayButton.vue";
 import CanvasMoveButtons from "@renderer/views/ProjectView/component/CanvasMoveButtons.vue";
-import {useProject} from "@renderer/util/project";
 import ProjectHeader from "@renderer/views/ProjectView/component/ProjectHeader.vue";
 import {useStore} from "@renderer/store/project";
+import {originIndex} from "@renderer/util/time";
 
-const dateStore = useDateStore()
 const store = useStore()
 const container = ref<HTMLElement>()
 const timeBar = ref<HTMLElement>()
-const project = useProject()!
 const {graph, active, clearActive} = useGraph(container as any, timeBar as any)
 </script>
 
@@ -30,17 +27,17 @@ const {graph, active, clearActive} = useGraph(container as any, timeBar as any)
     </div>
     <div class="footer">
       <div class="icon-group">
-        <today-button :graph="graph" :project="project"/>
-        <calendar-button :graph="graph" :project="project"/>
+        <today-button :graph="graph"/>
+        <calendar-button :graph="graph"/>
         <canvas-move-buttons :graph="graph"/>
         <back v-show="store.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
         <next v-show="store.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"/>
         <arrow-left v-show="store.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
-                    @click="() => {dateStore.addDay(-1)}"/>
+                    @click="() => {store.dn-=1}"/>
         <aiming v-show="store.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
-                @click="() => {dateStore.update2Now()}"/>
+                @click="() => {store.dn = originIndex(new Date())}"/>
         <arrow-right v-show="store.experiment" theme="outline" size="20" fill="#333" :strokeWidth="2"
-                     @click="() => {dateStore.addDay(1)}"/>
+                     @click="() => {store.dn+=1}"/>
       </div>
     </div>
     <teleport to="body">

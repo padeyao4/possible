@@ -1,14 +1,13 @@
 <script setup lang="ts">
 
-import {SunOne, Moon} from "@icon-park/vue-next";
+import {Moon, SunOne} from "@icon-park/vue-next";
 import {computed} from "vue";
 import {Theme} from "@icon-park/vue-next/es/runtime";
 import router from "@renderer/router";
 import {useRoute} from "vue-router";
-import {useDateStore} from "@renderer/store/date";
+import {isNight} from "@renderer/util/time";
 
 const route = useRoute()
-const dateStore = useDateStore()
 
 const style = computed<{ theme: Theme, color: string }>(() => {
   return {
@@ -30,7 +29,7 @@ function handleClick() {
   <div>
     <div class="main">
       <div class="content" @click="handleClick">
-        <moon v-if="dateStore.isNight" :theme="style.theme" size="20" :fill="style.color" :strokeWidth="2" class="icon"/>
+        <moon v-if="isNight()" :theme="style.theme" size="20" :fill="style.color" :strokeWidth="2" class="icon"/>
         <sun-one v-else :theme="style.theme" size="20" :fill="style.color" :strokeWidth="2" class="icon"/>
         <div style="display: inline-block; margin:0 8px 0 4px" :style="{color: style.color}">
           我的一天
