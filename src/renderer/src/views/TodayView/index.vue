@@ -3,7 +3,6 @@ import {useStore} from '@renderer/store/project'
 import {computed, ref, toRaw} from 'vue'
 import {Down, Right} from "@icon-park/vue-next";
 import Draggable from 'vuedraggable/src/vuedraggable'
-import {index2X} from "@renderer/util";
 import TodoItem from "@renderer/views/TodayView/component/TodoItem.vue";
 import TitleBar from "@renderer/component/TitleBar.vue";
 import CompletedList from "@renderer/views/TodayView/component/CompletedList.vue";
@@ -15,9 +14,9 @@ const store = useStore()
 
 const todos = computed(() => {
   return store.list.map((project) => {
-    const x = index2X(store.dn - project.origin)
-    return project.data.nodes.filter(
-      (task) => task.x === x && (task.state === 'timeout' || task.state === 'normal')
+    const dn = store.dn - project.origin
+    return [...project.data.nodes.values()].filter(
+      (task) => task.dn === dn && (task.state === 'timeout' || task.state === 'normal')
     )
   })
     .flat().sort((n1, n2) => (n1?.order ?? 0) - (n2?.order ?? 0))
@@ -25,9 +24,9 @@ const todos = computed(() => {
 
 const completed = computed(() => {
   return store.list.map((project) => {
-    const x = index2X(store.dn - project.origin)
-    return project.data.nodes.filter(
-      (task) => task.x === x && (task.state === 'completed' || task.state === 'discard')
+    const dn = store.dn - project.origin
+    return [...project.data.nodes.values()].filter(
+      (task) => task.dn === dn && (task.state === 'completed' || task.state === 'discard')
     )
   })
     .flat()

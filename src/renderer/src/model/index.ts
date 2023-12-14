@@ -12,7 +12,7 @@ export class PProject {
   completed: boolean = false;
   completedTime: number = new Date().getTime();
   createdTime: number = new Date().getTime();
-  data: { nodes: PNode[], edges: PEdge[] } = {nodes: [], edges: []};
+  data: { nodes: Map<string, PNode>, edges: Map<string, PEdge> } = {nodes: new Map(), edges: new Map()};
   id: string = v4();
   origin: number = originIndex(new Date()); // 距离1970的天数
   offset: { x: number, y: number } = {x: 0, y: 0}; // 用于graph定位
@@ -53,6 +53,17 @@ export class PNode {
 
   static from(node: Partial<PNode>) {
     return Object.assign(new PNode(), node)
+  }
+
+
+  x2dn() {
+    const half = Math.floor(this.cellWidth / 2)
+    this.dn = Math.floor((this.x - half) / this.cellWidth)
+  }
+
+  dn2x() {
+    const half = Math.floor(this.cellWidth / 2)
+    this.x = this.dn * this.cellWidth + half
   }
 
   normalXY(x: number, y: number) {

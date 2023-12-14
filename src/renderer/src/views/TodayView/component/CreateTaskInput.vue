@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ListAdd, Plus, Round} from "@icon-park/vue-next";
 import {useStore} from "@renderer/store/project";
-import {computed, ref, watch} from "vue";
+import {computed, ref, watch, watchEffect} from "vue";
 import {PNode, PProject} from "@renderer/model";
 
 const store = useStore()
@@ -22,18 +22,16 @@ watch(addonVisible, () => {
 
 const listItemHeight = 30;
 
-const selectValue = ref<PProject | undefined>(store.list?.[0])
+const project = ref<PProject>()
 
-watch(store.list, () => {
-  const id = selectValue.value?.id
-  selectValue.value = store.projects.get(id as string)
-  if (!selectValue.value?.id) {
-    selectValue.value = store.projects?.[0]
+watchEffect(() => {
+  if (!project.value || !store.projects.has(project.value.id)) {
+    project.value = store.list?.[0]
   }
 })
 
-function handleClickAddon(project: PProject) {
-  selectValue.value = project
+function handleClickAddon(p: PProject) {
+  project.value = p
 }
 
 const inputValue = ref('')
@@ -41,15 +39,21 @@ const inputValue = ref('')
 function handleSubmit() {
   const node = new PNode()
   node.name = inputValue.value
-  if (selectValue.value?.id) {
-    node.projectId = selectValue.value.id
-    selectValue.value.data.nodes.push(node)
-  } else {
-    const projectId = store.createByName('默认')
-    node.projectId = projectId
-    store.projects.get(projectId)!.data.nodes.push(node)
+  if (node.name.trim() === '') {
+    node.name = '未命名'
   }
-  // store.update(new Date().getTime())
+
+  if (!project.value) {
+    project.value = new PProject()
+    project.value.name = '默认'
+    store.projects.set(project.value.id, project.value)
+  }
+
+  node.projectId = project.value.id
+  node.dn = store.dn - project.value.origin
+  project.value.data.nodes.set(node.id, node)
+
+  store.update()
   inputValue.value = ''
 }
 
@@ -70,7 +74,7 @@ const offsetHeight = computed(() => {
           </div>
         </div>
         <list-add theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon"/>
-        <div class="text">{{ (selectValue as PProject)?.name ?? '默认' }}</div>
+        <div class="text">{{ project?.name ?? '默认' }}</div>
       </div>
       <input class="input" v-model="inputValue" placeholder="添加任务" @keydown.enter="handleSubmit"/>
       <plus theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon plus"/>

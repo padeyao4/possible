@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia'
 import {PProject} from "@renderer/model";
-import {delayLayout} from "@renderer/util/data";
 import {originIndex} from "@renderer/util/time";
+import {dataUpdate} from "@renderer/util/data";
 
 export const useStore = defineStore('project', {
   state() {
@@ -18,12 +18,6 @@ export const useStore = defineStore('project', {
     }
   },
   actions: {
-    createByName(name: string): string {
-      const project = new PProject()
-      project.name = name
-      this.projects.set(project.id, project)
-      return project.id
-    },
     delete(id: string) {
       this.projects.delete(id)
     },
@@ -42,13 +36,11 @@ export const useStore = defineStore('project', {
     },
     /**
      * 根据时间排更新项目和任务状态
-     * @param time
      */
-    update(time: number) {
+    update() {
       [...this.projects.values()].forEach(p => {
-        delayLayout({index: time, nodes: p.data.nodes, edges: p.data.edges})
+        dataUpdate(this.dn - p.origin, p.data.nodes, p.data.edges)
       })
-      console.log(this.projects)
     }
   }
   // persist: true

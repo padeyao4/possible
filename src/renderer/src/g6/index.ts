@@ -4,7 +4,7 @@ import './node/possibleNode'
 import './behavior/possibleNodeDrag'
 
 import {nextTick, onBeforeUnmount, onMounted, ref, Ref, shallowRef, watch} from "vue";
-import {Graph, IEdge, IGraph, Menu} from "@antv/g6";
+import {Graph, GraphData, IEdge, IGraph, Menu} from "@antv/g6";
 import PossibleGrid from "@renderer/g6/plugin/possibleGrid";
 import {PossibleTimeBar} from "@renderer/g6/plugin/possibleTimeBar";
 import {INode as G6INode, Item} from "@antv/g6-core";
@@ -110,7 +110,15 @@ export function useGraph(container: Ref<HTMLElement>,
 
 
   function save() {
-    project.data = graph.value?.save() as any
+    const graphData = graph.value?.save() as GraphData
+    graphData?.nodes?.forEach(node => {
+      const pNode = PNode.from(node)
+      pNode.x2dn()
+      project.data.nodes.set(node.id, pNode)
+    })
+    graphData?.edges?.forEach(edge => {
+      project.data.nodes.set(edge.id as string, edge as any)
+    })
   }
 
   onMounted(() => {
@@ -194,7 +202,13 @@ export function useGraph(container: Ref<HTMLElement>,
       }
     })
     const {x, y} = project.offset
-    graph.value.data(project.data as any)
+    const nodes = [...project.data.nodes.values()]
+    nodes.forEach(node => node.dn2x())
+    const data = {
+      nodes,
+      edges: [...project.data.edges.values()]
+    }
+    graph.value.data(data)
     graph.value.render()
     graph.value.translate(x, y)
     addListen(graph.value)

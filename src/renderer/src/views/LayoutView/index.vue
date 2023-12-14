@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref} from 'vue'
+import {onMounted, onUnmounted, ref, watch} from 'vue'
 import TitleBar from "@renderer/component/TitleBar.vue"
 import SideList from "@renderer/views/LayoutView/component/SideList.vue";
 import SideBottom from "@renderer/views/LayoutView/component/SideBottom.vue";
@@ -16,6 +16,9 @@ onMounted(() => {
       store.dn = originIndex(new Date())
     }, 30_000)
   }
+  watch(() => store.dn, () => {
+    store.update()
+  })
 })
 
 onUnmounted(() => {

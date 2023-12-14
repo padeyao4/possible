@@ -1,6 +1,6 @@
 import G6 from '@antv/g6'
 import {PEdge, PNode} from "@renderer/model";
-import {delayLayout} from "@renderer/util/data";
+import {graphLayout} from "@renderer/util/data";
 
 G6.registerLayout('possible-layout', {
   /**
@@ -25,7 +25,7 @@ G6.registerLayout('possible-layout', {
       nodes: PNode[]
       edges: PEdge[]
     } = this
-    delayLayout({index: todayIndex, nodes, edges})
+    graphLayout({index: todayIndex, nodes, edges})
   },
   /**
    * 销毁

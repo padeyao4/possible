@@ -27,12 +27,55 @@ export function loads(text: string | undefined | null) {
 }
 
 /**
+ * 根据id获取子节点id
+ * @param id
+ * @param edges
+ */
+function children(id: string, edges: Map<string, PEdge>): string[] {
+  return [...new Set([...edges.values()].filter(edge => edge.source === id).map(edge => edge.target)).values()]
+}
+
+function normalNode(node: PNode) {
+  return node.taskType === 'general' && node.state === 'normal'
+}
+
+function changeNodeDn(node: PNode, nodes: Map<string, PNode>, edges: Map<string, PEdge>) {
+  const nextChildren = children(node.id, edges).map(child => nodes.get(child)!).filter(f => f.dn === node.dn + 1)
+  if (nextChildren.length === 0) {
+    node.dn += 1
+    return true
+  } else {
+    const otherNodes = nextChildren.filter(next => !normalNode(next))
+    if (otherNodes.length === 0) {
+      const ans = nextChildren.map(next => changeNodeDn(next, nodes, edges)).every(child => child)
+      if (ans) {
+        node.dn += 1
+      }
+      return ans
+    } else {
+      return false
+    }
+  }
+}
+
+export function dataUpdate(dn: number, nodes: Map<string, PNode>, edges: Map<string, PEdge>) {
+  [...nodes.values()]
+    .filter(node => normalNode(node))
+    .filter(node => node.dn < dn)
+    .forEach(node => {
+      while (dn - node.dn > 0) {
+        changeNodeDn(node, nodes, edges)
+      }
+    })
+}
+
+/**
  * 根据时间更新和布局节点
  * @param index
  * @param nodes
  * @param edges
  */
-export function delayLayout({index, nodes, edges}: {
+export function graphLayout({index, nodes, edges}: {
   index: number
   nodes: PNode[]
   edges: PEdge[]
