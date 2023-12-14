@@ -48,8 +48,8 @@ onUnmounted(() => {
   overflow: hidden;
   background: var(--color-background);
   display: grid;
-  width: var(--win-width);
-  height: var(--win-height);
+  width: 100vw;
+  height: 100vh;
   grid-template-columns: var(--side-width) var(--content-width);
   border-radius: 8px;
   border: solid 1px #58585860;

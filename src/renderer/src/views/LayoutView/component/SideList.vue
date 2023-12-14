@@ -112,6 +112,7 @@ function onUpdate() {
   height: calc(var(--win-height) - 104px) !important;
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
   width: 240px !important;
+  overflow-y: auto;
 
   .list-item {
     display: flex;
