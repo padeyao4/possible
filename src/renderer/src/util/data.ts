@@ -1,29 +1,74 @@
 import {useStore} from "@renderer/store/project";
 import {CURRENT_DATA_VERSION} from "@renderer/common/constant";
-import {PEdge, PNode} from "@renderer/model";
+import {PEdge, PNode, PProject} from "@renderer/model";
 import {index2X} from "@renderer/util/index";
+import {PossibleData} from "@renderer/types";
+
+function replacer(_key: any, value: any) {
+  if (value instanceof Map) {
+    return {
+      dataType: 'Map',
+      value: Array.from(value.entries()) // or with spread: value: [...value]
+    };
+  } else {
+    return value;
+  }
+}
+
+function reviver(_key: any, value: any) {
+  if (typeof value === 'object' && value !== null) {
+    if (value.dataType === 'Map') {
+      return new Map(value.value);
+    }
+  }
+  return value;
+}
 
 /**
  * 将store project 按格式导出
  */
-export function dumps(id: string | undefined = undefined) {
+export function dumps() {
   const store = useStore()
+  console.log('save', store.projects)
   return JSON.stringify({
-    data: (id ? [store.projects.get(id)] : store.projects),
+    data: {
+      projects: store.projects,
+      dn: store.dn,
+      experiment: store.experiment,
+      autoUpdateDate: store.autoUpdateDate
+    },
     time: new Date().getTime(),
     version: CURRENT_DATA_VERSION
-  })
+  }, replacer)
 }
 
 /**
  * 加载字符串数据
  * @param text
  */
-export function loads(text: string | undefined | null) {
-  if (text === undefined || text === null) return
-  const content = JSON.parse(text)
+export function loads(text: string | null) {
+  if (text === null) return
+  const content: PossibleData = JSON.parse(text, reviver)
   if (content.version !== CURRENT_DATA_VERSION) return;
-  useStore().merge(content.data)
+  const ans = new Map<string, PProject>();
+  ;[...content.data.projects.values()].map(p => {
+    const project = Object.assign(new PProject(), p)
+    const nodeMaps = new Map<string, PNode>()
+    ;[...project.data.nodes.values()].map(n => Object.assign(new PNode(), n)).forEach(n => {
+      nodeMaps.set(n.id, n)
+    })
+    project.data.nodes = nodeMaps
+    const edgeMaps = new Map<string, PEdge>()
+    ;[...project.data.edges.values()].map(e => Object.assign(new PEdge(), e)).forEach(e => {
+      edgeMaps.set(e.id, e)
+    })
+    project.data.edges = edgeMaps
+    return project
+  }).forEach(p => {
+    ans.set(p.id, p)
+  })
+  content.data.projects = ans
+  useStore().merge(content)
 }
 
 /**

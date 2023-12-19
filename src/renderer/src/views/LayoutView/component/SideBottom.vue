@@ -1,22 +1,16 @@
 <script setup lang="ts">
 
-import {Logout, SaveOne, Upload} from "@icon-park/vue-next";
+import {Logout, Upload} from "@icon-park/vue-next";
 import SettingButton from "@renderer/views/LayoutView/component/SettingButton.vue";
 import {ref} from "vue";
 import AboutButton from "@renderer/views/LayoutView/component/AboutButton.vue";
 import Tip from "@renderer/component/Tip.vue";
-import {dumps, loads} from "@renderer/util/data";
+import {loads} from "@renderer/util/data";
 import UpdateButton from "@renderer/views/LayoutView/component/UpdateButton.vue";
 import AddButton from "@renderer/views/LayoutView/component/AddButton.vue";
+import SaveButton from "@renderer/views/LayoutView/component/SaveButton.vue";
 
 const front = ref(true)
-
-/**
- * 导出所有项目数据
- */
-function save() {
-  window.api.exportData(dumps())
-}
 
 /**
  * 根据文件格式导入数据
@@ -39,9 +33,7 @@ async function load() {
         <tip content="导入">
           <upload theme="outline" size="20" fill="#333" :strokeWidth="2" @click="load"/>
         </tip>
-        <tip content="保存">
-          <save-one theme="outline" size="20" fill="#333" :strokeWidth="2" @click="save"/>
-        </tip>
+        <save-button/>
         <tip content="检查更新">
           <update-button/>
         </tip>

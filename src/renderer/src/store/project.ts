@@ -2,6 +2,7 @@ import {defineStore} from 'pinia'
 import {PProject} from "@renderer/model";
 import {originIndex} from "@renderer/util/time";
 import {dataUpdate} from "@renderer/util/data";
+import {PossibleData} from "@renderer/types";
 
 export const useStore = defineStore('project', {
   state() {
@@ -27,12 +28,12 @@ export const useStore = defineStore('project', {
 
     /**
      * 合并数据，会覆盖已存在数据
-     * @param projects
      */
-    merge(projects: PProject[] | undefined) {
-      projects?.forEach(p => {
-        this.projects.set(p.id, p)
-      })
+    merge({data: {projects, experiment, dn, autoUpdateDate}}: PossibleData) {
+      this.projects = projects
+      this.experiment = experiment
+      this.autoUpdateDate = autoUpdateDate
+      this.dn = dn
     },
     /**
      * 根据时间排更新项目和任务状态

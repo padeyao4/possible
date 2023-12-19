@@ -8,7 +8,10 @@ declare module '*.vue' {
 }
 
 type PossibleData = {
-  projects: PProject[],
-  time: number,
-  version: string
+  data: {
+    projects: Map<string, PProject>,
+    dn: number,
+    experiment: boolean,
+    autoUpdateDate: boolean
+  }, version: string, time: number
 }
