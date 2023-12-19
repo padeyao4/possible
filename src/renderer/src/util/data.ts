@@ -29,7 +29,6 @@ function reviver(_key: any, value: any) {
  */
 export function dumps() {
   const store = useStore()
-  console.log('save', store.projects)
   return JSON.stringify({
     data: {
       projects: store.projects,
