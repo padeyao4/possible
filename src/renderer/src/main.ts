@@ -6,7 +6,7 @@ import App from './App.vue'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import router from './router'
 import 'default-passive-events'
-import ElementPlus from 'element-plus' // 必须在其他项导入之后
+import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import '@renderer/util/browser-patch'
 import {loads} from "@renderer/util/data";
