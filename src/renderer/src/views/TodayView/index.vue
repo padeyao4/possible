@@ -33,7 +33,7 @@ const completed = computed(() => {
 })
 
 function onChange() {
-  todos.value.forEach((value, index) => {
+  todos.value?.forEach((value, index) => {
     value.order = index
   })
 }
