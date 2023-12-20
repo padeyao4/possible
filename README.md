@@ -1,41 +1,10 @@
 # possible
+个人任务管理应用。类似于微软todolist。用于帮助个人管理目标和任务并实现目标
 
-An Electron application with Vue and TypeScript
+提供了任务规划功能，在普通的任务管理应用中加上了时间轴维度，可以清晰显示每天的任务和规划。
 
-## Recommended IDE Setup
+后续将会提供多人协助，任务分解，任务提醒，服务器存储等功能
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin)
-
-## Project Setup
-
-### Install
-
-```bash
-$ pnpm install
-```
-
-### Development
-
-```bash
-$ pnpm dev
-```
-
-### Build
-
-```bash
-# For windows
-$ pnpm build:win
-
-# For macOS
-$ pnpm build:mac
-
-# For Linux
-$ pnpm build:linux
-```
-
-### document
-
-- https://cn.electron-vite.org/guide/introduction
-- https://getcssscan.com/css-box-shadow-examples
-- https://element-plus.org/zh-CN/
-- https://github.com/antvis/g6
+## 示例
+![today](imges/p1.png)
+![project](imges/p2.png)
