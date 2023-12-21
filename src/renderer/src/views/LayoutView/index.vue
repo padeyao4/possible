@@ -25,7 +25,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (intervalRef.value !== undefined) clearInterval(intervalRef.value)
+  if (intervalRef.value) clearInterval(intervalRef.value)
 })
 
 </script>

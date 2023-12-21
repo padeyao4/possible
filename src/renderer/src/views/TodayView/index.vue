@@ -77,7 +77,6 @@ const isEmpty = computed(() => {
                      handle=".mover"
                      chosenClass="chosen-class"
                      drag-class="drag-class">
-            <!--element 为固定写法-->
             <template #item="{element}">
               <todo-item :element="element"/>
             </template>

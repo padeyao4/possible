@@ -44,5 +44,4 @@ export const useStore = defineStore('project', {
       })
     }
   }
-  // persist: true
 })
