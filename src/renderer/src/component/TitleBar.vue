@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {Close, Minus, Square} from '@icon-park/vue-next'
 import {dumps} from "@renderer/util/data";
+import {computed} from "vue";
 
 const props = defineProps<{
   visible?: boolean
@@ -20,12 +21,20 @@ function winClose() {
   window.api.saveData(dumps())
   window.api.windowMainClose()
 }
+
+const isDev = computed(() => {
+  return window.api.isDev();
+})
+
 </script>
 
 <template>
   <div>
-    <div class="settings-button">
-      <div class="container">
+    <div class="title-bar">
+      <div class="title-bar-container">
+        <div v-if="isDev&&visible" class="window-icon icon-dev">
+          <el-text class="mx-1" type="success">Dev</el-text>
+        </div>
         <div v-show="visible" class="window-icon window-minimize" @click="winMin">
           <minus theme="outline" size="14" fill="#333" :strokeWidth="2"/>
         </div>
@@ -41,13 +50,13 @@ function winClose() {
 </template>
 
 <style scoped>
-.settings-button {
+.title-bar {
   display: flex;
   height: 24px;
   -webkit-app-region: drag;
   flex-direction: row-reverse;
 
-  .container {
+  .title-bar-container {
     -webkit-app-region: no-drag;
     display: flex;
     justify-content: center;
@@ -61,6 +70,14 @@ function winClose() {
       font-size: 12px;
       color: black;
       width: 44px;
+    }
+
+    .icon-dev {
+      background: antiquewhite;
+      border-radius: 2px;
+      display: flex;
+      justify-content: center;
+      align-items: start;
     }
 
     .window-maximize:hover {

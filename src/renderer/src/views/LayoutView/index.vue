@@ -12,12 +12,12 @@ const intervalRef = ref()
 
 onMounted(() => {
   if (store.autoUpdateDate) {
-    intervalRef.value = setInterval(() => {
+    intervalRef.value = setInterval((() => {
       store.dn = originIndex(new Date())
       return () => {
         store.dn = originIndex(new Date())
       }
-    }, 30_000)
+    })(), 30_000)
   }
   watch(() => store.dn, () => {
     store.update()

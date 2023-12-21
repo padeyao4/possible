@@ -18,7 +18,8 @@ declare global {
       windowSettingsClose: () => void,
       platform: () => Promise<string>
       possibleVersion: () => Promise<string>,
-      checkForUpdates: () => Promise<UpdateCheckResult | null>
+      checkForUpdates: () => Promise<UpdateCheckResult | null>,
+      isDev: () => Boolean
     }
   }
 }

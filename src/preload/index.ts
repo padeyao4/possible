@@ -45,6 +45,9 @@ const api = {
   },
   checkForUpdates(): Promise<UpdateCheckResult | null> {
     return ipcRenderer.invoke('check-for-update')
+  },
+  isDev: async (): Promise<boolean> => {
+    return await ipcRenderer.invoke('is-dev')
   }
 }
 
