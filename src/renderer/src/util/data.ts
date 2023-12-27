@@ -43,9 +43,9 @@ export function dumps() {
 
 /**
  * 加载字符串数据
- * @param text
  */
-export function loads(text: string | null) {
+export async function loads() {
+  const text = await window.api.loadLocalData()
   if (text === null) return
   const content: PossibleData = JSON.parse(text, reviver)
   if (content.version !== CURRENT_DATA_VERSION) return;
@@ -201,4 +201,12 @@ export function graphLayout({index, nodes, edges}: {
   })
 
   map.clear()
+}
+
+/**
+ * 初始化系统环境变量
+ */
+export async function initEnv() {
+  const store = useStore()
+  store.dev = await window.api.isDev()
 }

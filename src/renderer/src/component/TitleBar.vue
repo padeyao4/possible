@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import {Close, Minus, Square} from '@icon-park/vue-next'
 import {dumps} from "@renderer/util/data";
-import {computed} from "vue";
+import {useStore} from "@renderer/store/project";
 
 const props = defineProps<{
   visible?: boolean
   onBeforeClose?: () => void
 }>()
+
+const store = useStore()
 
 function winMin() {
   window.api.windowMainMinimize()
@@ -22,17 +24,13 @@ function winClose() {
   window.api.windowMainClose()
 }
 
-const isDev = computed(() => {
-  return window.api.isDev();
-})
-
 </script>
 
 <template>
   <div>
     <div class="title-bar">
       <div class="title-bar-container">
-        <div v-if="isDev&&visible" class="window-icon icon-dev">
+        <div v-if="store.dev&&visible" class="window-icon icon-dev">
           <el-text class="mx-1" type="success">Dev</el-text>
         </div>
         <div v-show="visible" class="window-icon window-minimize" @click="winMin">

@@ -10,7 +10,8 @@ export const useStore = defineStore('project', {
       projects: new Map<string, PProject>(),
       dn: originIndex(new Date()), // 现在时间1970年的天数
       experiment: false, // 是否开启实验功能
-      autoUpdateDate: true // 时间自动更新
+      autoUpdateDate: true, // 时间自动更新
+      dev: true // 当前系统环境
     }
   },
   getters: {

@@ -16,7 +16,7 @@ const front = ref(true)
  * 根据文件格式导入数据
  */
 async function load() {
-  loads(await window.api.importData())
+  await loads()
 }
 </script>
 

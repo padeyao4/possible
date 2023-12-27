@@ -19,7 +19,7 @@ declare global {
       platform: () => Promise<string>
       possibleVersion: () => Promise<string>,
       checkForUpdates: () => Promise<UpdateCheckResult | null>,
-      isDev: () => Boolean
+      isDev: () => Promise<boolean>
     }
   }
 }

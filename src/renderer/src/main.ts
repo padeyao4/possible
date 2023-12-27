@@ -9,7 +9,7 @@ import 'default-passive-events'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import '@renderer/util/browser-patch'
-import {loads} from "@renderer/util/data";
+import {initEnv, loads} from "@renderer/util/data";
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -20,6 +20,8 @@ app.use(router)
 app.mount('#app')
 
 ;(async function () {
-    loads(await window.api.loadLocalData())
+    await initEnv()
+    await loads()
   }()
-)
+).then(data => console.log(data))
+  .catch(r => console.error(r))
