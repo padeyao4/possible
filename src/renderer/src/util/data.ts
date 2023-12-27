@@ -207,6 +207,5 @@ export function graphLayout({index, nodes, edges}: {
  * 初始化系统环境变量
  */
 export async function initEnv() {
-  const store = useStore()
-  store.dev = await window.api.isDev()
+  useStore().dev = await window.api.isDev()
 }

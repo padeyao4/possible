@@ -40,11 +40,7 @@ export function createMainWindow(windowDict: Map<string, BrowserWindow>): void {
 
   // 关闭窗口
   ipcMain.on('window:main:close', () => {
-    windowDict.forEach(value => {
-      if (!value?.isDestroyed()) {
-        value?.close()
-      }
-    })
+    windowDict.get('main')?.hide()
   });
 
   ipcMain.on('project-save', (_, text: string) => {
