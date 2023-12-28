@@ -59,15 +59,18 @@ export class PNode {
   x2dn() {
     const half = Math.floor(this.cellWidth / 2)
     this.dn = Math.floor((this.x - half) / this.cellWidth)
+    return this
   }
 
   dn2x() {
     const half = Math.floor(this.cellWidth / 2)
     this.x = this.dn * this.cellWidth + half
+    return this
   }
 
   normalXY(x: number, y: number) {
     this.x = Math.floor(x / this.cellWidth) * this.cellWidth + Math.floor(this.cellWidth / 2)
     this.y = y
+    return this
   }
 }

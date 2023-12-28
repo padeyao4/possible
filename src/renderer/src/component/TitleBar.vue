@@ -76,6 +76,7 @@ function winClose() {
       display: flex;
       justify-content: center;
       align-items: start;
+      user-select: none;
     }
 
     .window-maximize:hover {
