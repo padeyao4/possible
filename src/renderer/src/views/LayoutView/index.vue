@@ -17,7 +17,7 @@ onMounted(() => {
       return () => {
         store.dn = originIndex(new Date())
       }
-    })(), 30_000)
+    })(), 10_000)
   }
   watch(() => store.dn, () => {
     store.update()
