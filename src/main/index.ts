@@ -24,6 +24,17 @@ process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
  */
 const windowDict = new Map<string, BrowserWindow>()
 
+// 获取单例锁
+if (!app.requestSingleInstanceLock()) {
+  app.quit()
+}
+
+app.on('second-instance', () => {
+  // 当运行第二个实例时,将会聚焦到myWindow这个窗口
+  windowDict.get('main')?.show()
+  windowDict.get('main')?.focus()
+})
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -45,7 +56,7 @@ app
             main?.close()
           }
         }
-      }]), )
+      }]))
     })
 
     // Set app user model id for windows
