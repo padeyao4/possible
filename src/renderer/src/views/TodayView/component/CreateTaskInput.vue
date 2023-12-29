@@ -51,7 +51,7 @@ function handleSubmit() {
 
   node.projectId = project.value.id
   node.dn = store.dn - project.value.origin
-  project.value.data.nodes.set(node.id, node)
+  project.value.nodes.set(node.id, node)
 
   store.update()
   inputValue.value = ''

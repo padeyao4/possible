@@ -8,9 +8,10 @@ import {Graph, GraphData, IEdge, IGraph, Menu} from "@antv/g6";
 import PossibleGrid from "@renderer/g6/plugin/possibleGrid";
 import {PossibleTimeBar} from "@renderer/g6/plugin/possibleTimeBar";
 import {INode as G6INode, Item} from "@antv/g6-core";
-import {PNode} from "@renderer/model";
+import {PEdge, PNode} from "@renderer/model";
 import {useProject} from "@renderer/util/project";
 import {useStore} from "@renderer/store/project";
+import {plainToInstance} from "class-transformer";
 
 export function useGraph(container: Ref<HTMLElement>,
                          timeBar: Ref<HTMLElement>) {
@@ -111,17 +112,15 @@ export function useGraph(container: Ref<HTMLElement>,
 
   function save() {
     const graphData = graph.value?.save() as GraphData
-    project.data.nodes.clear()
+    project.nodes.clear()
     graphData?.nodes?.forEach(node => {
-      project.data.nodes.set(node.id, PNode.from(node).x2dn())
+      project.nodes.set(node.id, plainToInstance(PNode, node).x2dn())
     })
-    project.data.edges.clear()
+    project.edges.clear()
     graphData?.edges?.forEach(edge => {
-      project.data.edges.set(edge.id as string, {
-        id: edge.id as string,
-        source: edge.source as string,
-        target: edge.target as string
-      })
+      if (edge.id) {
+        project.edges.set(edge.id, plainToInstance(PEdge, edge))
+      }
     })
   }
 
@@ -206,11 +205,11 @@ export function useGraph(container: Ref<HTMLElement>,
       }
     })
     const {x, y} = project.offset
-    const nodes = [...project.data.nodes.values()]
+    const nodes = [...project.nodes.values()]
     nodes.forEach(node => node.dn2x())
     const data = {
       nodes,
-      edges: [...project.data.edges.values()]
+      edges: [...project.edges.values()]
     }
     graph.value.data(data)
     graph.value.render()

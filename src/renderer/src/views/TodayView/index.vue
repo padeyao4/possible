@@ -15,7 +15,7 @@ const store = useStore()
 const todos = computed(() => {
   return store.list.map((project) => {
     const dn = store.dn - project.origin
-    return [...project.data.nodes.values()].filter(
+    return [...project.nodes.values()].filter(
       (task) => task.dn === dn && (task.state === 'timeout' || task.state === 'normal')
     )
   })
@@ -25,7 +25,7 @@ const todos = computed(() => {
 const completed = computed(() => {
   return store.list.map((project) => {
     const dn = store.dn - project.origin
-    return [...project.data.nodes.values()].filter(
+    return [...project.nodes.values()].filter(
       (task) => task.dn === dn && (task.state === 'completed' || task.state === 'discard')
     )
   })

@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import './assets/main.css'
 import '@renderer/g6'
 import {createPinia} from 'pinia'
@@ -5,6 +6,7 @@ import {createApp} from 'vue'
 import App from './App.vue'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import router from './router'
+//@ts-ignore
 import 'default-passive-events'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'

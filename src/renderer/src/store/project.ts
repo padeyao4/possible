@@ -1,18 +1,10 @@
 import {defineStore} from 'pinia'
-import {PProject} from "@renderer/model";
-import {originIndex} from "@renderer/util/time";
+import {PProject, Store} from "@renderer/model";
 import {dataUpdate} from "@renderer/util/data";
-import {PossibleData} from "@renderer/types";
 
 export const useStore = defineStore('project', {
   state() {
-    return {
-      projects: new Map<string, PProject>(),
-      dn: originIndex(new Date()), // 现在时间1970年的天数
-      experiment: false, // 是否开启实验功能
-      autoUpdateDate: true, // 时间自动更新
-      dev: true // 当前系统环境
-    }
+    return {...new Store()}
   },
   getters: {
     list: (state) => {
@@ -30,7 +22,7 @@ export const useStore = defineStore('project', {
     /**
      * 合并数据，会覆盖已存在数据
      */
-    merge({data: {projects, experiment, dn, autoUpdateDate}}: PossibleData) {
+    merge({projects, experiment, dn, autoUpdateDate}: Store) {
       this.projects = projects
       this.experiment = experiment
       this.autoUpdateDate = autoUpdateDate
@@ -41,7 +33,7 @@ export const useStore = defineStore('project', {
      */
     update() {
       [...this.projects.values()].forEach(p => {
-        dataUpdate(this.dn - p.origin, p.data.nodes, p.data.edges)
+        dataUpdate(this.dn - p.origin, p.nodes, p.edges)
       })
     }
   }

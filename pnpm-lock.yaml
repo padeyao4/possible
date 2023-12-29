@@ -20,6 +20,9 @@ dependencies:
   '@icon-park/vue-next':
     specifier: ^1.4.2
     version: 1.4.2(vue@3.3.13)
+  class-transformer:
+    specifier: ^0.5.1
+    version: 0.5.1
   default-passive-events:
     specifier: ^2.0.0
     version: 2.0.0
@@ -41,6 +44,9 @@ dependencies:
   pinia-plugin-persistedstate:
     specifier: ^3.2.1
     version: 3.2.1(pinia@2.1.7)
+  reflect-metadata:
+    specifier: ^0.2.1
+    version: 0.2.1
   uuid:
     specifier: ^9.0.1
     version: 9.0.1
@@ -2113,6 +2119,10 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /class-transformer@0.5.1:
+    resolution: {integrity: sha512-SQa1Ws6hUbfC98vKGxZH3KFY0Y1lm5Zm0SY8XX9zbK7FJCyVEac3ATW0RIpwzW+oOfmHE5PMPufDG9hCfoEOMw==}
+    dev: false
+
   /cli-truncate@2.1.0:
     resolution: {integrity: sha512-n8fOixwDD6b/ObinzTrp1ZKFzbgvKZvuz/TvejnLn1aQfC6r52XEx85FmuC+3HI+JM7coBRXUvNqEU2PHVrHpg==}
     engines: {node: '>=8'}
@@ -4132,6 +4142,10 @@ packages:
       json5: 2.2.3
       lazy-val: 1.0.5
     dev: true
+
+  /reflect-metadata@0.2.1:
+    resolution: {integrity: sha512-i5lLI6iw9AU3Uu4szRNPPEkomnkjRTaVt9hy/bn5g/oSzekBSMeLZblcjP74AW0vBabqERLLIrz+gR8QYR54Tw==}
+    dev: false
 
   /regenerator-runtime@0.14.1:
     resolution: {integrity: sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==}

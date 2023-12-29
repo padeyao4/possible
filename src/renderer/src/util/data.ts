@@ -1,44 +1,13 @@
 import {useStore} from "@renderer/store/project";
-import {CURRENT_DATA_VERSION} from "@renderer/common/constant";
-import {PEdge, PNode, PProject} from "@renderer/model";
+import {PEdge, PNode, Store} from "@renderer/model";
 import {index2X} from "@renderer/util/index";
-import {PossibleData} from "@renderer/types";
-
-function replacer(_key: any, value: any) {
-  if (value instanceof Map) {
-    return {
-      dataType: 'Map',
-      value: Array.from(value.entries()) // or with spread: value: [...value]
-    };
-  } else {
-    return value;
-  }
-}
-
-function reviver(_key: any, value: any) {
-  if (typeof value === 'object' && value !== null) {
-    if (value.dataType === 'Map') {
-      return new Map(value.value);
-    }
-  }
-  return value;
-}
+import {instanceToPlain, plainToInstance} from "class-transformer";
 
 /**
  * 将store project 按格式导出
  */
 export function dumps() {
-  const store = useStore()
-  return JSON.stringify({
-    data: {
-      projects: store.projects,
-      dn: store.dn,
-      experiment: store.experiment,
-      autoUpdateDate: store.autoUpdateDate
-    },
-    time: new Date().getTime(),
-    version: CURRENT_DATA_VERSION
-  }, replacer)
+  return JSON.stringify(instanceToPlain<Store>(useStore().$state))
 }
 
 /**
@@ -47,27 +16,7 @@ export function dumps() {
 export async function loads() {
   const text = await window.api.loadLocalData()
   if (text === null) return
-  const content: PossibleData = JSON.parse(text, reviver)
-  if (content.version !== CURRENT_DATA_VERSION) return;
-  const ans = new Map<string, PProject>();
-  ;[...content.data.projects.values()].map(p => {
-    const project = Object.assign(new PProject(), p)
-    const nodeMaps = new Map<string, PNode>()
-    ;[...project.data.nodes.values()].map(n => Object.assign(new PNode(), n)).forEach(n => {
-      nodeMaps.set(n.id, n)
-    })
-    project.data.nodes = nodeMaps
-    const edgeMaps = new Map<string, PEdge>()
-    ;[...project.data.edges.values()].map(e => Object.assign(new PEdge(), e)).forEach(e => {
-      edgeMaps.set(e.id, e)
-    })
-    project.data.edges = edgeMaps
-    return project
-  }).forEach(p => {
-    ans.set(p.id, p)
-  })
-  content.data.projects = ans
-  useStore().merge(content)
+  useStore().merge(plainToInstance(Store, JSON.parse(text)))
 }
 
 /**

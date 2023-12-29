@@ -12,6 +12,7 @@
     "composite": true,
     "allowJs": true,
     "baseUrl": ".",
+    "experimentalDecorators": true,
     "paths": {
       "@renderer/*": [
         "src/renderer/src/*"
