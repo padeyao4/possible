@@ -1,7 +1,7 @@
-import {useStore} from "@renderer/store/project";
-import {PEdge, PNode, Store} from "@renderer/model";
-import {index2X} from "@renderer/util/index";
-import {instanceToPlain, plainToInstance} from "class-transformer";
+import { useStore } from '@renderer/store/project'
+import { PEdge, PNode, Store } from '@renderer/model'
+import { index2X } from '@renderer/util/index'
+import { instanceToPlain, plainToInstance } from 'class-transformer'
 
 /**
  * 将store project 按格式导出
@@ -25,7 +25,11 @@ export async function loads() {
  * @param edges
  */
 function children(id: string, edges: Map<string, PEdge>): string[] {
-  return [...new Set([...edges.values()].filter(edge => edge.source === id).map(edge => edge.target)).values()]
+  return [
+    ...new Set(
+      [...edges.values()].filter((edge) => edge.source === id).map((edge) => edge.target)
+    ).values()
+  ]
 }
 
 function normalNode(node: PNode) {
@@ -33,14 +37,18 @@ function normalNode(node: PNode) {
 }
 
 function changeNodeDn(node: PNode, nodes: Map<string, PNode>, edges: Map<string, PEdge>) {
-  const nextChildren = children(node.id, edges).map(child => nodes.get(child)!).filter(f => f.dn === node.dn + 1)
+  const nextChildren = children(node.id, edges)
+    .map((child) => nodes.get(child) as PNode)
+    .filter((f) => f.dn === node.dn + 1)
   if (nextChildren.length === 0) {
     node.dn += 1
     return true
   } else {
-    const otherNodes = nextChildren.filter(next => !normalNode(next))
+    const otherNodes = nextChildren.filter((next) => !normalNode(next))
     if (otherNodes.length === 0) {
-      const ans = nextChildren.map(next => changeNodeDn(next, nodes, edges)).every(child => child)
+      const ans = nextChildren
+        .map((next) => changeNodeDn(next, nodes, edges))
+        .every((child) => child)
       if (ans) {
         node.dn += 1
       }
@@ -52,10 +60,10 @@ function changeNodeDn(node: PNode, nodes: Map<string, PNode>, edges: Map<string,
 }
 
 export function dataUpdate(dn: number, nodes: Map<string, PNode>, edges: Map<string, PEdge>) {
-  [...nodes.values()]
-    .filter(node => normalNode(node))
-    .filter(node => node.dn < dn)
-    .forEach(node => {
+  ;[...nodes.values()]
+    .filter((node) => normalNode(node))
+    .filter((node) => node.dn < dn)
+    .forEach((node) => {
       while (dn - node.dn > 0) {
         changeNodeDn(node, nodes, edges)
       }
@@ -68,7 +76,11 @@ export function dataUpdate(dn: number, nodes: Map<string, PNode>, edges: Map<str
  * @param nodes
  * @param edges
  */
-export function graphLayout({index, nodes, edges}: {
+export function graphLayout({
+  index,
+  nodes,
+  edges
+}: {
   index: number
   nodes: PNode[]
   edges: PEdge[]
@@ -108,14 +120,13 @@ export function graphLayout({index, nodes, edges}: {
     if (edgesMap.has(node.id)) {
       const nextId = edgesMap.get(node.id) as string
       const nextNode = nodesMap.get(nextId) as PNode
-      if (handleNode(nextNode,
-        currentX + node.width + node.margin[1] + node.margin[3])) {
-        return handleNodeState(node as any, currentX)
+      if (handleNode(nextNode, currentX + node.width + node.margin[1] + node.margin[3])) {
+        return handleNodeState(node, currentX)
       } else {
         return false
       }
     } else {
-      return handleNodeState(node as any, currentX)
+      return handleNodeState(node, currentX)
     }
   }
 
