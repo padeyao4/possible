@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {computed, ref} from "vue";
-import {IGraph} from "@antv/g6";
+import { computed, ref } from 'vue'
+import { IGraph } from '@antv/g6'
 
 const props = defineProps<{
-  nodeId: string | undefined,
-  resetNodeId: () => void,
+  nodeId: string | undefined
+  resetNodeId: () => void
   graph: IGraph | undefined
 }>()
 
@@ -30,8 +30,6 @@ const node = computed(() => {
     }
   })
 })
-
-
 </script>
 
 <template>
@@ -45,16 +43,16 @@ const node = computed(() => {
   >
     <el-form :model="node">
       <el-form-item label="名称">
-        <el-input v-model="node.name"/>
+        <el-input v-model="node.name" />
       </el-form-item>
       <el-form-item label="目标">
-        <el-input v-model="node.target"/>
+        <el-input v-model="node.target" />
       </el-form-item>
       <el-form-item label="详情">
-        <el-input v-model="node.detail" type="textarea"/>
+        <el-input v-model="node.detail" type="textarea" />
       </el-form-item>
       <el-form-item label="记录">
-        <el-input v-model="node.note" type="textarea"/>
+        <el-input v-model="node.note" type="textarea" />
       </el-form-item>
       <el-form-item label="类型">
         <el-radio-group v-model="node.taskType">
@@ -75,6 +73,4 @@ const node = computed(() => {
   </el-drawer>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

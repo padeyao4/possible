@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {ArrowDown, ArrowLeft, ArrowRight, ArrowUp} from '@icon-park/vue-next'
-import {IGraph} from "@antv/g6";
-import {ref} from "vue";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from '@icon-park/vue-next'
+import { IGraph } from '@antv/g6'
+import { ref } from 'vue'
 
 const props = defineProps<{
   graph: IGraph | undefined
@@ -10,10 +10,10 @@ const props = defineProps<{
 const stepSize = 10
 
 const direction = {
-  'left': {dx: stepSize, dy: 0},
-  'right': {dx: -stepSize, dy: 0},
-  'up': {dx: 0, dy: stepSize},
-  'down': {dx: 0, dy: -stepSize}
+  left: { dx: stepSize, dy: 0 },
+  right: { dx: -stepSize, dy: 0 },
+  up: { dx: 0, dy: stepSize },
+  down: { dx: 0, dy: -stepSize }
 }
 
 const interval = ref()
@@ -21,7 +21,7 @@ const interval = ref()
 function move(key: string) {
   clearInterval(interval.value)
   interval.value = setInterval(() => {
-    const {dx, dy} = direction[key]
+    const { dx, dy } = direction[key]
     props.graph?.translate(dx, dy)
   }, 10)
 }
@@ -29,18 +29,42 @@ function move(key: string) {
 function cancelInterval() {
   clearInterval(interval.value)
 }
-
 </script>
 
 <template>
   <div class="arrow-icon">
-    <arrow-left theme="outline" size="20" fill="#333" :strokeWidth="2" @mousedown="move('left')"
-                @mouseup="cancelInterval"/>
-    <arrow-right theme="outline" size="20" fill="#333" :strokeWidth="2" @mousedown="move('right')"
-                 @mouseup="cancelInterval"/>
-    <arrow-up theme="outline" size="20" fill="#333" :strokeWidth="2" @mousedown="move('up')" @mouseup="cancelInterval"/>
-    <arrow-down theme="outline" size="20" fill="#333" :strokeWidth="2" @mousedown="move('down')"
-                @mouseup="cancelInterval"/>
+    <arrow-left
+      theme="outline"
+      size="20"
+      fill="#333"
+      :stroke-width="2"
+      @mousedown="move('left')"
+      @mouseup="cancelInterval"
+    />
+    <arrow-right
+      theme="outline"
+      size="20"
+      fill="#333"
+      :stroke-width="2"
+      @mousedown="move('right')"
+      @mouseup="cancelInterval"
+    />
+    <arrow-up
+      theme="outline"
+      size="20"
+      fill="#333"
+      :stroke-width="2"
+      @mousedown="move('up')"
+      @mouseup="cancelInterval"
+    />
+    <arrow-down
+      theme="outline"
+      size="20"
+      fill="#333"
+      :stroke-width="2"
+      @mousedown="move('down')"
+      @mouseup="cancelInterval"
+    />
   </div>
 </template>
 

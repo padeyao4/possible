@@ -20,21 +20,21 @@ function handleClick(projectId: string) {
 
 <template>
   <div class="todo-item">
-    <div @click="element.state = 'completed'" class="completed-button">
+    <div class="completed-button" @click="element.state = 'completed'">
       <Round
         theme="outline"
         size="20"
         fill="#333"
-        :strokeWidth="2"
-        strokeLinecap="butt"
+        :stroke-width="2"
+        stroke-linecap="butt"
         class="round"
       />
       <CheckOne
         theme="outline"
         size="20"
         fill="#333"
-        :strokeWidth="2"
-        strokeLinecap="butt"
+        :stroke-width="2"
+        stroke-linecap="butt"
         class="check"
       />
     </div>
@@ -51,7 +51,7 @@ function handleClick(projectId: string) {
         {{ store.projects.get(element.projectId)?.name }}
       </div>
     </div>
-    <drag theme="outline" size="20" fill="#333" :strokeWidth="2" class="drag-icon mover" />
+    <drag theme="outline" size="20" fill="#333" :stroke-width="2" class="drag-icon mover" />
   </div>
 </template>
 

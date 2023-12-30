@@ -67,12 +67,13 @@ const offsetHeight = computed(() => {
     <div class="footer-input">
       <div class="addon" @click.stop="addonVisible = !addonVisible">
         <div
-          class="list"
           v-show="addonVisible"
+          class="list"
           :style="{ top: `calc(${offsetHeight}px * -1 - 4px)`, height: `${offsetHeight}px` }"
         >
           <div
             v-for="item in store.list"
+            :key="item.id"
             :style="{ height: listItemHeight }"
             class="item"
             @click="
@@ -84,22 +85,22 @@ const offsetHeight = computed(() => {
             {{ item.name }}
           </div>
         </div>
-        <list-add theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon" />
+        <list-add theme="outline" size="24" fill="#333" :stroke-width="2" class="icon" />
         <div class="text">{{ project?.name ?? '默认' }}</div>
       </div>
       <input
-        class="input"
         v-model="inputValue"
+        class="input"
         placeholder="添加任务"
         @keydown.enter="handleSubmit"
       />
-      <plus theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon plus" />
+      <plus theme="outline" size="24" fill="#333" :stroke-width="2" class="icon plus" />
       <Round
         theme="outline"
         size="24"
         fill="#333"
-        :strokeWidth="2"
-        strokeLinecap="butt"
+        :stroke-width="2"
+        stroke-linecap="butt"
         class="icon round"
       />
     </div>

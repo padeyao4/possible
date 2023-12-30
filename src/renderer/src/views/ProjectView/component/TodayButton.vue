@@ -1,27 +1,37 @@
 <script setup lang="ts">
-
-import {Local} from "@icon-park/vue-next";
-import {IGraph} from "@antv/g6";
-import Tip from "@renderer/component/Tip.vue";
-import {useStore} from "@renderer/store/project";
-import {useProject} from "@renderer/util/project";
+import { Local } from '@icon-park/vue-next'
+import { IGraph } from '@antv/g6'
+import Tip from '@renderer/component/Tip.vue'
+import { useStore } from '@renderer/store/project'
+import { useProject } from '@renderer/util/project'
+import { PProject } from '@renderer/model'
 
 const props = defineProps<{
   graph: IGraph | undefined
 }>()
 
 const store = useStore()
-const project = useProject()!
+const project = useProject() as PProject
 
 const today = () => {
-  const dx = (store.dn - project.origin) * (project.nodeWidth + project.nodeMargin[1] + project.nodeMargin[3]) + project.offset.x
+  const dx =
+    (store.dn - project.origin) *
+      (project.nodeWidth + project.nodeMargin[1] + project.nodeMargin[3]) +
+    project.offset.x
   props.graph?.translate(-dx, -project.offset.y)
 }
 </script>
 
 <template>
   <tip content="返回今天">
-    <local theme="outline" size="20" fill="#333" :strokeWidth="2" @click="today" class="today-button"/>
+    <local
+      theme="outline"
+      size="20"
+      fill="#333"
+      :stroke-width="2"
+      class="today-button"
+      @click="today"
+    />
   </tip>
 </template>
 
