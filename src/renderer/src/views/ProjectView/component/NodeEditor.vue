@@ -19,13 +19,13 @@ const visible = computed({
 
 const node = computed(() => {
   const model = ref(props.graph?.findById(props.nodeId as string)?.getModel() ?? {})
-  return new Proxy(model.value as any, {
+  return new Proxy(model.value, {
     get: (target, p) => {
       return Reflect.get(target, p)
     },
     set: (target, p, newValue) => {
       Reflect.set(target, p, newValue)
-      props.graph?.updateItem(target.id, target)
+      props.graph?.updateItem(target.id as never, target)
       return true
     }
   })
