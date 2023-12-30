@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {ListAdd, Plus, Round} from "@icon-park/vue-next";
-import {useStore} from "@renderer/store/project";
-import {computed, ref, watch, watchEffect} from "vue";
-import {PNode, PProject} from "@renderer/model";
+import { ListAdd, Plus, Round } from '@icon-park/vue-next'
+import { useStore } from '@renderer/store/project'
+import { computed, ref, watch, watchEffect } from 'vue'
+import { PNode, PProject } from '@renderer/model'
 
 const store = useStore()
 
@@ -20,7 +20,7 @@ watch(addonVisible, () => {
   }
 })
 
-const listItemHeight = 30;
+const listItemHeight = 30
 
 const project = ref<PProject>()
 
@@ -60,25 +60,48 @@ function handleSubmit() {
 const offsetHeight = computed(() => {
   return store.projects.size * listItemHeight
 })
-
 </script>
 
 <template>
   <div class="create-task-input">
     <div class="footer-input">
-      <div class="addon" @click.stop="addonVisible=!addonVisible">
-        <div class="list" v-show="addonVisible"
-             :style="{'top':`calc(${offsetHeight}px * -1 - 4px)`,'height':`${offsetHeight}px`}">
-          <div v-for="item in store.list" :style="{'height':listItemHeight}" class="item"
-               @click="()=>{handleClickAddon(item as any)}">{{ item.name }}
+      <div class="addon" @click.stop="addonVisible = !addonVisible">
+        <div
+          class="list"
+          v-show="addonVisible"
+          :style="{ top: `calc(${offsetHeight}px * -1 - 4px)`, height: `${offsetHeight}px` }"
+        >
+          <div
+            v-for="item in store.list"
+            :style="{ height: listItemHeight }"
+            class="item"
+            @click="
+              () => {
+                handleClickAddon(item as any)
+              }
+            "
+          >
+            {{ item.name }}
           </div>
         </div>
-        <list-add theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon"/>
+        <list-add theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon" />
         <div class="text">{{ project?.name ?? '默认' }}</div>
       </div>
-      <input class="input" v-model="inputValue" placeholder="添加任务" @keydown.enter="handleSubmit"/>
-      <plus theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon plus"/>
-      <Round theme="outline" size="24" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="icon round"/>
+      <input
+        class="input"
+        v-model="inputValue"
+        placeholder="添加任务"
+        @keydown.enter="handleSubmit"
+      />
+      <plus theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon plus" />
+      <Round
+        theme="outline"
+        size="24"
+        fill="#333"
+        :strokeWidth="2"
+        strokeLinecap="butt"
+        class="icon round"
+      />
     </div>
   </div>
 </template>

@@ -5,13 +5,14 @@ const props = defineProps<{
 </script>
 
 <template>
-  <el-tooltip :content="props.content"
-              placement="top"
-              :show-after="200"
-              :offset="4"
-              popper-class="tip-class"
-              :enterable="false"
+  <el-tooltip
+    :content="props.content"
+    placement="top"
+    :show-after="200"
+    :offset="4"
+    popper-class="tip-class"
+    :enterable="false"
   >
-    <slot/>
+    <slot />
   </el-tooltip>
 </template>

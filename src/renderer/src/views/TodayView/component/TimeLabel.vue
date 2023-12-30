@@ -1,7 +1,6 @@
 <script setup lang="ts">
-
-import {computed, onMounted, onUnmounted, ref} from "vue";
-import moment from "moment";
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import moment from 'moment'
 
 const now = ref(new Date())
 
@@ -20,7 +19,6 @@ onMounted(() => {
 onUnmounted(() => {
   clearInterval(interval.value)
 })
-
 </script>
 
 <template>

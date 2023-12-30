@@ -3,20 +3,19 @@ import './layout/possibleLayout'
 import './node/possibleNode'
 import './behavior/possibleNodeDrag'
 
-import {nextTick, onBeforeUnmount, onMounted, ref, Ref, shallowRef, watch} from "vue";
-import {Graph, GraphData, IEdge, IGraph, Menu} from "@antv/g6";
-import PossibleGrid from "@renderer/g6/plugin/possibleGrid";
-import {PossibleTimeBar} from "@renderer/g6/plugin/possibleTimeBar";
-import {INode as G6INode, Item} from "@antv/g6-core";
-import {PEdge, PNode} from "@renderer/model";
-import {useProject} from "@renderer/util/project";
-import {useStore} from "@renderer/store/project";
-import {plainToInstance} from "class-transformer";
+import { nextTick, onBeforeUnmount, onMounted, ref, Ref, shallowRef, watch } from 'vue'
+import { Graph, GraphData, IEdge, IGraph, Menu } from '@antv/g6'
+import PossibleGrid from '@renderer/g6/plugin/possibleGrid'
+import { PossibleTimeBar } from '@renderer/g6/plugin/possibleTimeBar'
+import { INode as G6INode, Item, ModelConfig } from '@antv/g6-core'
+import { PEdge, PNode, PProject } from '@renderer/model'
+import { useProject } from '@renderer/util/project'
+import { useStore } from '@renderer/store/project'
+import { plainToInstance } from 'class-transformer'
 
-export function useGraph(container: Ref<HTMLElement>,
-                         timeBar: Ref<HTMLElement>) {
+export function useGraph(container: Ref<HTMLElement>, timeBar: Ref<HTMLElement>) {
   const graph = shallowRef<IGraph>()
-  const project = useProject()!
+  const project = useProject() as PProject
   const store = useStore()
 
   /**
@@ -46,7 +45,7 @@ export function useGraph(container: Ref<HTMLElement>,
       node.name = '未命名'
       node.projectId = project.id
       node.normalXY(e.x, e.y)
-      graph?.addItem('node', node as any)
+      graph?.addItem('node', node as unknown as ModelConfig)
       graph?.layout()
     })
 
@@ -68,7 +67,6 @@ export function useGraph(container: Ref<HTMLElement>,
       if (sourceNode === targetNode) {
         nextTick(() => {
           graph?.removeItem(edge)
-        }).then(_ => {
         })
         return
       }
@@ -92,14 +90,13 @@ export function useGraph(container: Ref<HTMLElement>,
       if ((sourceNode.getModel().x as number) >= (targetNode.getModel().x as number)) {
         nextTick(() => {
           graph?.removeItem(edge)
-        }).then(_ => {
-        })
+        }).then((_) => {})
         return
       }
     })
 
     graph.on('viewportchange', () => {
-      const {x, y} = graph?.getCanvasByPoint(0, 0) ?? {x: 0, y: 0}
+      const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
       project.offset.x = x
       project.offset.y = y
     })
@@ -109,15 +106,14 @@ export function useGraph(container: Ref<HTMLElement>,
     graph.on('afterupdateitem', save)
   }
 
-
   function save() {
     const graphData = graph.value?.save() as GraphData
     project.nodes.clear()
-    graphData?.nodes?.forEach(node => {
+    graphData?.nodes?.forEach((node) => {
       project.nodes.set(node.id, plainToInstance(PNode, node).x2dn())
     })
     project.edges.clear()
-    graphData?.edges?.forEach(edge => {
+    graphData?.edges?.forEach((edge) => {
       if (edge.id) {
         project.edges.set(edge.id, plainToInstance(PEdge, edge))
       }
@@ -204,23 +200,26 @@ export function useGraph(container: Ref<HTMLElement>,
         }
       }
     })
-    const {x, y} = project.offset
+    const { x, y } = project.offset
     const nodes = [...project.nodes.values()]
-    nodes.forEach(node => node.dn2x())
+    nodes.forEach((node) => node.dn2x())
     const data = {
       nodes,
       edges: [...project.edges.values()]
     }
-    graph.value.data(data)
+    graph.value.data(data as unknown as GraphData)
     graph.value.render()
     graph.value.translate(x, y)
     addListen(graph.value)
-    watch(() => store.dn, () => {
-      graph.value?.updateLayout({
-        todayIndex: dataIndex()
-      })
-      graph.value?.emit('possible-update', {x: project.offset.x})
-    })
+    watch(
+      () => store.dn,
+      () => {
+        graph.value?.updateLayout({
+          todayIndex: dataIndex()
+        })
+        graph.value?.emit('possible-update', { x: project.offset.x })
+      }
+    )
     window.addEventListener('resize', () => {
       if (container.value) {
         graph.value?.changeSize(container.value.clientWidth, container.value.clientHeight)
@@ -235,11 +234,11 @@ export function useGraph(container: Ref<HTMLElement>,
   function move(item: Item) {
     function moveItem(item: Item) {
       const id = item.getID()
-      const node: PNode = Object.assign(new PNode(), graph.value!.findById(id).getModel())
-      const hors = graph.value?.getNeighbors(node.id, "target")
-      hors?.map(h => moveItem(h))
+      const node: PNode = Object.assign(new PNode(), graph.value?.findById(id).getModel())
+      const hors = graph.value?.getNeighbors(node.id, 'target')
+      hors?.map((h) => moveItem(h))
       node.x += node.cellWidth
-      graph.value?.update(item.getID(), node as any)
+      graph.value?.update(item.getID(), node as unknown as ModelConfig)
     }
 
     moveItem(item)
@@ -256,13 +255,15 @@ export function useGraph(container: Ref<HTMLElement>,
       const node = Object.assign(new PNode(), graph.value?.findById(id).getModel())
       if (node.taskType !== 'general') return false
       if (node.state !== 'normal') return false
-      const hors = graph.value?.getNeighbors(node.id, "target").filter(h => (h.getModel()?.x ?? 0) - node.x === node.cellWidth)
+      const hors = graph.value
+        ?.getNeighbors(node.id, 'target')
+        .filter((h) => (h.getModel()?.x ?? 0) - node.x === node.cellWidth)
       if (hors?.length === 0) {
         node.x += node.cellWidth
         graph.value?.update(item.getID(), node)
         return true
       } else {
-        const ans = hors?.map(h => delayItem(h)).filter(v => !v)
+        const ans = hors?.map((h) => delayItem(h)).filter((v) => !v)
         if (ans?.length !== 0) {
           return false
         } else {
@@ -283,5 +284,5 @@ export function useGraph(container: Ref<HTMLElement>,
     graph.value = undefined
   })
 
-  return {graph, active, clearActive}
+  return { graph, active, clearActive }
 }

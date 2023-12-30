@@ -1,12 +1,11 @@
 <script setup lang="ts">
-
-import {CheckOne, Drag, Round} from "@icon-park/vue-next";
-import router from "@renderer/router";
-import {useStore} from "@renderer/store/project";
-import {PNode} from "@renderer/model";
+import { CheckOne, Drag, Round } from '@icon-park/vue-next'
+import router from '@renderer/router'
+import { useStore } from '@renderer/store/project'
+import { PNode } from '@renderer/model'
 
 defineProps<{
-  element: PNode,
+  element: PNode
 }>()
 
 const store = useStore()
@@ -17,22 +16,42 @@ function handleClick(projectId: string) {
     replace: true
   })
 }
-
 </script>
 
 <template>
   <div class="todo-item">
     <div @click="element.state = 'completed'" class="completed-button">
-      <Round theme="outline" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="round"/>
-      <CheckOne theme="outline" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="check"/>
+      <Round
+        theme="outline"
+        size="20"
+        fill="#333"
+        :strokeWidth="2"
+        strokeLinecap="butt"
+        class="round"
+      />
+      <CheckOne
+        theme="outline"
+        size="20"
+        fill="#333"
+        :strokeWidth="2"
+        strokeLinecap="butt"
+        class="check"
+      />
     </div>
     <div>
       <div>{{ element.name }}</div>
-      <div class="project-name" @click="()=>{handleClick(element.projectId)}">
+      <div
+        class="project-name"
+        @click="
+          () => {
+            handleClick(element.projectId)
+          }
+        "
+      >
         {{ store.projects.get(element.projectId)?.name }}
       </div>
     </div>
-    <drag theme="outline" size="20" fill="#333" :strokeWidth="2" class="drag-icon mover"/>
+    <drag theme="outline" size="20" fill="#333" :strokeWidth="2" class="drag-icon mover" />
   </div>
 </template>
 

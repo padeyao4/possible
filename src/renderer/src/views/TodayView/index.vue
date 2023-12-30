@@ -1,34 +1,37 @@
 <script setup lang="ts">
-import {useStore} from '@renderer/store/project'
-import {computed, ref, toRaw} from 'vue'
-import {Down, Right} from "@icon-park/vue-next";
+import { useStore } from '@renderer/store/project'
+import { computed, ref, toRaw } from 'vue'
+import { Down, Right } from '@icon-park/vue-next'
 import Draggable from 'vuedraggable/src/vuedraggable'
-import TodoItem from "@renderer/views/TodayView/component/TodoItem.vue";
-import TitleBar from "@renderer/component/TitleBar.vue";
-import CompletedList from "@renderer/views/TodayView/component/CompletedList.vue";
-import TimeLabel from "@renderer/views/TodayView/component/TimeLabel.vue";
-import WelcomeCard from "@renderer/views/TodayView/component/WelcomeCard.vue";
-import CreateTaskInput from "@renderer/views/TodayView/component/CreateTaskInput.vue";
+import TodoItem from '@renderer/views/TodayView/component/TodoItem.vue'
+import TitleBar from '@renderer/component/TitleBar.vue'
+import CompletedList from '@renderer/views/TodayView/component/CompletedList.vue'
+import TimeLabel from '@renderer/views/TodayView/component/TimeLabel.vue'
+import WelcomeCard from '@renderer/views/TodayView/component/WelcomeCard.vue'
+import CreateTaskInput from '@renderer/views/TodayView/component/CreateTaskInput.vue'
 
 const store = useStore()
 
 const todos = computed(() => {
-  return store.list.map((project) => {
-    const dn = store.dn - project.origin
-    return [...project.nodes.values()].filter(
-      (task) => task.dn === dn && (task.state === 'timeout' || task.state === 'normal')
-    )
-  })
-    .flat().sort((n1, n2) => (n1?.order ?? 0) - (n2?.order ?? 0))
+  return store.list
+    .map((project) => {
+      const dn = store.dn - project.origin
+      return [...project.nodes.values()].filter(
+        (task) => task.dn === dn && (task.state === 'timeout' || task.state === 'normal')
+      )
+    })
+    .flat()
+    .sort((n1, n2) => (n1?.order ?? 0) - (n2?.order ?? 0))
 })
 
 const completed = computed(() => {
-  return store.list.map((project) => {
-    const dn = store.dn - project.origin
-    return [...project.nodes.values()].filter(
-      (task) => task.dn === dn && (task.state === 'completed' || task.state === 'discard')
-    )
-  })
+  return store.list
+    .map((project) => {
+      const dn = store.dn - project.origin
+      return [...project.nodes.values()].filter(
+        (task) => task.dn === dn && (task.state === 'completed' || task.state === 'discard')
+      )
+    })
     .flat()
 })
 
@@ -54,60 +57,76 @@ const openCompleted = ref(false)
 const isEmpty = computed(() => {
   return store.projects.size === 0
 })
-
 </script>
 <template>
   <div class="today-bg">
-    <div class="settings-button" :class="{'welcome-bg':isEmpty}">
-      <title-bar :visible="true"/>
+    <div class="settings-button" :class="{ 'welcome-bg': isEmpty }">
+      <title-bar :visible="true" />
       <div class="header">
         <div class="title">我的一天</div>
-        <time-label/>
+        <time-label />
       </div>
       <div class="body">
         <template v-if="isEmpty">
-          <welcome-card/>
+          <welcome-card />
         </template>
         <template v-else>
-          <draggable :list="toRaw(todos)" animation="300" item-key="id" :forceFallback="true"
-                     @change="onChange"
-                     @start="onStart"
-                     @end="onEnd"
-                     ghost-class="ghost-class"
-                     handle=".mover"
-                     chosenClass="chosen-class"
-                     drag-class="drag-class">
-            <template #item="{element}">
-              <todo-item :element="element"/>
+          <draggable
+            :list="toRaw(todos)"
+            animation="300"
+            item-key="id"
+            :force-fallback="true"
+            ghost-class="ghost-class"
+            handle=".mover"
+            chosen-class="chosen-class"
+            drag-class="drag-class"
+            @change="onChange"
+            @start="onStart"
+            @end="onEnd"
+          >
+            <template #item="{ element }">
+              <todo-item :element="element" />
             </template>
           </draggable>
           <div class="completed" @click="openCompleted = !openCompleted">
-            <down v-if="openCompleted" theme="outline" size="24" fill="#333" :strokeWidth="2"
-                  style="display: flex;justify-content: center;align-items: center"/>
-            <right v-else theme="outline" size="24" fill="#333" :strokeWidth="2"
-                   style="display: flex;justify-content: center;align-items: center"/>
+            <down
+              v-if="openCompleted"
+              theme="outline"
+              size="24"
+              fill="#333"
+              :stroke-width="2"
+              style="display: flex; justify-content: center; align-items: center"
+            />
+            <right
+              v-else
+              theme="outline"
+              size="24"
+              fill="#333"
+              :stroke-width="2"
+              style="display: flex; justify-content: center; align-items: center"
+            />
             已完成 {{ completed.length }}
           </div>
           <div v-if="openCompleted">
-            <completed-list :list="completed"/>
+            <completed-list :list="completed" />
           </div>
         </template>
       </div>
       <div class="footer">
-        <create-task-input/>
+        <create-task-input />
       </div>
     </div>
   </div>
 </template>
 <style scoped>
-
 .today-bg {
   background: var(--color-neptune);
   border-radius: 8px 0 0 0;
 }
 
 .welcome-bg {
-  background-image: radial-gradient(transparent -50%, var(--color-neptune)), url("@renderer/assets/images/beach.jpg");
+  background-image: radial-gradient(transparent -50%, var(--color-neptune)),
+    url('@renderer/assets/images/beach.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -119,7 +138,11 @@ const isEmpty = computed(() => {
   --title-h: 72px;
   --footer-h: 64px;
   display: grid;
-  grid-template-rows: var(--drag-h) var(--title-h) calc(var(--win-height) - var(--drag-h) - var(--title-h) - var(--footer-h)) var(--footer-h);
+  grid-template-rows:
+    var(--drag-h) var(--title-h) calc(
+      var(--win-height) - var(--drag-h) - var(--title-h) - var(--footer-h)
+    )
+    var(--footer-h);
   border-radius: 8px 0 0 0;
 
   .header {

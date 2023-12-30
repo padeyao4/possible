@@ -1,6 +1,6 @@
-import {EdgeConfig, IBBox, IPoint, NodeConfig} from '@antv/g6-core'
-import {DAY_OF_MS} from "@renderer/common/constant";
-import {date2Day} from "@renderer/util/time";
+import { EdgeConfig, IBBox, IPoint, NodeConfig } from '@antv/g6-core'
+import { DAY_OF_MS } from '@renderer/common/constant'
+import { date2Day } from '@renderer/util/time'
 
 /**
  * 将index还原为x点
@@ -9,7 +9,6 @@ import {date2Day} from "@renderer/util/time";
 export const index2X = (index: number) => {
   return index * 120 + 60
 }
-
 
 /**
  * 将date转为index

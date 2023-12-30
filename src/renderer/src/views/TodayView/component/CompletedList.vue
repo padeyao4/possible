@@ -1,21 +1,26 @@
 <script setup lang="ts">
-
-import {CheckOne} from "@icon-park/vue-next";
-import {useStore} from "@renderer/store/project";
-import {PNode} from "@renderer/model";
+import { CheckOne } from '@icon-park/vue-next'
+import { useStore } from '@renderer/store/project'
+import { PNode } from '@renderer/model'
 
 defineProps<{
-  list: PNode[],
+  list: PNode[]
 }>()
 
 const store = useStore()
-
 </script>
 
 <template>
   <div v-for="task in list" :key="task.id" class="item completed-item">
-    <check-one theme="filled" size="20" fill="#333" :strokeWidth="2" strokeLinecap="butt" class="icon-park"
-               @click="task.state='normal'"/>
+    <check-one
+      theme="filled"
+      size="20"
+      fill="#333"
+      :stroke-width="2"
+      stroke-linecap="butt"
+      class="icon-park"
+      @click="task.state = 'normal'"
+    />
     <del class="text-wrap">
       <div>{{ task.name }}</div>
       <div class="project-name">{{ store.projects.get(task.projectId)?.name }}</div>
