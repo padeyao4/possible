@@ -1,24 +1,25 @@
-import {IGraph, IGroup} from '@antv/g6'
-import {modifyCSS} from '@antv/dom-util'
-import {Canvas, ShapeCfg} from '@antv/g-canvas'
-import {timeBarShow} from '@renderer/util'
-import {useProject} from "@renderer/util/project";
-import {useStore} from "@renderer/store/project";
-import {watch} from "vue";
+import { IGraph, IGroup } from '@antv/g6'
+import { modifyCSS } from '@antv/dom-util'
+import { Canvas, ShapeCfg } from '@antv/g-canvas'
+import { timeBarShow } from '@renderer/util'
+import { useProject } from '@renderer/util/project'
+import { useStore } from '@renderer/store/project'
+import { watch } from 'vue'
+import { PProject } from '@renderer/model'
 
 export class PossibleTimeBar {
   objs: Record<string, unknown>
   startIndex: number
   endIndex: number
   timeItems: number[]
-  project = useProject()!
+  project = useProject() as PProject
   timeBar: HTMLElement
   store = useStore()
 
   constructor(timeBar: HTMLElement) {
     this.startIndex = 0
     this.endIndex = 22
-    this.timeItems = Array.from({length: this.endIndex - this.startIndex + 1}, (_, i) => i)
+    this.timeItems = Array.from({ length: this.endIndex - this.startIndex + 1 }, (_, i) => i)
     this.objs = {}
     this.timeBar = timeBar
   }
@@ -94,14 +95,12 @@ export class PossibleTimeBar {
    * 注意: 当前时间不是实时同步，会出现当前时间小于创建时间的错误
    */
   todayIndex = () => {
-    return (
-      this.store.dn - this.project.origin + 2
-    )
+    return this.store.dn - this.project.origin + 2
   }
 
   initPlugin(graph: IGraph) {
     this.set('graph', graph)
-    modifyCSS(this.timeBar, {position: 'relative'})
+    modifyCSS(this.timeBar, { position: 'relative' })
     const graphContainer = graph.getContainer()
     const canvas = new Canvas({
       container: this.timeBar,
@@ -119,9 +118,12 @@ export class PossibleTimeBar {
       name: 'possible-time-bar-group'
     })
 
-    watch(() => this.store.dn, () => {
-      group.emit('possible-today', {index: this.todayIndex()})
-    })
+    watch(
+      () => this.store.dn,
+      () => {
+        group.emit('possible-today', { index: this.todayIndex() })
+      }
+    )
 
     this.set('group', group)
 
@@ -135,7 +137,7 @@ export class PossibleTimeBar {
       this.updateTimeItems(n)
       const index = this.todayIndex()
       if (index >= this.startIndex || index <= this.endIndex) {
-        group.emit('possible-today', {index})
+        group.emit('possible-today', { index })
       }
     })
 
@@ -146,11 +148,11 @@ export class PossibleTimeBar {
         item?.attr('fill', '#a10066')
       }
     })
-    group.emit('possible-today', {index: this.todayIndex()})
+    group.emit('possible-today', { index: this.todayIndex() })
   }
 
-  viewportUpdate = ({matrix}: { matrix: number[] }) => {
+  viewportUpdate = ({ matrix }: { matrix: number[] }) => {
     const group = this.get('group') as IGroup
-    group.emit('possible-update', {x: matrix[6]})
+    group.emit('possible-update', { x: matrix[6] })
   }
 }
