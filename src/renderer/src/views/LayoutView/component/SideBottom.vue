@@ -45,7 +45,7 @@ async function load() {
           theme="outline"
           size="20"
           fill="#333"
-          :strokeWidth="2"
+          :stroke-width="2"
           @click="front = true"
           class="exit-icon"
         />
