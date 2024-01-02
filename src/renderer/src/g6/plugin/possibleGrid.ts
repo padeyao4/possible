@@ -1,6 +1,6 @@
-import {each, wrapBehavior} from '@antv/util'
-import {createDom, modifyCSS} from '@antv/dom-util'
-import {Graph} from '@antv/g6'
+import { each, wrapBehavior } from '@antv/util'
+import { createDom, modifyCSS } from '@antv/dom-util'
+import { Graph } from '@antv/g6'
 
 export default class PossibleGrid {
   private _cfgs: Record<string, any> = {}

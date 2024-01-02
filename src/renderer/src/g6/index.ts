@@ -110,12 +110,15 @@ export function useGraph(container: Ref<HTMLElement>, timeBar: Ref<HTMLElement>)
     const graphData = graph.value?.save() as GraphData
     project.nodes.clear()
     graphData?.nodes?.forEach((node) => {
-      project.nodes.set(node.id, plainToInstance(PNode, node).x2dn())
+      project.nodes.set(
+        node.id,
+        plainToInstance(PNode, node, { excludeExtraneousValues: true }).x2dn()
+      )
     })
     project.edges.clear()
     graphData?.edges?.forEach((edge) => {
       if (edge.id) {
-        project.edges.set(edge.id, plainToInstance(PEdge, edge))
+        project.edges.set(edge.id, plainToInstance(PEdge, edge, { excludeExtraneousValues: true }))
       }
     })
   }

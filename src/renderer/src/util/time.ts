@@ -1,4 +1,4 @@
-import {DAY_OF_MS} from "@renderer/common/constant";
+import { DAY_OF_MS } from '@renderer/common/constant'
 
 type D = Date | number | string
 
@@ -44,7 +44,6 @@ export function date2Day(date: Date) {
   }
   return '星期' + mapper[date.getDay()]
 }
-
 
 export function isNight() {
   const hours = new Date().getHours()
