@@ -1,6 +1,6 @@
 {
   "name": "possible",
-  "version": "v0.0.48",
+  "version": "v0.0.49",
   "description": "todo list",
   "main": "./out/main/index.js",
   "author": "guojian_k@qq.com",
@@ -51,7 +51,7 @@
     "@vue/eslint-config-prettier": "^8.0.0",
     "@vue/eslint-config-typescript": "^11.0.3",
     "default-passive-events": "^2.0.0",
-    "electron": "^25.9.8",
+    "electron": "^29.0.0-alpha.1",
     "electron-builder": "^24.9.1",
     "electron-vite": "^1.0.29",
     "element-plus": "^2.4.4",

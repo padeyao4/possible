@@ -13,10 +13,10 @@ dependencies:
     version: 0.5.15
   '@electron-toolkit/preload':
     specifier: ^2.0.0
-    version: 2.0.0(electron@25.9.8)
+    version: 2.0.0(electron@29.0.0-alpha.1)
   '@electron-toolkit/utils':
     specifier: ^2.0.1
-    version: 2.0.1(electron@25.9.8)
+    version: 2.0.1(electron@29.0.0-alpha.1)
   '@icon-park/vue-next':
     specifier: ^1.4.2
     version: 1.4.2(vue@3.4.3)
@@ -92,8 +92,8 @@ devDependencies:
     specifier: ^11.0.3
     version: 11.0.3(eslint-plugin-vue@9.19.2)(eslint@8.56.0)(typescript@5.3.3)
   electron:
-    specifier: ^25.9.8
-    version: 25.9.8
+    specifier: 29.0.0-alpha.1
+    version: 29.0.0-alpha.1
   electron-builder:
     specifier: ^24.9.1
     version: 24.9.1
@@ -638,12 +638,12 @@ packages:
       eslint: 8.56.0
     dev: true
 
-  /@electron-toolkit/preload@2.0.0(electron@25.9.8):
+  /@electron-toolkit/preload@2.0.0(electron@29.0.0-alpha.1):
     resolution: {integrity: sha512-zpZDzbqJTZQC5d4LRs2EKruKWnqah+T75s+niBYFemYLtiW5TTZcWi3Q8UxHqnwTudDMuWJb233aaS2yjx3Xiw==}
     peerDependencies:
       electron: '>=13.0.0'
     dependencies:
-      electron: 25.9.8
+      electron: 29.0.0-alpha.1
     dev: false
 
   /@electron-toolkit/tsconfig@1.0.1(@types/node@18.19.4):
@@ -654,12 +654,12 @@ packages:
       '@types/node': 18.19.4
     dev: true
 
-  /@electron-toolkit/utils@2.0.1(electron@25.9.8):
+  /@electron-toolkit/utils@2.0.1(electron@29.0.0-alpha.1):
     resolution: {integrity: sha512-3nnjd3D1NIjxdzNrvR5fkJ3kbJNbRkpHppv0/pSbMX6I0DaBzpPXeSfDYuJJKzZrAc3CmGcJa0MU4+AjEOlT4g==}
     peerDependencies:
       electron: '>=13.0.0'
     dependencies:
-      electron: 25.9.8
+      electron: 29.0.0-alpha.1
     dev: false
 
   /@electron/asar@3.2.8:
@@ -1225,6 +1225,11 @@ packages:
 
   /@types/node@18.19.4:
     resolution: {integrity: sha512-xNzlUhzoHotIsnFoXmJB+yWmBvFZgKCI9TtPIEdYIMM1KWfwuY8zh7wvc1u1OAXlC7dlf6mZVx/s+Y5KfFz19A==}
+    dependencies:
+      undici-types: 5.26.5
+
+  /@types/node@20.10.6:
+    resolution: {integrity: sha512-Vac8H+NlRNNlAmDfGUP7b5h/KA+AtWIzuXy0E6OyP8f1tCLYAtPvKRRDJjAPqhpCb0t6U2j7/xqAuLEebW2kiw==}
     dependencies:
       undici-types: 5.26.5
 
@@ -2540,14 +2545,14 @@ packages:
       - supports-color
     dev: true
 
-  /electron@25.9.8:
-    resolution: {integrity: sha512-PGgp6PH46QVENHuAHc2NT1Su8Q1qov7qIl2jI5tsDpTibwV2zD8539AeWBQySeBU4dhbj9onIl7+1bXQ0wefBg==}
+  /electron@29.0.0-alpha.1:
+    resolution: {integrity: sha512-wG/67MEX7UMmIme3zEFMKX2U5aVz3jGO4HYW75edofovcLr/6EHrqE+vqSrCQDHKG2l1KAGJM3LiYow7TAxyJQ==}
     engines: {node: '>= 12.20.55'}
     hasBin: true
     requiresBuild: true
     dependencies:
       '@electron/get': 2.0.3
-      '@types/node': 18.19.4
+      '@types/node': 20.10.6
       extract-zip: 2.0.1
     transitivePeerDependencies:
       - supports-color
