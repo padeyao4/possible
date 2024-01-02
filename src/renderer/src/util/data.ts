@@ -19,6 +19,12 @@ export async function loads() {
   useStore().merge(plainToInstance(Store, JSON.parse(text)))
 }
 
+export async function loadFromDialog() {
+  const text = await window.api.openFile()
+  if (text === null) return
+  useStore().merge(plainToInstance(Store, JSON.parse(text)))
+}
+
 /**
  * 根据id获取子节点id
  * @param id

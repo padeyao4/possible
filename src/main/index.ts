@@ -1,23 +1,22 @@
-import {electronApp, optimizer} from '@electron-toolkit/utils'
-import {app, BrowserWindow, dialog, ipcMain, Menu, Tray} from 'electron'
-import {join} from 'path'
+import { electronApp, optimizer } from '@electron-toolkit/utils'
+import { app, BrowserWindow, dialog, ipcMain, Menu, Tray } from 'electron'
+import { join } from 'path'
 import * as fs from 'fs'
-import {createSettingsWindow} from "./windows/createSettingsWindow";
-import {createMainWindow} from "./windows/createMainWindow";
-import {systemCaller, updater} from "./ipc";
-import {getIcon, getPossibleHome, getUserHome} from "./util";
-import log from "electron-log";
+import { createSettingsWindow } from './windows/createSettingsWindow'
+import { createMainWindow } from './windows/createMainWindow'
+import { systemCaller, updater } from './ipc'
+import { getIcon, getPossibleHome, getUserHome } from './util'
+import log from 'electron-log'
 
-log.initialize({spyRendererConsole: true})
+log.initialize({ spyRendererConsole: true })
 // close security warnings
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
-
 ;(function () {
   const POSSIBLE_HOME = getPossibleHome()
   if (!fs.existsSync(POSSIBLE_HOME)) {
     fs.mkdirSync(POSSIBLE_HOME)
   }
-}())
+})()
 
 /**
  * 窗口管理,keys:[main,settings]
@@ -48,15 +47,19 @@ app
     })
 
     tray.on('right-click', () => {
-      tray.popUpContextMenu(Menu.buildFromTemplate([{
-        label: '退出',
-        click: () => {
-          let main = windowDict.get('main');
-          if (!main?.isDestroyed()) {
-            main?.close()
+      tray.popUpContextMenu(
+        Menu.buildFromTemplate([
+          {
+            label: '退出',
+            click: () => {
+              const main = windowDict.get('main')
+              if (!main?.isDestroyed()) {
+                main?.close()
+              }
+            }
           }
-        }
-      }]))
+        ])
+      )
     })
 
     // Set app user model id for windows
@@ -111,7 +114,7 @@ app
     ipcMain.handle('load-local-backup-data', () => {
       console.log(new Date(), 'load local data')
       try {
-        let file = join(getPossibleHome(), 'data.json');
+        const file = join(getPossibleHome(), 'data.json')
         if (fs.existsSync(file)) {
           return fs.readFileSync(file).toString()
         }

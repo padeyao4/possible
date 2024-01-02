@@ -1,13 +1,13 @@
-import {contextBridge, ipcRenderer} from 'electron'
-import {electronAPI} from '@electron-toolkit/preload'
-import {UpdateCheckResult} from "electron-updater";
+import { contextBridge, ipcRenderer } from 'electron'
+import { electronAPI } from '@electron-toolkit/preload'
+import { UpdateCheckResult } from 'electron-updater'
 
 // Custom APIs for renderer
 const api = {
   exportData: (s: string) => {
     ipcRenderer.send('export-data', s)
   },
-  importData: async (): Promise<string | null> => {
+  openFile: async (): Promise<string | null> => {
     return ipcRenderer.invoke('import-data')
   },
   loadLocalData: (): Promise<string | null> => {

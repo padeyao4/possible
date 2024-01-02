@@ -1,8 +1,8 @@
-import {BrowserWindow, globalShortcut, ipcMain, shell} from "electron";
-import {getIcon, getPossibleHome} from "../util";
-import {join} from "path";
-import fs from "fs";
-import {is} from "@electron-toolkit/utils";
+import { BrowserWindow, globalShortcut, ipcMain, shell } from 'electron'
+import { getIcon, getPossibleHome } from '../util'
+import { join } from 'path'
+import fs from 'fs'
+import { is } from '@electron-toolkit/utils'
 
 export function createMainWindow(windowDict: Map<string, BrowserWindow>): void {
   const mainWindow = new BrowserWindow({
@@ -35,17 +35,17 @@ export function createMainWindow(windowDict: Map<string, BrowserWindow>): void {
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url).then((r) => console.log(r))
-    return {action: 'deny'}
+    return { action: 'deny' }
   })
 
   // 关闭窗口
   ipcMain.on('window:main:close', () => {
     windowDict.get('main')?.hide()
-  });
+  })
 
   ipcMain.on('project-save', (_, text: string) => {
     const possibleHome = getPossibleHome()
-    let file = join(possibleHome, 'data.json');
+    const file = join(possibleHome, 'data.json')
     if (fs.existsSync(file)) {
       const backupFile = Math.floor(new Date().getTime() / 1000)
       fs.copyFileSync(file, join(possibleHome, backupFile.toString()))
@@ -55,15 +55,15 @@ export function createMainWindow(windowDict: Map<string, BrowserWindow>): void {
 
   // 最小化窗口
   ipcMain.on('window:main:minimize', () => {
-    mainWindow.minimize();
-  });
+    mainWindow.minimize()
+  })
 
   //最大化窗口
   ipcMain.on('window:main:maximize', () => {
     if (mainWindow.isMaximized()) {
-      mainWindow.unmaximize();
+      mainWindow.unmaximize()
     } else {
-      mainWindow.maximize();
+      mainWindow.maximize()
     }
   })
 
