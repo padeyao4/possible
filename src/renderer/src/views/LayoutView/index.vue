@@ -1,46 +1,51 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref, watch} from 'vue'
-import TitleBar from "@renderer/component/TitleBar.vue"
-import SideList from "@renderer/views/LayoutView/component/SideList.vue";
-import SideBottom from "@renderer/views/LayoutView/component/SideBottom.vue";
-import SummeryButton from "@renderer/views/LayoutView/component/SummeryButton.vue";
-import {useStore} from "@renderer/store/project";
-import {originIndex} from "@renderer/util/time";
+import { onMounted, onUnmounted, ref, watch } from 'vue'
+import TitleBar from '@renderer/component/TitleBar.vue'
+import SideList from '@renderer/views/LayoutView/component/SideList.vue'
+import SideBottom from '@renderer/views/LayoutView/component/SideBottom.vue'
+import SummeryButton from '@renderer/views/LayoutView/component/SummeryButton.vue'
+import { useStore } from '@renderer/store/project'
+import { originIndex } from '@renderer/util/time'
 
 const store = useStore()
 const intervalRef = ref()
 
 onMounted(() => {
   if (store.autoUpdateDate) {
-    intervalRef.value = setInterval((() => {
-      store.dn = originIndex(new Date())
-      return () => {
+    intervalRef.value = setInterval(
+      (() => {
         store.dn = originIndex(new Date())
-      }
-    })(), 10_000)
+        return () => {
+          store.dn = originIndex(new Date())
+        }
+      })(),
+      10_000
+    )
   }
-  watch(() => store.dn, () => {
-    store.update()
-  })
+  watch(
+    () => store.dn,
+    () => {
+      store.update()
+    }
+  )
 })
 
 onUnmounted(() => {
   if (intervalRef.value) clearInterval(intervalRef.value)
 })
-
 </script>
 
 <template>
   <div>
     <div class="layout-main">
       <div class="layout-side">
-        <title-bar/>
-        <summery-button/>
-        <side-list/>
-        <side-bottom/>
+        <title-bar />
+        <summery-button />
+        <side-list />
+        <side-bottom />
       </div>
       <div class="layout-content">
-        <slot/>
+        <slot />
       </div>
     </div>
   </div>
