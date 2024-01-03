@@ -12,6 +12,7 @@
     "composite": true,
     "allowJs": true,
     "baseUrl": ".",
+    "strictPropertyInitialization": false,
     "experimentalDecorators": true,
     "paths": {
       "@renderer/*": [
