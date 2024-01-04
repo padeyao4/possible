@@ -48,7 +48,7 @@ export class CardNode extends Extensions.RectNode {
           fill: '#000',
           textAlign: 'start',
           textBaseline: 'middle',
-          fontSize: 14,
+          fontSize: 12,
           textOverflow: 'ellipsis',
           wordWrap: true,
           wordWrapWidth: 30,

@@ -97,7 +97,7 @@ const { graph } = useGraph(container as never, timeBar as any)
 
     .time-bar {
       height: 100%;
-      width: 100%;
+      width: calc(var(--win-width) - var(--side-width) - 48px);
     }
 
     .container {
