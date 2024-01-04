@@ -7,7 +7,7 @@ import { nextTick, onBeforeUnmount, onMounted, ref, Ref, shallowRef, watch } fro
 import { Graph, GraphData, IEdge, IGraph, Menu } from '@antv/g6'
 import PossibleGrid from '@renderer/g6/plugin/possibleGrid'
 import { PossibleTimeBar } from '@renderer/g6/plugin/possibleTimeBar'
-import { INode as G6INode, Item, ModelConfig } from '@antv/g6-core'
+import { IG6GraphEvent, INode as G6INode, Item, ModelConfig } from '@antv/g6-core'
 import { PEdge, PNode, PProject } from '@renderer/model'
 import { useProject } from '@renderer/util/project'
 import { useStore } from '@renderer/store/project'
@@ -31,7 +31,65 @@ export function useGraph(container: Ref<HTMLElement>, timeBar: Ref<HTMLElement>)
     active.value = undefined
   }
 
-  function addListen(graph: IGraph) {
+  /**
+   * 创建节点
+   * @param e
+   * @param graph
+   */
+  function createNode(e: IG6GraphEvent, graph: IGraph) {
+    const node = new PNode()
+    node.name = '未命名'
+    node.projectId = project.id
+    node.normalXY(e.x, e.y)
+    graph.addItem('node', node as unknown as ModelConfig)
+    graph.layout()
+  }
+
+  function changeViewport(graph: IGraph) {
+    const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
+    project.offset.x = x
+    project.offset.y = y
+  }
+
+  async function afterCreateEdge(e: IG6GraphEvent, graph: IGraph) {
+    const edge = e.edge as IEdge
+
+    const sourceNode = edge.getSource() as G6INode
+    const targetNode = edge.getTarget() as G6INode
+
+    // 删除自环边
+    if (sourceNode === targetNode) {
+      await nextTick(() => {
+        graph?.removeItem(edge)
+      })
+      return
+    }
+
+    // 删除重复边
+    const count = sourceNode
+      .getEdges()
+      .filter(
+        (e) =>
+          e.getTarget().getID() === targetNode.getID() ||
+          e.getSource().getID() === targetNode.getID()
+      ).length
+    if (count >= 2) {
+      await nextTick(() => {
+        graph?.removeItem(edge)
+      })
+      return
+    }
+
+    // 删除相同列的边
+    if ((sourceNode.getModel().x as number) >= (targetNode.getModel().x as number)) {
+      await nextTick(() => {
+        graph?.removeItem(edge)
+      })
+      return
+    }
+  }
+
+  function initGraph(graph: IGraph) {
     graph.on('edge:mouseover', (e) => {
       graph.setItemState(e.item as Item, 'hover', true)
     })
@@ -41,12 +99,7 @@ export function useGraph(container: Ref<HTMLElement>, timeBar: Ref<HTMLElement>)
     })
 
     graph.on('canvas:dblclick', (e) => {
-      const node = new PNode()
-      node.name = '未命名'
-      node.projectId = project.id
-      node.normalXY(e.x, e.y)
-      graph?.addItem('node', node as unknown as ModelConfig)
-      graph?.layout()
+      createNode(e, graph)
     })
 
     graph.on('node:dblclick', (e) => {
@@ -57,48 +110,12 @@ export function useGraph(container: Ref<HTMLElement>, timeBar: Ref<HTMLElement>)
       graph?.layout()
     })
 
-    graph.on('aftercreateedge', (e) => {
-      const edge = e.edge as IEdge
-
-      const sourceNode = edge.getSource() as G6INode
-      const targetNode = edge.getTarget() as G6INode
-
-      // 删除自环边
-      if (sourceNode === targetNode) {
-        nextTick(() => {
-          graph?.removeItem(edge)
-        })
-        return
-      }
-
-      // 删除重复边
-      const count = sourceNode
-        .getEdges()
-        .filter(
-          (e) =>
-            e.getTarget().getID() === targetNode.getID() ||
-            e.getSource().getID() === targetNode.getID()
-        ).length
-      if (count >= 2) {
-        nextTick(() => {
-          graph?.removeItem(edge)
-        }).then(undefined)
-        return
-      }
-
-      // 删除相同列的边
-      if ((sourceNode.getModel().x as number) >= (targetNode.getModel().x as number)) {
-        nextTick(() => {
-          graph?.removeItem(edge)
-        }).then((_) => {})
-        return
-      }
+    graph.on('aftercreateedge', async (e) => {
+      await afterCreateEdge(e, graph)
     })
 
     graph.on('viewportchange', () => {
-      const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
-      project.offset.x = x
-      project.offset.y = y
+      changeViewport(graph)
     })
 
     graph.on('afterremoveitem', save)
@@ -121,6 +138,24 @@ export function useGraph(container: Ref<HTMLElement>, timeBar: Ref<HTMLElement>)
         project.edges.set(edge.id, plainToInstance(PEdge, edge, { excludeExtraneousValues: true }))
       }
     })
+  }
+
+  /**
+   * 插入节点
+   * @param item
+   */
+  function insertItem(item: Item) {
+    // todo
+    console.log('insert', item)
+  }
+
+  /**
+   * 在原有节点之后追加节点
+   * @param item
+   */
+  function appendItem(item: Item) {
+    // todo
+    console.log('append', item)
   }
 
   onMounted(() => {
@@ -146,6 +181,8 @@ export function useGraph(container: Ref<HTMLElement>, timeBar: Ref<HTMLElement>)
             const menu = document.createElement('div')
             menu.className = 'graph-menu'
             menu.innerHTML = `<ul>
+                              <li title="insert">插入</li>
+                              <li title="append">追加</li>
                               <li title="delay">延期</li>
                               <li title="move">平移</li>
                               <li title="delete">删除</li>
@@ -165,6 +202,15 @@ export function useGraph(container: Ref<HTMLElement>, timeBar: Ref<HTMLElement>)
               case 'delete': {
                 graph.value?.removeItem(item)
                 graph.value?.layout()
+                break
+              }
+              case 'insert':
+                insertItem(item)
+                break
+              case 'append':
+                appendItem(item)
+                break
+              default: {
                 break
               }
             }
@@ -210,10 +256,10 @@ export function useGraph(container: Ref<HTMLElement>, timeBar: Ref<HTMLElement>)
       nodes,
       edges: [...project.edges.values()]
     }
-    graph.value.data(data as unknown as GraphData)
+    graph.value.data(data as any)
     graph.value.render()
     graph.value.translate(x, y)
-    addListen(graph.value)
+    initGraph(graph.value)
     watch(
       () => store.dn,
       () => {
