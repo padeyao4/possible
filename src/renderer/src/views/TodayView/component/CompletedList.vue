@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CheckOne } from '@icon-park/vue-next'
-import { useStore } from '@renderer/store/project'
+import { useStore } from '@renderer/store'
 import { PNode } from '@renderer/model'
 
 defineProps<{

@@ -3,7 +3,7 @@ import { useProject } from '@renderer/util/project'
 import { ref } from 'vue'
 import { More } from '@icon-park/vue-next'
 import router from '@renderer/router'
-import { useStore } from '@renderer/store/project'
+import { useStore } from '@renderer/store'
 import { PProject } from '@renderer/model'
 
 const store = useStore()

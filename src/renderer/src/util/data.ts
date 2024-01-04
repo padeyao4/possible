@@ -1,4 +1,4 @@
-import { useStore } from '@renderer/store/project'
+import { useStore } from '@renderer/store'
 import { PEdge, PNode, Store } from '@renderer/model'
 import { index2X } from '@renderer/util/index'
 import { instanceToPlain, plainToInstance } from 'class-transformer'

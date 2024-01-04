@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import Draggable from 'vuedraggable/src/vuedraggable'
-import router from "@renderer/router";
-import {useRoute} from "vue-router";
-import {computed, reactive} from "vue";
-import ListContextMenu from "@renderer/views/LayoutView/component/ListContextMenu.vue";
-import {useStore} from "@renderer/store/project";
-import {PProject} from "@renderer/model";
+import router from '@renderer/router'
+import { useRoute } from 'vue-router'
+import { computed, reactive } from 'vue'
+import ListContextMenu from '@renderer/views/LayoutView/component/ListContextMenu.vue'
+import { useStore } from '@renderer/store'
+import { PProject } from '@renderer/model'
 
 const store = useStore()
 const route = useRoute()
@@ -63,42 +63,55 @@ function onUpdate() {
     project.order = index
   })
 }
-
 </script>
 
 <template>
   <div class="main-side-list">
     <teleport to="body">
-      <list-context-menu :x="context.x" :y="context.y" v-model:visible="context.visible"
-                         :active="context.active"
-                         :project-id="context.projectId"/>
+      <list-context-menu
+        :x="context.x"
+        :y="context.y"
+        v-model:visible="context.visible"
+        :active="context.active"
+        :project-id="context.projectId"
+      />
     </teleport>
-    <draggable :list="projects" item-key="id" animation="300"
-               :forceFallback="true" ghost-class="ghost-class" drag-class="drag-class"
-               @start="onStart"
-               @update="onUpdate"
-               @end="onEnd"
-               delay="50"
+    <draggable
+      :list="projects"
+      item-key="id"
+      animation="300"
+      :forceFallback="true"
+      ghost-class="ghost-class"
+      drag-class="drag-class"
+      @start="onStart"
+      @update="onUpdate"
+      @end="onEnd"
+      delay="50"
     >
-      <template #item="{element}">
-        <div
-          class="list-item"
-          :class="{'active': element.id === active }"
-          :key="element.id"
-        >
+      <template #item="{ element }">
+        <div class="list-item" :class="{ active: element.id === active }" :key="element.id">
           <input
             v-if="element.renaming"
-            :ref="(e) => {(e as HTMLInputElement)?.focus()}"
+            :ref="
+              (e) => {
+                ;(e as HTMLInputElement)?.focus()
+              }
+            "
             v-model="element.name"
             class="item-input"
-            @blur="()=>handleInput(element)"
-            @keydown.enter="()=>handleInput(element)"
+            @blur="() => handleInput(element)"
+            @keydown.enter="() => handleInput(element)"
           />
           <div
             v-else
             class="item-text"
-            @click="()=>{handleItemClick(element.id)}"
-            @contextmenu.prevent="(e)=>showContextMenu(e,element.id)">
+            @click="
+              () => {
+                handleItemClick(element.id)
+              }
+            "
+            @contextmenu.prevent="(e) => showContextMenu(e, element.id)"
+          >
             {{ element.name }}
           </div>
         </div>
@@ -110,7 +123,9 @@ function onUpdate() {
 <style scoped>
 .main-side-list {
   height: calc(var(--win-height) - 104px) !important;
-  box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+  box-shadow:
+    rgba(27, 31, 35, 0.06) 0 1px 0,
+    rgba(255, 255, 255, 0.25) 0 1px 0 inset;
   width: 240px !important;
   overflow-y: auto;
 
@@ -157,5 +172,4 @@ function onUpdate() {
     background: var(--color-side-active);
   }
 }
-
 </style>

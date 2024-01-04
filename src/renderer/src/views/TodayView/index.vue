@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useStore } from '@renderer/store/project'
+import { useStore } from '@renderer/store'
 import { computed, ref, toRaw } from 'vue'
 import { Down, Right } from '@icon-park/vue-next'
 import Draggable from 'vuedraggable/src/vuedraggable'

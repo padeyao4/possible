@@ -7,7 +7,7 @@ import CalendarButton from '@renderer/views/ProjectView/component/CalendarButton
 import TodayButton from '@renderer/views/ProjectView/component/TodayButton.vue'
 import CanvasMoveButtons from '@renderer/views/ProjectView/component/CanvasMoveButtons.vue'
 import ProjectHeader from '@renderer/views/ProjectView/component/ProjectHeader.vue'
-import { useStore } from '@renderer/store/project'
+import { useStore } from '@renderer/store'
 import { originIndex } from '@renderer/util/time'
 
 const store = useStore()

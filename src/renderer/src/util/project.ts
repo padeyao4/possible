@@ -1,5 +1,5 @@
 import { useRoute } from 'vue-router'
-import { useStore } from '@renderer/store/project'
+import { useStore } from '@renderer/store'
 
 export function useProject() {
   const route = useRoute()

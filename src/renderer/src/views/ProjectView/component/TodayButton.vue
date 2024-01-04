@@ -2,7 +2,7 @@
 import { Local } from '@icon-park/vue-next'
 import { IGraph } from '@antv/g6'
 import Tip from '@renderer/component/Tip.vue'
-import { useStore } from '@renderer/store/project'
+import { useStore } from '@renderer/store'
 import { useProject } from '@renderer/util/project'
 import { PProject } from '@renderer/model'
 

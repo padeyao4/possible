@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ListAdd, Plus, Round } from '@icon-park/vue-next'
-import { useStore } from '@renderer/store/project'
+import { useStore } from '@renderer/store'
 import { computed, ref, watch, watchEffect } from 'vue'
 import { PNode, PProject } from '@renderer/model'
 

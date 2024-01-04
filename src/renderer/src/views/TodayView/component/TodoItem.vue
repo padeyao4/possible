@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { CheckOne, Drag, Round } from '@icon-park/vue-next'
 import router from '@renderer/router'
-import { useStore } from '@renderer/store/project'
+import { useStore } from '@renderer/store'
 import { PNode } from '@renderer/model'
 
 defineProps<{

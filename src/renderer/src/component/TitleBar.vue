@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Close, Minus, Square } from '@icon-park/vue-next'
 import { dumps } from '@renderer/util/data'
-import { useStore } from '@renderer/store/project'
+import { useStore } from '@renderer/store'
 
 const props = defineProps<{
   visible?: boolean

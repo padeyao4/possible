@@ -3,7 +3,7 @@ import { Canvas, Group, Text } from '@antv/g'
 import { createCanvas } from '@antv/g6/lib/util/canvas'
 import { timeBarShow } from '@renderer/util'
 import { PProject } from '@renderer/model'
-import { useStore } from '@renderer/store/project'
+import { useStore } from '@renderer/store'
 import { computed, watch } from 'vue'
 
 export default class timerPlugin extends PluginBase {

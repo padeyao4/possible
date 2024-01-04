@@ -4,7 +4,7 @@ import TitleBar from '@renderer/component/TitleBar.vue'
 import SideList from '@renderer/views/LayoutView/component/SideList.vue'
 import SideBottom from '@renderer/views/LayoutView/component/SideBottom.vue'
 import SummeryButton from '@renderer/views/LayoutView/component/SummeryButton.vue'
-import { useStore } from '@renderer/store/project'
+import { useStore } from '@renderer/store'
 import { originIndex } from '@renderer/util/time'
 
 const store = useStore()
