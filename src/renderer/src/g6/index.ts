@@ -146,7 +146,7 @@ export function useGraph(container: Ref<HTMLElement>, timeBar: Ref<HTMLElement>)
    */
   function insertItem(item: Item) {
     // todo
-    console.log('insert', item)
+    console.log('insert', item, container.value.offsetTop, container.value.offsetLeft)
   }
 
   /**
@@ -155,7 +155,7 @@ export function useGraph(container: Ref<HTMLElement>, timeBar: Ref<HTMLElement>)
    */
   function appendItem(item: Item) {
     // todo
-    console.log('append', item)
+    console.log('append', item, container.value.offsetTop, container.value.offsetLeft)
   }
 
   onMounted(() => {
