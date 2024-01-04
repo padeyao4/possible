@@ -20,8 +20,7 @@
     "build:linux": "pnpm run build && electron-builder --linux --config"
   },
   "dependencies": {
-    "@antv/dom-util": "^2.0.4",
-    "@antv/g-base": "^0.5.15",
+    "@antv/g6": "^5.0.0-beta.28",
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
     "@icon-park/vue-next": "^1.4.2",
@@ -38,8 +37,6 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
-    "@antv/g6": "^4.8.24",
-    "@antv/g6-core": "^0.8.24",
     "@electron-toolkit/eslint-config": "^1.0.2",
     "@electron-toolkit/eslint-config-ts": "^1.0.1",
     "@electron-toolkit/tsconfig": "^1.0.1",

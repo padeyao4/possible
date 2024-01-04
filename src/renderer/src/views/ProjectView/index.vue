@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import TitleBar from '@renderer/component/TitleBar.vue'
 import { Aiming, ArrowLeft, ArrowRight, Back, Next } from '@icon-park/vue-next'
 import { useGraph } from '@renderer/g6'
-import NodeEditor from '@renderer/views/ProjectView/component/NodeEditor.vue'
 import CalendarButton from '@renderer/views/ProjectView/component/CalendarButton.vue'
 import TodayButton from '@renderer/views/ProjectView/component/TodayButton.vue'
 import CanvasMoveButtons from '@renderer/views/ProjectView/component/CanvasMoveButtons.vue'
@@ -14,7 +13,7 @@ import { originIndex } from '@renderer/util/time'
 const store = useStore()
 const container = ref<HTMLElement>()
 const timeBar = ref<HTMLElement>()
-const { graph, active, clearActive } = useGraph(container as never, timeBar as any)
+const { graph } = useGraph(container as never, timeBar as any)
 </script>
 
 <template>
@@ -70,9 +69,9 @@ const { graph, active, clearActive } = useGraph(container as never, timeBar as a
         />
       </div>
     </div>
-    <teleport to="body">
-      <node-editor :node-id="active" :reset-node-id="clearActive" :graph="graph" />
-    </teleport>
+    <!--    <teleport to="body">-->
+    <!--      <node-editor :node-id="active" :reset-node-id="clearActive" :graph="graph" />-->
+    <!--    </teleport>-->
   </div>
 </template>
 

@@ -1,337 +1,112 @@
-import '@renderer/assets/graph.css'
-import './layout/possibleLayout'
-import './node/possibleNode'
-import './behavior/possibleNodeDrag'
-
-import { nextTick, onBeforeUnmount, onMounted, ref, Ref, shallowRef, watch } from 'vue'
-import { Graph, GraphData, IEdge, IGraph, Menu } from '@antv/g6'
-import PossibleGrid from '@renderer/g6/plugin/possibleGrid'
-import { PossibleTimeBar } from '@renderer/g6/plugin/possibleTimeBar'
-import { IG6GraphEvent, INode as G6INode, Item, ModelConfig } from '@antv/g6-core'
-import { PEdge, PNode, PProject } from '@renderer/model'
-import { useProject } from '@renderer/util/project'
+import { computed, onBeforeUnmount, onMounted, Ref, shallowRef } from 'vue'
+import { extend, Graph as BaseGraph, IGraph, NodeDisplayModel } from '@antv/g6'
+import GridPlugin from '@renderer/g6/plugin/gridPlugin'
+import TimerPlugin from '@renderer/g6/plugin/timerPlugin'
 import { useStore } from '@renderer/store/project'
-import { plainToInstance } from 'class-transformer'
+import { useRoute } from 'vue-router'
+import CreateNode from '@renderer/g6/behavior/createNode'
+import { CardNode } from '@renderer/g6/node/customNode'
 
-export function useGraph(container: Ref<HTMLElement>, timeBar: Ref<HTMLElement>) {
-  const graph = shallowRef<IGraph>()
-  const project = useProject() as PProject
+const Graph = extend(BaseGraph, {
+  nodes: {
+    'card-node': CardNode
+  },
+  plugins: {
+    grid: GridPlugin,
+    timer: TimerPlugin
+  },
+  behaviors: {
+    'create-node': CreateNode
+  }
+})
+
+export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLElement>) {
+  const graph = shallowRef<IGraph<any, any>>()
   const store = useStore()
+  const route = useRoute()
 
-  /**
-   * witch node has active
-   */
-  const active = ref<string>()
+  const project = computed(() => {
+    return store.projects.get(route.params.id as string)
+  })
 
-  const dataIndex = () => {
-    return store.dn - project.origin
-  }
-
-  function clearActive() {
-    active.value = undefined
-  }
-
-  /**
-   * 创建节点
-   * @param e
-   * @param graph
-   */
-  function createNode(e: IG6GraphEvent, graph: IGraph) {
-    const node = new PNode()
-    node.name = '未命名'
-    node.projectId = project.id
-    node.normalXY(e.x, e.y)
-    graph.addItem('node', node as unknown as ModelConfig)
-    graph.layout()
-  }
-
-  function changeViewport(graph: IGraph) {
-    const { x, y } = graph?.getCanvasByPoint(0, 0) ?? { x: 0, y: 0 }
-    project.offset.x = x
-    project.offset.y = y
-  }
-
-  async function afterCreateEdge(e: IG6GraphEvent, graph: IGraph) {
-    const edge = e.edge as IEdge
-
-    const sourceNode = edge.getSource() as G6INode
-    const targetNode = edge.getTarget() as G6INode
-
-    // 删除自环边
-    if (sourceNode === targetNode) {
-      await nextTick(() => {
-        graph?.removeItem(edge)
-      })
-      return
-    }
-
-    // 删除重复边
-    const count = sourceNode
-      .getEdges()
-      .filter(
-        (e) =>
-          e.getTarget().getID() === targetNode.getID() ||
-          e.getSource().getID() === targetNode.getID()
-      ).length
-    if (count >= 2) {
-      await nextTick(() => {
-        graph?.removeItem(edge)
-      })
-      return
-    }
-
-    // 删除相同列的边
-    if ((sourceNode.getModel().x as number) >= (targetNode.getModel().x as number)) {
-      await nextTick(() => {
-        graph?.removeItem(edge)
-      })
-      return
-    }
-  }
-
-  function initGraph(graph: IGraph) {
-    graph.on('edge:mouseover', (e) => {
-      graph.setItemState(e.item as Item, 'hover', true)
-    })
-
-    graph.on('edge:mouseout', (e) => {
-      graph.setItemState(e.item as Item, 'hover', false)
-    })
-
-    graph.on('canvas:dblclick', (e) => {
-      createNode(e, graph)
-    })
-
-    graph.on('node:dblclick', (e) => {
-      active.value = e.item?.getID?.()
-    })
-
-    graph.on('node:dragend', () => {
-      graph?.layout()
-    })
-
-    graph.on('aftercreateedge', async (e) => {
-      await afterCreateEdge(e, graph)
-    })
-
-    graph.on('viewportchange', () => {
-      changeViewport(graph)
-    })
-
-    graph.on('afterremoveitem', save)
-    graph.on('afteradditem', save)
-    graph.on('afterupdateitem', save)
-  }
-
-  function save() {
-    const graphData = graph.value?.save() as GraphData
-    project.nodes.clear()
-    graphData?.nodes?.forEach((node) => {
-      project.nodes.set(
-        node.id,
-        plainToInstance(PNode, node, { excludeExtraneousValues: true }).x2dn()
-      )
-    })
-    project.edges.clear()
-    graphData?.edges?.forEach((edge) => {
-      if (edge.id) {
-        project.edges.set(edge.id, plainToInstance(PEdge, edge, { excludeExtraneousValues: true }))
+  const data = {
+    nodes: [
+      {
+        id: 'node1',
+        data: {
+          name: 'Circle1',
+          x: 120,
+          y: 100
+        }
+      },
+      {
+        id: 'node2',
+        data: {
+          name: 'Circle2',
+          x: 240,
+          y: 400
+        }
       }
-    })
+    ],
+    edges: [
+      {
+        id: 'edge1',
+        source: 'node1',
+        target: 'node2'
+      }
+    ]
   }
 
-  /**
-   * 插入节点
-   * @param item
-   */
-  function insertItem(item: Item) {
-    // todo
-    console.log('insert', item, container.value.offsetTop, container.value.offsetLeft)
-  }
-
-  /**
-   * 在原有节点之后追加节点
-   * @param item
-   */
-  function appendItem(item: Item) {
-    // todo
-    console.log('append', item, container.value.offsetTop, container.value.offsetLeft)
+  function resize() {
+    const g = graph.value as IGraph
+    const p1 = g.getCanvasByViewport({ x: 0, y: 0 })
+    g.setSize([container.value.clientWidth, container.value.clientHeight])
+    const p2 = g.getCanvasByViewport({ x: 0, y: 0 })
+    g.translate({ dx: p2.x - p1.x, dy: p2.y - p1.y }).then(() => undefined)
   }
 
   onMounted(() => {
     graph.value = new Graph({
       container: container.value,
-      animate: true,
-      animateCfg: {
-        duration: 300
-      },
-      layout: {
-        type: 'possible-layout',
-        todayIndex: dataIndex(),
-        nodeHeight: project.nodeHeight,
-        gap: project.nodeMargin[0] + project.nodeMargin[2]
+      width: container.value.clientWidth,
+      height: container.value.clientHeight,
+      modes: {
+        default: ['drag-canvas', 'drag-node', 'create-node']
       },
       plugins: [
-        new PossibleGrid(),
-        new PossibleTimeBar(timeBar.value),
-        new Menu({
-          offsetX: -container.value.offsetLeft,
-          offsetY: -container.value.offsetTop,
-          getContent: () => {
-            const menu = document.createElement('div')
-            menu.className = 'graph-menu'
-            menu.innerHTML = `<ul>
-                              <li title="insert">插入</li>
-                              <li title="append">追加</li>
-                              <li title="delay">延期</li>
-                              <li title="move">平移</li>
-                              <li title="delete">删除</li>
-                            </ul>`
-            return menu
-          },
-          handleMenuClick: (el: HTMLElement, item: Item) => {
-            switch (el.title) {
-              case 'delay': {
-                delay(item)
-                break
-              }
-              case 'move': {
-                move(item)
-                break
-              }
-              case 'delete': {
-                graph.value?.removeItem(item)
-                graph.value?.layout()
-                break
-              }
-              case 'insert':
-                insertItem(item)
-                break
-              case 'append':
-                appendItem(item)
-                break
-              default: {
-                break
-              }
-            }
-          }
-        })
+        'grid',
+        {
+          key: 'timer',
+          type: 'timer',
+          container: timerContainer.value,
+          project: project.value
+        }
       ],
-      modes: {
-        default: [
-          {
-            type: 'drag-canvas',
-            allowDragOnItem: false,
-            enableOptimize: true,
-            scalableRange: 99
-          },
-          {
-            type: 'possible-drag-node',
-            enableOptimize: true
-          },
-          {
-            type: 'create-edge',
-            trigger: 'drag',
-            key: 'shift'
+      node: (model) => {
+        const { id, data } = model
+        return {
+          id,
+          data: {
+            ...data,
+            type: 'card-node',
+            keyShape: {
+              radius: 4,
+              width: 100,
+              height: 40
+            },
+            otherShapes: {}
           }
-        ]
-      },
-      defaultNode: {
-        type: 'task-node'
-      },
-      defaultEdge: {
-        type: 'cubic-horizontal'
-      },
-      edgeStateStyles: {
-        hover: {
-          stroke: 'rgba(154,154,154,0.38)',
-          lineWidth: 2
-        }
+        } as NodeDisplayModel
       }
     })
-    const { x, y } = project.offset
-    const nodes = [...project.nodes.values()]
-    nodes.forEach((node) => node.dn2x())
-    const data = {
-      nodes,
-      edges: [...project.edges.values()]
-    }
-    graph.value.data(data as any)
-    graph.value.render()
-    graph.value.translate(x, y)
-    initGraph(graph.value)
-    watch(
-      () => store.dn,
-      () => {
-        graph.value?.updateLayout({
-          todayIndex: dataIndex()
-        })
-        graph.value?.emit('possible-update', { x: project.offset.x })
-      }
-    )
-    window.addEventListener('resize', () => {
-      if (container.value) {
-        graph.value?.changeSize(container.value.clientWidth, container.value.clientHeight)
-      }
-    })
+    graph.value.read(data as any)
+    window.addEventListener('resize', resize)
   })
-
-  /**
-   * 项目及后续项目平移
-   * @param item
-   */
-  function move(item: Item) {
-    function moveItem(item: Item) {
-      const id = item.getID()
-      const node: PNode = Object.assign(new PNode(), graph.value?.findById(id).getModel())
-      const hors = graph.value?.getNeighbors(node.id, 'target')
-      hors?.map((h) => moveItem(h))
-      node.x += node.cellWidth
-      graph.value?.update(item.getID(), node as unknown as ModelConfig)
-    }
-
-    moveItem(item)
-    graph.value?.layout()
-  }
-
-  /**
-   * 普通正常任务延期
-   * @param item
-   */
-  function delay(item: Item) {
-    function delayItem(item: Item) {
-      const id = item.getID()
-      const node = Object.assign(new PNode(), graph.value?.findById(id).getModel())
-      if (node.taskType !== 'general') return false
-      if (node.state !== 'normal') return false
-      const hors = graph.value
-        ?.getNeighbors(node.id, 'target')
-        .filter((h) => (h.getModel()?.x ?? 0) - node.x === node.cellWidth)
-      if (hors?.length === 0) {
-        node.x += node.cellWidth
-        graph.value?.update(item.getID(), node)
-        return true
-      } else {
-        const ans = hors?.map((h) => delayItem(h)).filter((v) => !v)
-        if (ans?.length !== 0) {
-          return false
-        } else {
-          node.x += node.cellWidth
-          graph.value?.update(item.getID(), node)
-          return true
-        }
-      }
-    }
-
-    delayItem(item)
-    graph.value?.layout()
-  }
 
   onBeforeUnmount(() => {
-    save()
+    window.removeEventListener('resize', resize)
     graph.value?.destroy()
-    graph.value = undefined
   })
 
-  return { graph, active, clearActive }
+  return { graph }
 }
