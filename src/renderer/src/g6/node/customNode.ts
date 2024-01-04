@@ -38,31 +38,11 @@ export class CardNode extends Extensions.RectNode {
     diffState?: { previous: State[]; current: State[] }
   ): { [p: string]: any } {
     return {
-      main: this.upsertShape(
-        'rect',
-        'rect-shape',
-        {
-          x: 10,
-          y: 10,
-          width: 20,
-          height: 20,
-          fill: '#2b2',
-          stroke: '#fbb',
-          radius: 2,
-          cursor: 'move'
-        },
-        {
-          model,
-          shapeMap,
-          diffData,
-          diffState
-        }
-      ),
       info: this.upsertShape(
         'text',
         'text-info',
         {
-          x: 0,
+          x: -50,
           y: 0,
           text: model.id,
           fill: '#000',

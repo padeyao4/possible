@@ -1,11 +1,11 @@
-import { computed, onBeforeUnmount, onMounted, Ref, shallowRef } from 'vue'
+import { onBeforeUnmount, onMounted, Ref, shallowRef } from 'vue'
 import { extend, Graph as BaseGraph, IGraph, NodeDisplayModel } from '@antv/g6'
 import GridPlugin from '@renderer/g6/plugin/gridPlugin'
 import TimerPlugin from '@renderer/g6/plugin/timerPlugin'
-import { useStore } from '@renderer/store/project'
-import { useRoute } from 'vue-router'
 import CreateNode from '@renderer/g6/behavior/createNode'
 import { CardNode } from '@renderer/g6/node/customNode'
+import { useProject } from '@renderer/util/project'
+import { PProject } from '@renderer/model'
 
 const Graph = extend(BaseGraph, {
   nodes: {
@@ -22,12 +22,7 @@ const Graph = extend(BaseGraph, {
 
 export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLElement>) {
   const graph = shallowRef<IGraph<any, any>>()
-  const store = useStore()
-  const route = useRoute()
-
-  const project = computed(() => {
-    return store.projects.get(route.params.id as string)
-  })
+  const project = useProject() as PProject
 
   const data = {
     nodes: [
@@ -79,7 +74,7 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
           key: 'timer',
           type: 'timer',
           container: timerContainer.value,
-          project: project.value
+          project
         }
       ],
       node: (model) => {

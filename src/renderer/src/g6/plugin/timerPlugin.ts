@@ -18,8 +18,11 @@ export default class timerPlugin extends PluginBase {
 
   private store = useStore()
 
-  todayIndex = computed(() => {
-    return 0
+  /**
+   * 今天距离项目创建的天数值
+   */
+  idx = computed(() => {
+    return this.store.dn - this.project.origin
   })
 
   constructor(options: IPluginBaseConfig) {
@@ -72,7 +75,7 @@ export default class timerPlugin extends PluginBase {
         fontWeight: 1,
         x: 120 * v + 60,
         y: 5,
-        fill: v === this.todayIndex.value ? '#ff0' : '#000', // 文本颜色
+        fill: v === this.idx.value ? '#ff0' : '#000', // 文本颜色
         textAlign: 'center', // 水平居中
         textBaseline: 'top' // 垂直居中
       },
@@ -106,7 +109,7 @@ export default class timerPlugin extends PluginBase {
       () => {
         this.group.forEach((e) => {
           const text = e as Text
-          text.style.fill = text.id === this.todayIndex.value.toString() ? '#ff0' : '#000'
+          text.style.fill = text.id === this.idx.value.toString() ? '#ff0' : '#000'
         })
       }
     )
