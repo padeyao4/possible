@@ -1,9 +1,9 @@
 import { Canvas } from '@antv/g'
-import { IGraph, PluginBase } from '@antv/g6'
+import { Extensions, IGraph } from '@antv/g6'
 import { modifyCSS } from '@antv/dom-util'
 import { createDOM } from '@antv/g6/lib/util/dom'
 
-export default class GridPlugin extends PluginBase {
+export default class GridPlugin extends Extensions.BasePlugin {
   private canvas: Canvas
   private container: HTMLElement
   private gridContainer: HTMLElement

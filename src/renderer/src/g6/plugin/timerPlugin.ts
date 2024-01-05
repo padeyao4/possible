@@ -1,4 +1,4 @@
-import { IGraph, IPluginBaseConfig, PluginBase } from '@antv/g6'
+import { Extensions, IGraph, IPluginBaseConfig } from '@antv/g6'
 import { Canvas, Group, Text } from '@antv/g'
 import { createCanvas } from '@antv/g6/lib/util/canvas'
 import { timeBarShow } from '@renderer/util'
@@ -6,7 +6,7 @@ import { PProject } from '@renderer/model'
 import { useStore } from '@renderer/store'
 import { computed, watch } from 'vue'
 
-export default class timerPlugin extends PluginBase {
+export default class timerPlugin extends Extensions.BasePlugin {
   public canvas: Canvas
   public width: number
   public container: HTMLElement
