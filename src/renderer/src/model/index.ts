@@ -85,9 +85,9 @@ export class PProject {
 export class PNode {
   @Expose()
   name = ''
-  @Expose()
-  @Type(() => Date)
-  createdTime: Date = new Date()
+  // @Expose()
+  // @Type(() => Date)
+  // createdTime: Date = new Date()
   @Expose()
   detail = ''
   @Expose()
@@ -102,9 +102,9 @@ export class PNode {
   target = ''
   @Expose()
   taskType: 'period' | 'schedule' | 'general' = 'general'
-  @Expose()
-  @Type(() => Date)
-  updatedTime: Date = new Date()
+  // @Expose()
+  // @Type(() => Date)
+  // updatedTime: Date = new Date()
   @Expose()
   x = 0 // 只用于graph显示,修改无效
   @Expose()
@@ -148,6 +148,10 @@ export class PNode {
     this.x = Math.floor(x / this.cellWidth) * this.cellWidth + Math.floor(this.cellWidth / 2)
     this.y = y
     return this
+  }
+
+  normal() {
+    return this.normalXY(this.x, this.y)
   }
 
   toGraphNode() {

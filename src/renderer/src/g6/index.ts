@@ -7,6 +7,7 @@ import { CardNode } from '@renderer/g6/node/customNode'
 import { useProject } from '@renderer/util/project'
 import { PEdge, PNode, PProject } from '@renderer/model'
 import { plainToInstance } from 'class-transformer'
+import { NodeDragEnd } from '@renderer/g6/behavior/afterNodeDrag'
 
 const Graph = extend(BaseGraph, {
   nodes: {
@@ -17,7 +18,8 @@ const Graph = extend(BaseGraph, {
     timer: TimerPlugin
   },
   behaviors: {
-    'create-node': CreateNode
+    'create-node': CreateNode,
+    'node-dragend': NodeDragEnd
   }
 })
 
@@ -38,7 +40,7 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
       width: container.value.clientWidth,
       height: container.value.clientHeight,
       modes: {
-        default: ['drag-canvas', 'drag-node', 'create-node']
+        default: ['drag-canvas', 'drag-node', 'create-node', 'node-dragend']
       },
       plugins: [
         'grid',
@@ -87,5 +89,13 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
     graph.destroy()
   })
 
-  return { graph: graph! }
+  function changeNode(id: string) {
+    const model = graph.getNodeData(id)
+    graph.updateData('node', {
+      id,
+      data: { ...model?.data, name: '111', otherShapes: {} }
+    })
+  }
+
+  return { graph: graph!, changeNode }
 }

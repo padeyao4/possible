@@ -13,11 +13,10 @@ import { originIndex } from '@renderer/util/time'
 const store = useStore()
 const container = ref<HTMLElement>()
 const timeBar = ref<HTMLElement>()
-const { graph, data } = useGraph(container as never, timeBar as any)
+const { graph, changeNode } = useGraph(container as never, timeBar as any)
 
 function test() {
-  const d = data()
-  console.log(d)
+  changeNode('e0e5fbf4-ba9e-4256-9d89-73f432e37360')
 }
 </script>
 
