@@ -37,21 +37,25 @@ export class CardNode extends Extensions.RectNode {
     },
     diffState?: { previous: State[]; current: State[] }
   ): { [p: string]: any } {
+    const {
+      data: { name, width }
+    } = model
+
     return {
       info: this.upsertShape(
         'text',
         'text-info',
         {
-          x: -50,
+          x: 0,
           y: 0,
-          text: model.id,
+          text: name as string,
           fill: '#000',
-          textAlign: 'start',
+          textAlign: 'center',
           textBaseline: 'middle',
           fontSize: 12,
           textOverflow: 'ellipsis',
           wordWrap: true,
-          wordWrapWidth: 30,
+          wordWrapWidth: (width as number) - 8,
           maxLines: 2
         },
         {

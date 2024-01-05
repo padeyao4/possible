@@ -1,6 +1,13 @@
 import { v4 } from 'uuid'
 import { originIndex } from '@renderer/util/time'
-import { Expose, plainToInstance, Transform, TransformFnParams, Type } from 'class-transformer'
+import {
+  Expose,
+  instanceToPlain,
+  plainToInstance,
+  Transform,
+  TransformFnParams,
+  Type
+} from 'class-transformer'
 
 export class PEdge {
   @Expose()
@@ -9,6 +16,10 @@ export class PEdge {
   source = '' // task id
   @Expose()
   target = '' // task id
+
+  toGraphEdge() {
+    return instanceToPlain(this)
+  }
 }
 
 export class PProject {
@@ -59,6 +70,15 @@ export class PProject {
       m.set(entry[0], plainToInstance(PEdge, entry[1]))
     }
     return m
+  }
+
+  toGraphData() {
+    const nodes = [...this.nodes.values()].map((node) => node.toGraphNode())
+    const edges = [...this.edges.values()].map((edge) => edge.toGraphEdge())
+    return {
+      nodes,
+      edges
+    }
   }
 }
 
@@ -128,6 +148,13 @@ export class PNode {
     this.x = Math.floor(x / this.cellWidth) * this.cellWidth + Math.floor(this.cellWidth / 2)
     this.y = y
     return this
+  }
+
+  toGraphNode() {
+    return {
+      id: this.id,
+      data: instanceToPlain(this)
+    }
   }
 }
 

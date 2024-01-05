@@ -1,5 +1,5 @@
 import { onBeforeUnmount, onMounted, Ref, shallowRef } from 'vue'
-import { extend, Graph as BaseGraph, IGraph, NodeDisplayModel } from '@antv/g6'
+import { extend, Graph as BaseGraph, GraphData, IGraph, NodeDisplayModel } from '@antv/g6'
 import GridPlugin from '@renderer/g6/plugin/gridPlugin'
 import TimerPlugin from '@renderer/g6/plugin/timerPlugin'
 import CreateNode from '@renderer/g6/behavior/createNode'
@@ -24,40 +24,11 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
   const graph = shallowRef<IGraph<any, any>>()
   const project = useProject() as PProject
 
-  const data = {
-    nodes: [
-      {
-        id: 'node1',
-        data: {
-          name: 'Circle1',
-          x: 120,
-          y: 100
-        }
-      },
-      {
-        id: 'node2',
-        data: {
-          name: 'Circle2',
-          x: 240,
-          y: 400
-        }
-      }
-    ],
-    edges: [
-      {
-        id: 'edge1',
-        source: 'node1',
-        target: 'node2'
-      }
-    ]
-  }
-
-  function resize() {
-    const g = graph.value as IGraph
-    const p1 = g.getCanvasByViewport({ x: 0, y: 0 })
-    g.setSize([container.value.clientWidth, container.value.clientHeight])
-    const p2 = g.getCanvasByViewport({ x: 0, y: 0 })
-    g.translate({ dx: p2.x - p1.x, dy: p2.y - p1.y }).then(() => undefined)
+  async function resize() {
+    const p1 = graph.value!.getCanvasByViewport({ x: 0, y: 0 })
+    graph.value!.setSize([container.value.clientWidth, container.value.clientHeight])
+    const p2 = graph.value!.getCanvasByViewport({ x: 0, y: 0 })
+    await graph.value!.translate({ dx: p2.x - p1.x, dy: p2.y - p1.y })
   }
 
   onMounted(() => {
@@ -86,15 +57,15 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
             type: 'card-node',
             keyShape: {
               radius: 4,
-              width: 100,
-              height: 40
+              width: data.width,
+              height: data.height
             },
             otherShapes: {}
           }
         } as NodeDisplayModel
       }
     })
-    graph.value.read(data as any)
+    graph.value.read(project.toGraphData() as GraphData)
     window.addEventListener('resize', resize)
   })
 
