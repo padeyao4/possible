@@ -1,5 +1,5 @@
 import { Behavior, IG6GraphEvent, IGraph } from '@antv/g6'
-import { v4 } from 'uuid'
+import { PNode } from '@renderer/model'
 
 export default class CreateNode implements Behavior {
   graph: IGraph
@@ -16,14 +16,11 @@ export default class CreateNode implements Behavior {
   }
 
   create = (e: any) => {
-    this.graph.addData('node', {
-      id: v4(),
-      data: {
-        x: e.canvas.x,
-        y: e.canvas.y,
-        name: 'untitled'
-      }
-    })
+    const node = new PNode()
+    node.name = 'untitled'
+    node.normalXY(e.canvas.x, e.canvas.y)
+    node.projectId = window.location.pathname.split('/').pop() as string
+    this.graph.addData('node', node.toGraphNode())
   }
 
   updateConfig(options: any): void {
