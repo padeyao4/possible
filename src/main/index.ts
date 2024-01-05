@@ -53,6 +53,8 @@ app
             label: '退出',
             click: () => {
               const main = windowDict.get('main')
+              // todo 保存数据,让renderer进程发送信号保存数据
+              main?.hide()
               if (!main?.isDestroyed()) {
                 main?.close()
               }
