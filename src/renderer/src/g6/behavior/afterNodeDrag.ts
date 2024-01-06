@@ -45,7 +45,7 @@ export class NodeDragEnd extends Extensions.BaseBehavior {
     const node = plainToInstance(PNode, data)
     setTimeout(() => {
       // todo 判断是否有重合卡片
-      this.graph.updateNodePosition(node.normalXY(x, y).toGraphNode())
+      this.graph.updateNodePosition(node.normalXY(x, y).toGraphNode(), true, true)
     })
   }
 }

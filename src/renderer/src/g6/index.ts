@@ -40,7 +40,7 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
       width: container.value.clientWidth,
       height: container.value.clientHeight,
       modes: {
-        default: ['drag-canvas', 'drag-node', 'create-node', 'node-dragend']
+        default: ['drag-canvas', 'drag-node', 'create-node', 'node-dragend', 'select-node']
       },
       plugins: [
         'grid',
@@ -59,7 +59,7 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
             ...data,
             type: 'card-node',
             keyShape: {
-              radius: 4,
+              radius: 6,
               width: data.width,
               height: data.height
             },
@@ -89,13 +89,10 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
     graph.destroy()
   })
 
-  function changeNode(id: string) {
-    const model = graph.getNodeData(id)
-    graph.updateData('node', {
-      id,
-      data: { ...model?.data, name: '111', otherShapes: {} }
-    })
-  }
+  /**
+   * 跳转到具体日期
+   */
+  function goto() {}
 
-  return { graph: graph!, changeNode }
+  return { graph: graph! }
 }

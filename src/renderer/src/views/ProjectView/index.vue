@@ -13,11 +13,7 @@ import { originIndex } from '@renderer/util/time'
 const store = useStore()
 const container = ref<HTMLElement>()
 const timeBar = ref<HTMLElement>()
-const { graph, changeNode } = useGraph(container as never, timeBar as any)
-
-function test() {
-  changeNode('e0e5fbf4-ba9e-4256-9d89-73f432e37360')
-}
+const { graph } = useGraph(container as never, timeBar as any)
 </script>
 
 <template>
@@ -30,7 +26,6 @@ function test() {
     </div>
     <div class="footer">
       <div class="icon-group">
-        <button @click="test">test</button>
         <today-button :graph="graph" />
         <calendar-button :graph="graph" />
         <canvas-move-buttons :graph="graph" />
