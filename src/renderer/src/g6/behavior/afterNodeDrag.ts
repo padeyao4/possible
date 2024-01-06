@@ -1,26 +1,51 @@
 import { Extensions, IG6GraphEvent } from '@antv/g6'
+import { plainToInstance } from 'class-transformer'
+import { PNode } from '@renderer/model'
 
 export class NodeDragEnd extends Extensions.BaseBehavior {
+  private pointerDown = false
+
+  private dragging = false
+
+  private selectId = ''
+
   getEvents(): { [p: string]: (event: IG6GraphEvent) => void } {
     return {
-      'node:dragend': this.dragend
+      'node:pointerdown': this.onPointerDown,
+      pointerup: this.onPointerUp,
+      pointermove: this.onPointerMove
     }
   }
 
-  dragend(e: IG6GraphEvent) {
-    console.log('dragend', e)
-    const { id, data } = this.graph.getNodeData(e.itemId)!
-    console.log('data', data)
-    // const node = plainToInstance(PNode, nodeData?.data)
-    // const graphNode = node.normal().toGraphNode()
-    // todo
-    // graph.updateData('node', graphNode)
-    this.graph.updateData('node', {
-      id,
-      data: {
-        ...data,
-        name: 'hello world'
-      }
+  onPointerDown(e: IG6GraphEvent) {
+    this.pointerDown = true
+    this.selectId = e.itemId as string
+  }
+
+  onPointerMove() {
+    if (this.pointerDown) {
+      this.dragging = true
+    }
+  }
+
+  onPointerUp(e: IG6GraphEvent) {
+    if (this.pointerDown && this.dragging) {
+      this.dragend(e.canvas.x, e.canvas.y)
+      this.clearState()
+    }
+  }
+
+  private clearState() {
+    this.dragging = false
+    this.pointerDown = false
+  }
+
+  dragend(x: number, y: number) {
+    const { data } = this.graph.getNodeData(this.selectId)!
+    const node = plainToInstance(PNode, data)
+    setTimeout(() => {
+      // todo 判断是否有重合卡片
+      this.graph.updateNodePosition(node.normalXY(x, y).toGraphNode())
     })
   }
 }
