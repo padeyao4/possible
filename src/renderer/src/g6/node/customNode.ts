@@ -42,29 +42,32 @@ export class CardNode extends Extensions.RectNode {
     } = model
 
     return {
-      info: this.upsertShape(
-        'text',
-        'text-info',
-        {
-          x: 0,
-          y: 0,
-          text: name as string,
-          fill: '#000',
-          textAlign: 'center',
-          textBaseline: 'middle',
-          fontSize: 12,
-          textOverflow: 'ellipsis',
-          wordWrap: true,
-          wordWrapWidth: (width as number) - 8,
-          maxLines: 2
-        },
-        {
-          model,
-          shapeMap,
-          diffData,
-          diffState
-        }
-      )
+      ...{
+        info: this.upsertShape(
+          'text',
+          'text-info',
+          {
+            x: 0,
+            y: 0,
+            text: name as string,
+            fill: '#000',
+            textAlign: 'center',
+            textBaseline: 'middle',
+            fontSize: 12,
+            textOverflow: 'ellipsis',
+            wordWrap: true,
+            wordWrapWidth: (width as number) - 8,
+            maxLines: 2
+          },
+          {
+            model,
+            shapeMap,
+            diffData,
+            diffState
+          }
+        )
+      },
+      ...shapeMap
     }
   }
 }
