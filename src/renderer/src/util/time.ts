@@ -45,6 +45,10 @@ export function date2Day(date: Date) {
   return '星期' + mapper[date.getDay()]
 }
 
+export function index2Date(n: number) {
+  return new Date(n * DAY_OF_MS)
+}
+
 export function isNight() {
   const hours = new Date().getHours()
   return hours < 6 || hours > 18

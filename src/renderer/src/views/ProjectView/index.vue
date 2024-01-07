@@ -13,7 +13,7 @@ import { originIndex } from '@renderer/util/time'
 const store = useStore()
 const container = ref<HTMLElement>()
 const timeBar = ref<HTMLElement>()
-const { graph } = useGraph(container as never, timeBar as any)
+const { graph, goto } = useGraph(container as never, timeBar as any)
 </script>
 
 <template>
@@ -26,8 +26,8 @@ const { graph } = useGraph(container as never, timeBar as any)
     </div>
     <div class="footer">
       <div class="icon-group">
-        <today-button :graph="graph" />
-        <calendar-button :graph="graph" />
+        <today-button :callback="goto" />
+        <calendar-button :callback="goto" />
         <canvas-move-buttons :graph="graph" />
         <back v-show="store.experiment" theme="outline" size="20" fill="#333" :stroke-width="2" />
         <next v-show="store.experiment" theme="outline" size="20" fill="#333" :stroke-width="2" />

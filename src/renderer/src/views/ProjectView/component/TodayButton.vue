@@ -1,24 +1,17 @@
 <script setup lang="ts">
 import { Local } from '@icon-park/vue-next'
-import { IGraph } from '@antv/g6'
 import Tip from '@renderer/component/Tip.vue'
 import { useStore } from '@renderer/store'
-import { useProject } from '@renderer/util/project'
-import { PProject } from '@renderer/model'
+import { index2Date } from '@renderer/util/time'
 
 const props = defineProps<{
-  graph: IGraph | undefined
+  callback: Function
 }>()
 
 const store = useStore()
-const project = useProject() as PProject
 
 const today = () => {
-  const dx =
-    (store.dn - project.origin) *
-      (project.nodeWidth + project.nodeMargin[1] + project.nodeMargin[3]) +
-    project.offset.x
-  props.graph?.translate(-dx, -project.offset.y)
+  props.callback?.(index2Date(store.dn))
 }
 </script>
 

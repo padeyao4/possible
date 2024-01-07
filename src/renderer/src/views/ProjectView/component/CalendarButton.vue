@@ -1,29 +1,20 @@
 <script setup lang="ts">
-import { IGraph } from '@antv/g6'
 import { ref } from 'vue'
-import { useProject } from '@renderer/util/project'
-import { originIndex } from '@renderer/util/time'
-import { PProject } from '@renderer/model';
+import { DAY_OF_MS } from '@renderer/common/constant'
 
 const props = defineProps<{
-  graph: IGraph | undefined
+  callback: Function
 }>()
-
-const project = useProject() as PProject
 
 const date = ref()
 
-function handleBlur(e) {
+function handleBlur(e: any) {
   e.target.blur()
 }
 
 function handleGraph() {
   if (!date.value) return
-  const dx =
-    (originIndex(date.value) - project.origin) *
-      (project.nodeWidth + project.nodeMargin[1] + project.nodeMargin[3]) +
-    project.offset.x
-  props.graph?.translate(-dx, -project.offset.y)
+  props.callback?.(new Date(date.value).getTime() + DAY_OF_MS)
 }
 </script>
 

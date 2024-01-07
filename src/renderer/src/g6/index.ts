@@ -8,6 +8,7 @@ import { useProject } from '@renderer/util/project'
 import { PEdge, PNode, PProject } from '@renderer/model'
 import { plainToInstance } from 'class-transformer'
 import { NodeDragEnd } from '@renderer/g6/behavior/afterNodeDrag'
+import { date2Index } from '@renderer/util'
 
 const Graph = extend(BaseGraph, {
   nodes: {
@@ -40,7 +41,7 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
       width: container.value.clientWidth,
       height: container.value.clientHeight,
       modes: {
-        default: ['drag-canvas', 'drag-node', 'create-node', 'node-dragend', 'select-node']
+        default: ['drag-canvas', 'drag-node', 'create-node', 'node-dragend']
       },
       plugins: [
         'grid',
@@ -92,7 +93,15 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
   /**
    * 跳转到具体日期
    */
-  function goto() {}
+  function goto(date: Date) {
+    const x1 =
+      (date2Index(date) - project.origin) *
+      (project.nodeWidth + project.nodeMargin[1] + project.nodeMargin[3])
+    setTimeout(() => {
+      const { x: x2, y: y2 } = graph?.getCanvasByViewport({ x: 0, y: 0 })
+      graph?.translate({ dx: x2 - x1, dy: y2 })
+    })
+  }
 
-  return { graph: graph! }
+  return { graph: graph!, goto }
 }
