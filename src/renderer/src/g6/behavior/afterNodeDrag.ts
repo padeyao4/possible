@@ -13,8 +13,13 @@ export class NodeDragEnd extends Extensions.BaseBehavior {
     return {
       'node:pointerdown': this.onPointerDown,
       pointerup: this.onPointerUp,
-      pointermove: this.onPointerMove
+      pointermove: this.onPointerMove,
+      click: this.onClick
     }
+  }
+
+  onClick() {
+    this.clearState()
   }
 
   onPointerDown(e: IG6GraphEvent) {
