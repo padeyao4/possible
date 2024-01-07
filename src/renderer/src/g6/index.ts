@@ -29,10 +29,10 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
   const project = useProject() as PProject
 
   async function resize() {
-    const p1 = graph.getCanvasByViewport({ x: 0, y: 0 })
+    const { x: x1, y: y1 } = graph.getCanvasByViewport({ x: 0, y: 0 })
     graph.setSize([container.value.clientWidth, container.value.clientHeight])
-    const p2 = graph.getCanvasByViewport({ x: 0, y: 0 })
-    await graph.translate({ dx: p2.x - p1.x, dy: p2.y - p1.y })
+    const { x: x2, y: y2 } = graph.getCanvasByViewport({ x: 0, y: 0 })
+    await graph.translate({ dx: x2 - x1, dy: y2 - y1 })
   }
 
   onMounted(async () => {
