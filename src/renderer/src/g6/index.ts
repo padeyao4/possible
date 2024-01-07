@@ -94,12 +94,10 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
    * 跳转到具体日期
    */
   function goto(date: Date) {
-    const x1 =
-      (date2Index(date) - project.origin) *
-      (project.nodeWidth + project.nodeMargin[1] + project.nodeMargin[3])
-    setTimeout(() => {
-      const { x: x2, y: y2 } = graph?.getCanvasByViewport({ x: 0, y: 0 })
-      graph?.translate({ dx: x2 - x1, dy: y2 })
+    const x1 = (date2Index(date) - project.origin) * project.cellWidth
+    setTimeout(async () => {
+      const { x: x2, y: y2 } = graph.getCanvasByViewport({ x: 0, y: 0 })
+      await graph.translate({ dx: x2 - x1, dy: y2 })
     })
   }
 

@@ -56,6 +56,20 @@ export class PProject {
   @Expose()
   order = 9999999 // 用于项目排序
 
+  /**
+   * 基础卡片宽度,卡片占据的空间包括空白区域
+   */
+  get cellWidth() {
+    return this.nodeWidth + this.nodeMargin[1] + this.nodeMargin[3]
+  }
+
+  /**
+   * 基础卡片高度，卡片占据的空间包括空白区域
+   */
+  get cellHeight() {
+    return this.nodeHeight + this.nodeMargin[0] + this.nodeMargin[2]
+  }
+
   static transformNode(value: TransformFnParams) {
     const m = new Map<string, PNode>()
     for (const entry of Object.entries(value.value)) {
