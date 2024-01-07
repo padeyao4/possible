@@ -1,12 +1,15 @@
 import { onBeforeUnmount, onMounted, Ref } from 'vue'
 import {
+  BehaviorRegistry,
   EdgeUserModel,
   extend,
   Extensions,
   Graph as BaseGraph,
   GraphData,
+  ID,
   IGraph,
-  NodeDisplayModel
+  NodeDisplayModel,
+  NodeUserModel
 } from '@antv/g6'
 import GridPlugin from '@renderer/g6/plugin/gridPlugin'
 import TimerPlugin from '@renderer/g6/plugin/timerPlugin'
@@ -18,6 +21,8 @@ import { plainToInstance } from 'class-transformer'
 import { NodeDragEnd } from '@renderer/g6/behavior/afterNodeDrag'
 import { date2Index } from '@renderer/util'
 import { IG6GraphEvent } from '@antv/g6/src/types/event'
+import { ThemeRegistry } from '@antv/g6/lib/types/theme'
+import { findAllChildren, moveLeftNodes } from '@renderer/g6/utils/data'
 
 const Graph = extend(BaseGraph, {
   nodes: {
@@ -31,8 +36,20 @@ const Graph = extend(BaseGraph, {
   behaviors: {
     'create-node': CreateNode,
     'node-dragend': NodeDragEnd
+    // 'create-edge': Extensions.CreateEdge
   }
 })
+
+function menuAddNode(graphNode: NodeUserModel, graph: IGraph<BehaviorRegistry, ThemeRegistry>) {
+  const node = plainToInstance(PNode, graphNode.data).moveLeft()
+  const newNode = new PNode()
+  newNode.x = node.x
+  newNode.y = node.y
+  newNode.name = 'n' + Math.floor(Math.random() * 100)
+  graph.addData('node', newNode.toGraphNode())
+  const edge = new PEdge(node.id, newNode.id)
+  graph.addData('edge', edge.toGraphEdge() as EdgeUserModel)
+}
 
 /**
  * 卡片右键菜单
@@ -58,27 +75,23 @@ const contextMenu = {
     </ul>
   `
   },
-  handleMenuClick: (target: HTMLLIElement, itemId: string, graph: IGraph) => {
-    const { value } = Object.values(target.attributes).find((item) => item.name === 'code')!
+  handleMenuClick: (target: HTMLLIElement, itemId: ID, graph: IGraph) => {
+    const { value } = Object.values(target.attributes)?.find((item) => item.name === 'code') ?? {
+      value: 'default'
+    }
     const graphNode = graph.getNodeData(itemId)!
     switch (value) {
       case 'delete':
         graph.removeData('node', itemId)
         break
       case 'add': {
-        const node = plainToInstance(PNode, graphNode.data).moveLeft()
-        const newNode = new PNode()
-        newNode.x = node.x
-        newNode.y = node.y
-        newNode.name = 'new node'
-        graph.addData('node', newNode.toGraphNode())
-        const edge = new PEdge(node.id, newNode.id)
-        graph.addData('edge', edge.toGraphEdge() as EdgeUserModel)
+        menuAddNode(graphNode, graph)
         break
       }
       case 'insert': {
-        const node = plainToInstance(PNode, graphNode.data)
-        graph.updateNodePosition(node.moveLeft().toGraphNode())
+        const nodeIds = findAllChildren(graph, itemId)
+        moveLeftNodes(graph, [...nodeIds.values()])
+        // todo 插入节点
         break
       }
       default:
@@ -91,17 +104,25 @@ const dragNode = {
   type: 'drag-node',
   key: 'p-drag-node',
   shouldBegin: (event: IG6GraphEvent) => {
-    return event.button === 0
+    return event.button === 0 && !event.shiftKey
   }
 }
 
 const dragCanvas = {
   type: 'drag-canvas',
   key: 'p-drag-canvas',
-  shouldBegin: (event: IG6GraphEvent) => {
-    return event.button === 0
-  }
+  shouldBegin: (event: IG6GraphEvent) => event.button === 0
 }
+
+// const createEdge = {
+//   key: 'create-edge-behavior-key',
+//   type: 'create-edge',
+//   trigger: 'drag',
+//   secondaryKey: 'shift',
+//   createVirtualEventName: 'begincreate',
+//   cancelCreateEventName: 'cancelcreate',
+//   edgeConfig: { keyShape: { stroke: '#f00' } }
+// }
 
 export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLElement>) {
   let graph: IGraph<any, any>
@@ -148,6 +169,12 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
           }
         } as NodeDisplayModel
       }
+    })
+    graph.on('begincreate', () => {
+      graph.setCursor('crosshair')
+    })
+    graph.on('cancelcreate', () => {
+      graph.setCursor('default')
     })
     setTimeout(async () => {
       graph.read(project.toGraphData() as GraphData)
