@@ -1,5 +1,12 @@
 import { onBeforeUnmount, onMounted, Ref } from 'vue'
-import { extend, Graph as BaseGraph, GraphData, IGraph, NodeDisplayModel } from '@antv/g6'
+import {
+  extend,
+  Extensions,
+  Graph as BaseGraph,
+  GraphData,
+  IGraph,
+  NodeDisplayModel
+} from '@antv/g6'
 import GridPlugin from '@renderer/g6/plugin/gridPlugin'
 import TimerPlugin from '@renderer/g6/plugin/timerPlugin'
 import CreateNode from '@renderer/g6/behavior/createNode'
@@ -9,6 +16,7 @@ import { PEdge, PNode, PProject } from '@renderer/model'
 import { plainToInstance } from 'class-transformer'
 import { NodeDragEnd } from '@renderer/g6/behavior/afterNodeDrag'
 import { date2Index } from '@renderer/util'
+import { IG6GraphEvent } from '@antv/g6/src/types/event'
 
 const Graph = extend(BaseGraph, {
   nodes: {
@@ -16,13 +24,52 @@ const Graph = extend(BaseGraph, {
   },
   plugins: {
     grid: GridPlugin,
-    timer: TimerPlugin
+    timer: TimerPlugin,
+    menu: Extensions.Menu
   },
   behaviors: {
     'create-node': CreateNode,
     'node-dragend': NodeDragEnd
   }
 })
+
+/**
+ * 卡片右键菜单
+ */
+const contextMenu = {
+  type: 'menu',
+  key: 'node-context-menu',
+  trigger: 'contextmenu',
+  offsetX: -264, // 离左侧距离
+  offsetY: -72, // 离最顶部距离
+  /** async string menu */
+  getContent: () => {
+    return `
+    <ul class='g6-contextmenu-ul' style="">
+      <li class='g6-contextmenu-li' code='delete'> Delete </li>
+      <li class='g6-contextmenu-li' code='add' > Add </li>
+    </ul>
+  `
+  },
+  handleMenuClick: (target: HTMLLIElement, itemId: string, graph: IGraph) => {
+    const { value } = Object.values(target.attributes).find((item) => item.name === 'code')!
+    switch (value) {
+      case 'delete':
+        graph.removeData('node', itemId)
+        break
+      default:
+        return
+    }
+  }
+}
+
+const dragNode = {
+  type: 'drag-node',
+  key: 'p-drag-node',
+  shouldBegin: (event: IG6GraphEvent) => {
+    return event.button === 0
+  }
+}
 
 export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLElement>) {
   let graph: IGraph<any, any>
@@ -41,7 +88,7 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
       width: container.value.clientWidth,
       height: container.value.clientHeight,
       modes: {
-        default: ['drag-canvas', 'drag-node', 'create-node', 'node-dragend']
+        default: ['drag-canvas', dragNode, 'create-node', 'node-dragend']
       },
       plugins: [
         'grid',
@@ -50,7 +97,8 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
           type: 'timer',
           container: timerContainer.value,
           project
-        }
+        },
+        contextMenu
       ],
       node: (model) => {
         const { id, data } = model

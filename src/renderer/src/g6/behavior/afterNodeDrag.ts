@@ -23,8 +23,10 @@ export class NodeDragEnd extends Extensions.BaseBehavior {
   }
 
   onPointerDown(e: IG6GraphEvent) {
-    this.pointerDown = true
-    this.selectId = e.itemId as string
+    if (e.button === 0) {
+      this.pointerDown = true
+      this.selectId = e.itemId as string
+    }
   }
 
   onPointerMove() {

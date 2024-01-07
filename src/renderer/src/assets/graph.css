@@ -47,3 +47,7 @@
     background-size: 120px 120px;
     opacity: 0.1;
 }
+
+.g6-contextmenu-ul {
+    position: relative;
+}
