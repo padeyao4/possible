@@ -9,7 +9,6 @@ export default class CreateNode extends Extensions.BaseBehavior {
   }
 
   create(e: IG6GraphEvent) {
-    console.log('e', e)
     // 鼠标左键 e.button 0 为鼠标左键
     if (e.button !== 0) return
     const node = new PNode()

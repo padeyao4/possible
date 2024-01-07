@@ -17,6 +17,14 @@ export class PEdge {
   @Expose()
   target = '' // task id
 
+  data = {}
+
+  constructor(source: string, target: string) {
+    this.id = v4()
+    this.source = source
+    this.target = target
+  }
+
   toGraphEdge() {
     return instanceToPlain(this)
   }
@@ -144,6 +152,11 @@ export class PNode {
 
   static from(node: Partial<PNode>) {
     return Object.assign(new PNode(), node)
+  }
+
+  moveLeft() {
+    this.x = this.x + this.cellWidth
+    return this
   }
 
   x2dn() {

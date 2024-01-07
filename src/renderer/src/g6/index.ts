@@ -1,5 +1,6 @@
 import { onBeforeUnmount, onMounted, Ref } from 'vue'
 import {
+  EdgeUserModel,
   extend,
   Extensions,
   Graph as BaseGraph,
@@ -42,21 +43,44 @@ const contextMenu = {
   trigger: 'contextmenu',
   offsetX: -264, // 离左侧距离
   offsetY: -72, // 离最顶部距离
-  /** async string menu */
+  /** async string menu
+   *  add 添加
+   *  insert 在原地插入新节点,后续节点左移一个单位
+   *  append 在当前节点后追加一个节点，后续节点左移一个单位
+   * */
   getContent: () => {
     return `
     <ul class='g6-contextmenu-ul' style="">
-      <li class='g6-contextmenu-li' code='delete'> Delete </li>
       <li class='g6-contextmenu-li' code='add' > Add </li>
+      <li class='g6-contextmenu-li' code='insert' > Insert </li>
+      <li class='g6-contextmenu-li' code='append' > Append </li>
+      <li class='g6-contextmenu-li' code='delete'> Delete </li>
     </ul>
   `
   },
   handleMenuClick: (target: HTMLLIElement, itemId: string, graph: IGraph) => {
     const { value } = Object.values(target.attributes).find((item) => item.name === 'code')!
+    const graphNode = graph.getNodeData(itemId)!
     switch (value) {
       case 'delete':
         graph.removeData('node', itemId)
         break
+      case 'add': {
+        const node = plainToInstance(PNode, graphNode.data).moveLeft()
+        const newNode = new PNode()
+        newNode.x = node.x
+        newNode.y = node.y
+        newNode.name = 'new node'
+        graph.addData('node', newNode.toGraphNode())
+        const edge = new PEdge(node.id, newNode.id)
+        graph.addData('edge', edge.toGraphEdge() as EdgeUserModel)
+        break
+      }
+      case 'insert': {
+        const node = plainToInstance(PNode, graphNode.data)
+        graph.updateNodePosition(node.moveLeft().toGraphNode())
+        break
+      }
       default:
         return
     }
@@ -66,6 +90,14 @@ const contextMenu = {
 const dragNode = {
   type: 'drag-node',
   key: 'p-drag-node',
+  shouldBegin: (event: IG6GraphEvent) => {
+    return event.button === 0
+  }
+}
+
+const dragCanvas = {
+  type: 'drag-canvas',
+  key: 'p-drag-canvas',
   shouldBegin: (event: IG6GraphEvent) => {
     return event.button === 0
   }
@@ -88,13 +120,13 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
       width: container.value.clientWidth,
       height: container.value.clientHeight,
       modes: {
-        default: ['drag-canvas', dragNode, 'create-node', 'node-dragend']
+        default: [dragCanvas, dragNode, 'create-node', 'node-dragend']
       },
       plugins: [
         'grid',
         {
-          key: 'timer',
           type: 'timer',
+          key: 'p-timer',
           container: timerContainer.value,
           project
         },
