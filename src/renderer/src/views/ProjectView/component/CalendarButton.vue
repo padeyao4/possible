@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { DAY_OF_MS } from '@renderer/common/constant'
 
 const props = defineProps<{
-  callback: Function
+  callback?: (n: number | Date) => void
 }>()
 
 const date = ref()

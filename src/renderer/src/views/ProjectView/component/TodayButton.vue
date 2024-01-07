@@ -5,7 +5,7 @@ import { useStore } from '@renderer/store'
 import { index2Date } from '@renderer/util/time'
 
 const props = defineProps<{
-  callback: Function
+  callback?: (n: Date | number) => void
 }>()
 
 const store = useStore()
