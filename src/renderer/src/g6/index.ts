@@ -18,11 +18,11 @@ import { CardNode } from '@renderer/g6/node/customNode'
 import { useProject } from '@renderer/util/project'
 import { PEdge, PNode, PProject } from '@renderer/model'
 import { plainToInstance } from 'class-transformer'
-import { NodeDragEnd } from '@renderer/g6/behavior/afterNodeDrag'
+import { NodeDragEnd } from '@renderer/g6/behavior/dragNode'
 import { date2Index } from '@renderer/util'
 import { IG6GraphEvent } from '@antv/g6/src/types/event'
 import { ThemeRegistry } from '@antv/g6/lib/types/theme'
-import { findAllChildren, moveLeftNodes } from '@renderer/g6/utils/data'
+import { getRelationNodes, nodesMoveLeft } from '@renderer/g6/utils/data'
 
 const Graph = extend(BaseGraph, {
   nodes: {
@@ -36,7 +36,6 @@ const Graph = extend(BaseGraph, {
   behaviors: {
     'create-node': CreateNode,
     'node-dragend': NodeDragEnd
-    // 'create-edge': Extensions.CreateEdge
   }
 })
 
@@ -89,8 +88,8 @@ const contextMenu = {
         break
       }
       case 'insert': {
-        const nodeIds = findAllChildren(graph, itemId)
-        moveLeftNodes(graph, [...nodeIds.values()])
+        const nodeIds = getRelationNodes(graph, itemId, 'children')
+        nodesMoveLeft(graph, [...nodeIds.values()])
         // todo 插入节点
         break
       }
@@ -113,16 +112,6 @@ const dragCanvas = {
   key: 'p-drag-canvas',
   shouldBegin: (event: IG6GraphEvent) => event.button === 0
 }
-
-// const createEdge = {
-//   key: 'create-edge-behavior-key',
-//   type: 'create-edge',
-//   trigger: 'drag',
-//   secondaryKey: 'shift',
-//   createVirtualEventName: 'begincreate',
-//   cancelCreateEventName: 'cancelcreate',
-//   edgeConfig: { keyShape: { stroke: '#f00' } }
-// }
 
 export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLElement>) {
   let graph: IGraph<any, any>

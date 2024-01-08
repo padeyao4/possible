@@ -6,10 +6,22 @@ import { PNode } from '@renderer/model'
  * 找到所有子节点,包含当前节点
  * @param graph
  * @param nodeId
+ * @param relation
  */
-export function findAllChildren(graph: IGraph, nodeId: ID) {
+export function getRelationNodes(
+  graph: IGraph,
+  nodeId: ID,
+  relation: 'all' | 'parents' | 'children' = 'all'
+) {
+  const mapper = {
+    all: 'both',
+    parents: 'in',
+    children: 'out'
+  }
   const edgesVisited = new Set<ID>()
-  const queueEdges: ID[] = graph.getRelatedEdgesData(nodeId, 'out').map((edge) => edge.id)
+  const queueEdges: ID[] = graph
+    .getRelatedEdgesData(nodeId, mapper[relation] as never)
+    .map((edge) => edge.id)
   const ans = new Set<ID>([nodeId])
   while (queueEdges.length !== 0) {
     const edgeId = queueEdges.shift()
@@ -18,7 +30,10 @@ export function findAllChildren(graph: IGraph, nodeId: ID) {
       const edge = graph.getEdgeData(edgeId)
       if (edge?.target) {
         ans.add(edge.target)
-        queueEdges.push(...graph.getRelatedEdgesData(edge.target, 'out').map((e) => e.id))
+        const ids = graph
+          .getRelatedEdgesData(edge.target, mapper[relation] as never)
+          .map((e) => e.id)
+        queueEdges.push(...ids)
       }
     }
   }
@@ -30,7 +45,7 @@ export function findAllChildren(graph: IGraph, nodeId: ID) {
  * @param graph
  * @param nodeIds
  */
-export function moveLeftNodes(graph: IGraph, nodeIds: ID[]) {
+export function nodesMoveLeft(graph: IGraph, nodeIds: ID[]) {
   const updatedCache: Record<string, any>[] = []
   nodeIds.forEach((id) => {
     const plain = graph.getNodeData(id)
@@ -41,4 +56,15 @@ export function moveLeftNodes(graph: IGraph, nodeIds: ID[]) {
     }
   })
   graph.updateNodePosition(updatedCache)
+}
+
+/**
+ * 根据x轴坐标获取节点
+ * @param graph
+ * @param n
+ */
+export function getNodesByX(graph: IGraph, n: number) {
+  return graph
+    .getAllNodesData()
+    .filter(({ data: { x } }) => x !== undefined && Math.abs(x - n) <= 0.1)
 }
