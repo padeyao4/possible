@@ -18,7 +18,7 @@ export class NodeDragEnd extends Extensions.BaseBehavior {
   private selectId: ID
 
   constructor(options: any) {
-    const finalOptions = Object.assign({}, options, DEFAULT_CONFIG)
+    const finalOptions = Object.assign({}, DEFAULT_CONFIG, options)
     super(finalOptions)
   }
 
