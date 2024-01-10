@@ -21,6 +21,7 @@ import { NodeDragEnd } from '@renderer/g6/behavior/dragNode'
 import { date2Index } from '@renderer/util'
 import { IG6GraphEvent } from '@antv/g6/src/types/event'
 import { getRelationNodes, nodesMoveLeft } from '@renderer/g6/utils/data'
+import { EditorPlugin } from '@renderer/g6/plugin/editorPlugin'
 
 const Graph = extend(BaseGraph, {
   nodes: {
@@ -29,7 +30,8 @@ const Graph = extend(BaseGraph, {
   plugins: {
     grid: GridPlugin,
     timer: TimerPlugin,
-    menu: Extensions.Menu
+    menu: Extensions.Menu,
+    editor: EditorPlugin
   },
   behaviors: {
     'create-node': CreateNode,
@@ -97,26 +99,6 @@ const contextMenu = {
   }
 }
 
-const dragNode = {
-  type: 'drag-node',
-  key: 'drag-node',
-  shouldBegin: (event: IG6GraphEvent) => {
-    return event.button === 0 && !event.shiftKey
-  }
-}
-
-const dragCanvas = {
-  type: 'drag-canvas',
-  key: 'drag-canvas',
-  shouldBegin: (event: IG6GraphEvent) => event.button === 0
-}
-
-const dragNodeEnd = {
-  type: 'node-dragend',
-  key: 'node-dragend',
-  shouldBegin: (event: IG6GraphEvent) => !event.shiftKey && event.button === 0
-}
-
 export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLElement>) {
   let graph: IGraph<any, any>
   const project = useProject() as PProject
@@ -129,6 +111,30 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
   }
 
   onMounted(async () => {
+    const dragNode = {
+      type: 'drag-node',
+      key: 'drag-node',
+      shouldBegin: (event: IG6GraphEvent) => event.button === 0
+    }
+
+    const dragCanvas = {
+      type: 'drag-canvas',
+      key: 'drag-canvas',
+      shouldBegin: (event: IG6GraphEvent) => event.button === 0
+    }
+
+    const dragNodeEnd = {
+      type: 'node-dragend',
+      key: 'node-dragend',
+      shouldBegin: (event: IG6GraphEvent) => event.button === 0
+    }
+
+    const editor = {
+      type: 'editor',
+      key: 'editor',
+      container: container.value
+    }
+
     graph = new Graph({
       container: container.value,
       width: container.value.clientWidth,
@@ -144,7 +150,8 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
           container: timerContainer.value,
           project
         },
-        contextMenu
+        contextMenu,
+        editor
       ],
       node: (model) => {
         const { id, data } = model
