@@ -1,6 +1,5 @@
 import { onBeforeUnmount, onMounted, Ref } from 'vue'
 import {
-  BehaviorRegistry,
   EdgeUserModel,
   extend,
   Extensions,
@@ -21,7 +20,6 @@ import { plainToInstance } from 'class-transformer'
 import { NodeDragEnd } from '@renderer/g6/behavior/dragNode'
 import { date2Index } from '@renderer/util'
 import { IG6GraphEvent } from '@antv/g6/src/types/event'
-import { ThemeRegistry } from '@antv/g6/lib/types/theme'
 import { getRelationNodes, nodesMoveLeft } from '@renderer/g6/utils/data'
 
 const Graph = extend(BaseGraph, {
@@ -39,7 +37,7 @@ const Graph = extend(BaseGraph, {
   }
 })
 
-function menuAddNode(graphNode: NodeUserModel, graph: IGraph<BehaviorRegistry, ThemeRegistry>) {
+function menuAddNode(graphNode: NodeUserModel, graph: IGraph) {
   const node = plainToInstance(PNode, graphNode.data).moveLeft()
   const newNode = new PNode()
   newNode.x = node.x
@@ -101,7 +99,7 @@ const contextMenu = {
 
 const dragNode = {
   type: 'drag-node',
-  key: 'p-drag-node',
+  key: 'drag-node',
   shouldBegin: (event: IG6GraphEvent) => {
     return event.button === 0 && !event.shiftKey
   }
@@ -109,8 +107,14 @@ const dragNode = {
 
 const dragCanvas = {
   type: 'drag-canvas',
-  key: 'p-drag-canvas',
+  key: 'drag-canvas',
   shouldBegin: (event: IG6GraphEvent) => event.button === 0
+}
+
+const dragNodeEnd = {
+  type: 'node-dragend',
+  key: 'node-dragend',
+  shouldBegin: (event: IG6GraphEvent) => !event.shiftKey && event.button === 0
 }
 
 export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLElement>) {
@@ -130,7 +134,7 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
       width: container.value.clientWidth,
       height: container.value.clientHeight,
       modes: {
-        default: [dragCanvas, dragNode, 'create-node', 'node-dragend']
+        default: [dragCanvas, dragNode, 'create-node', dragNodeEnd]
       },
       plugins: [
         'grid',
@@ -158,12 +162,6 @@ export function useGraph(container: Ref<HTMLElement>, timerContainer: Ref<HTMLEl
           }
         } as NodeDisplayModel
       }
-    })
-    graph.on('begincreate', () => {
-      graph.setCursor('crosshair')
-    })
-    graph.on('cancelcreate', () => {
-      graph.setCursor('default')
     })
     setTimeout(async () => {
       graph.read(project.toGraphData() as GraphData)

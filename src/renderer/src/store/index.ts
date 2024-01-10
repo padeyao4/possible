@@ -1,10 +1,10 @@
-import {defineStore} from 'pinia'
-import {PProject, Store} from "@renderer/model";
-import {dataUpdate} from "@renderer/util/data";
+import { defineStore } from 'pinia'
+import { PProject, Store } from '@renderer/model'
+import { dataUpdate } from '@renderer/util/data'
 
 export const useStore = defineStore('project', {
   state() {
-    return {...new Store()}
+    return { ...new Store() }
   },
   getters: {
     list: (state) => {
@@ -22,7 +22,7 @@ export const useStore = defineStore('project', {
     /**
      * 合并数据，会覆盖已存在数据
      */
-    merge({projects, experiment, dn, autoUpdateDate}: Store) {
+    merge({ projects, experiment, dn, autoUpdateDate }: Store) {
       this.projects = projects
       this.experiment = experiment
       this.autoUpdateDate = autoUpdateDate
@@ -32,7 +32,7 @@ export const useStore = defineStore('project', {
      * 根据时间排更新项目和任务状态
      */
     update() {
-      [...this.projects.values()].forEach(p => {
+      ;[...this.projects.values()].forEach((p) => {
         dataUpdate(this.dn - p.origin, p.nodes, p.edges)
       })
     }

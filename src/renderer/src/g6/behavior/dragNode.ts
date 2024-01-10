@@ -1,6 +1,14 @@
-import { Extensions, IG6GraphEvent, ID } from '@antv/g6'
+import { Extensions, ID, IG6GraphEvent } from '@antv/g6'
 import { plainToInstance } from 'class-transformer'
 import { PNode } from '@renderer/model'
+
+interface NodeDragEndOptions {
+  shouldBegin?: (event: IG6GraphEvent) => boolean
+}
+
+const DEFAULT_CONFIG: NodeDragEndOptions = {
+  shouldBegin: () => true
+}
 
 export class NodeDragEnd extends Extensions.BaseBehavior {
   private pointerDown = false
@@ -8,6 +16,11 @@ export class NodeDragEnd extends Extensions.BaseBehavior {
   private dragging = false
 
   private selectId: ID
+
+  constructor(options: any) {
+    const finalOptions = Object.assign({}, options, DEFAULT_CONFIG)
+    super(finalOptions)
+  }
 
   getEvents(): { [p: string]: (event: IG6GraphEvent) => void } {
     return {
@@ -23,7 +36,7 @@ export class NodeDragEnd extends Extensions.BaseBehavior {
   }
 
   onPointerDown(e: IG6GraphEvent) {
-    if (e.button === 0 && !e.shiftKey) {
+    if (this.options.shouldBegin(e)) {
       this.pointerDown = true
       this.selectId = e.itemId
     }
