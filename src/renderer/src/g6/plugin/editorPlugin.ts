@@ -1,7 +1,7 @@
 import { Extensions, IG6GraphEvent, IGraph } from '@antv/g6'
 import { createDOM } from '@antv/g6/lib/util/dom'
 import { createApp, ref } from 'vue'
-import GraphEditor from '@renderer/component/GraphEditor.vue'
+import GraphEditor from '@renderer/g6/component/GraphEditor.vue'
 import ElementPlus from 'element-plus'
 import { PNode } from '@renderer/model'
 
