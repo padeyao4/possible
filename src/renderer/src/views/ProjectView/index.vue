@@ -69,9 +69,6 @@ const { graph, goto } = useGraph(container as never, timeBar as any)
         />
       </div>
     </div>
-    <!--    <teleport to="body">-->
-    <!--      <node-editor :node-id="active" :reset-node-id="clearActive" :graph="graph" />-->
-    <!--    </teleport>-->
   </div>
 </template>
 
