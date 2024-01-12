@@ -68,3 +68,20 @@ export function getNodesByX(graph: IGraph, n: number) {
     .getAllNodesData()
     .filter(({ data: { x } }) => x !== undefined && Math.abs(x - n) <= 0.1)
 }
+
+/**
+ * 判断
+ * @param graph
+ * @param id
+ */
+export function collision(graph: IGraph, id: ID) {
+  const nodeModel = graph.getNodeData(id)
+  if (nodeModel) {
+    const nodes = getNodesByX(graph, nodeModel.data.x!)
+    nodes.forEach((node) => {
+      console.log(node)
+    })
+  } else {
+    return false
+  }
+}

@@ -5,7 +5,6 @@ import { Aiming, ArrowLeft, ArrowRight, Back, Next } from '@icon-park/vue-next'
 import { useGraph } from '@renderer/g6'
 import CalendarButton from '@renderer/views/ProjectView/component/CalendarButton.vue'
 import TodayButton from '@renderer/views/ProjectView/component/TodayButton.vue'
-import CanvasMoveButtons from '@renderer/views/ProjectView/component/CanvasMoveButtons.vue'
 import ProjectHeader from '@renderer/views/ProjectView/component/ProjectHeader.vue'
 import { useStore } from '@renderer/store'
 import { originIndex } from '@renderer/util/time'
@@ -13,7 +12,7 @@ import { originIndex } from '@renderer/util/time'
 const store = useStore()
 const container = ref<HTMLElement>()
 const timeBar = ref<HTMLElement>()
-const { graph, goto } = useGraph(container as never, timeBar as any)
+const { goto } = useGraph(container as never, timeBar as any)
 </script>
 
 <template>
@@ -28,7 +27,7 @@ const { graph, goto } = useGraph(container as never, timeBar as any)
       <div class="icon-group">
         <today-button :callback="goto" />
         <calendar-button :callback="goto" />
-        <canvas-move-buttons :graph="graph" />
+        <!--        <canvas-move-buttons :graph="graph" />-->
         <back v-show="store.experiment" theme="outline" size="20" fill="#333" :stroke-width="2" />
         <next v-show="store.experiment" theme="outline" size="20" fill="#333" :stroke-width="2" />
         <arrow-left
