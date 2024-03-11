@@ -65,7 +65,7 @@ export class NodeDragend extends Extensions.BaseBehavior {
       id,
       data: { ...data, x: normalX(x), y: normalY(y) }
     }
-    setTimeout(async () => {
+    setTimeout(() => {
       // todo 判断是否有重合卡片
       this.graph.updateNodePosition(model, true, true)
     })

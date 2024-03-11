@@ -1,55 +1,15 @@
 <script setup>
-import { onMounted, ref, shallowRef } from 'vue'
-import { extend, Graph } from '@antv/g6'
-import GridPlugin from '@/g6/plugin/grid-plugin'
-import CreateNode from '@/g6/behaviors/create-node'
-import { CardNode } from '@/g6/node/custom-node'
-import { NodeDragend } from '@/g6/behaviors/dragend-node.js'
+import { provide, ref } from 'vue'
+import useGraph from '@/g6/index.js'
+import Editor from '@/components/Editor.vue'
 
 const container = ref()
 
-const graph = shallowRef()
+const { graph, current, selected } = useGraph(container)
 
-onMounted(() => {
-  graph.value = new (extend(Graph, {
-    nodes: { CardNode }, plugins: { GridPlugin },
-    behaviors: { CreateNode, NodeDragend }
-  }))({
-    container: container.value,
-    width: container.value.clientWidth,
-    height: container.value.clientHeight,
-    plugins: ['GridPlugin'],
-    modes: {
-      default: [{
-        type: 'drag-canvas',
-        key: 'drag-canvas',
-        shouldBegin: (event) => event.button === 0
-      }, 'CreateNode', {
-        type: 'drag-node',
-        key: 'drag-node',
-        shouldBegin: (event) => event.button === 0
-      }, 'NodeDragend']
-    },
-    node: (model) => {
-      const { id, data } = model
-      return {
-        id,
-        data: {
-          ...data,
-          type: 'CardNode',
-          keyShape: {
-            radius: 6,
-            width: 80,
-            height: 40
-          },
-          otherShapes: {}
-        }
-      }
-    }
-  })
-  // 先读取数据，否则graph点击有bug
-  graph.value.read({})
-})
+provide('graph', graph)
+provide('current', current)
+provide('selected', selected)
 
 function handleClick() {
   setTimeout(() => {
@@ -64,6 +24,7 @@ function handleClick() {
   <main>
     <button @click="handleClick">reset</button>
     <div id="container" ref="container"></div>
+    <editor />
   </main>
 </template>
 
