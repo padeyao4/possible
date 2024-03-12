@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import router from '@/router'
+import { useStore } from '@/stores/store'
+import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
-function handleLink() {
-  router.push('/project')
-}
+const route = useRoute()
+const { projects } = useStore()
+
+onMounted(() => {
+  router.push('/today')
+})
 
 </script>
 
@@ -11,13 +17,15 @@ function handleLink() {
   <main>
     <aside>
       <header>
-        <router-link to="/">one day</router-link>
+        <div @click="router.push('/')">one day</div>
+        <div @click="router.push('/completed')">completed project</div>
       </header>
       <hr />
-      <div @click="handleLink">hello-world</div>
+      <div v-for="project in projects" @click="router.push(`/project/${project.id}`)">{{ project.name }}
+      </div>
     </aside>
     <section>
-      <router-view></router-view>
+      <router-view :key="route.fullPath"></router-view>
     </section>
   </main>
 </template>

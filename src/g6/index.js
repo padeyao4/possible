@@ -1,14 +1,14 @@
-import { onMounted, ref, shallowRef } from 'vue'
+import { onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
 import { extend, Graph } from '@antv/g6'
 import { CardNode } from '@/g6/node/custom-node.js'
 import CreateNode from '@/g6/behaviors/create-node.js'
 import GridPlugin from '@/g6/plugin/grid-plugin.js'
-import { toX, toY } from '@/g6/utils/position-util.js'
 import CreateEdge from '@/g6/behaviors/create-edge.js'
 import { DragNode } from '@/g6/behaviors/drag-node.js'
-
+import { useStore } from '@/stores/store'
 
 export default function useGraph(container) {
+  const { currentProject } = useStore()
   const graph = shallowRef()
   const current = ref({ id: '', data: { name: '' } })
   const selected = ref(false)
@@ -31,7 +31,7 @@ export default function useGraph(container) {
         const { id, data } = model
         return {
           id,
-           data: {
+          data: {
             type: 'CardNode',
             anchorPoints: [[0, 0.5], [1, 0.5]],
             keyShape: {
@@ -40,34 +40,25 @@ export default function useGraph(container) {
             otherShapes: {},
             anchorShapes: {},
             labelShape: {},
-             ...data,
+            ...data
           }
         }
+      },
+      data: {
+        nodes: currentProject.nodes,
+        edges: currentProject.edges
       }
     })
-    // 先读取数据，否则graph点击有bug
-    graph.value.read({
-      nodes: [{
-        id: '1',
-        data: {
-          name: '1',
-          x: toX(1),
-          y: toY(2)
-        }
-      }, {
-        id: '2', data: {
-          name: '2', x: toX(3), y: toY(4)
-        }
-      }], edges: [{
-        id: 'e-1', source: '1', target: '2'
-      }]
-    })
-
 
     graph.value.on('node:dblclick', (e) => {
       current.value = graph.value.getNodeData(e.itemId)
       selected.value = true
     })
+  })
+
+  onBeforeUnmount(() => {
+    currentProject.nodes = graph.value.getAllNodesData()
+    currentProject.edges = graph.value.getAllEdgesData()
   })
 
   return { graph, current, selected }

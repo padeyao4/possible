@@ -3,7 +3,12 @@ import { provide, ref } from 'vue'
 import useGraph from '@/g6/index.js'
 import Editor from '@/components/Editor.vue'
 import TimerHeader from '@/components/TimerHeader.vue'
+import ResetButton from '@/components/ResetButton.vue'
+import { useStore } from '@/stores/store.ts'
 
+const store = useStore()
+
+const { currentProject } = store
 const container = ref()
 
 const { graph, current, selected } = useGraph(container)
@@ -13,21 +18,17 @@ provide('current', current)
 provide('selected', selected)
 provide('container', container)
 
-function handleClick() {
-  setTimeout(() => {
-    const { x, y } = graph.value.getCanvasByViewport({ x: 0, y: 0 })
-    graph.value.translate({ dx: x, dy: y })
-  })
-}
-
 </script>
 
 <template>
   <main>
-    <button @click="handleClick">reset</button>
-    <div id="container" ref="container"></div>
+    <header><h1>{{ currentProject.name}}</h1></header>
     <timer-header />
+    <div id="container" ref="container"></div>
     <editor />
+    <footer>
+      <reset-button />
+    </footer>
   </main>
 </template>
 
