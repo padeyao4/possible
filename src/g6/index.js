@@ -30,10 +30,17 @@ export default function useGraph(container) {
       node: (model) => {
         const { id, data } = model
         return {
-          id, data: {
-            ...data, type: 'CardNode', anchorPoints: [[0, 0.5], [1, 0.5]], keyShape: {
+          id,
+           data: {
+            type: 'CardNode',
+            anchorPoints: [[0, 0.5], [1, 0.5]],
+            keyShape: {
               radius: 6, width: 80, height: 40
-            }, otherShapes: {}, anchorShapes: {}
+            },
+            otherShapes: {},
+            anchorShapes: {},
+            labelShape: {},
+             ...data,
           }
         }
       }
@@ -41,8 +48,11 @@ export default function useGraph(container) {
     // 先读取数据，否则graph点击有bug
     graph.value.read({
       nodes: [{
-        id: '1', data: {
-          name: '1', x: toX(1), y: toY(2)
+        id: '1',
+        data: {
+          name: '1',
+          x: toX(1),
+          y: toY(2)
         }
       }, {
         id: '2', data: {
@@ -52,6 +62,7 @@ export default function useGraph(container) {
         id: 'e-1', source: '1', target: '2'
       }]
     })
+
 
     graph.value.on('node:dblclick', (e) => {
       current.value = graph.value.getNodeData(e.itemId)

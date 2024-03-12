@@ -20,10 +20,12 @@
     "@antv/g6": "5.0.0-beta.28",
     "element-plus": "^2.6.1",
     "pinia": "^2.1.7",
+    "uuid": "^9.0.1",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
+    "@types/uuid": "^9.0.8",
     "@rushstack/eslint-patch": "^1.7.2",
     "@tsconfig/node20": "^20.1.2",
     "@types/jsdom": "^21.1.6",
