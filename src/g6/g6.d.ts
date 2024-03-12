@@ -1,1 +1,1 @@
-declare module '@/g6/plugin/*'
+declare module '@/g6/**/*'
