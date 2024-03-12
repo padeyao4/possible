@@ -4,6 +4,7 @@ import { CardNode } from '@/g6/node/custom-node.js'
 import CreateNode from '@/g6/behaviors/create-node.js'
 import { NodeDragend } from '@/g6/behaviors/dragend-node.js'
 import GridPlugin from '@/g6/plugin/grid-plugin.js'
+import { normalX, toX, toY } from '@/g6/utils/position-util.js'
 
 export default function useGraph(container) {
   const graph = shallowRef()
@@ -30,15 +31,39 @@ export default function useGraph(container) {
         const { id, data } = model
         return {
           id, data: {
-            ...data, type: 'CardNode', keyShape: {
+            ...data, type: 'CardNode', anchorPoints: [[0, 0.5], [1, 0.5]], keyShape: {
               radius: 6, width: 80, height: 40
-            }, otherShapes: {}
+            }, otherShapes: {}, anchorShapes: {}
           }
         }
       }
     })
     // 先读取数据，否则graph点击有bug
-    graph.value.read({})
+    graph.value.read({
+      nodes: [{
+        id: '1',
+        data: {
+          name: '1',
+          x: toX(1),
+          y: toY(2)
+        }
+      },
+        {
+          id: '2',
+          data: {
+            name: '2',
+            x: toX(3),
+            y: toY(4)
+          }
+        }],
+      edges: [
+        {
+          id: 'e-1',
+          source: '1',
+          target: '2'
+        }
+      ]
+    })
 
     graph.value.on('node:dblclick', (e) => {
       current.value = graph.value.getNodeData(e.itemId)

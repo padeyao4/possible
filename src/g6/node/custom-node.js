@@ -3,6 +3,12 @@ import { Extensions } from '@antv/g6'
 export class CardNode extends Extensions.RectNode {
   drawOtherShapes(model, shapeMap, diffData, diffState) {
     const { data: { name } } = model
+    const cfg = {
+      model,
+      shapeMap,
+      diffData,
+      diffState
+    }
     return {
       ...{
         info: this.upsertShape(
@@ -21,12 +27,34 @@ export class CardNode extends Extensions.RectNode {
             wordWrapWidth: 32,
             maxLines: 2
           },
-          {
-            model,
-            shapeMap,
-            diffData,
-            diffState
-          }
+          cfg
+        )
+      },
+      ...shapeMap
+    }
+  }
+
+  drawAnchorShapes(model, shapeMap, diffData, diffState) {
+    const { data: { name } } = model
+    const cfg = {
+      model,
+      shapeMap,
+      diffData,
+      diffState
+    }
+    return {
+      ...{
+        'left-anchors': this.upsertShape(
+          'circle',
+          'left-dot',
+          { cx: -40, cy: 0, r: 4, fill: '#000' },
+          cfg
+        ),
+        'right-anchors': this.upsertShape(
+          'circle',
+          'right-dot',
+          { cx: 40, cy: 0, r: 4, fill: '#000', cursor: 'pointer' },
+          cfg
         )
       },
       ...shapeMap

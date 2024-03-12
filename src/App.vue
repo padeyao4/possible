@@ -25,7 +25,6 @@ function handleLink() {
 <style scoped>
 main {
   display: flex;
-
 }
 
 aside {
