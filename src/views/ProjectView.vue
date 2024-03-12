@@ -2,6 +2,7 @@
 import { provide, ref } from 'vue'
 import useGraph from '@/g6/index.js'
 import Editor from '@/components/Editor.vue'
+import TimerHeader from '@/components/TimerHeader.vue'
 
 const container = ref()
 
@@ -10,6 +11,7 @@ const { graph, current, selected } = useGraph(container)
 provide('graph', graph)
 provide('current', current)
 provide('selected', selected)
+provide('container', container)
 
 function handleClick() {
   setTimeout(() => {
@@ -24,6 +26,7 @@ function handleClick() {
   <main>
     <button @click="handleClick">reset</button>
     <div id="container" ref="container"></div>
+    <timer-header />
     <editor />
   </main>
 </template>
