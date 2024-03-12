@@ -2,7 +2,8 @@ import { Extensions } from '@antv/g6'
 import { normalX, normalY } from '@/g6/utils/position-util.js'
 
 const DEFAULT_CONFIG = {
-  shouldBegin: () => true
+  // 鼠标左键生效
+  shouldBegin: (event) => event.button === 0
 }
 
 export class NodeDragend extends Extensions.BaseBehavior {

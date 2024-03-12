@@ -4,7 +4,9 @@ import { CardNode } from '@/g6/node/custom-node.js'
 import CreateNode from '@/g6/behaviors/create-node.js'
 import { NodeDragend } from '@/g6/behaviors/dragend-node.js'
 import GridPlugin from '@/g6/plugin/grid-plugin.js'
-import { normalX, toX, toY } from '@/g6/utils/position-util.js'
+import { toX, toY } from '@/g6/utils/position-util.js'
+import CreateEdge from '@/g6/behaviors/create-edge.js'
+
 
 export default function useGraph(container) {
   const graph = shallowRef()
@@ -13,7 +15,7 @@ export default function useGraph(container) {
 
   onMounted(() => {
     const ExtGraph = extend(Graph, {
-      nodes: { CardNode }, plugins: { GridPlugin }, behaviors: { CreateNode, NodeDragend }
+      nodes: { CardNode }, plugins: { GridPlugin }, behaviors: { CreateNode, NodeDragend, CreateEdge }
     })
     graph.value = new ExtGraph({
       container: container.value,
@@ -25,7 +27,7 @@ export default function useGraph(container) {
           type: 'drag-canvas', key: 'drag-canvas', shouldBegin: (event) => event.button === 0
         }, 'CreateNode', {
           type: 'drag-node', key: 'drag-node', shouldBegin: (event) => event.button === 0
-        }, 'NodeDragend']
+        }, 'NodeDragend', 'CreateEdge']
       },
       node: (model) => {
         const { id, data } = model
