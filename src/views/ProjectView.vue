@@ -1,7 +1,7 @@
 <script setup>
 import { provide, ref } from 'vue'
 import useGraph from '@/g6/index.js'
-import Editor from '@/components/Editor.vue'
+import Editor from '@/components/GraphEditor.vue'
 import TimerHeader from '@/components/TimerHeader.vue'
 import ResetButton from '@/components/ResetButton.vue'
 import { useStore } from '@/stores/store.ts'

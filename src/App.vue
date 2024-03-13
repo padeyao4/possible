@@ -5,9 +5,10 @@ import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const { projects } = useStore()
+const { projects, isActive, setSelected } = useStore()
 
 onMounted(() => {
+  setSelected('today')
   router.push('/today')
 })
 
@@ -19,13 +20,19 @@ onMounted(() => {
       <aside>
         <header>
           <ul>
-            <li class="selected-item" @click="router.push('/')">today</li>
-            <li class="selected-item" @click="router.push('/completed')">completed project</li>
+            <li class="selected-item" :class="{selected: isActive('today')}"
+                @click="setSelected('today');router.push('/')">today
+            </li>
+            <li class="selected-item" :class="{selected: isActive('completed')}"
+                @click="setSelected('completed');router.push('/completed')">
+              completed project
+            </li>
           </ul>
         </header>
         <ul id="body">
           <li class="selected-item" v-for="project in projects" :key="project.id"
-              @click="router.push(`/project/${project.id}`)">
+              :class="{selected: isActive(project.id)}"
+              @click="setSelected(project.id);router.push(`/project/${project.id}`)">
             {{ project.name }}
           </li>
         </ul>
@@ -87,6 +94,11 @@ footer {
     border-radius: 4px;
     background: var(--active);
   }
+}
+
+.selected {
+  border-radius: 4px;
+  background: var(--active);
 }
 
 section {

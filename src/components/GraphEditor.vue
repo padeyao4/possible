@@ -29,7 +29,7 @@ const task = new Proxy(current, {
       modal-class="modal-class"
       @close="selected=false"
     >
-      <el-form :model="task">
+      <el-form :model="task" @submit.prevent>
         <el-form-item label="名称">
           <el-input v-model="task.name" />
         </el-form-item>

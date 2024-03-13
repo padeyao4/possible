@@ -49,5 +49,9 @@ export const useStore = defineStore('store', () => {
     selected.value = value
   }
 
-  return { projects, currentProject }
+  const isActive = (value: string) => {
+    return selected.value === value
+  }
+
+  return { projects, currentProject, isActive, setSelected }
 })
