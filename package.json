@@ -22,7 +22,7 @@
     "pinia": "^2.1.7",
     "uuid": "^9.0.1",
     "vue": "^3.4.21",
-    "vue-draggable-plus": "^0.3.5",
+    "vuedraggable": "^4.1.0",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {

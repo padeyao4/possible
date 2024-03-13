@@ -3,7 +3,8 @@ import router from '@/router'
 import { useStore } from '@/stores/store'
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { VueDraggable } from 'vue-draggable-plus'
+import { v4 } from 'uuid'
+import Draggable from 'vuedraggable/src/vuedraggable'
 
 const route = useRoute()
 const store = useStore()
@@ -13,12 +14,33 @@ const projects = computed({
   get: () => {
     return store.sortedProjects
   },
-  set: () => {}
+  set: () => { // 空函数用于消除告警
+  }
 })
 
 function onUpdate() {
   (store.sortedProjects as any[]).forEach((value, index) => {
     value.sortIndex = index
+  })
+}
+
+function createProject() {
+  const id = store.addProject({
+    id: v4(),
+    name: 'untitled',
+    nodes: [],
+    edges: [],
+    completed: false,
+    sortIndex: -1,
+    editable: true
+  })
+  setSelected(id)
+  router.push(`/project/${id}`)
+}
+
+function handleInputRef(e: any) {
+  setTimeout(() => {
+    e?.focus()
   })
 }
 
@@ -44,24 +66,30 @@ onMounted(() => {
             </li>
           </ul>
         </header>
-        <div id="body" @pointercancel.prevent>
-          <vue-draggable v-model="projects"
-                         chosenClass="chosen-class"
-                         dragClass="drag-class"
-                         ghostClass="ghost-class"
-                         @update="onUpdate"
-                         @pointercancel.prevent>
-            <div v-for="project in projects"
-                 @pointercancel.prevent
-                 class="selected-item"
-                 @click="setSelected(project.id);router.push(`/project/${project.id}`)"
-                 :class="{selected: isActive(project.id)}"
-                 :key="project.id">
-              {{ project.name }}
-            </div>
-          </vue-draggable>
+        <div id="body">
+          <draggable :list="projects"
+                     item-key="id"
+                     chosenClass="chosen-class"
+                     dragClass="drag-class"
+                     ghostClass="ghost-class"
+                     :forceFallback="true"
+                     @update="onUpdate">
+            <template #item="{ element }">
+              <div class="selected-item"
+                   @click="setSelected(element.id);router.push(`/project/${element.id}`)"
+                   :class="{selected: isActive(element.id)}"
+                   :key="element.id">
+                <input v-if="element.editable&&isActive(element.id)"
+                       :ref="handleInputRef"
+                       v-model="element.name"
+                       @blur="element.editable=false"
+                       @keydown.enter="element.editable=false" />
+                <template v-else>{{ element.name }}</template>
+              </div>
+            </template>
+          </draggable>
         </div>
-        <footer class="selected-item">
+        <footer class="selected-item" @click="createProject">
           create project
         </footer>
       </aside>
@@ -142,5 +170,14 @@ ul {
   list-style-type: none;
 }
 
+input {
+  outline-style: none;
+  user-select: auto;
+  border: 0;
+  font-size: 15px;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0);
+}
 
 </style>

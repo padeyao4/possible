@@ -10,3 +10,7 @@
 .chosen-class .drag-icon {
     visibility: visible;
 }
+
+.move {
+    /**用于标记可移动的项目*/
+}

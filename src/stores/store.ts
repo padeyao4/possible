@@ -28,7 +28,8 @@ export const useStore = defineStore('store', () => {
           id: 'e-1', source: '1', target: '2'
         }
       ],
-      sortIndex: 0
+      sortIndex: 0,
+      editable: false
     },
     'bbb': {
       id: 'bbb',
@@ -36,7 +37,8 @@ export const useStore = defineStore('store', () => {
       completed: false,
       nodes: [],
       edges: [],
-      sortIndex: 1
+      sortIndex: 1,
+      editable: false
     }
   })
 
@@ -59,5 +61,10 @@ export const useStore = defineStore('store', () => {
     return Object.values(projects.value).sort((p1, p2) => (p2 as any).sortIndex - (p1 as any).sortIndex) as any
   })
 
-  return { projects, currentProject, isActive, setSelected, sortedProjects }
+  const addProject = (project: any) => {
+    projects.value[project.id] = project
+    return project.id
+  }
+
+  return { projects, currentProject, isActive, setSelected, sortedProjects, addProject }
 })
