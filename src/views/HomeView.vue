@@ -12,3 +12,9 @@
     </ol>
   </main>
 </template>
+
+<style scoped>
+ol {
+  list-style-type: none;
+}
+</style>

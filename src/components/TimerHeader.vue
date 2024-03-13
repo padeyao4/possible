@@ -5,6 +5,7 @@ import { Renderer } from '@antv/g-canvas'
 
 const graph = inject('graph')
 const container = ref()
+const canvas = shallowRef()
 const group = shallowRef()
 
 function changePosition() {
@@ -12,11 +13,15 @@ function changePosition() {
   group.value.setPosition(-x, 0)
 }
 
+function resize() {
+  canvas.value.resize(container.value.clientWidth, container.value.clientHeight)
+}
+
 onMounted(() => {
-    const canvas = new Canvas({
+    canvas.value = new Canvas({
       container: container.value,
-      width: 800,
-      height: 40,
+      width: container.value.clientWidth,
+      height: container.value.clientHeight,
       renderer: new Renderer()
     })
 
@@ -38,29 +43,32 @@ onMounted(() => {
 
     group.value.appendChild(text)
 
-    canvas.appendChild(group.value)
+    canvas.value.appendChild(group.value)
 
     watchEffect(() => {
       graph.value?.on('viewportchange', changePosition)
     })
+
+    window.addEventListener('resize', resize)
   }
 )
 
+
 onBeforeUnmount(() => {
   graph.value.off('viewportchange', changePosition)
+  window.removeEventListener('resize', resize)
 })
 </script>
 
 <template>
-  <main>
+  <div>
     <div id="container" ref="container"></div>
-  </main>
+  </div>
 </template>
 
 <style scoped>
-main {
-  width: 800px;
+#container {
   height: 40px;
-  background: beige;
+  width: calc(100vw - 256px);
 }
 </style>

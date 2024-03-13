@@ -13,9 +13,11 @@ function handleClick() {
 </script>
 
 <template>
-  <main>
-    <button @click="handleClick">reset</button>
-  </main>
+  <div>
+    <main>
+      <button @click="handleClick">reset</button>
+    </main>
+  </div>
 </template>
 
 <style scoped>

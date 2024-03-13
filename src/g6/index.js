@@ -15,10 +15,18 @@ export default function useGraph(container) {
   const current = ref({ id: '', data: { name: '' } })
   const selected = ref(false)
 
+  async function resize() {
+    const { x: x1, y: y1 } = graph.value.getCanvasByViewport({ x: 0, y: 0 })
+    graph.value.setSize([container.value.clientWidth, container.value.clientHeight])
+    const { x: x2, y: y2 } = graph.value.getCanvasByViewport({ x: 0, y: 0 })
+    await graph.value.translate({ dx: x2 - x1, dy: y2 - y1 })
+  }
+
   onMounted(() => {
     const ExtGraph = extend(CustomGraph, {
       nodes: { CardNode }, plugins: { GridPlugin }, behaviors: { CreateNode, DragCanvas, DragNode, CreateEdge }
     })
+
     graph.value = new ExtGraph({
       container: container.value,
       width: container.value.clientWidth,
@@ -55,11 +63,14 @@ export default function useGraph(container) {
       current.value = graph.value.getNodeData(e.itemId)
       selected.value = true
     })
+
+    window.addEventListener('resize', resize)
   })
 
   onBeforeUnmount(() => {
     currentProject.nodes = graph.value.getAllNodesData()
     currentProject.edges = graph.value.getAllEdgesData()
+    window.removeEventListener('resize', resize)
   })
 
   return { graph, current, selected }

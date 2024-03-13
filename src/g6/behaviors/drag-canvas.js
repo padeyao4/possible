@@ -38,7 +38,7 @@ export class DragCanvas extends Extensions.BaseBehavior {
     this.pointerDownPosition = { x, y }
   }
 
-  onPointerUp(e) {
+  onPointerUp() {
     if (!this.pointerDownPosition) return
     this.clearState()
   }

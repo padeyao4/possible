@@ -21,27 +21,51 @@ provide('container', container)
 </script>
 
 <template>
-  <main>
-    <header><h1>{{ currentProject.name}}</h1></header>
-    <timer-header />
-    <div id="container" ref="container"></div>
-    <editor />
-    <footer>
-      <reset-button />
-    </footer>
-  </main>
+  <div id="root">
+    <main>
+      <header><h1>{{ currentProject.name }}</h1></header>
+      <section>
+        <timer-header id="timer-header" />
+        <div id="container" ref="container"></div>
+        <editor />
+      </section>
+      <footer>
+        <reset-button />
+      </footer>
+    </main>
+  </div>
 </template>
 
 <style scoped>
 main {
-  background: aquamarine;
   display: flex;
   flex-direction: column;
+  height: 100%;
+}
+
+header {
+  height: 40px;
+  flex-shrink: 0;
+}
+
+section {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
+  rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+}
+
+footer {
+  flex-shrink: 0;
+  height: 40px;
+}
+
+#timer-header {
+  flex-shrink: 0;
 }
 
 #container {
-  width: 800px;
-  height: 600px;
-  background: aliceblue;
+  flex-grow: 1;
 }
 </style>

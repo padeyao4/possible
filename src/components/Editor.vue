@@ -21,19 +21,21 @@ const task = new Proxy(current, {
 </script>
 
 <template>
-  <el-drawer
-    v-model="selected"
-    :close-on-click-modal="false"
-    :show-close="true"
-    modal-class="modal-class"
-    @close="selected=false"
-  >
-    <el-form :model="task">
-      <el-form-item label="名称">
-        <el-input v-model="task.name" />
-      </el-form-item>
-    </el-form>
-  </el-drawer>
+  <teleport to="body">
+    <el-drawer
+      v-model="selected"
+      :close-on-click-modal="false"
+      :show-close="true"
+      modal-class="modal-class"
+      @close="selected=false"
+    >
+      <el-form :model="task">
+        <el-form-item label="名称">
+          <el-input v-model="task.name" />
+        </el-form-item>
+      </el-form>
+    </el-drawer>
+  </teleport>
 </template>
 
 <style scoped>
