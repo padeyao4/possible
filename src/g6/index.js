@@ -1,11 +1,13 @@
 import { onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
-import { extend, Graph } from '@antv/g6'
+import { extend } from '@antv/g6'
 import { CardNode } from '@/g6/node/custom-node.js'
 import CreateNode from '@/g6/behaviors/create-node.js'
 import GridPlugin from '@/g6/plugin/grid-plugin.js'
 import CreateEdge from '@/g6/behaviors/create-edge.js'
 import { DragNode } from '@/g6/behaviors/drag-node.js'
 import { useStore } from '@/stores/store'
+import { DragCanvas } from '@/g6/behaviors/drag-canvas.js'
+import { CustomGraph } from '@/g6/graph.js'
 
 export default function useGraph(container) {
   const { currentProject } = useStore()
@@ -14,8 +16,8 @@ export default function useGraph(container) {
   const selected = ref(false)
 
   onMounted(() => {
-    const ExtGraph = extend(Graph, {
-      nodes: { CardNode }, plugins: { GridPlugin }, behaviors: { CreateNode, DragNode, CreateEdge }
+    const ExtGraph = extend(CustomGraph, {
+      nodes: { CardNode }, plugins: { GridPlugin }, behaviors: { CreateNode, DragCanvas, DragNode, CreateEdge }
     })
     graph.value = new ExtGraph({
       container: container.value,
@@ -23,9 +25,7 @@ export default function useGraph(container) {
       height: container.value.clientHeight,
       plugins: ['GridPlugin'],
       modes: {
-        default: [{
-          type: 'drag-canvas', key: 'drag-canvas', shouldBegin: (event) => event.button === 0
-        }, 'CreateNode', 'DragNode', 'CreateEdge']
+        default: ['DragCanvas', 'CreateNode', 'DragNode', 'CreateEdge']
       },
       node: (model) => {
         const { id, data } = model
@@ -51,6 +51,7 @@ export default function useGraph(container) {
     })
 
     graph.value.on('node:dblclick', (e) => {
+      // todo 通过自定义事件简化写法
       current.value = graph.value.getNodeData(e.itemId)
       selected.value = true
     })
