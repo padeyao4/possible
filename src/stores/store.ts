@@ -27,14 +27,16 @@ export const useStore = defineStore('store', () => {
         {
           id: 'e-1', source: '1', target: '2'
         }
-      ]
+      ],
+      sortIndex: 0
     },
     'bbb': {
       id: 'bbb',
       name: 'test2',
       completed: false,
       nodes: [],
-      edges: []
+      edges: [],
+      sortIndex: 1
     }
   })
 
@@ -53,5 +55,9 @@ export const useStore = defineStore('store', () => {
     return selected.value === value
   }
 
-  return { projects, currentProject, isActive, setSelected }
+  const sortedProjects = computed(() => {
+    return Object.values(projects.value).sort((p1, p2) => (p2 as any).sortIndex - (p1 as any).sortIndex) as any
+  })
+
+  return { projects, currentProject, isActive, setSelected, sortedProjects }
 })

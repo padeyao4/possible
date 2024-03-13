@@ -1,11 +1,26 @@
 <script setup lang="ts">
 import router from '@/router'
 import { useStore } from '@/stores/store'
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { VueDraggable } from 'vue-draggable-plus'
 
 const route = useRoute()
-const { projects, isActive, setSelected } = useStore()
+const store = useStore()
+const { isActive, setSelected } = store
+
+const projects = computed({
+  get: () => {
+    return store.sortedProjects
+  },
+  set: () => {}
+})
+
+function onUpdate() {
+  (store.sortedProjects as any[]).forEach((value, index) => {
+    value.sortIndex = index
+  })
+}
 
 onMounted(() => {
   setSelected('today')
@@ -29,19 +44,29 @@ onMounted(() => {
             </li>
           </ul>
         </header>
-        <ul id="body">
-          <li class="selected-item" v-for="project in projects" :key="project.id"
-              :class="{selected: isActive(project.id)}"
-              @click="setSelected(project.id);router.push(`/project/${project.id}`)">
-            {{ project.name }}
-          </li>
-        </ul>
+        <div id="body" @pointercancel.prevent>
+          <vue-draggable v-model="projects"
+                         chosenClass="chosen-class"
+                         dragClass="drag-class"
+                         ghostClass="ghost-class"
+                         @update="onUpdate"
+                         @pointercancel.prevent>
+            <div v-for="project in projects"
+                 @pointercancel.prevent
+                 class="selected-item"
+                 @click="setSelected(project.id);router.push(`/project/${project.id}`)"
+                 :class="{selected: isActive(project.id)}"
+                 :key="project.id">
+              {{ project.name }}
+            </div>
+          </vue-draggable>
+        </div>
         <footer class="selected-item">
           create project
         </footer>
       </aside>
       <section>
-        <router-view :key="route.fullPath" id="content"></router-view>
+        <router-view :key="route.fullPath" id="content" />
       </section>
     </main>
   </div>

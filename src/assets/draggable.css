@@ -1,0 +1,12 @@
+.ghost-class {
+    opacity: 0;
+}
+
+.drag-class {
+    box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+    opacity: 1 !important;
+}
+
+.chosen-class .drag-icon {
+    visibility: visible;
+}
