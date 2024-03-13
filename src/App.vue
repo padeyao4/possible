@@ -24,7 +24,8 @@ onMounted(() => {
           </ul>
         </header>
         <ul id="body">
-          <li class="selected-item" v-for="project in projects" @click="router.push(`/project/${project.id}`)">
+          <li class="selected-item" v-for="project in projects" :key="project.id"
+              @click="router.push(`/project/${project.id}`)">
             {{ project.name }}
           </li>
         </ul>
@@ -91,7 +92,6 @@ section {
   display: flex;
   flex-grow: 1;
   background: var(--background);
-  padding: 8px;
   box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
   border-radius: 8px 0 0 0;
 }

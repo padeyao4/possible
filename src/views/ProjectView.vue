@@ -21,7 +21,7 @@ provide('container', container)
 </script>
 
 <template>
-  <div id="root">
+  <div>
     <main>
       <header><h1>{{ currentProject.name }}</h1></header>
       <section>
@@ -58,14 +58,16 @@ section {
 
 footer {
   flex-shrink: 0;
-  height: 40px;
+  height: 48px;
 }
 
 #timer-header {
   flex-shrink: 0;
+  margin: 0 8px;
 }
 
 #container {
   flex-grow: 1;
+  margin: 0 8px;
 }
 </style>
