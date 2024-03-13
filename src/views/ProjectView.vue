@@ -23,7 +23,7 @@ provide('container', container)
 <template>
   <div>
     <main>
-      <header><h1>{{ currentProject.name }}</h1></header>
+      <header>{{ currentProject.name }}</header>
       <section>
         <timer-header id="timer-header" />
         <div id="container" ref="container"></div>
@@ -44,8 +44,16 @@ main {
 }
 
 header {
-  height: 40px;
+  display: flex;
+  outline: none;
+  border: none;
+  align-items: center;
+  padding: 0 24px;
   flex-shrink: 0;
+  height: 64px;
+  font-size: 24px;
+  -webkit-app-region: no-drag;
+  user-select: none;
 }
 
 section {
@@ -59,15 +67,16 @@ section {
 footer {
   flex-shrink: 0;
   height: 48px;
+  padding: 0 24px;
 }
 
 #timer-header {
   flex-shrink: 0;
-  margin: 0 8px;
+  margin: 0 24px;
 }
 
 #container {
   flex-grow: 1;
-  margin: 0 8px;
+  margin: 0 24px;
 }
 </style>

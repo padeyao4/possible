@@ -89,6 +89,6 @@ onBeforeUnmount(() => {
 <style scoped>
 #container {
   height: 40px;
-  width: calc(100vw - 256px);
+  width: calc(100vw - 240px - 24px * 2);
 }
 </style>

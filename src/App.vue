@@ -81,6 +81,7 @@ footer {
   height: 40px;
   margin: 4px 8px;
   padding: 0 4px;
+  user-select: none;
 
   &:hover {
     border-radius: 4px;
@@ -91,7 +92,7 @@ footer {
 section {
   display: flex;
   flex-grow: 1;
-  background: var(--background);
+  background: #fdfdfd;
   box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
   border-radius: 8px 0 0 0;
 }

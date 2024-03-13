@@ -1,15 +1,19 @@
 export function normalX(x) {
-  return x - x % 120 + 60
+  const offset = x >= 0 ? 60 : -60
+  return x - x % 120 + offset
 }
 
 export function normalY(y) {
-  return y - y % 60 + 30
+  const offset = y >= 0 ? 30 : -30
+  return y - y % 60 + offset
 }
 
 export function toX(index) {
-  return 60 + index * 120
+  const offset = index >= 0 ? 60 : -60
+  return offset + index * 120
 }
 
 export function toY(index) {
-  return 30 + index * 60
+  const offset = index >= 0 ? 30 : -30
+  return offset + index * 60
 }
