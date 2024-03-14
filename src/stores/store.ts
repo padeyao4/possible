@@ -2,8 +2,19 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useRoute } from 'vue-router'
 
+interface Project {
+  id: string,
+  name: string,
+  nodes: any[],
+  edges: any[],
+  completed: boolean,
+  sortIndex: number,
+  editable: boolean,
+  createTime: number
+}
+
 export const useStore = defineStore('store', () => {
-  const projects = ref<any>({})
+  const projects = ref<Record<string, Project>>({})
 
   const selected = ref<any>('today')
 
@@ -23,10 +34,12 @@ export const useStore = defineStore('store', () => {
   }
 
   const sortedProjects = computed(() => {
-    return Object.values(projects.value).sort((p1, p2) => (p2 as any).sortIndex - (p1 as any).sortIndex) as any
+    return Object.values(projects.value)
+      .filter(p => p.completed === false)
+      .sort((p1, p2) => (p2).sortIndex - (p1).sortIndex)
   })
 
-  const addProject = (project: any) => {
+  const addProject = (project: Project) => {
     projects.value[project.id] = project
     return project.id
   }

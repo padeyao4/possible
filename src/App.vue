@@ -89,7 +89,8 @@ onMounted(() => {
                   <div class="info">{{ element.name }}</div>
                   <div class="operation">
                     <write theme="outline" size="15" fill="#333" :strokeWidth="1" @click="element.editable=true" />
-                    <delete-four theme="outline" size="15" fill="#333" :strokeWidth="1" />
+                    <delete-four theme="outline" size="15" fill="#333" :strokeWidth="1"
+                                 @click="element.completed=true" />
                     <drag theme="outline" size="15" fill="#b9b9b9" :strokeWidth="1" class="move" />
                   </div>
                 </div>
