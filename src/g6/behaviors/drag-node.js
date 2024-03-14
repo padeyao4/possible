@@ -31,7 +31,7 @@ export class DragNode extends Extensions.BaseBehavior {
   onPointerDown(e) {
     if (!this.options.shouldBegin(e)) return
     const { itemId, target: { id } } = e
-    if (id === 'left-dot' || id === 'right-dot') return
+    if (id === 'anchorShape0' || id === 'anchorShape1') return
     this.selectId = itemId
     this.pointerDown = true
     const { data: { x, y } } = this.graph.getNodeData(this.selectId)

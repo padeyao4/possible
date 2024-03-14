@@ -30,7 +30,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
   onPointerDown(e) {
     if (!this.options.shouldBegin(e)) return
     const { itemId, target: { id } } = e
-    if (id !== 'left-dot' && id !== 'right-dot') return
+    if (id !== 'anchorShape0' && id !== 'anchorShape1') return
     this.pointDown = true
     this.dummyNode = this.graph.addData('node', {
       id: DUMMY_ID,
@@ -45,8 +45,8 @@ export default class CreateEdge extends Extensions.BaseBehavior {
 
     this.edge = this.graph.addData('edge', {
       id: v4(),
-      source: id === 'right-dot' ? itemId : DUMMY_ID,
-      target: id === 'left-dot' ? itemId : DUMMY_ID,
+      source: id === 'anchorShape1' ? itemId : DUMMY_ID,
+      target: id === 'anchorShape0' ? itemId : DUMMY_ID,
       data: {
         sourceAnchor: 1,
         targetAnchor: 0

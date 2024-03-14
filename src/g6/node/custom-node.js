@@ -1,6 +1,14 @@
 import { Extensions } from '@antv/g6'
 
 export class CardNode extends Extensions.RectNode {
+  /**
+   * 自定义text-label,解决label绘制不同步问题
+   * @param model
+   * @param shapeMap
+   * @param diffData
+   * @param diffState
+   * @returns {*&{info: *}}
+   */
   drawOtherShapes(model, shapeMap, diffData, diffState) {
     const { data: { name } } = model
     const cfg = {
@@ -17,34 +25,9 @@ export class CardNode extends Extensions.RectNode {
         fontSize: 12,
         textOverflow: 'ellipsis',
         wordWrap: true,
-        wordWrapWidth: 32,
+        wordWrapWidth: 60,
         maxLines: 2
-      }, cfg),
-      ...shapeMap
-    }
-  }
-
-  drawAnchorShapes(model, shapeMap, diffData, diffState) {
-    const cfg = {
-      model, shapeMap, diffData, diffState
-    }
-    return {
-      'left-anchors': this.upsertShape('circle', 'left-dot', {
-        visible: false,
-        cx: -40,
-        cy: 0,
-        r: 4,
-        fill: '#000',
-        cursor: 'pointer'
-      }, cfg),
-      'right-anchors': this.upsertShape('circle', 'right-dot', {
-        cx: 40,
-        cy: 0,
-        r: 4,
-        fill: '#000',
-        cursor: 'pointer'
-      }, cfg)
-      , ...shapeMap
+      }, cfg), ...shapeMap
     }
   }
 }
