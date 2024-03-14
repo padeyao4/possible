@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { toX, toY } from '@/g6/utils/position-util'
 import { useRoute } from 'vue-router'
+import { toX, toY } from '@/utils/position-util'
 
 export const useStore = defineStore('store', () => {
   const projects = ref<any>({

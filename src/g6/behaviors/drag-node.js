@@ -1,5 +1,5 @@
 import { Extensions } from '@antv/g6'
-import { normalX, normalY } from '@/g6/utils/position-util.js'
+import { normalX, normalY } from '@/utils/position-util.js'
 
 const DEFAULT_CONFIG = {
   // 鼠标左键生效

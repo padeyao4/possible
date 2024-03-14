@@ -1,5 +1,6 @@
 import { Extensions } from '@antv/g6'
-import { normalX, normalY } from '@/g6/utils/position-util.js'
+import { normalX, normalY } from '@/utils/position-util.js'
+import { v4 } from 'uuid'
 
 export default class CreateNode extends Extensions.BaseBehavior {
   getEvents() {
@@ -13,7 +14,7 @@ export default class CreateNode extends Extensions.BaseBehavior {
     if (e.button !== 0) return
     const { x, y } = e.canvas
     this.graph.addData('node', {
-      id: 'node-' + Math.random().toString(),
+      id: v4(),
       data: {
         name: 'hello',
         x: normalX(x),
