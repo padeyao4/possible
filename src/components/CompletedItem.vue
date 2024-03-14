@@ -1,47 +1,37 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { dateToX } from '@/utils/time'
-import { useStore } from '@/stores/store'
-import { CheckOne, Drag, Round } from '@icon-park/vue-next'
+import { inject, type Ref } from 'vue'
+import { CheckOne } from '@icon-park/vue-next'
 
-const store = useStore()
-
-const tasks = computed(() => {
-  return Object.values(store.projects)
-    .filter(project => !project.completed)
-    .map(project => project.nodes.filter(node => node.data.x === dateToX(store.currentTime, project.createTime)))
-    .flat()
-    .filter(node => !node.data.completed)
-})
+const tasks = inject<Ref<any[]>>('tasks')
 
 </script>
 <template>
   <div>
-    <div v-for="task in tasks" :key="task.id" class="todo-item">
+    <div v-for="task in tasks" :key="task.id" class="completed-item">
       <div class="item-content">
         <div class="first-line">
-          <div class="todo-check-group">
-            <Round theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt" class="round" />
+          <div class="check-group">
+            <CheckOne theme="filled" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt" class="round" />
             <CheckOne theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt"
                       class="check" />
           </div>
-          {{ task.data.name }}
+          <del>{{ task.data.name }}</del>
         </div>
         <div class="second-line">baba</div>
       </div>
-      <Drag theme="outline" size="20" fill="#333" :stroke-width="2" class="move-bar" />
     </div>
   </div>
 </template>
 
 <style scoped>
-.todo-item {
+.completed-item {
   display: flex;
   align-items: center;
   padding: 0 16px;
   margin: 4px 0;
   height: 56px;
   border-radius: 4px;
+  color: rgba(0, 0, 0, 0.3);
   background: rgba(255, 255, 255, 0.8);
 
   .item-content {
@@ -51,7 +41,7 @@ const tasks = computed(() => {
       display: flex;
       align-items: center;
 
-      .todo-check-group {
+      .check-group {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -82,20 +72,6 @@ const tasks = computed(() => {
       align-items: center;
       margin: 0 0 0 28px;
     }
-  }
-
-  .move-bar {
-    display: none;
-    align-items: center;
-    justify-content: end;
-    width: 32px;
-    height: 48px;
-    flex-shrink: 0;
-    cursor: move;
-  }
-
-  &:hover .move-bar {
-    display: flex;
   }
 }
 </style>

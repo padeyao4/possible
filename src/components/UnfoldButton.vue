@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Down, Right } from '@icon-park/vue-next'
 
+defineProps(['counter'])
+
 const model = defineModel()
 
 </script>
@@ -24,7 +26,7 @@ const model = defineModel()
         :stroke-width="2"
         style="display: flex; justify-content: center; align-items: center"
       />
-      已完成 0
+      已完成 {{ counter}}
     </div>
   </div>
 </template>

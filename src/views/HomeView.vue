@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useStore } from '@/stores/store'
-import { computed, ref } from 'vue'
+import { computed, provide, ref } from 'vue'
 import UnfoldButton from '@/components/UnfoldButton.vue'
+import { dateToX } from '@/utils/time'
+import TodoItem from '@/components/TodoItem.vue'
+import CompletedItem from '@/components/CompletedItem.vue'
 
 const store = useStore()
 
@@ -10,6 +13,16 @@ const isUnfold = ref(false)
 const isEmpty = computed(() => {
   return Object.values(store.projects).length === 0
 })
+
+const completedTasks = computed(() => {
+  return Object.values(store.projects)
+    .filter(project => !project.completed)
+    .map(project => project.nodes.filter(node => node.data.x === dateToX(store.currentTime, project.createTime)))
+    .flat()
+    .filter(node => node.data.completed)
+})
+
+provide('tasks',completedTasks)
 </script>
 
 <template>
@@ -24,9 +37,11 @@ const isEmpty = computed(() => {
           <h1>empty</h1>
         </section>
         <section v-else>
-          <div>工作列表</div>
-          <unfold-button v-model="isUnfold" />
-          <div v-if="isUnfold">完成工作列表</div>
+          <todo-item />
+          <unfold-button v-model="isUnfold" :counter="completedTasks.length" />
+          <template v-if="isUnfold">
+            <completed-item />
+          </template>
         </section>
       </div>
       <footer>
@@ -58,7 +73,6 @@ footer {
 
 
 header {
-  background: #f7f7f9;
   height: 64px;
   flex-shrink: 0;
 }

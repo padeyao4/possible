@@ -1,3 +1,5 @@
+import { toX } from '@/utils/position-util.js'
+
 /**
  * 将utc时间转本地时间。计算距离1970.1.1的日期天数
  * @param timestamp
@@ -11,6 +13,17 @@ export function convertToIndex(timestamp) {
 
 export function convertToDate(index) {
   return new Date(index * 86400_000)
+}
+
+/**
+ * 两个时间相差的天数转换为x轴距离
+ * @param timestamp1
+ * @param timestamp2
+ * @returns {*}
+ */
+export function dateToX(timestamp1, timestamp2) {
+  const delta = convertToIndex(timestamp1) - convertToIndex(timestamp2)
+  return toX(delta)
 }
 
 export function showWeek(date) {
