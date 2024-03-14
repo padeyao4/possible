@@ -59,11 +59,11 @@ onMounted(() => {
         <header>
           <ul>
             <li class="selected-item" :class="{selected: isActive('today')}"
-                @click="setSelected('today');router.push('/')">today
+                @click="setSelected('today');router.push('/')">我的一天
             </li>
             <li class="selected-item" :class="{selected: isActive('completed')}"
                 @click="setSelected('completed');router.push('/completed')">
-              completed project
+              已完成项目
             </li>
           </ul>
         </header>
@@ -161,6 +161,7 @@ section {
   background: #fdfdfd;
   box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
   border-radius: 8px 0 0 0;
+  overflow: hidden;
 }
 
 #content {

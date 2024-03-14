@@ -19,7 +19,7 @@ export default function useGraph(container) {
     const { x: x1, y: y1 } = graph.value.getCanvasByViewport({ x: 0, y: 0 })
     graph.value.setSize([container.value.clientWidth, container.value.clientHeight])
     const { x: x2, y: y2 } = graph.value.getCanvasByViewport({ x: 0, y: 0 })
-    await graph.value.translate({ dx: x2 - x1, dy: y2 - y1 })
+    await graph.value.translate({ dx: x2 - x1, dy: y2 - y1})
   }
 
   onMounted(() => {

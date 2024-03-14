@@ -1,10 +1,10 @@
 <script setup>
 import { provide, ref } from 'vue'
 import useGraph from '@/g6/index.js'
-import Editor from '@/components/GraphEditor.vue'
-import TimerHeader from '@/components/TimerHeader.vue'
 import ResetButton from '@/components/ResetButton.vue'
 import { useStore } from '@/stores/store.ts'
+import TimerHeader from '@/components/TimerHeader.vue'
+import GraphEditor from '@/components/GraphEditor.vue'
 
 const store = useStore()
 
@@ -17,18 +17,19 @@ provide('graph', graph)
 provide('current', current)
 provide('selected', selected)
 provide('container', container)
-
 </script>
 
 <template>
   <div>
     <main>
-      <header>{{ currentProject.name }}</header>
-      <section>
-        <timer-header id="timer-header" />
-        <div id="container" ref="container"></div>
-        <editor />
-      </section>
+      <div class="content">
+        <header>{{ currentProject.name }}</header>
+        <section>
+          <timer-header id="timer-header" />
+          <div id="container" ref="container"></div>
+          <graph-editor />
+        </section>
+      </div>
       <footer>
         <reset-button />
       </footer>
@@ -43,23 +44,9 @@ main {
   height: 100%;
 }
 
-header {
-  display: flex;
-  outline: none;
-  border: none;
-  align-items: center;
-  padding: 0 24px;
-  flex-shrink: 0;
-  height: 64px;
-  font-size: 24px;
-  -webkit-app-region: no-drag;
-  user-select: none;
-}
-
-section {
-  display: flex;
+.content {
   flex-grow: 1;
-  flex-direction: column;
+  padding: 24px 24px 0 24px;
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
   rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
@@ -70,13 +57,28 @@ footer {
   padding: 0 24px;
 }
 
+header {
+  display: flex;
+  outline: none;
+  flex-shrink: 0;
+  height: 32px;
+  font-size: 20px;
+  -webkit-app-region: no-drag;
+  user-select: none;
+  margin: 0 0 24px 0;
+}
+
+section {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+}
+
 #timer-header {
   flex-shrink: 0;
-  margin: 0 24px;
 }
 
 #container {
-  flex-grow: 1;
-  margin: 0 24px;
+  height: calc(100vh - 24px * 2 - 32px - 40px - 48px);
 }
 </style>
