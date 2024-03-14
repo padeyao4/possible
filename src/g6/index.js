@@ -44,7 +44,7 @@ export default function useGraph(container) {
         return {
           id,
           data: {
-            ...data,
+
             type: 'CardNode',
             anchorPoints: [[0, 0.5], [1, 0.5]],
             keyShape: {
@@ -63,7 +63,8 @@ export default function useGraph(container) {
               {
                 opacity: 0
               }
-            ]
+            ],
+            ...data
           }
         }
       },
