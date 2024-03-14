@@ -39,26 +39,33 @@ export default function useGraph(container) {
       modes: {
         default: ['DragCanvas', 'CreateNode', 'DragNode', 'CreateEdge', 'HoverNode']
       },
-      node: {
-        type: 'CardNode',
-        anchorPoints: [[0, 0.5], [1, 0.5]],
-        keyShape: {
-          radius: 4, width: 80, height: 40,
-          fill: '#fff',
-          fillOpacity: 0.5,
-          stroke: '#000',
-          strokeOpacity: 0.5,
-          lineWidth: 1
-        },
-        otherShapes: {},
-        anchorShapes: [
-          {
-            opacity: 0
-          },
-          {
-            opacity: 0
+      node: (model) => {
+        const { id, data } = model
+        return {
+          id,
+          data: {
+            ...data,
+            type: 'CardNode',
+            anchorPoints: [[0, 0.5], [1, 0.5]],
+            keyShape: {
+              radius: 4, width: 80, height: 40,
+              fill: data.completed ? '#00000030' : '#fff',
+              fillOpacity: 0.5,
+              stroke: '#000',
+              strokeOpacity: 0.5,
+              lineWidth: 1
+            },
+            otherShapes: {},
+            anchorShapes: [
+              {
+                opacity: 0
+              },
+              {
+                opacity: 0
+              }
+            ]
           }
-        ]
+        }
       },
       nodeState: {
         hover: {

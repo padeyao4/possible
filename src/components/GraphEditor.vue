@@ -33,6 +33,16 @@ const task = new Proxy(current, {
         <el-form-item label="名称">
           <el-input v-model="task.name" />
         </el-form-item>
+        <el-form-item label="详情">
+          <el-input v-model="task.detail" type="textarea" />
+        </el-form-item>
+        <el-form-item label="记录">
+          <el-input v-model="task.record" type="textarea" />
+        </el-form-item>
+        <el-radio-group v-model="task.completed">
+          <el-radio :value="true" size="default" border>完成</el-radio>
+          <el-radio :value="false" size="default" border>正常</el-radio>
+        </el-radio-group>
       </el-form>
     </el-drawer>
   </teleport>
