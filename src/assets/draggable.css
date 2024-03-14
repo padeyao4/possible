@@ -4,13 +4,18 @@
 
 .drag-class {
     box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
-    opacity: 1 !important;
+    /*opacity: 1 !important;*/
+    cursor: grab;
+    position: absolute;
 }
 
-.chosen-class .drag-icon {
+.chosen-class {
     visibility: visible;
+    cursor: grab;
 }
 
 .move {
-    /**用于标记可移动的项目*/
+    &:hover {
+        cursor: grab;
+    }
 }

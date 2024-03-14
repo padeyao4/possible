@@ -5,6 +5,7 @@ import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { v4 } from 'uuid'
 import Draggable from 'vuedraggable/src/vuedraggable'
+import { DeleteFour, Drag, Write } from '@icon-park/vue-next'
 
 const route = useRoute()
 const store = useStore()
@@ -57,21 +58,20 @@ onMounted(() => {
     <main>
       <aside>
         <header>
-          <ul>
-            <li class="selected-item" :class="{selected: isActive('today')}"
-                @click="setSelected('today');router.push('/')">我的一天
-            </li>
-            <li class="selected-item" :class="{selected: isActive('completed')}"
-                @click="setSelected('completed');router.push('/completed')">
-              已完成项目
-            </li>
-          </ul>
+          <div class="selected-item" :class="{selected: isActive('today')}"
+               @click="setSelected('today');router.push('/today')">我的一天
+          </div>
+          <div class="selected-item" :class="{selected: isActive('completed')}"
+               @click="setSelected('completed');router.push('/completed')">
+            已完成项目
+          </div>
         </header>
         <div id="body">
           <draggable :list="projects"
                      item-key="id"
                      chosenClass="chosen-class"
                      dragClass="drag-class"
+                     handle=".move"
                      ghostClass="ghost-class"
                      :forceFallback="true"
                      @update="onUpdate">
@@ -85,7 +85,14 @@ onMounted(() => {
                        v-model="element.name"
                        @blur="element.editable=false"
                        @keydown.enter="element.editable=false" />
-                <template v-else>{{ element.name }}</template>
+                <div v-else class="project-item">
+                  <div class="info">{{ element.name }}</div>
+                  <div class="operation">
+                    <write theme="outline" size="15" fill="#333" :strokeWidth="1" @click="element.editable=true" />
+                    <delete-four theme="outline" size="15" fill="#333" :strokeWidth="1" />
+                    <drag theme="outline" size="15" fill="#b9b9b9" :strokeWidth="1" class="move" />
+                  </div>
+                </div>
               </div>
             </template>
           </draggable>
@@ -168,10 +175,6 @@ section {
   flex-grow: 1;
 }
 
-ul {
-  list-style-type: none;
-}
-
 input {
   outline-style: none;
   user-select: auto;
@@ -179,7 +182,43 @@ input {
   font-size: 15px;
   height: 100%;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.03);
 }
+
+.project-item {
+  display: flex;
+  width: 100%;
+
+  .info {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+  }
+
+  &:hover .operation {
+    display: flex;
+  }
+
+  .operation {
+    display: none;
+    align-items: center;
+    justify-content: end;
+    width: 68px;
+    flex-shrink: 0;
+
+    & > * {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2px;
+
+      &:hover {
+        border-radius: 3px;
+        background: rgba(0, 0, 0, 0.06);
+      }
+    }
+  }
+}
+
 
 </style>
