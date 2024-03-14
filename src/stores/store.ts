@@ -1,50 +1,15 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useRoute } from 'vue-router'
-import { toX, toY } from '@/utils/position-util'
 
 export const useStore = defineStore('store', () => {
-  const projects = ref<any>({
-    'aaa': {
-      id: 'aaa',
-      name: 'test',
-      completed: false,
-      nodes: [
-        {
-          id: '1',
-          data: {
-            name: '1',
-            x: toX(1),
-            y: toY(2)
-          }
-        },
-        {
-          id: '2', data: {
-            name: '2', x: toX(3), y: toY(4)
-          }
-        }],
-      edges: [
-        {
-          id: 'e-1', source: '1', target: '2'
-        }
-      ],
-      sortIndex: 0,
-      editable: false
-    },
-    'bbb': {
-      id: 'bbb',
-      name: 'test2',
-      completed: false,
-      nodes: [],
-      edges: [],
-      sortIndex: 1,
-      editable: false
-    }
-  })
+  const projects = ref<any>({})
 
   const selected = ref<any>('today')
 
-  const currentProject = computed(() => {
+  const currentTime = ref(new Date())
+
+  const currentProject = computed<Record<any, any>>(() => {
     const { id } = useRoute().params
     return projects.value[id as string]
   })
@@ -66,5 +31,5 @@ export const useStore = defineStore('store', () => {
     return project.id
   }
 
-  return { projects, currentProject, isActive, setSelected, sortedProjects, addProject }
+  return { projects, currentProject, isActive, setSelected, sortedProjects, addProject, currentTime }
 })

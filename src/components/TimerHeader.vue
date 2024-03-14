@@ -1,12 +1,30 @@
 <script setup>
-import { inject, onBeforeUnmount, onMounted, ref, shallowRef, watch, watchEffect } from 'vue'
+import { computed, inject, onBeforeUnmount, onMounted, ref, shallowRef, watch, watchEffect } from 'vue'
 import { Canvas, Group, Text } from '@antv/g'
 import { Renderer } from '@antv/g-canvas'
+import { useStore } from '@/stores/store'
+import { convertToDate, convertToIndex, showWeek } from '@/utils/time.js'
 
+const store = useStore()
 const graph = inject('graph')
 const container = ref()
 const canvas = shallowRef()
 const group = shallowRef()
+
+const timeFormat = new Intl.DateTimeFormat('zh-Hans')
+
+const currentIndex = computed(() => {
+  return convertToIndex(store.currentTime)
+})
+
+const startIndex = computed(() => {
+  return convertToIndex(store.currentProject.createTime)
+})
+
+function showTime(index) {
+  const date = convertToDate(index)
+  return timeFormat.format(date) + '\n' + showWeek(date)
+}
 
 watch(group, () => {
   updateInfo()
@@ -20,8 +38,9 @@ function updateInfo() {
   const offset = x / 120
   const delta = offset >= 0 ? Math.floor(offset) : Math.ceil(offset)
   for (let i = 0; i < children.length; i++) {
-    const index = children[i].id
-    children[i].style.text = (index + delta).toString()
+    const index = children[i].id + delta
+    children[i].style.text = showTime(index)
+    children[i].style.fill = index === currentIndex.value ? 'green' : 'black'
   }
 }
 
@@ -35,9 +54,9 @@ function initTexts() {
   const childrenSize = Math.ceil(container.value.clientWidth / 120) + 1
   for (let i = -1; i < childrenSize; i++) {
     const text = new Text({
-      id: i,
+      id: i + startIndex.value,
       style: {
-        x: i * 120,
+        x: i * 120 + 60,
         y: 20,
         text: '',
         fontSize: 14,

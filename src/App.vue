@@ -32,7 +32,8 @@ function createProject() {
     edges: [],
     completed: false,
     sortIndex: -1,
-    editable: true
+    editable: true,
+    createTime: new Date().valueOf()
   })
   setSelected(id)
   router.push(`/project/${id}`)
