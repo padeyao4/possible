@@ -1,5 +1,6 @@
 declare module 'uuid';
 declare module '@icon-park/vue-next';
+declare module 'default-passive-events'
 
 declare module '*.vue' {
   import { DefineComponent } from 'vue'

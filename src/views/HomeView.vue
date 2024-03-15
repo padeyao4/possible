@@ -29,7 +29,6 @@ const todayTime = computed(() => (
 )
 
 provide('tasks', tasks)
-
 </script>
 
 <template>
@@ -74,7 +73,6 @@ footer {
   height: 48px;
 }
 
-
 header {
   height: 64px;
   flex-shrink: 0;
@@ -85,13 +83,11 @@ section {
   overflow-y: auto;
 }
 
-
 #main-title {
   display: flex;
   align-items: center;
   font-size: 20px;
 }
-
 
 #sub-title {
   display: flex;

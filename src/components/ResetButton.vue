@@ -1,10 +1,10 @@
-<script setup>
+<script setup lang="ts">
 
 import { inject } from 'vue'
 import OperationTip from '@/components/OperationTip.vue'
 import { Local } from '@icon-park/vue-next'
 
-const graph = inject('graph')
+const graph = inject('graph') as any
 
 function handle() {
   setTimeout(() => {
@@ -22,7 +22,7 @@ function handle() {
         size="20"
         fill="#333"
         :stroke-width="2"
-        style="display: flex;justify-content: center;align-items: center;"
+        style="display: flex;justify-content: center;align-items: center;width: 24px;height: 24px"
         @click="handle"
       />
     </operation-tip>

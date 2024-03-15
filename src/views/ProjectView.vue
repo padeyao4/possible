@@ -5,6 +5,7 @@ import ResetButton from '@/components/ResetButton.vue'
 import { useStore } from '@/stores/store.ts'
 import TimerHeader from '@/components/TimerHeader.vue'
 import GraphEditor from '@/components/GraphEditor.vue'
+import PickDateButton from '@/components/PickDateButton.vue'
 
 const store = useStore()
 
@@ -32,6 +33,7 @@ provide('container', container)
       </div>
       <footer>
         <reset-button />
+        <pick-date-button />
       </footer>
     </main>
   </div>
@@ -64,9 +66,7 @@ footer {
     justify-content: center;
     align-items: center;
     border-radius: 3px;
-    width: 24px;
-    height: 24px;
-    margin: 2px;
+    margin: 0 4px;
     user-select: none;
   }
 

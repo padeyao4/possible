@@ -4,7 +4,6 @@ import { computed, ref } from 'vue'
 
 const store = useStore()
 
-
 const search = ref('')
 
 const filterTableData = computed(() => {
