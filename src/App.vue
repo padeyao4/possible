@@ -171,6 +171,7 @@ section {
   background: #fdfdfd;
   box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
   border-radius: 8px 0 0 0;
+  overflow: hidden;
 }
 
 #content {

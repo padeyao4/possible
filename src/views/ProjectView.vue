@@ -52,9 +52,27 @@ main {
 }
 
 footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   flex-shrink: 0;
   height: 48px;
   padding: 0 24px;
+
+  & > * {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px;
+    width: 24px;
+    height: 24px;
+    margin: 2px;
+    user-select: none;
+  }
+
+  & > *:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
 }
 
 header {

@@ -68,7 +68,7 @@ main {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #82bbb5;
+  background: #8cb6c5;
 }
 
 .content {
