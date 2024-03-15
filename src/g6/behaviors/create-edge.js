@@ -38,7 +38,8 @@ export default class CreateEdge extends Extensions.BaseBehavior {
         type: 'circle-node',
         x: e.canvas.x,
         y: e.canvas.y,
-      }
+        anchorPoints: [[0.5, 0.5]],
+      },
     })
     this.graph.hideItem(this.dummyNode.id)
 
