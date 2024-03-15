@@ -1,36 +1,50 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { dateToX } from '@/utils/time'
-import { useStore } from '@/stores/store'
-import { CheckOne, Drag, Round } from '@icon-park/vue-next'
+import { computed, type ComputedRef, inject } from 'vue'
+import { CheckOne, Drag, Record, Round } from '@icon-park/vue-next'
+import Draggable from 'vuedraggable'
 
-const store = useStore()
+const tasks = inject<ComputedRef<Record<any, any>[]>>('tasks')
 
-const tasks = computed(() => {
-  return Object.values(store.projects)
-    .filter(project => !project.completed)
-    .map(project => project.nodes.filter(node => node.data.x === dateToX(store.currentTime, project.createTime)))
-    .flat()
-    .filter(node => !node.data.completed)
+const todoTasks = computed(() => {
+  return tasks?.value
+    .sort((task1, task2) => task1.data.sortedIndex - task2.data.sortedIndex)
+    .filter(node => !node.data.completed) ?? []
 })
+
+function onUpdate() {
+  todoTasks?.value.forEach((value, index, array) => {
+    value.data.sortedIndex = index
+  })
+}
 
 </script>
 <template>
   <div>
-    <div v-for="task in tasks" :key="task.id" class="todo-item">
-      <div class="item-content">
-        <div class="first-line">
-          <div class="todo-check-group" @click="task.data.completed=true">
-            <Round theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt" class="round" />
-            <CheckOne theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt"
-                      class="check" />
+    <draggable :list="todoTasks"
+               item-key="id"
+               chosenClass="chosen-class"
+               dragClass="drag-class"
+               handle=".move-bar"
+               ghostClass="ghost-class"
+               :forceFallback="true"
+               @update="onUpdate">
+      <template #item="{ element }">
+        <div :key="element.id" class="todo-item">
+          <div class="item-content">
+            <div class="first-line">
+              <div class="todo-check-group" @click="element.data.completed=true">
+                <Round theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt" class="round" />
+                <CheckOne theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt"
+                          class="check" />
+              </div>
+              {{ element.data.name }}
+            </div>
+            <div class="second-line">{{ element.data.project.name }}</div>
           </div>
-          {{ task.data.name }}
+          <Drag theme="outline" size="20" fill="#333" :stroke-width="2" class="move-bar" />
         </div>
-        <div class="second-line">baba</div>
-      </div>
-      <Drag theme="outline" size="20" fill="#333" :stroke-width="2" class="move-bar" />
-    </div>
+      </template>
+    </draggable>
   </div>
 </template>
 

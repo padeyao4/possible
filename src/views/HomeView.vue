@@ -14,15 +14,28 @@ const isEmpty = computed(() => {
   return Object.values(store.projects).length === 0
 })
 
-const completedTasks = computed(() => {
+const tasks = computed(() => {
   return Object.values(store.projects)
     .filter(project => !project.completed)
-    .map(project => project.nodes.filter(node => node.data.x === dateToX(store.currentTime, project.createTime)))
-    .flat()
-    .filter(node => node.data.completed)
+    .map(project => {
+      project.nodes.forEach(node => {
+        node.data.project = {
+          id: project.id,
+          name: project.name
+        }
+      })
+      return project.nodes.filter(node => node.data.x === dateToX(store.currentTime, project.createTime))
+    }).flat()
 })
 
-provide('tasks',completedTasks)
+provide('tasks', tasks)
+
+const completedTasks = computed(() => {
+  return tasks.value.filter(node => node.data.completed)
+})
+
+provide('completedTasks', completedTasks)
+
 </script>
 
 <template>
@@ -87,6 +100,7 @@ section {
   align-items: center;
   font-size: 20px;
 }
+
 
 #sub-title {
   display: flex;

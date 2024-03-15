@@ -25,7 +25,13 @@ export default class CreateNode extends Extensions.BaseBehavior {
     const { x, y } = e.canvas
     this.graph.addData('node', {
       id: v4(), data: {
-        name: faker.person.fullName(), x: normalX(x), y: normalY(y), detail: '', record: '', completed: false
+        name: faker.person.fullName(),
+        x: normalX(x),
+        y: normalY(y),
+        detail: '',
+        record: '',
+        completed: false,
+        sortedIndex: -1
       }
     })
   }

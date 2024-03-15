@@ -2,12 +2,12 @@
 import { inject, type Ref } from 'vue'
 import { CheckOne } from '@icon-park/vue-next'
 
-const tasks = inject<Ref<any[]>>('tasks')
+const completedTasks = inject<Ref<any[]>>('completedTasks')
 
 </script>
 <template>
   <div>
-    <div v-for="task in tasks" :key="task.id" class="completed-item">
+    <div v-for="task in completedTasks" :key="task.id" class="completed-item">
       <div class="item-content">
         <div class="first-line">
           <div class="check-group" @click="task.data.completed=false">
@@ -17,7 +17,7 @@ const tasks = inject<Ref<any[]>>('tasks')
           </div>
           <del>{{ task.data.name }}</del>
         </div>
-        <div class="second-line">baba</div>
+        <div class="second-line">{{ task.data.project.name }}</div>
       </div>
     </div>
   </div>

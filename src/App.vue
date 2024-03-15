@@ -220,6 +220,12 @@ input {
         background: rgba(0, 0, 0, 0.06);
       }
     }
+
+    .move {
+      &:hover {
+        cursor: grab;
+      }
+    }
   }
 }
 

@@ -13,9 +13,3 @@
     visibility: visible;
     cursor: grab;
 }
-
-.move {
-    &:hover {
-        cursor: grab;
-    }
-}
