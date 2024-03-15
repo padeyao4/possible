@@ -101,7 +101,7 @@ onMounted(() => {
           </draggable>
         </div>
         <footer class="selected-item" @click="createProject">
-          create project
+          新建项目
         </footer>
       </aside>
       <section>
@@ -143,7 +143,10 @@ header {
 }
 
 footer {
+  display: flex;
   flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
 }
 
 .selected-item {
