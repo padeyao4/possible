@@ -38,15 +38,40 @@ export default class CreateEdge extends Extensions.BaseBehavior {
         type: 'circle-node',
         x: e.canvas.x,
         y: e.canvas.y,
-        anchorPoints: [[0.5, 0.5]],
-      },
+        anchorPoints: [[0.5, 0.5]]
+      }
     })
     this.graph.hideItem(this.dummyNode.id)
 
+    const sourceId = id === 'anchorShape1' ? itemId : DUMMY_ID
+    const targetId = id === 'anchorShape0' ? itemId : DUMMY_ID
+
     this.edge = this.graph.addData('edge', {
       id: v4(),
-      source: id === 'anchorShape1' ? itemId : DUMMY_ID,
-      target: id === 'anchorShape0' ? itemId : DUMMY_ID,
+      source: sourceId,
+      target: targetId,
+      data: {
+        sourceAnchor: 1,
+        targetAnchor: 0
+      }
+    })
+  }
+
+  creteEdge(sourceId, targetId) {
+    const source = this.graph.getNodeData(sourceId)
+    const target = this.graph.getNodeData(targetId)
+    if (source.data.x >= target.data.x) return
+
+    if (sourceId === targetId) return
+    const isInclude = this.graph.getNeighborNodesData(sourceId, 'both')
+      .map(model => model.id)
+      .includes(targetId)
+    if (isInclude) return
+
+    this.graph.addData('edge', {
+      id: v4(),
+      source: sourceId,
+      target: targetId,
       data: {
         sourceAnchor: 1,
         targetAnchor: 0
@@ -58,15 +83,9 @@ export default class CreateEdge extends Extensions.BaseBehavior {
     if (!this.pointDown) return
     const { itemId, itemType } = e
     if (itemType === 'node') {
-      this.graph.addData('edge', {
-        id: v4(),
-        source: this.edge.source === DUMMY_ID ? itemId : this.edge.source,
-        target: this.edge.target === DUMMY_ID ? itemId : this.edge.target,
-        data: {
-          sourceAnchor: 1,
-          targetAnchor: 0
-        }
-      })
+      const sourceId = this.edge.source === DUMMY_ID ? itemId : this.edge.source
+      const targetId = this.edge.target === DUMMY_ID ? itemId : this.edge.target
+      this.creteEdge(sourceId, targetId)
     }
     this.clearStatus()
   }
