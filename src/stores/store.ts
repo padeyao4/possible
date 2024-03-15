@@ -33,16 +33,10 @@ export const useStore = defineStore('store', () => {
     return selected.value === value
   }
 
-  const sortedProjects = computed(() => {
-    return Object.values(projects.value)
-      .filter(p => p.completed === false)
-      .sort((p1, p2) => (p2).sortIndex - (p1).sortIndex)
-  })
-
   const addProject = (project: Project) => {
     projects.value[project.id] = project
     return project.id
   }
 
-  return { projects, currentProject, isActive, setSelected, sortedProjects, addProject, currentTime }
+  return { projects, currentProject, isActive, setSelected, addProject, currentTime }
 })

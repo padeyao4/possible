@@ -9,18 +9,20 @@ import { DeleteFour, Drag, Write } from '@icon-park/vue-next'
 
 const route = useRoute()
 const store = useStore()
-const { isActive, setSelected } = store
 
 const projects = computed({
   get: () => {
-    return store.sortedProjects
+    return Object.values(store.projects)
+      .filter(project => project.completed === false)
+      .sort((p1, p2) => p1.sortIndex - p2.sortIndex)
   },
-  set: () => { // 空函数用于消除告警
+  // 空函数用于消除告警
+  set: () => {
   }
 })
 
 function onUpdate() {
-  (store.sortedProjects as any[]).forEach((value, index) => {
+  projects.value.forEach((value, index) => {
     value.sortIndex = index
   })
 }
@@ -32,11 +34,11 @@ function createProject() {
     nodes: [],
     edges: [],
     completed: false,
-    sortIndex: -1,
+    sortIndex: projects.value.length + 1,
     editable: true,
     createTime: new Date().valueOf()
   })
-  setSelected(id)
+  store.setSelected(id)
   router.push(`/project/${id}`)
 }
 
@@ -47,7 +49,7 @@ function handleInputRef(e: any) {
 }
 
 onMounted(() => {
-  setSelected('today')
+  store.setSelected('today')
   router.push('/today')
 })
 
@@ -58,11 +60,11 @@ onMounted(() => {
     <main>
       <aside>
         <header>
-          <div class="selected-item" :class="{selected: isActive('today')}"
-               @click="setSelected('today');router.push('/today')">我的一天
+          <div class="selected-item" :class="{selected: store.isActive('today')}"
+               @click="store.setSelected('today');router.push('/today')">我的一天
           </div>
-          <div class="selected-item" :class="{selected: isActive('completed')}"
-               @click="setSelected('completed');router.push('/completed')">
+          <div class="selected-item" :class="{selected: store.isActive('completed')}"
+               @click="store.setSelected('completed');router.push('/completed')">
             已完成项目
           </div>
         </header>
@@ -77,10 +79,10 @@ onMounted(() => {
                      @update="onUpdate">
             <template #item="{ element }">
               <div class="selected-item"
-                   @click="setSelected(element.id);router.push(`/project/${element.id}`)"
-                   :class="{selected: isActive(element.id)}"
+                   @click="store.setSelected(element.id);router.push(`/project/${element.id}`)"
+                   :class="{selected: store.isActive(element.id)}"
                    :key="element.id">
-                <input v-if="element.editable&&isActive(element.id)"
+                <input v-if="element.editable&&store.isActive(element.id)"
                        :ref="handleInputRef"
                        v-model="element.name"
                        @blur="element.editable=false"

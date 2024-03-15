@@ -10,7 +10,7 @@ const tasks = inject<Ref<any[]>>('tasks')
     <div v-for="task in tasks" :key="task.id" class="completed-item">
       <div class="item-content">
         <div class="first-line">
-          <div class="check-group">
+          <div class="check-group" @click="task.data.completed=false">
             <CheckOne theme="filled" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt" class="round" />
             <CheckOne theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt"
                       class="check" />

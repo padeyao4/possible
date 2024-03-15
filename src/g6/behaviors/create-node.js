@@ -1,6 +1,7 @@
 import { Extensions } from '@antv/g6'
 import { normalX, normalY } from '@/utils/position-util.js'
 import { v4 } from 'uuid'
+import { faker } from '@faker-js/faker'
 
 const DEFAULT_CONFIG = {
   // 鼠标左键生效
@@ -24,7 +25,7 @@ export default class CreateNode extends Extensions.BaseBehavior {
     const { x, y } = e.canvas
     this.graph.addData('node', {
       id: v4(), data: {
-        name: 'hello', x: normalX(x), y: normalY(y), detail: '', record: '', completed: false
+        name: faker.person.fullName(), x: normalX(x), y: normalY(y), detail: '', record: '', completed: false
       }
     })
   }

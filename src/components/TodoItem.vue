@@ -20,7 +20,7 @@ const tasks = computed(() => {
     <div v-for="task in tasks" :key="task.id" class="todo-item">
       <div class="item-content">
         <div class="first-line">
-          <div class="todo-check-group">
+          <div class="todo-check-group" @click="task.data.completed=true">
             <Round theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt" class="round" />
             <CheckOne theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt"
                       class="check" />
