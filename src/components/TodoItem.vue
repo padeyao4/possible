@@ -12,7 +12,7 @@ const todoTasks = computed(() => {
 })
 
 function onUpdate() {
-  todoTasks?.value.forEach((value, index, array) => {
+  todoTasks?.value.forEach((value, index) => {
     value.data.sortedIndex = index
   })
 }

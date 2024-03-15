@@ -1,25 +1,35 @@
 <script setup lang="ts">
-import { inject, type Ref } from 'vue'
+import { computed, type ComputedRef, inject, ref } from 'vue'
 import { CheckOne } from '@icon-park/vue-next'
+import UnfoldButton from '@/components/UnfoldButton.vue'
 
-const completedTasks = inject<Ref<any[]>>('completedTasks')
+const tasks = inject<ComputedRef<Record<any, any>[]>>('tasks')
+
+const isUnfold = ref(false)
+
+const completedTasks = computed(() => {
+  return tasks?.value.filter(node => node.data.completed) ?? []
+})
 
 </script>
 <template>
   <div>
-    <div v-for="task in completedTasks" :key="task.id" class="completed-item">
-      <div class="item-content">
-        <div class="first-line">
-          <div class="check-group" @click="task.data.completed=false">
-            <CheckOne theme="filled" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt" class="round" />
-            <CheckOne theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt"
-                      class="check" />
+    <unfold-button v-if="completedTasks.length!==0" v-model="isUnfold" :counter="completedTasks.length" />
+    <template v-if="isUnfold">
+      <div v-for="task in completedTasks" :key="task.id" class="completed-item">
+        <div class="item-content">
+          <div class="first-line">
+            <div class="check-group" @click="task.data.completed=false">
+              <CheckOne theme="filled" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt" class="round" />
+              <CheckOne theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt"
+                        class="check" />
+            </div>
+            <del>{{ task.data.name }}</del>
           </div>
-          <del>{{ task.data.name }}</del>
+          <div class="second-line">{{ task.data.project.name }}</div>
         </div>
-        <div class="second-line">{{ task.data.project.name }}</div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
 

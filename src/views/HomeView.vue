@@ -1,18 +1,13 @@
 <script setup lang="ts">
 import { useStore } from '@/stores/store'
-import { computed, provide, ref } from 'vue'
-import UnfoldButton from '@/components/UnfoldButton.vue'
-import { dateToX } from '@/utils/time'
+import { computed, provide } from 'vue'
+import { dateToX, showWeek } from '@/utils/time'
 import TodoItem from '@/components/TodoItem.vue'
 import CompletedItem from '@/components/CompletedItem.vue'
 
 const store = useStore()
 
-const isUnfold = ref(false)
-
-const isEmpty = computed(() => {
-  return Object.values(store.projects).length === 0
-})
+const timeFormat = new Intl.DateTimeFormat('zh-Hans')
 
 const tasks = computed(() => {
   return Object.values(store.projects)
@@ -28,13 +23,12 @@ const tasks = computed(() => {
     }).flat()
 })
 
+const todayTime = computed(() => (
+    timeFormat.format(store.currentTime) + ',' + showWeek(store.currentTime)
+  )
+)
+
 provide('tasks', tasks)
-
-const completedTasks = computed(() => {
-  return tasks.value.filter(node => node.data.completed)
-})
-
-provide('completedTasks', completedTasks)
 
 </script>
 
@@ -44,17 +38,11 @@ provide('completedTasks', completedTasks)
       <div class="content">
         <header>
           <div id="main-title">我的一天</div>
-          <div id="sub-title">2024/3/14,星期四</div>
+          <div id="sub-title">{{ todayTime }}</div>
         </header>
-        <section v-if="isEmpty">
-          <h1>empty</h1>
-        </section>
-        <section v-else>
+        <section>
           <todo-item />
-          <unfold-button v-model="isUnfold" :counter="completedTasks.length" />
-          <template v-if="isUnfold">
-            <completed-item />
-          </template>
+          <completed-item />
         </section>
       </div>
       <footer>
@@ -73,15 +61,17 @@ main {
 }
 
 .content {
-  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
   padding: 24px 24px 0 24px;
+  height: calc(100vh - 48px);
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
   rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
 
 footer {
   height: 48px;
-  flex-shrink: 0;
 }
 
 
@@ -92,6 +82,7 @@ header {
 
 section {
   flex-grow: 1;
+  overflow-y: auto;
 }
 
 
