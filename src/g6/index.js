@@ -7,7 +7,7 @@ import CreateEdge from '@/g6/behaviors/create-edge.js'
 import { DragNode } from '@/g6/behaviors/drag-node.js'
 import { useStore } from '@/stores/store'
 import { DragCanvas } from '@/g6/behaviors/drag-canvas.js'
-import { CustomGraph } from '@/g6/graph.js'
+import { CustomGraph } from '@/g6/core/graph.js'
 import { HoverNode } from '@/g6/behaviors/hover-node.js'
 
 export default function useGraph(container) {

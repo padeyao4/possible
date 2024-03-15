@@ -66,11 +66,39 @@ export class DragNode extends Extensions.BaseBehavior {
     const dx = x - this.downPoint.x
     const dy = y - this.downPoint.y
 
+    const nextX = normalX(this.originPoint.x + dx)
+    const nextY = normalY(this.originPoint.y + dy)
+
+    const delta = nextX - this.originPoint.x
+
+    if (delta > 0) {
+      const outBound = this.graph.getSuccessors(this.selectId)
+        .map(model => model.data.x)
+        .some(x => nextX >= x)
+      if (outBound) {
+        this.updateNodePosition(this.originPoint.x, this.originPoint.y)
+        return
+      }
+    }
+
+    if (delta < 0) {
+      const outBound = this.graph.getPredecessors(this.selectId)
+        .map(model => model.data.x)
+        .some(x => nextX <= x)
+      if (outBound) {
+        this.updateNodePosition(this.originPoint.x, this.originPoint.y)
+        return
+      }
+    }
+
+    this.updateNodePosition(nextX, nextY)
+  }
+
+  updateNodePosition(x, y) {
     this.graph.updateNodePosition({
       id: this.selectId,
       data: {
-        x: normalX(this.originPoint.x + dx),
-        y: normalY(this.originPoint.y + dy)
+        x, y
       }
     }, true, true)
   }
