@@ -12,11 +12,9 @@ const store = useStore()
 const { currentProject } = store
 const container = ref()
 
-const { graph, current, selected } = useGraph(container)
+const { graph } = useGraph(container)
 
 provide('graph', graph)
-provide('current', current)
-provide('selected', selected)
 provide('container', container)
 </script>
 

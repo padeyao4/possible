@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, ref, shallowRef } from 'vue'
+import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { extend } from '@antv/g6'
 import { CardNode } from '@/g6/node/custom-node.js'
 import CreateNode from '@/g6/behaviors/create-node.js'
@@ -9,12 +9,11 @@ import { useStore } from '@/stores/store'
 import { DragCanvas } from '@/g6/behaviors/drag-canvas.js'
 import { CustomGraph } from '@/g6/core/graph.js'
 import { HoverNode } from '@/g6/behaviors/hover-node.js'
+import DoubleClickNode from '@/g6/behaviors/double-click-node.js'
 
 export default function useGraph(container) {
   const { currentProject } = useStore()
   const graph = shallowRef()
-  const current = ref({ id: '', data: { name: '' } })
-  const selected = ref(false)
 
   async function resize() {
     const { x: x1, y: y1 } = graph.value.getCanvasByViewport({ x: 0, y: 0 })
@@ -27,7 +26,7 @@ export default function useGraph(container) {
     const ExtGraph = extend(CustomGraph, {
       nodes: { CardNode },
       plugins: { GridPlugin },
-      behaviors: { CreateNode, DragCanvas, DragNode, CreateEdge, HoverNode }
+      behaviors: { CreateNode, DragCanvas, DragNode, CreateEdge, HoverNode, DoubleClickNode }
     })
 
     graph.value = new ExtGraph({
@@ -37,7 +36,7 @@ export default function useGraph(container) {
       enableStack: false,
       plugins: ['GridPlugin'],
       modes: {
-        default: ['DragCanvas', 'CreateNode', 'DragNode', 'CreateEdge', 'HoverNode']
+        default: ['DragCanvas', 'CreateNode', 'DragNode', 'CreateEdge', 'HoverNode', 'DoubleClickNode']
       },
       node: (model) => {
         const { id, data } = model
@@ -93,12 +92,6 @@ export default function useGraph(container) {
       }
     })
 
-    graph.value.on('node:dblclick', (e) => {
-      // todo 通过自定义事件简化写法
-      current.value = graph.value.getNodeData(e.itemId)
-      selected.value = true
-    })
-
     window.addEventListener('resize', resize)
   })
 
@@ -108,5 +101,5 @@ export default function useGraph(container) {
     window.removeEventListener('resize', resize)
   })
 
-  return { graph, current, selected }
+  return { graph }
 }

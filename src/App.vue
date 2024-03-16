@@ -53,6 +53,13 @@ onMounted(() => {
   router.push('/today')
 })
 
+function handleComplete(evt: any, element: any) {
+  evt.stopPropagation()
+  element.completed = true
+  store.setSelected('completed')
+  router.push('/completed')
+}
+
 </script>
 
 <template>
@@ -92,7 +99,7 @@ onMounted(() => {
                   <div class="operation">
                     <write theme="outline" size="15" fill="#333" :strokeWidth="1" @click="element.editable=true" />
                     <delete-four theme="outline" size="15" fill="#333" :strokeWidth="1"
-                                 @click="element.completed=true" />
+                                 @click="(evt:any)=>handleComplete(evt,element)" />
                     <drag theme="outline" size="15" fill="#b9b9b9" :strokeWidth="1" class="move" />
                   </div>
                 </div>

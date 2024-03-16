@@ -1,33 +1,43 @@
 <script setup>
-import { inject } from 'vue'
+import { computed, inject } from 'vue'
 
-const selected = inject('selected')
-const current = inject('current')
 const graph = inject('graph')
 
-const task = new Proxy(current, {
-  get: (target, p) => {
-    return Reflect.get(target.value.data, p)
+const visible = computed({
+  get: () => {
+    const { userData } = graph.value ?? { userData: { doubleNodeClick: false } }
+    return userData.doubleNodeClick
   },
-  set: (target, p, newValue) => {
-    Reflect.set(target.value.data, p, newValue)
-    graph.value.updateData('node', {
-      id: target.value.id,
-      data: target.value.data
-    })
-    return true
+  set: (value) => {
+    const { userData } = graph.value
+    userData.doubleNodeClick = value
   }
+})
+
+const task = computed(() => {
+  const { selectItem } = graph.value.userData
+
+  return new Proxy(selectItem, {
+    get: (target, p) => {
+      return Reflect.get(target.data, p)
+    },
+    set: (target, p, newValue) => {
+      Reflect.set(target.data, p, newValue)
+      graph.value.updateData('node', target)
+      return true
+    }
+  })
 })
 </script>
 
 <template>
   <teleport to="body">
     <el-drawer
-      v-model="selected"
+      v-model="visible"
       :close-on-click-modal="false"
       :show-close="true"
       modal-class="modal-class"
-      @close="selected=false"
+      @close="visible=false"
     >
       <el-form :model="task" @submit.prevent>
         <el-form-item label="名称">

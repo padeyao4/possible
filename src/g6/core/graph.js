@@ -1,6 +1,12 @@
 import { Graph } from '@antv/g6'
+import { reactive } from 'vue'
 
 export class CustomGraph extends Graph {
+
+  userData = reactive({
+    selectItem: undefined,
+    doubleNodeClick: false
+  })
 
   async transform(options, effectTiming) {
     const { tileLodSize } = this.specification.optimize || {}
