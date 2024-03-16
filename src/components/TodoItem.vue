@@ -1,0 +1,115 @@
+<script setup lang="ts">
+import { computed, type ComputedRef, inject } from 'vue'
+import { CheckOne, Drag, Record, Round } from '@icon-park/vue-next'
+import Draggable from 'vuedraggable'
+
+const tasks = inject<ComputedRef<Record<any, any>[]>>('tasks')
+
+const todoTasks = computed(() => {
+  return tasks?.value
+    .sort((task1, task2) => task1.data.sortedIndex - task2.data.sortedIndex)
+    .filter(node => !node.data.completed) ?? []
+})
+
+function onUpdate() {
+  todoTasks?.value.forEach((value, index) => {
+    value.data.sortedIndex = index
+  })
+}
+
+</script>
+<template>
+  <div>
+    <draggable :list="todoTasks"
+               item-key="id"
+               chosenClass="chosen-class"
+               dragClass="drag-class"
+               handle=".move-bar"
+               ghostClass="ghost-class"
+               :forceFallback="true"
+               @update="onUpdate">
+      <template #item="{ element }">
+        <div :key="element.id" class="todo-item">
+          <div class="item-content">
+            <div class="first-line">
+              <div class="todo-check-group" @click="element.data.completed=true">
+                <Round theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt" class="round" />
+                <CheckOne theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt"
+                          class="check" />
+              </div>
+              {{ element.data.name }}
+            </div>
+            <div class="second-line">{{ element.data.project.name }}</div>
+          </div>
+          <Drag theme="outline" size="20" fill="#333" :stroke-width="2" class="move-bar" />
+        </div>
+      </template>
+    </draggable>
+  </div>
+</template>
+
+<style scoped>
+.todo-item {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  margin: 4px 0;
+  height: 56px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.8);
+
+  .item-content {
+    flex-grow: 1;
+
+    .first-line {
+      display: flex;
+      align-items: center;
+
+      .todo-check-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 8px 0 0;
+
+        & > * {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .check {
+          display: none;
+        }
+
+        &:hover .round {
+          display: none;
+        }
+
+        &:hover .check {
+          display: flex;
+        }
+      }
+    }
+
+    .second-line {
+      display: flex;
+      align-items: center;
+      margin: 0 0 0 28px;
+    }
+  }
+
+  .move-bar {
+    display: none;
+    align-items: center;
+    justify-content: end;
+    width: 32px;
+    height: 48px;
+    flex-shrink: 0;
+    cursor: move;
+  }
+
+  &:hover .move-bar {
+    display: flex;
+  }
+}
+</style>
