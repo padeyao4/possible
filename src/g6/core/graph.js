@@ -29,4 +29,15 @@ export class CustomGraph extends Graph {
   getSuccessors(nodeId) {
     return this.dataController.graphCore.getSuccessors(nodeId)
   }
+
+  /**
+   * 检查节点是否重合
+   * @returns {boolean}
+   * @param x {number}
+   * @param y {number}
+   */
+  checkNodeOverlap(x, y) {
+    return this.getAllNodesData()
+      .some(model => model.data.x === x && model.data.y === y)
+  }
 }

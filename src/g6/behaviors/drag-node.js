@@ -60,6 +60,11 @@ export class DragNode extends Extensions.BaseBehavior {
     this.selectId = undefined
   }
 
+  /**
+   * 拖动结束后逻辑
+   * 判断是否能拖动节点
+   * @param e
+   */
   dragend(e) {
     const { x, y } = e.canvas
 
@@ -68,6 +73,11 @@ export class DragNode extends Extensions.BaseBehavior {
 
     const nextX = normalX(this.originPoint.x + dx)
     const nextY = normalY(this.originPoint.y + dy)
+
+    if (this.graph.checkNodeOverlap(nextX, nextY)) {
+      this.updateNodePosition(this.originPoint.x, this.originPoint.y)
+      return
+    }
 
     const delta = nextX - this.originPoint.x
 
