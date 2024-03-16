@@ -14,21 +14,41 @@ const position = computed(() => {
   return graph.getClientByCanvas(position)
 })
 
+/**
+ * Deletes a node from the graph based on the node ID stored in the
+ * graph's userData.selectItem property.
+ * Removes the node data from the graph and closes the context menu.
+ */
 function handleDelete() {
   const graph = graphRef.value
   const { userData } = graph
   const id = userData.selectItem.id
   graph.removeData('node', id)
+  onblur()
+}
+
+/**
+ * Hides the context menu by resetting the graph's userData.status to 'none'.
+ */
+function onblur() {
+  const graph = graphRef.value
+  const { userData } = graph
+  userData.status = 'none'
+}
+
+function onRef(e: any) {
+  setTimeout(() => {
+    (e as HTMLElement)?.focus()
+  });
 }
 
 </script>
 
 <template>
   <teleport to="body">
-    <div v-if="visible"
-         :style="{'position': 'absolute','left':position.x+'px','top':position.y+'px'}"
-         @contextmenu.prevent>
-      <div class="menu" :ref="(e)=>(e as HTMLElement)?.focus()">
+    <div v-if="visible" :style="{ 'position': 'absolute', 'left': position.x + 'px', 'top': position.y + 'px' }"
+      @contextmenu.prevent>
+      <div class="menu" :ref="onRef" tabindex="0" @blur="onblur">
         <ul>
           <li @pointerdown="handleDelete">删除</li>
           <li>插入</li>
@@ -39,7 +59,6 @@ function handleDelete() {
 </template>
 
 <style scoped>
-
 .menu {
   width: 80px;
   border-radius: 4px;

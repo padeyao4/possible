@@ -16,12 +16,5 @@ export default class ContextMenu extends Extensions.BaseBehavior {
     userData.selectItem = this.graph.getNodeData(itemId)
     userData.pointerPosition = { x, y }
     userData.status = 'contextmenu'
-
-    setTimeout(() => {
-      window.addEventListener('mousedown', function() {
-        userData.status = 'none'
-        window.removeEventListener('mousedown', this)
-      }, { once: true })
-    })
   }
 }
