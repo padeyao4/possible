@@ -10,6 +10,7 @@ import { DragCanvas } from '@/g6/behaviors/drag-canvas.js'
 import { CustomGraph } from '@/g6/core/graph.js'
 import { HoverNode } from '@/g6/behaviors/hover-node.js'
 import DoubleClickNode from '@/g6/behaviors/double-click-node.js'
+import ContextMenu from '@/g6/behaviors/context-menu.js'
 
 export default function useGraph(container) {
   const { currentProject } = useStore()
@@ -26,7 +27,7 @@ export default function useGraph(container) {
     const ExtGraph = extend(CustomGraph, {
       nodes: { CardNode },
       plugins: { GridPlugin },
-      behaviors: { CreateNode, DragCanvas, DragNode, CreateEdge, HoverNode, DoubleClickNode }
+      behaviors: { CreateNode, DragCanvas, DragNode, CreateEdge, HoverNode, DoubleClickNode, ContentMenu: ContextMenu }
     })
 
     graph.value = new ExtGraph({
@@ -36,7 +37,7 @@ export default function useGraph(container) {
       enableStack: false,
       plugins: ['GridPlugin'],
       modes: {
-        default: ['DragCanvas', 'CreateNode', 'DragNode', 'CreateEdge', 'HoverNode', 'DoubleClickNode']
+        default: ['DragCanvas', 'CreateNode', 'DragNode', 'CreateEdge', 'HoverNode', 'DoubleClickNode', 'ContentMenu']
       },
       node: (model) => {
         const { id, data } = model

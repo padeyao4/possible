@@ -28,6 +28,10 @@ body {
     text-rendering: optimizeLegibility;
     border-radius: 8px;
     overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 

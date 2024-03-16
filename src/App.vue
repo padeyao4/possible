@@ -64,7 +64,7 @@ function handleComplete(evt: any, element: any) {
 
 <template>
   <div>
-    <main>
+    <main @contextmenu.prevent>
       <aside>
         <header>
           <div class="selected-item" :class="{selected: store.isActive('today')}"

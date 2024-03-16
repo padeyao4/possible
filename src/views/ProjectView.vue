@@ -6,16 +6,14 @@ import { useStore } from '@/stores/store.ts'
 import TimerHeader from '@/components/TimerHeader.vue'
 import GraphEditor from '@/components/GraphEditor.vue'
 import PickDateButton from '@/components/PickDateButton.vue'
+import GraphContextmenu from '@/components/GraphContextmenu.vue'
 
 const store = useStore()
-
-const { currentProject } = store
 const container = ref()
-
+const { currentProject } = store
 const { graph } = useGraph(container)
 
 provide('graph', graph)
-provide('container', container)
 </script>
 
 <template>
@@ -27,6 +25,7 @@ provide('container', container)
           <timer-header id="timer-header" />
           <div id="container" ref="container"></div>
           <graph-editor />
+          <graph-contextmenu />
         </section>
       </div>
       <footer>

@@ -5,12 +5,12 @@ const graph = inject('graph')
 
 const visible = computed({
   get: () => {
-    const { userData } = graph.value ?? { userData: { doubleNodeClick: false } }
-    return userData.doubleNodeClick
+    const { userData } = graph.value ?? { userData: { status: 'none' } }
+    return userData.status === 'edit'
   },
   set: (value) => {
     const { userData } = graph.value
-    userData.doubleNodeClick = value
+    userData.status = value ? 'edit' : 'none'
   }
 })
 

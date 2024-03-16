@@ -5,7 +5,9 @@ export class CustomGraph extends Graph {
 
   userData = reactive({
     selectItem: undefined,
-    doubleNodeClick: false
+    // 'edit'|'none'|'contextmenu'
+    status: 'none',
+    pointerPosition: { x: 0, y: 0 }
   })
 
   async transform(options, effectTiming) {
@@ -45,5 +47,14 @@ export class CustomGraph extends Graph {
   checkNodeOverlap(x, y) {
     return this.getAllNodesData()
       .some(model => model.data.x === x && model.data.y === y)
+  }
+
+  /**
+   * 检查是否存在节点
+   * @param id
+   * @returns {*}
+   */
+  hasNode(id){
+    return this.dataController.graphCore.hasNode(id)
   }
 }

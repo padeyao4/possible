@@ -9,11 +9,17 @@ export class HoverNode extends Extensions.BaseBehavior {
   }
 
   onPointerEnter(e) {
-    this.graph.setItemState(e.itemId, 'hover', true)
+    const id = e.itemId
+    if (this.graph.hasNode(id)) {
+      this.graph.setItemState(id, 'hover', true)
+    }
   }
 
   onPointerLeave(e) {
-    this.graph.setItemState(e.itemId, 'hover', false)
+    const id = e.itemId
+    if (this.graph.hasNode(id)) {
+      this.graph.setItemState(id, 'hover', false)
+    }
   }
 
 }

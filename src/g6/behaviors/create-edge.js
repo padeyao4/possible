@@ -87,6 +87,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
       const targetId = this.edge.target === DUMMY_ID ? itemId : this.edge.target
       this.creteEdge(sourceId, targetId)
     }
+    // todo 当拖动出画面拖动失效
     this.clearStatus()
   }
 

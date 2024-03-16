@@ -19,14 +19,10 @@ export class DragNode extends Extensions.BaseBehavior {
     super(Object.assign({}, DEFAULT_CONFIG, options))
   }
 
-  test(e) {
-    console.log('windows test', e)
-  }
-
   getEvents() {
     return {
       'node:pointerdown': this.onPointerDown,
-      // pointerup: this.onPointerUp,
+      pointerup: this.onPointerUp,
       pointermove: this.onPointerMove,
       click: this.onClick
     }
@@ -69,7 +65,6 @@ export class DragNode extends Extensions.BaseBehavior {
 
   clearState() {
     this.pointerDown = false
-    this.selectId = undefined
   }
 
   /**
@@ -79,8 +74,8 @@ export class DragNode extends Extensions.BaseBehavior {
   dragend() {
     const { x, y } = this.graph.getNodeData(this.selectId).data
 
-    const dx = x - this.downPoint.x
-    const dy = y - this.downPoint.y
+    const dx = x - this.originPoint.x
+    const dy = y - this.originPoint.y
 
     const nextX = normalX(this.originPoint.x + dx)
     const nextY = normalY(this.originPoint.y + dy)
@@ -90,9 +85,7 @@ export class DragNode extends Extensions.BaseBehavior {
       return
     }
 
-    const delta = nextX - this.originPoint.x
-
-    if (delta > 0) {
+    if (dx > 0) {
       const outBound = this.graph.getSuccessors(this.selectId)
         .map(model => model.data.x)
         .some(x => nextX >= x)
@@ -102,7 +95,7 @@ export class DragNode extends Extensions.BaseBehavior {
       }
     }
 
-    if (delta < 0) {
+    if (dx < 0) {
       const outBound = this.graph.getPredecessors(this.selectId)
         .map(model => model.data.x)
         .some(x => nextX <= x)
@@ -126,8 +119,8 @@ export class DragNode extends Extensions.BaseBehavior {
 
   onPointerUp() {
     if (!this.pointerDown) return
-    this.dragend()
     this.clearState()
+    this.dragend()
   }
 
   onClick() {
