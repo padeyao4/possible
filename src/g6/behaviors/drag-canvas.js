@@ -16,7 +16,6 @@ export class DragCanvas extends Extensions.BaseBehavior {
   getEvents() {
     return {
       'canvas:pointerdown': this.onPointerDown,
-      pointerup: this.onPointerUp,
       pointermove: this.onPointerMove,
       click: this.onClick
     }
@@ -26,6 +25,13 @@ export class DragCanvas extends Extensions.BaseBehavior {
     if (!this.options.shouldBegin(e)) return
     const { x, y } = e.client
     this.pointerDownPosition = { x, y }
+
+    const self = this
+    window.addEventListener('mouseup', function() {
+      self.onPointerUp()
+      // 有些情况下导致无法只监听一次,需手动添加移除
+      window.removeEventListener('mouseup', this)
+    }, { once: true })
   }
 
   onPointerMove(e) {

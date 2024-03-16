@@ -19,10 +19,14 @@ export class DragNode extends Extensions.BaseBehavior {
     super(Object.assign({}, DEFAULT_CONFIG, options))
   }
 
+  test(e) {
+    console.log('windows test', e)
+  }
+
   getEvents() {
     return {
       'node:pointerdown': this.onPointerDown,
-      pointerup: this.onPointerUp,
+      // pointerup: this.onPointerUp,
       pointermove: this.onPointerMove,
       click: this.onClick
     }
@@ -30,6 +34,14 @@ export class DragNode extends Extensions.BaseBehavior {
 
   onPointerDown(e) {
     if (!this.options.shouldBegin(e)) return
+
+    // 解决鼠标拖出画布无法监听事件
+    const self = this
+    window.addEventListener('mouseup', function() {
+      self.onPointerUp()
+      window.removeEventListener('mouseup', this)
+    }, { once: true })
+
     const { itemId, target: { id } } = e
     if (id === 'anchorShape0' || id === 'anchorShape1') return
     this.selectId = itemId
@@ -63,10 +75,9 @@ export class DragNode extends Extensions.BaseBehavior {
   /**
    * 拖动结束后逻辑
    * 判断是否能拖动节点
-   * @param e
    */
-  dragend(e) {
-    const { x, y } = e.canvas
+  dragend() {
+    const { x, y } = this.graph.getNodeData(this.selectId).data
 
     const dx = x - this.downPoint.x
     const dy = y - this.downPoint.y
@@ -113,14 +124,13 @@ export class DragNode extends Extensions.BaseBehavior {
     }, true, true)
   }
 
-  onPointerUp(e) {
+  onPointerUp() {
     if (!this.pointerDown) return
-    this.dragend(e)
+    this.dragend()
     this.clearState()
   }
 
   onClick() {
     this.clearState()
   }
-
 }
