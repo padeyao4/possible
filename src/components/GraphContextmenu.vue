@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject } from 'vue'
+import { computed, inject } from 'vue';
 
 const graphRef = inject('graph') as any
 
@@ -24,7 +24,7 @@ function handleDelete() {
   const { userData } = graph
   const id = userData.selectItem.id
   graph.removeData('node', id)
-  onblur()
+  // onblur()
 }
 
 /**
@@ -42,6 +42,13 @@ function onRef(e: any) {
   });
 }
 
+function test() {
+  const graph = graphRef.value
+  const id = graph.userData.selectItem.id
+  const models = graph.getAllPredecessors(id)
+  console.log(models.map(m => m.data.name));
+}
+
 </script>
 
 <template>
@@ -49,9 +56,9 @@ function onRef(e: any) {
     <div v-if="visible" :style="{ 'position': 'absolute', 'left': position.x + 'px', 'top': position.y + 'px' }"
       @contextmenu.prevent>
       <div class="menu" :ref="onRef" tabindex="0" @blur="onblur">
-        <ul>
-          <li @pointerdown="handleDelete">删除</li>
-          <li>插入</li>
+        <ul @click="onblur">
+          <li @click="handleDelete">删除</li>
+          <li @click="test">test</li>
         </ul>
       </div>
     </div>

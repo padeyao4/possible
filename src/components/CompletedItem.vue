@@ -14,15 +14,14 @@ const completedTasks = computed(() => {
 </script>
 <template>
   <div>
-    <unfold-button v-if="completedTasks.length!==0" v-model="isUnfold" :counter="completedTasks.length" />
+    <unfold-button v-if="completedTasks.length !== 0" v-model="isUnfold" :counter="completedTasks.length" />
     <template v-if="isUnfold">
       <div v-for="task in completedTasks" :key="task.id" class="completed-item">
         <div class="item-content">
           <div class="first-line">
-            <div class="check-group" @click="task.data.completed=false">
+            <div class="check-group" @click="task.data.completed = false">
               <CheckOne theme="filled" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt" class="round" />
-              <CheckOne theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt"
-                        class="check" />
+              <CheckOne theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt" class="check" />
             </div>
             <del>{{ task.data.name }}</del>
           </div>
@@ -57,7 +56,7 @@ const completedTasks = computed(() => {
         align-items: center;
         margin: 0 8px 0 0;
 
-        & > * {
+        &>* {
           display: flex;
           justify-content: center;
           align-items: center;

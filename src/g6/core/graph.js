@@ -23,7 +23,7 @@ export class CustomGraph extends Graph {
   /**
    * 获取前辈节点
    * @param nodeId
-   * @returns {*}
+   * @returns {{id:string|number,data:any}} models
    */
   getPredecessors(nodeId) {
     return this.dataController.graphCore.getPredecessors(nodeId)
@@ -51,10 +51,41 @@ export class CustomGraph extends Graph {
 
   /**
    * 检查是否存在节点
-   * @param id
+   * @param nodeId
    * @returns {*}
    */
-  hasNode(id){
-    return this.dataController.graphCore.hasNode(id)
+  hasNode(nodeId){
+    return this.dataController.graphCore.hasNode(nodeId)
+  }
+
+  /**
+   * Recursively gets all predecessor node IDs for the given node ID.
+   * 
+   * @param {string|number} nodeId - The ID of the node to get predecessors for.
+   * @returns {Set} A Set containing all predecessor node IDs.
+   */
+  getAllPredecessorsIds(nodeId) {
+    const predecessors = []
+    const models = this.getPredecessors(nodeId).map(model => model.id)
+    if (models && models.length > 0) {
+      models.forEach(s => {
+        predecessors.push(...this.getAllPredecessorsIds(s))
+      })
+    }
+    return new Set([...predecessors, nodeId])
+  }
+
+    /**
+   * Recursively gets all predecessor node IDs for the given node ID.
+   * @param {string|number} nodeId - The ID of the node to get predecessors for.
+   * @returns {Array} An array containing all predecessor node models.
+   */
+  getAllPredecessors(nodeId) {
+    const ids = this.getAllPredecessorsIds(nodeId)
+    ids.delete(nodeId)
+    console.log(ids);
+    return [...ids].map(id => {
+      return this.getNodeData(id)
+    })
   }
 }
