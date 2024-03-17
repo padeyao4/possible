@@ -1,5 +1,5 @@
 <script setup>
-import { computed, inject } from 'vue'
+import { computed, inject } from 'vue';
 
 const graphRef = inject('graph')
 
@@ -14,16 +14,21 @@ const visible = computed({
   }
 })
 
-const task = computed(() => {
-  const { selectItem } = graphRef.value.userData
 
-  return new Proxy(selectItem, {
+const task = computed(() => {
+  const { userData } = graphRef.value
+  const data = userData.selectItem.data
+
+  return new Proxy(data, {
     get: (target, p) => {
-      return Reflect.get(target.data, p)
+      return Reflect.get(target, p)
     },
     set: (target, p, newValue) => {
-      Reflect.set(target.data, p, newValue)
-      graphRef.value.updateData('node', target)
+      Reflect.set(target, p, newValue)
+      graphRef.value.updateData('node', {
+        id: userData.selectItem.id,
+        data: target
+      })
       return true
     }
   })

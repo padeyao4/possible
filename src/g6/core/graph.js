@@ -5,9 +5,8 @@ export class CustomGraph extends Graph {
 
   userData = reactive({
     selectItem: undefined,
-    // 'edit'|'none'|'contextmenu'
-    status: 'none',
-    pointerPosition: { x: 0, y: 0 }
+    status: 'none', // 'edit'|'none'|'contextmenu'
+    pointerPosition: { x: 0, y: 0 } // 用于contextmenu定位
   })
 
   async transform(options, effectTiming) {
@@ -99,11 +98,11 @@ export class CustomGraph extends Graph {
     return new Set([...successors, nodeId])
   }
 
-   /**
-   * Recursively gets all successor node models for the given node ID.
-   * @param {string|number} nodeId - The ID of the node to get successors for. 
-   * @returns {Array} An array containing all successor node models.
-   */
+  /**
+  * Recursively gets all successor node models for the given node ID.
+  * @param {string|number} nodeId - The ID of the node to get successors for. 
+  * @returns {Array} An array containing all successor node models.
+  */
   getAllSuccessorss(nodeId) {
     const ids = this.getAllSuccessorssIds(nodeId)
     ids.delete(nodeId)

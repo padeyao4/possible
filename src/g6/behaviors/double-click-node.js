@@ -22,6 +22,6 @@ export default class DoubleClickNode extends Extensions.BaseBehavior {
     const { itemId } = e
     const { userData } = this.graph
     userData.status = 'edit'
-    userData.selectItem = this.graph.getNodeData(itemId)
+    userData.selectItem = { ...this.graph.getNodeData(itemId) }
   }
 }

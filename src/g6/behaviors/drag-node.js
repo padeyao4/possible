@@ -11,11 +11,20 @@ const DEFAULT_CONFIG = {
 export class DragNode extends Extensions.BaseBehavior {
   pointerDown = false
 
-  originPoint = { x: 0, y: 0 }
+  dragging = false
 
-  downPoint = { x: 0, y: 0 }
+  pointerDownPosition = {
+    x: 0, y: 0
+  }
 
-  selectId = undefined
+  originNodeData = {
+    id: '',
+    data: {
+      x: 0,
+      y: 0,
+      completed: false
+    }
+  }
 
   store = useStore()
 
@@ -46,40 +55,47 @@ export class DragNode extends Extensions.BaseBehavior {
 
     const { itemId, target: { id } } = e
     if (id === 'anchorShape0' || id === 'anchorShape1') return
-    this.selectId = itemId
-    this.pointerDown = true
-    const { data: { x, y } } = this.graph.getNodeData(this.selectId)
-    this.originPoint = { x, y }
-    this.downPoint = { x: e.canvas.x, y: e.canvas.y }
 
-    const proeject = this.store.currentProject
-    this.currentX = dateToX(this.store.currentTime, proeject.createTime)
+    const model = this.graph.getNodeData(itemId)
+    this.originNodeData = {
+      id: itemId,
+      data: {
+        x: model.data.x,
+        y: model.data.y,
+        completed: model.data.completed
+      }
+    }
+    this.pointerDown = true
+    this.pointerDownPosition = { x: e.canvas.x, y: e.canvas.y }
+
+    this.currentX = dateToX(this.store.currentTime, this.store.currentProject.createTime)
   }
 
   onPointerMove(e) {
     if (!this.pointerDown) return
-    const { x, y } = e.canvas
 
-    const dx = x - this.downPoint.x
-    const dy = y - this.downPoint.y
+    if (!this.dragging) {
+      this.dragging = true
+    }
 
-    const dstX = this.originPoint.x + dx
-    const dstY = this.originPoint.y + dy
+    const { x, y } = this.originNodeData.data
 
-    const norX = normalX(dstX)
+    const dstX = x - this.pointerDownPosition.x + e.canvas.x
+    const dstY = y - this.pointerDownPosition.y + e.canvas.y
 
-    this.graph.updateData('node',{
-      id:this.selectId,
-      data:{
+    this.graph.updateData('node', {
+      id: this.originNodeData.id,
+      data: {
         x: dstX,
         y: dstY,
-        completed: norX < this.currentX
+        completed: normalX(dstX) < this.currentX || this.originNodeData.data.completed
       }
     })
   }
 
   clearState() {
     this.pointerDown = false
+    this.dragging = false
   }
 
   /**
@@ -87,55 +103,66 @@ export class DragNode extends Extensions.BaseBehavior {
    * 判断是否能拖动节点
    */
   dragend() {
-    const { x, y } = this.graph.getNodeData(this.selectId).data
+    const nodeId = this.originNodeData.id
+    const { x, y } = this.graph.getNodeData(nodeId).data
 
-    const dx = x - this.originPoint.x
-    const dy = y - this.originPoint.y
-
-    const nextX = normalX(this.originPoint.x + dx)
-    const nextY = normalY(this.originPoint.y + dy)
+    const nextX = normalX(x)
+    const nextY = normalY(y)
 
     if (this.graph.checkNodeOverlap(nextX, nextY)) {
-      this.updateNodePosition(this.originPoint.x, this.originPoint.y)
+      this.restoreNodeState()
       return
     }
 
+    const dx = x - this.originNodeData.data.x
+
     if (dx > 0) {
-      const outBound = this.graph.getSuccessors(this.selectId)
+      const outBound = this.graph.getSuccessors(nodeId)
         .map(model => model.data.x)
         .some(x => nextX >= x)
       if (outBound) {
-        this.updateNodePosition(this.originPoint.x, this.originPoint.y)
+        this.restoreNodeState()
         return
       }
     }
 
     if (dx < 0) {
-      const outBound = this.graph.getPredecessors(this.selectId)
+      const outBound = this.graph.getPredecessors(nodeId)
         .map(model => model.data.x)
         .some(x => nextX <= x)
       if (outBound) {
-        this.updateNodePosition(this.originPoint.x, this.originPoint.y)
+        this.restoreNodeState()
         return
       }
     }
 
-    this.updateNodePosition(nextX, nextY)
+    this.updateNodeInfo(nextX, nextY)
   }
 
-  updateNodePosition(x, y) {
-    this.graph.updateNodePosition({
-      id: this.selectId,
+  restoreNodeState() {
+    this.graph.updateData('node', this.originNodeData)
+  }
+
+  updateNodeInfo(x, y) {
+    this.graph.updateData('node', {
+      id: this.originNodeData.id,
       data: {
-        x, y
+        x, y, completed: x < this.currentX || this.originNodeData.data.completed
       }
-    }, true, true)
+    })
+  }
+
+  setGraphSelectedItem() {
+    const { userData } = this.graph
+    userData.selectItem = { ...this.graph.getNodeData(this.originNodeData.id) }
   }
 
   onPointerUp() {
     if (!this.pointerDown) return
+    if (!this.dragging) return
     this.clearState()
     this.dragend()
+    this.setGraphSelectedItem()
   }
 
   onClick() {
