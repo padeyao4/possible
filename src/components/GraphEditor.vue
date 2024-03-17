@@ -34,12 +34,25 @@ const task = computed(() => {
  * Checks if all predecessor nodes are completed by getting all predecessors
  * via graph.getAllPredecessors() and checking if their 'completed' data is true.
  */
-const enable = computed(() => {
+const isCompleted = computed(() => {
   const graph = graphRef.value
   const { userData } = graph
   const nodeId = userData.selectItem.id
   const models = graph.getAllPredecessors(nodeId)
   return models.every((model) => model.data.completed)
+})
+
+/**
+ * Computed property that returns a boolean indicating if the node is pending. 
+ * Checks if any successor nodes are not completed by getting all successors
+ * via graph.getAllSuccessors() and checking if their 'completed' data is false.
+*/
+const isPending = computed(() => {
+  const graph = graphRef.value
+  const { userData } = graph
+  const nodeId = userData.selectItem.id
+  const models = graph.getAllSuccessorss(nodeId)
+  return models.every((model) => !model.data.completed)
 })
 
 </script>
@@ -59,8 +72,8 @@ const enable = computed(() => {
           <el-input v-model="task.record" type="textarea" />
         </el-form-item>
         <el-radio-group v-model="task.completed">
-          <el-radio :value="true" :disabled="!enable" size="default" border>完成</el-radio>
-          <el-radio :value="false" size="default" border>正常</el-radio>
+          <el-radio :value="true" :disabled="!isCompleted" size="default" border>完成</el-radio>
+          <el-radio :value="false" :disabled="!isPending" size="default" border>正常</el-radio>
         </el-radio-group>
       </el-form>
     </el-drawer>

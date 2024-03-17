@@ -45,8 +45,8 @@ function onRef(e: any) {
 function test() {
   const graph = graphRef.value
   const id = graph.userData.selectItem.id
-  const models = graph.getAllPredecessors(id)
-  console.log(models.map(m => m.data.name));
+  const models = graph.getAllSuccessorss(id)
+  console.log(models.map((m: any) => m.data.name));
 }
 
 </script>

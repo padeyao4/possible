@@ -23,11 +23,19 @@ export default class CreateNode extends Extensions.BaseBehavior {
     if (!this.options.shouldBegin(e)) return
 
     const { x, y } = e.canvas
+
+    const posX = normalX(x)
+    const posY = normalY(y)
+
+    if (this.graph.checkNodeOverlap(posX, posY)) {
+      return
+    }
+
     this.graph.addData('node', {
       id: v4(), data: {
         name: faker.person.fullName(),
-        x: normalX(x),
-        y: normalY(y),
+        x: posX,
+        y: posY,
         detail: '',
         record: '',
         completed: false,

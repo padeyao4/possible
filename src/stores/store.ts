@@ -33,7 +33,7 @@ export const useStore = defineStore('store', () => {
     return selected.value === value
   }
 
-    /**
+  /**
    * Adds a new project to the projects map/object.
    * @param project - The project object to add.
    * @returns The id of the added project.
