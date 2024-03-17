@@ -82,25 +82,42 @@ export const useStore = defineStore('store', () => {
   }
 
 
-  const dailyUpdateProjects = () => {
-    const UNIT = 120
-
+  const dailyUpdate = () => {
     Object.values(projects.value).forEach((project) => {
-
-      // todo
-      const dataController = new DataController(project)
-      const nodes = project.nodes
-      const edges = project.edges
+      const UNIT = 120
+      const dataCore = new DataCore(project)
       const currentX = dateToX(currentTime.value, project.createTime)
 
+      const sortedIndexes = [...dataCore.indexMap.keys()].sort((a, b) => a - b)
+      console.log('sortedIndexes', sortedIndexes)
     })
   }
 
+  const save = () => {
+    return JSON.stringify(projects.value)
+  }
 
-  return { projects, currentProject, isActive, setSelected, addProject, currentTime, addDays, updateTime }
+  const restore = (s: string, date: string) => {
+    projects.value = JSON.parse(s)
+    currentTime.value = new Date(date)
+  }
+
+  return {
+    projects,
+    currentProject,
+    currentTime,
+    isActive,
+    setSelected,
+    addProject,
+    addDays,
+    updateTime,
+    dailyUpdate,
+    save,
+    restore
+  }
 })
 
-class DataController {
+class DataCore {
   project: Project
   nodesMap: Map<ID, Node>
   edgesMap: Map<ID, Edge>
@@ -115,10 +132,7 @@ class DataController {
     this.sourceMap = new Map<ID, ID[]>()
     this.targetMap = new Map<ID, ID[]>()
     this.indexMap = new Map<number, ID[]>()
-    this.initMap()
-  }
 
-  initMap() {
     this.project.edges.forEach((edge) => {
       const source = edge.source
       const target = edge.target
@@ -145,7 +159,6 @@ class DataController {
       }
     })
   }
-
 
   public getPredecessors(nodeId: ID): ID[] {
     return this.targetMap.get(nodeId) ?? []

@@ -1,6 +1,6 @@
 import { Extensions } from '@antv/g6'
 
-export class CardNode extends Extensions.RectNode {
+export default class CardNode extends Extensions.RectNode {
   /**
    * 自定义text-label,解决label绘制不同步问题
    */

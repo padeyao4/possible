@@ -1,18 +1,18 @@
 import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { extend } from '@antv/g6'
-import { CardNode } from '@/g6/node/custom-node.js'
-import CreateNode from '@/g6/behaviors/create-node.js'
-import GridPlugin from '@/g6/plugin/grid-plugin.js'
-import CreateEdge from '@/g6/behaviors/create-edge.ts'
-import { DragNode } from '@/g6/behaviors/drag-node.ts'
+import CardNode from '@/g6/node/custom-node'
+import CreateNode from '@/g6/behaviors/create-node'
+import GridPlugin from '@/g6/plugin/grid-plugin'
+import CreateEdge from '@/g6/behaviors/create-edge'
+import DragNode from '@/g6/behaviors/drag-node'
 import { useStore } from '@/stores/store'
-import { DragCanvas } from '@/g6/behaviors/drag-canvas.ts'
+import { DragCanvas } from '@/g6/behaviors/drag-canvas'
 import { CustomGraph } from '@/g6/core/graph.js'
-import { HoverNode } from '@/g6/behaviors/hover-node.ts'
-import DoubleClickNode from '@/g6/behaviors/double-click-node.ts'
-import ContextMenu from '@/g6/behaviors/context-menu.ts'
+import { HoverNode } from '@/g6/behaviors/hover-node'
+import DoubleClickNode from '@/g6/behaviors/double-click-node'
+import ContextMenu from '@/g6/behaviors/context-menu'
 
-export default function useGraph(container) {
+export default function useGraph(container:any) {
   const { currentProject } = useStore()
   const graph = shallowRef()
 
@@ -65,7 +65,7 @@ export default function useGraph(container) {
             ],
             ...data
           }
-        }
+        } as any
       },
       nodeState: {
         hover: {

@@ -8,7 +8,7 @@ const DEFAULT_CONFIG = {
   shouldBegin: (event) => event.button === 0
 }
 
-export class DragNode extends Extensions.BaseBehavior {
+export default class DragNode extends Extensions.BaseBehavior {
   pointerDown = false
 
   dragging = false
