@@ -26,12 +26,13 @@ export class DragCanvas extends Extensions.BaseBehavior {
     const { x, y } = e.client
     this.pointerDownPosition = { x, y }
 
-    const self = this
-    window.addEventListener('mouseup', function() {
-      self.onPointerUp()
+    const removePointerUpListener = () => {
+      this.onPointerUp()
       // 有些情况下导致无法只监听一次,需手动添加移除
-      window.removeEventListener('mouseup', this)
-    }, { once: true })
+      window.removeEventListener('mouseup', removePointerUpListener)
+    }
+
+    window.addEventListener('mouseup', removePointerUpListener, { once: true })
   }
 
   onPointerMove(e) {

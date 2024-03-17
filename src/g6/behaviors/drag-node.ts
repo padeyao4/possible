@@ -47,11 +47,12 @@ export class DragNode extends Extensions.BaseBehavior {
     if (!this.options.shouldBegin(e)) return
 
     // 解决鼠标拖出画布无法监听事件
-    const self = this
-    window.addEventListener('mouseup', function () {
-      self.onPointerUp()
-      window.removeEventListener('mouseup', this)
-    }, { once: true })
+    const removeListener = () => {
+      this.onPointerUp()
+      window.removeEventListener('mouseup', removeListener)
+    }
+
+    window.addEventListener('mouseup', removeListener, { once: true })
 
     const { itemId, target: { id } } = e
     if (id === 'anchorShape0' || id === 'anchorShape1') return
@@ -62,7 +63,7 @@ export class DragNode extends Extensions.BaseBehavior {
       data: {
         x: model.data.x,
         y: model.data.y,
-        completed: model.data.completed
+        completed: model.data.completed as boolean
       }
     }
     this.pointerDown = true

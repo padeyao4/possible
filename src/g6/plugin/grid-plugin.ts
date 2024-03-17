@@ -3,7 +3,11 @@ import { createDOM } from '@antv/g6/lib/util/dom'
 import { modifyCSS } from '@antv/dom-util'
 
 export default class GridPlugin extends Extensions.BasePlugin {
-  init(graph) {
+  private canvas: HTMLElement
+  private container: HTMLElement
+  private grid: HTMLElement
+
+  init(graph: any) {
     super.init(graph)
     const graphContainer = graph.container
     const canvas = this.canvas || graphContainer.firstChild?.nextSibling
@@ -27,14 +31,11 @@ export default class GridPlugin extends Extensions.BasePlugin {
 
   destroy() {
     super.destroy()
-    this.canvas?.destroy()
 
     const container = this.container
 
     if (container?.parentNode) container.parentNode.removeChild(container)
   }
-
-  protected
 
   updateGrid() {
     const x = this.graph.getCanvasByViewport({ x: 0, y: 0 }).x

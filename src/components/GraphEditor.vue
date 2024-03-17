@@ -1,23 +1,24 @@
-<script setup>
-import { computed, inject } from 'vue';
+<script setup lang="ts">
+import { computed, inject, type Ref } from 'vue'
+import type { CustomGraph } from '@/g6/core/graph'
 
-const graphRef = inject('graph')
+const graphRef = inject<Ref<CustomGraph>>('graph')
 
 const visible = computed({
   get: () => {
-    const { userData } = graphRef.value ?? { userData: { status: 'none' } }
+    const { userData } = graphRef?.value ?? { userData: { status: 'none' } }
     return userData.status === 'edit'
   },
   set: (value) => {
-    const { userData } = graphRef.value
+    const { userData } = graphRef!.value
     userData.status = value ? 'edit' : 'none'
   }
 })
 
 
-const task = computed(() => {
-  const { userData } = graphRef.value
-  const data = userData.selectItem.data
+const task = computed<Record<any, any>>(() => {
+  const { userData } = graphRef!.value
+  const data = userData.selectItem!.data
 
   return new Proxy(data, {
     get: (target, p) => {
@@ -25,7 +26,7 @@ const task = computed(() => {
     },
     set: (target, p, newValue) => {
       Reflect.set(target, p, newValue)
-      graphRef.value.updateData('node', {
+      graphRef?.value.updateData('node', {
         id: userData.selectItem.id,
         data: target
       })
@@ -40,7 +41,7 @@ const task = computed(() => {
  * via graph.getAllPredecessors() and checking if their 'completed' data is true.
  */
 const isCompleted = computed(() => {
-  const graph = graphRef.value
+  const graph = graphRef!.value
   const { userData } = graph
   const nodeId = userData.selectItem.id
   const models = graph.getAllPredecessors(nodeId)
@@ -48,15 +49,15 @@ const isCompleted = computed(() => {
 })
 
 /**
- * Computed property that returns a boolean indicating if the node is pending. 
+ * Computed property that returns a boolean indicating if the node is pending.
  * Checks if any successor nodes are not completed by getting all successors
  * via graph.getAllSuccessors() and checking if their 'completed' data is false.
-*/
+ */
 const isPending = computed(() => {
-  const graph = graphRef.value
+  const graph = graphRef!.value
   const { userData } = graph
   const nodeId = userData.selectItem.id
-  const models = graph.getAllSuccessorss(nodeId)
+  const models = graph.getAllSuccessors(nodeId)
   return models.every((model) => !model.data.completed)
 })
 
@@ -65,7 +66,7 @@ const isPending = computed(() => {
 <template>
   <teleport to="body">
     <el-drawer v-model="visible" :close-on-click-modal="false" :show-close="true" modal-class="modal-class"
-      @close="visible = false">
+               @close="visible = false">
       <el-form :model="task" @submit.prevent>
         <el-form-item label="名称">
           <el-input v-model="task.name" />

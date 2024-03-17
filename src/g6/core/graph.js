@@ -4,7 +4,7 @@ import { reactive } from 'vue'
 export class CustomGraph extends Graph {
 
   userData = reactive({
-    selectItem: undefined,
+    selectItem: { id: '', data: {} },
     status: 'none', // 'edit'|'none'|'contextmenu'
     pointerPosition: { x: 0, y: 0 } // 用于contextmenu定位
   })
@@ -59,7 +59,7 @@ export class CustomGraph extends Graph {
 
   /**
    * Recursively gets all predecessor node IDs for the given node ID.
-   * 
+   *
    * @param {string|number} nodeId - The ID of the node to get predecessors for.
    * @returns {Set} A Set containing all predecessor node IDs.
    */
@@ -75,10 +75,10 @@ export class CustomGraph extends Graph {
   }
 
   /**
- * Recursively gets all predecessor node IDs for the given node ID.
- * @param {string|number} nodeId - The ID of the node to get predecessors for.
- * @returns {Array} An array containing all predecessor node models.
- */
+   * Recursively gets all predecessor node IDs for the given node ID.
+   * @param {string|number} nodeId - The ID of the node to get predecessors for.
+   * @returns {Array} An array containing all predecessor node models.
+   */
   getAllPredecessors(nodeId) {
     const ids = this.getAllPredecessorsIds(nodeId)
     ids.delete(nodeId)
@@ -87,24 +87,24 @@ export class CustomGraph extends Graph {
     })
   }
 
-  getAllSuccessorssIds(nodeId) {
+  getAllSuccessorsIds(nodeId) {
     const successors = []
     const models = this.getSuccessors(nodeId).map(model => model.id)
     if (models && models.length > 0) {
       models.forEach(s => {
-        successors.push(...this.getAllSuccessorssIds(s))
+        successors.push(...this.getAllSuccessorsIds(s))
       })
     }
     return new Set([...successors, nodeId])
   }
 
   /**
-  * Recursively gets all successor node models for the given node ID.
-  * @param {string|number} nodeId - The ID of the node to get successors for. 
-  * @returns {Array} An array containing all successor node models.
-  */
-  getAllSuccessorss(nodeId) {
-    const ids = this.getAllSuccessorssIds(nodeId)
+   * Recursively gets all successor node models for the given node ID.
+   * @param {string|number} nodeId - The ID of the node to get successors for.
+   * @returns {Array} An array containing all successor node models.
+   */
+  getAllSuccessors(nodeId) {
+    const ids = this.getAllSuccessorsIds(nodeId)
     ids.delete(nodeId)
     return [...ids].map(id => {
       return this.getNodeData(id)

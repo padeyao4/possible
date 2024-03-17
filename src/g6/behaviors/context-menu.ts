@@ -1,4 +1,4 @@
-import { Extensions } from '@antv/g6'
+import { Extensions, type IG6GraphEvent } from '@antv/g6'
 
 export default class ContextMenu extends Extensions.BaseBehavior {
   getEvents() {
@@ -9,7 +9,7 @@ export default class ContextMenu extends Extensions.BaseBehavior {
     }
   }
 
-  onNodeContextmenu(e) {
+  onNodeContextmenu(e: IG6GraphEvent) {
     const { itemId } = e
     const { x, y } = e.canvas
     const { userData } = this.graph
