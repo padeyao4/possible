@@ -1,9 +1,16 @@
-import { Extensions } from '@antv/g6'
+import { Extensions, type ID, type IG6GraphEvent } from '@antv/g6'
 import { v4 } from 'uuid'
+
+
+interface DefaultOption {
+  shouldBegin: (event: any) => boolean;
+
+  [key: string]: any
+}
 
 const DEFAULT_CONFIG = {
   // 鼠标左键生效
-  shouldBegin: (event) => event.button === 0
+  shouldBegin: (event: any) => event.button === 0
 }
 
 const DUMMY_ID = 'DUMMY_ID'
@@ -11,10 +18,15 @@ const DUMMY_ID = 'DUMMY_ID'
 export default class CreateEdge extends Extensions.BaseBehavior {
 
   pointDown = false
-  edge = {}
-  dummyNode = {}
 
-  constructor(options) {
+  edge: {
+    id: ID,
+    source: ID,
+    target: ID,
+    data: any
+  }
+
+  constructor(options: Partial<DefaultOption>) {
     super(Object.assign({}, DEFAULT_CONFIG, options))
   }
 
@@ -27,12 +39,13 @@ export default class CreateEdge extends Extensions.BaseBehavior {
     }
   }
 
-  onPointerDown(e) {
+  onPointerDown(e: IG6GraphEvent) {
     if (!this.options.shouldBegin(e)) return
-    const { itemId, target: { id } } = e
+    const itemId = e.itemId
+    const id = (e.target as any).id
     if (id !== 'anchorShape0' && id !== 'anchorShape1') return
     this.pointDown = true
-    this.dummyNode = this.graph.addData('node', {
+    this.graph.addData('node', {
       id: DUMMY_ID,
       data: {
         type: 'circle-node',
@@ -41,12 +54,12 @@ export default class CreateEdge extends Extensions.BaseBehavior {
         anchorPoints: [[0.5, 0.5]]
       }
     })
-    this.graph.hideItem(this.dummyNode.id)
+    this.graph.hideItem(DUMMY_ID)
 
     const sourceId = id === 'anchorShape1' ? itemId : DUMMY_ID
     const targetId = id === 'anchorShape0' ? itemId : DUMMY_ID
 
-    this.edge = this.graph.addData('edge', {
+    this.edge = {
       id: v4(),
       source: sourceId,
       target: targetId,
@@ -54,15 +67,17 @@ export default class CreateEdge extends Extensions.BaseBehavior {
         sourceAnchor: 1,
         targetAnchor: 0
       }
-    })
+    }
+
+    this.graph.addData('edge', this.edge)
   }
 
-  creteEdge(sourceId, targetId) {
+  creteEdge(sourceId: ID, targetId: ID) {
     const source = this.graph.getNodeData(sourceId)
     const target = this.graph.getNodeData(targetId)
     if (source.data.x >= target.data.x) return
-
     if (sourceId === targetId) return
+
     const isInclude = this.graph.getNeighborNodesData(sourceId, 'both')
       .map(model => model.id)
       .includes(targetId)
@@ -79,23 +94,30 @@ export default class CreateEdge extends Extensions.BaseBehavior {
     })
   }
 
-  onPointerUp(e) {
+  onPointerUp(e: IG6GraphEvent) {
     if (!this.pointDown) return
-    const { itemId, itemType } = e
-    if (itemType === 'node') {
-      const sourceId = this.edge.source === DUMMY_ID ? itemId : this.edge.source
-      const targetId = this.edge.target === DUMMY_ID ? itemId : this.edge.target
-      this.creteEdge(sourceId, targetId)
-    }
-    // todo 当拖动出画面拖动失效
     this.clearStatus()
+    const { itemId, itemType } = e
+    const sourceId = this.edge.source === DUMMY_ID ? itemId : this.edge.source
+    const targetId = this.edge.target === DUMMY_ID ? itemId : this.edge.target
+
+    if (itemType !== 'node') {
+      return
+    }
+
+    const model = this.graph.getNodeData(targetId)
+    if (model.data.completed) {
+      return
+    }
+
+    this.creteEdge(sourceId, targetId)
   }
 
-  onPointerMove(e) {
+  onPointerMove(e: IG6GraphEvent) {
     if (!this.pointDown) return
     const { x, y } = e.canvas
     this.graph.updateNodePosition({
-      id: this.dummyNode.id, data: {
+      id: DUMMY_ID, data: {
         x, y
       }
     }, true, true)
@@ -103,9 +125,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
 
   clearStatus() {
     if (!this.pointDown) return
-    this.graph.removeData('edge', this.edge.id)
-    this.graph.removeData('node', this.dummyNode.id)
-    this.dummyNode = null
+    this.graph.removeData('node', DUMMY_ID)
     this.pointDown = false
   }
 
