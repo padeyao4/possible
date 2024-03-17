@@ -1,5 +1,7 @@
 import { Extensions } from '@antv/g6'
 import { normalX, normalY } from '@/utils/position-util.js'
+import { useStore } from '@/stores/store'
+import { dateToX } from '@/utils/time'
 
 const DEFAULT_CONFIG = {
   // 鼠标左键生效
@@ -14,6 +16,10 @@ export class DragNode extends Extensions.BaseBehavior {
   downPoint = { x: 0, y: 0 }
 
   selectId = undefined
+
+  store = useStore()
+
+  currentX = 0
 
   constructor(options) {
     super(Object.assign({}, DEFAULT_CONFIG, options))
@@ -33,7 +39,7 @@ export class DragNode extends Extensions.BaseBehavior {
 
     // 解决鼠标拖出画布无法监听事件
     const self = this
-    window.addEventListener('mouseup', function() {
+    window.addEventListener('mouseup', function () {
       self.onPointerUp()
       window.removeEventListener('mouseup', this)
     }, { once: true })
@@ -45,6 +51,9 @@ export class DragNode extends Extensions.BaseBehavior {
     const { data: { x, y } } = this.graph.getNodeData(this.selectId)
     this.originPoint = { x, y }
     this.downPoint = { x: e.canvas.x, y: e.canvas.y }
+
+    const proeject = this.store.currentProject
+    this.currentX = dateToX(this.store.currentTime, proeject.createTime)
   }
 
   onPointerMove(e) {
@@ -54,13 +63,19 @@ export class DragNode extends Extensions.BaseBehavior {
     const dx = x - this.downPoint.x
     const dy = y - this.downPoint.y
 
-    this.graph.updateNodePosition({
-      id: this.selectId,
-      data: {
-        x: this.originPoint.x + dx,
-        y: this.originPoint.y + dy
+    const dstX = this.originPoint.x + dx
+    const dstY = this.originPoint.y + dy
+
+    const norX = normalX(dstX)
+
+    this.graph.updateData('node',{
+      id:this.selectId,
+      data:{
+        x: dstX,
+        y: dstY,
+        completed: norX < this.currentX
       }
-    }, true, true)
+    })
   }
 
   clearState() {

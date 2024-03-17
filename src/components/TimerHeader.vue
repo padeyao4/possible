@@ -26,7 +26,7 @@ function showTime(index) {
   return timeFormat.format(date) + '\n' + showWeek(date)
 }
 
-watch(group, () => {
+watch([group, currentIndex], () => {
   updateInfo()
 })
 
@@ -74,23 +74,23 @@ function initTexts() {
 }
 
 onMounted(() => {
-    canvas.value = new Canvas({
-      container: container.value,
-      width: container.value.clientWidth,
-      height: container.value.clientHeight,
-      renderer: new Renderer()
-    })
+  canvas.value = new Canvas({
+    container: container.value,
+    width: container.value.clientWidth,
+    height: container.value.clientHeight,
+    renderer: new Renderer()
+  })
 
-    group.value = new Group()
-    canvas.value.appendChild(group.value)
-    initTexts()
+  group.value = new Group()
+  canvas.value.appendChild(group.value)
+  initTexts()
 
-    watchEffect(() => {
-      graph.value?.on('viewportchange', updateInfo)
-    })
+  watchEffect(() => {
+    graph.value?.on('viewportchange', updateInfo)
+  })
 
-    window.addEventListener('resize', resize)
-  }
+  window.addEventListener('resize', resize)
+}
 )
 
 onBeforeUnmount(() => {
