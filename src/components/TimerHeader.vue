@@ -1,12 +1,13 @@
-<script setup>
-import { computed, inject, onBeforeUnmount, onMounted, ref, shallowRef, watch, watchEffect } from 'vue'
+<script setup lang="ts">
+import { computed, inject, onBeforeUnmount, onMounted, ref, type ShallowRef, shallowRef, watch, watchEffect } from 'vue'
 import { Canvas, Group, Text } from '@antv/g'
 import { Renderer } from '@antv/g-canvas'
 import { useStore } from '@/stores/store'
 import { convertToDate, convertToIndex, showWeek } from '@/utils/time.js'
+import type { CustomGraph } from '@/g6/core/graph'
 
 const store = useStore()
-const graph = inject('graph')
+const graph = inject<ShallowRef<CustomGraph>>('graph')
 const container = ref()
 const canvas = shallowRef()
 const group = shallowRef()
@@ -38,7 +39,7 @@ function updateInfo() {
   const offset = x / 120
   const delta = offset >= 0 ? Math.floor(offset) : Math.ceil(offset)
   for (let i = 0; i < children.length; i++) {
-    const index = children[i].id + delta
+    const index = +children[i].id + delta
     children[i].style.text = showTime(index)
     children[i].style.fill = index === currentIndex.value ? 'green' : 'black'
   }
@@ -54,7 +55,7 @@ function initTexts() {
   const childrenSize = Math.ceil(container.value.clientWidth / 120) + 1
   for (let i = -1; i < childrenSize; i++) {
     const text = new Text({
-      id: i + startIndex.value,
+      id: (i + startIndex.value).toString(),
       style: {
         x: i * 120 + 60,
         y: 20,
@@ -74,23 +75,23 @@ function initTexts() {
 }
 
 onMounted(() => {
-  canvas.value = new Canvas({
-    container: container.value,
-    width: container.value.clientWidth,
-    height: container.value.clientHeight,
-    renderer: new Renderer()
-  })
+    canvas.value = new Canvas({
+      container: container.value,
+      width: container.value.clientWidth,
+      height: container.value.clientHeight,
+      renderer: new Renderer()
+    })
 
-  group.value = new Group()
-  canvas.value.appendChild(group.value)
-  initTexts()
+    group.value = new Group()
+    canvas.value.appendChild(group.value)
+    initTexts()
 
-  watchEffect(() => {
-    graph.value?.on('viewportchange', updateInfo)
-  })
+    watchEffect(() => {
+      graph.value?.on('viewportchange', updateInfo)
+    })
 
-  window.addEventListener('resize', resize)
-}
+    window.addEventListener('resize', resize)
+  }
 )
 
 onBeforeUnmount(() => {

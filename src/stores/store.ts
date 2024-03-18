@@ -1,9 +1,10 @@
-import { computed, ref } from 'vue'
+import { computed, ref, shallowRef } from 'vue'
 import { defineStore } from 'pinia'
 import { useRoute } from 'vue-router'
 import { dayjs } from 'element-plus'
 import type { ID } from '@antv/g6'
 import { dateToX } from '@/utils/time'
+import type { CustomGraph } from '@/g6/core/graph'
 
 export interface Node {
   id: ID,
@@ -144,10 +145,44 @@ export const useStore = defineStore('store', () => {
 
   const currentTime = ref(new Date())
 
+  const graph = shallowRef<CustomGraph>()
+
   const currentProject = computed<Project>(() => {
     const { id } = useRoute().params
     return projects.value[id as string]
   })
+
+  const updateData = (itemType: 'node' | 'edge', models: Node | Edge | Node[] | Edge[]) => {
+    // todo
+    if (Array.isArray(models)) {
+      console.log(models)
+    }
+    graph.value?.updateData(itemType, models)
+  }
+
+  const addData = (itemType: 'node' | 'edge', models: Node | Edge | Node[] | Edge[]) => {
+    // todo
+    if (Array.isArray(models)) {
+      console.log(models)
+    }
+    graph.value?.addData(itemType, models)
+  }
+
+  const removeData = (itemType: 'node' | 'edge', id: ID | ID[]) => {
+    // todo
+    if (Array.isArray(id)) {
+      console.log(id)
+    }
+    graph.value?.removeData(itemType, id)
+  }
+
+  const updateGraph = (customGraph: CustomGraph) => {
+    graph.value = customGraph
+    graph.value?.read({
+      nodes: currentProject.value.nodes,
+      edges: currentProject.value.edges
+    }).then(r => console.log(r))
+  }
 
   const setSelected = (value: string) => {
     selected.value = value
@@ -206,6 +241,7 @@ export const useStore = defineStore('store', () => {
           }
         )
       current.data.x += UNIT
+      // todo
     }
     step(nodeId)
   }
@@ -223,6 +259,10 @@ export const useStore = defineStore('store', () => {
     projects,
     currentProject,
     currentTime,
+    addData,
+    updateData,
+    removeData,
+    updateGraph,
     isActive,
     setSelected,
     addProject,

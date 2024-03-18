@@ -6,7 +6,7 @@ import Draggable from 'vuedraggable'
 const tasks = inject<ComputedRef<Record<any, any>[]>>('tasks')
 
 const todoTasks = computed(() => {
-  return tasks?.value
+  return (tasks.value as any[])
     .sort((task1, task2) => task1.data.sortedIndex - task2.data.sortedIndex)
     .filter(node => !node.data.completed) ?? []
 })

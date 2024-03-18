@@ -101,5 +101,5 @@ export default function useGraph(container: any) {
     window.removeEventListener('resize', resize)
   })
 
-  return { graph }
+  return graph
 }
