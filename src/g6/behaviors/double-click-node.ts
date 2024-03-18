@@ -1,13 +1,16 @@
-import { Extensions } from '@antv/g6'
+import { Extensions, type IG6GraphEvent } from '@antv/g6'
+import { useStore } from '@/stores/store'
 
 const DEFAULT_CONFIG = {
   // 鼠标左键生效
-  shouldBegin: (event) => event.button === 0
+  shouldBegin: (event: any) => event.button === 0
 }
 
 export default class DoubleClickNode extends Extensions.BaseBehavior {
 
-  constructor(options) {
+  store = useStore()
+
+  constructor(options: any) {
     super(Object.assign({}, DEFAULT_CONFIG, options))
   }
 
@@ -17,11 +20,10 @@ export default class DoubleClickNode extends Extensions.BaseBehavior {
     }
   }
 
-  doubleClick(e) {
+  doubleClick(e: IG6GraphEvent) {
     if (!this.options.shouldBegin(e)) return
     const { itemId } = e
-    const { userData } = this.graph
-    userData.status = 'edit'
-    userData.selectItem = { ...this.graph.getNodeData(itemId) }
+    this.store.selectedNode = { ...this.graph.getNodeData(itemId) }
+    this.store.actionState = 'edit'
   }
 }

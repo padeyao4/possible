@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import { computed, inject, type Ref } from 'vue'
+import { computed } from 'vue'
 import { useStore } from '@/stores/store'
-import type { CustomGraph } from '@/g6/core/graph'
 
 const store = useStore()
-const graphRef = inject<Ref<CustomGraph>>('graph')
+// const graphRef = inject<Ref<CustomGraph>>('graph')
 
 const visible = computed(() => {
-  return graphRef.value?.userData.status === 'contextmenu' ?? false
+  return store.actionState === 'contextmenu'
 })
 
-const position = computed(() => {
-  const graph = graphRef.value
-  if (!graph) return { x: 0, y: 0 }
-  const position = graph.userData.pointerPosition
-  return graph.getClientByCanvas(position)
-})
+// const position = computed(() => {
+//   const graph = graphRef.value
+//   if (!graph) return { x: 0, y: 0 }
+//   const position = graph.userData.pointerPosition
+//   return graph.getClientByCanvas(position)
+// })
 
 /**
  * Deletes a node from the graph based on the node ID stored in the
@@ -23,19 +22,22 @@ const position = computed(() => {
  * Removes the node data from the graph and closes the context menu.
  */
 function handleDelete() {
-  const graph = graphRef.value
-  const { userData } = graph
-  const id = userData.selectItem.id
-  graph.removeData('node', id)
+  // const graph = graphRef.value
+  // const { userData } = graph
+  // const id = userData.selectItem.id
+  // graph.removeData('node', id)
+  // todo
+  store.removeData('node', store.selectedNode.id)
 }
 
 /**
  * Hides the context menu by resetting the graph's userData.status to 'none'.
  */
 function onblur() {
-  const graph = graphRef.value
-  const { userData } = graph
-  userData.status = 'none'
+  // const graph = graphRef.value
+  // const { userData } = graph
+  // userData.status = 'none'
+  store.actionState = 'none'
 }
 
 function onRef(e: any) {
@@ -46,12 +48,12 @@ function onRef(e: any) {
 
 function test() {
   // const currentProject = store.currentProject
-  const graph = graphRef.value
-  console.log(graph.toJson())
-  const j = graph.toJson()
-  
-  graph.read(JSON.parse(j))
-  graph.translateTo({ x: 0, y: 0 })
+  // const graph = graphRef.value
+  // console.log(graph.toJson())
+  // const j = graph.toJson()
+  //
+  // graph.read(JSON.parse(j))
+  // graph.translateTo({ x: 0, y: 0 })
   // graph.saveData(currentProject.id)
   // const { userData } = graph
   // const nodeId = userData.selectItem.id
@@ -65,8 +67,9 @@ function test() {
 
 <template>
   <teleport to="body">
-    <div v-if="visible" :style="{ 'position': 'absolute', 'left': position.x + 'px', 'top': position.y + 'px' }"
-      @contextmenu.prevent>
+    <div v-if="visible"
+         :style="{ 'position': 'absolute', 'left': store.contextmenuPosition.x + 'px', 'top': store.contextmenuPosition.y + 'px' }"
+         @contextmenu.prevent>
       <div class="menu" :ref="onRef" tabindex="0" @blur="onblur">
         <ul @click="onblur">
           <li @click="handleDelete">删除</li>

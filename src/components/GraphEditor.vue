@@ -1,24 +1,24 @@
 <script setup lang="ts">
 import { computed, inject, type Ref } from 'vue'
 import type { CustomGraph } from '@/g6/core/graph'
+import { useStore } from '@/stores/store'
+
+const store = useStore()
 
 const graphRef = inject<Ref<CustomGraph>>('graph')
 
 const visible = computed({
   get: () => {
-    const { userData } = graphRef?.value ?? { userData: { status: 'none' } }
-    return userData.status === 'edit'
+    return store.actionState === 'edit'
   },
   set: (value) => {
-    const { userData } = graphRef!.value
-    userData.status = value ? 'edit' : 'none'
+    store.actionState = value ? 'edit' : 'none'
   }
 })
 
 
 const task = computed<Record<any, any>>(() => {
-  const { userData } = graphRef!.value
-  const data = userData.selectItem!.data
+  const data = store.selectedNode.data
 
   return new Proxy(data, {
     get: (target, p) => {
@@ -26,8 +26,8 @@ const task = computed<Record<any, any>>(() => {
     },
     set: (target, p, newValue) => {
       Reflect.set(target, p, newValue)
-      graphRef?.value.updateData('node', {
-        id: userData.selectItem.id,
+      store.updateData('node', {
+        id: store.selectedNode.id,
         data: target
       })
       return true
@@ -42,8 +42,7 @@ const task = computed<Record<any, any>>(() => {
  */
 const isCompleted = computed(() => {
   const graph = graphRef!.value
-  const { userData } = graph
-  const nodeId = userData.selectItem.id
+  const nodeId = store.selectedNode.id
   const models = graph.getAllPredecessors(nodeId)
   return models.every((model) => model.data.completed)
 })
@@ -55,8 +54,7 @@ const isCompleted = computed(() => {
  */
 const isPending = computed(() => {
   const graph = graphRef!.value
-  const { userData } = graph
-  const nodeId = userData.selectItem.id
+  const nodeId = store.selectedNode.id
   const models = graph.getAllSuccessors(nodeId)
   return models.every((model) => !model.data.completed)
 })

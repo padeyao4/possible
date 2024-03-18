@@ -1,4 +1,4 @@
-import { Extensions } from '@antv/g6'
+import { Extensions, type IG6GraphEvent } from '@antv/g6'
 import { normalX, normalY } from '@/utils/position-util.js'
 import { useStore } from '@/stores/store'
 import { dateToX } from '@/utils/time'
@@ -30,7 +30,7 @@ export default class DragNode extends Extensions.BaseBehavior {
 
   currentX = 0
 
-  constructor(options) {
+  constructor(options: any) {
     super(Object.assign({}, DEFAULT_CONFIG, options))
   }
 
@@ -72,7 +72,7 @@ export default class DragNode extends Extensions.BaseBehavior {
     this.currentX = dateToX(this.store.currentTime, this.store.currentProject.createTime)
   }
 
-  onPointerMove(e) {
+  onPointerMove(e: IG6GraphEvent) {
     if (!this.pointerDown) return
 
     if (!this.dragging) {
@@ -84,7 +84,7 @@ export default class DragNode extends Extensions.BaseBehavior {
     const dstX = x - this.pointerDownPosition.x + e.canvas.x
     const dstY = y - this.pointerDownPosition.y + e.canvas.y
 
-    this.graph.updateData('node', {
+    this.store.updateData('node', {
       id: this.originNodeData.id,
       data: {
         x: dstX,
@@ -141,11 +141,11 @@ export default class DragNode extends Extensions.BaseBehavior {
   }
 
   restoreNodeState() {
-    this.graph.updateData('node', this.originNodeData)
+    this.store.updateData('node', this.originNodeData)
   }
 
-  updateNodeInfo(x, y) {
-    this.graph.updateData('node', {
+  updateNodeInfo(x: number, y: number) {
+    this.store.updateData('node', {
       id: this.originNodeData.id,
       data: {
         x, y, completed: x < this.currentX || this.originNodeData.data.completed
@@ -153,17 +153,11 @@ export default class DragNode extends Extensions.BaseBehavior {
     })
   }
 
-  setGraphSelectedItem() {
-    const { userData } = this.graph
-    userData.selectItem = { ...this.graph.getNodeData(this.originNodeData.id) }
-  }
-
   onPointerUp() {
     if (!this.pointerDown) return
     if (!this.dragging) return
     this.clearState()
     this.dragend()
-    this.setGraphSelectedItem()
   }
 
   onClick() {

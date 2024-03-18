@@ -37,3 +37,15 @@ test('proxy', () => {
   proxy.name = 'world'
   proxy.cars.push('c')
 })
+
+test('assign', () => {
+  const a = {
+    name: 'hello'
+  }
+
+  const b = Object.assign(a, {
+    age: 18
+  })
+
+  console.log(a === b, a, b)
+})

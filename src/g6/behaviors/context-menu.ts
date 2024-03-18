@@ -1,20 +1,20 @@
 import { Extensions, type IG6GraphEvent } from '@antv/g6'
+import { useStore } from '@/stores/store'
 
 export default class ContextMenu extends Extensions.BaseBehavior {
+  store = useStore()
+
   getEvents() {
     return {
-      // 'contextmenu': this.onContextmenu
       'node:contextmenu': this.onNodeContextmenu
-      // 'node:mouseleave': () => console.log('leave')
     }
   }
 
   onNodeContextmenu(e: IG6GraphEvent) {
     const { itemId } = e
     const { x, y } = e.canvas
-    const { userData } = this.graph
-    userData.selectItem = this.graph.getNodeData(itemId)
-    userData.pointerPosition = { x, y }
-    userData.status = 'contextmenu'
+    this.store.selectedNode = this.graph.getNodeData(itemId)
+    this.store.mousePosition = { x, y }
+    this.store.actionState = 'contextmenu'
   }
 }

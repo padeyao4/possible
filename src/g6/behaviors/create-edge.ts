@@ -1,5 +1,6 @@
 import { Extensions, type ID, type IG6GraphEvent } from '@antv/g6'
 import { v4 } from 'uuid'
+import { useStore } from '@/stores/store'
 
 
 interface DefaultOption {
@@ -16,6 +17,8 @@ const DEFAULT_CONFIG = {
 const DUMMY_ID = 'DUMMY_ID'
 
 export default class CreateEdge extends Extensions.BaseBehavior {
+
+  store = useStore()
 
   pointDown = false
 
@@ -45,7 +48,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
     const id = (e.target as any).id
     if (id !== 'anchorShape0' && id !== 'anchorShape1') return
     this.pointDown = true
-    this.graph.addData('node', {
+    this.store.addData('node', {
       id: DUMMY_ID,
       data: {
         type: 'circle-node',
@@ -69,7 +72,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
       }
     }
 
-    this.graph.addData('edge', this.edge)
+    this.store.addData('edge', this.edge)
   }
 
   creteEdge(sourceId: ID, targetId: ID) {
@@ -83,7 +86,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
       .includes(targetId)
     if (isInclude) return
 
-    this.graph.addData('edge', {
+    this.store.addData('edge', {
       id: v4(),
       source: sourceId,
       target: targetId,
@@ -116,16 +119,16 @@ export default class CreateEdge extends Extensions.BaseBehavior {
   onPointerMove(e: IG6GraphEvent) {
     if (!this.pointDown) return
     const { x, y } = e.canvas
-    this.graph.updateNodePosition({
+    this.store.updateData('node', {
       id: DUMMY_ID, data: {
         x, y
       }
-    }, true, true)
+    })
   }
 
   clearStatus() {
     if (!this.pointDown) return
-    this.graph.removeData('node', DUMMY_ID)
+    this.store.removeData('node', DUMMY_ID)
     this.pointDown = false
   }
 

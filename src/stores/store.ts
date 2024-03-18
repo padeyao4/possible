@@ -139,139 +139,275 @@ class DataCore {
  * - Incrementing the current date/time
  */
 export const useStore = defineStore('store', () => {
-  const projects = ref<Record<string, Project>>({})
 
-  const selected = ref<string>('today')
+    const nodesMap = new Map<ID, Node>()
+    const edgesMap = new Map<ID, Edge>()
+    const inEdgesMap = new Map<ID, Set<Edge>>()
+    const outEdgesMap = new Map<ID, Set<Edge>>()
+    const bothEdgesMap = new Map<ID, Set<Edge>>()
 
-  const currentTime = ref(new Date())
+    const projects = ref<Record<string, Project>>({})
 
-  const graph = shallowRef<CustomGraph>()
+    const selected = ref<string>('today')
 
-  const currentProject = computed<Project>(() => {
-    const { id } = useRoute().params
-    return projects.value[id as string]
-  })
+    const currentTime = ref(new Date())
 
-  const updateData = (itemType: 'node' | 'edge', models: Node | Edge | Node[] | Edge[]) => {
-    // todo
-    if (Array.isArray(models)) {
-      console.log(models)
-    }
-    graph.value?.updateData(itemType, models)
-  }
+    const graph = shallowRef<CustomGraph>()
 
-  const addData = (itemType: 'node' | 'edge', models: Node | Edge | Node[] | Edge[]) => {
-    // todo
-    if (Array.isArray(models)) {
-      console.log(models)
-    }
-    graph.value?.addData(itemType, models)
-  }
+    const selectedNode = ref<Node>()
 
-  const removeData = (itemType: 'node' | 'edge', id: ID | ID[]) => {
-    // todo
-    if (Array.isArray(id)) {
-      console.log(id)
-    }
-    graph.value?.removeData(itemType, id)
-  }
+    const actionState = ref<'none' | 'dragend' | 'edit' | 'contextmenu'>('none')
 
-  const updateGraph = (customGraph: CustomGraph) => {
-    graph.value = customGraph
-    graph.value?.read({
-      nodes: currentProject.value.nodes,
-      edges: currentProject.value.edges
-    }).then(r => console.log(r))
-  }
+    const mousePosition = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 
-  const setSelected = (value: string) => {
-    selected.value = value
-  }
-
-  const isActive = (value: string) => {
-    return selected.value === value
-  }
-
-  /**
-   * Adds a new project to the projects map/object.
-   * @param project - The project object to add.
-   * @returns The id of the added project.
-   */
-  const addProject = (project: Project) => {
-    projects.value[project.id] = project
-    return project.id
-  }
-
-  /**
-   * Adds the specified number of days to the current date/time.
-   *
-   * @param days - The number of days to add.
-   * @returns The updated date/time after adding the days.
-   */
-  const addDays = (days: number) => {
-    return (currentTime.value = dayjs(currentTime.value).add(days, 'd').toDate())
-  }
-
-  const updateTime = () => {
-    currentTime.value = new Date()
-  }
-
-
-  const dailyUpdate = () => {
-    Object.values(projects.value).forEach((project) => {
-      const dataCore = new DataCore(project)
-      const currentX = dateToX(currentTime.value, project.createTime)
-
-      const sortedIndexes = [...dataCore.indexMap.keys()].sort((a, b) => a - b)
-      console.log('sortedIndexes', sortedIndexes)
-      // todo
+    const currentProject = computed<Project>(() => {
+      const { id } = useRoute().params
+      return projects.value[id as string]
     })
-  }
 
-  const forward = (nodeId: ID) => {
-    const project = currentProject.value
-    const coreData = new DataCore(project)
-    const step = (nodeId: ID) => {
-      const current = coreData.getNode(nodeId)
-      if (!current) return
-      coreData.getSuccessorsData(nodeId)
-        .filter(successor => successor.data.x - current.data.x === UNIT)
-        .forEach(successor => {
-            step(successor.id)
+    const contextmenuPosition = computed(() => {
+      return graph.value?.getClientByCanvas(mousePosition.value)
+    })
+
+    const updateData = (itemType: 'node' | 'edge', models: Node | Edge | Node[] | Edge[]) => {
+      const project = currentProject.value
+      if (!project) return
+
+      (Array.isArray(models) ? models : [models]).forEach(item => {
+        const { id } = item
+        if (itemType === 'node') {
+          Object.assign(nodesMap.get(id).data, item.data)
+        }
+        if (itemType === 'edge') {
+          const newEdge = <Edge>item
+          const id = newEdge.id
+
+          const oldEdge = edgesMap.get(id)
+          const oldSource = oldEdge.source
+          const oldTarget = oldEdge.target
+
+          // 修改edgesMap值
+          Object.assign(oldEdge, newEdge)
+
+          const newSource = oldEdge.source
+          const newTarget = oldEdge.target
+
+          if (oldSource !== newSource) {
+            outEdgesMap.get(oldSource)?.delete(oldEdge)
+            if (newSource in outEdgesMap) {
+              outEdgesMap.get(newSource)?.add(oldEdge)
+            } else {
+              outEdgesMap.set(newSource, new Set([oldEdge]))
+            }
           }
-        )
-      current.data.x += UNIT
-      // todo
+
+          if (oldTarget !== newTarget) {
+            inEdgesMap.get(oldTarget)?.delete(oldEdge)
+            if (newTarget in inEdgesMap) {
+              inEdgesMap.get(newTarget)?.add(oldEdge)
+            } else {
+              inEdgesMap.set(newTarget, new Set([oldEdge]))
+            }
+          }
+
+          bothEdgesMap.get(oldSource)?.delete(oldEdge)
+          bothEdgesMap.get(oldTarget)?.delete(oldEdge)
+
+          if (newSource in bothEdgesMap) {
+            bothEdgesMap.get(newSource).add(oldEdge)
+          } else {
+            bothEdgesMap.set(newSource, new Set([oldEdge]))
+          }
+
+          if (newTarget in bothEdgesMap) {
+            bothEdgesMap.get(newTarget).add(oldEdge)
+          } else {
+            bothEdgesMap.set(newTarget, new Set([oldEdge]))
+          }
+        }
+      })
+
+      graph.value?.updateData(itemType, models)
     }
-    step(nodeId)
-  }
 
-  const save = () => {
-    return JSON.stringify(projects.value)
-  }
+    const addData = (itemType: 'node' | 'edge', models: Node | Edge | Node[] | Edge[]) => {
+      const project = currentProject.value
+      if (!project) return
 
-  const restore = (s: string, date: string) => {
-    projects.value = JSON.parse(s)
-    currentTime.value = new Date(date)
-  }
+      (Array.isArray(models) ? models : [models]).forEach(item => {
+          const { id } = item
+          if (itemType === 'node') {
+            nodesMap.set(id, item)
+            project.nodes.push(item)
+          }
+          if (itemType === 'edge') {
+            const edge = <Edge>item
+            edgesMap.set(id, edge)
+            project.edges.push(edge)
 
-  return {
-    projects,
-    currentProject,
-    currentTime,
-    addData,
-    updateData,
-    removeData,
-    updateGraph,
-    isActive,
-    setSelected,
-    addProject,
-    addDays,
-    updateTime,
-    dailyUpdate,
-    save,
-    restore,
-    forward
+            if (edge.target in inEdgesMap) {
+              inEdgesMap.get(edge.target).add(edge)
+            } else {
+              inEdgesMap.set(edge.target, new Set([edge]))
+            }
+
+            if (edge.source in outEdgesMap) {
+              outEdgesMap.get(edge.source).add(edge)
+            } else {
+              outEdgesMap.set(edge.source, new Set([edge]))
+            }
+
+            if (edge.source in bothEdgesMap) {
+              bothEdgesMap.get(edge.source).add(edge)
+            } else {
+              bothEdgesMap.set(edge.source, new Set([edge]))
+            }
+
+            if (edge.target in bothEdgesMap) {
+              bothEdgesMap.get(edge.target).add(edge)
+            } else {
+              bothEdgesMap.set(edge.target, new Set([edge]))
+            }
+          }
+        }
+      )
+
+      graph.value?.addData(itemType, models)
+    }
+
+    const removeData = (itemType: 'node' | 'edge', id: ID | ID[]) => {
+      const project = currentProject.value
+      if (!project) return
+      (Array.isArray(id) ? id : [id]).forEach(item => {
+        if (itemType === 'node') {
+          nodesMap.delete(item)
+          inEdgesMap.delete(item)
+          outEdgesMap.delete(item)
+          bothEdgesMap.delete(item)
+          // todo 将project nodes 改成map形式
+          project.nodes = project.nodes.filter(node => node.id !== item)
+          project.edges = project.edges.filter(edge => edge.source !== item && edge.target !== item)
+        }
+        if (itemType === 'edge') {
+          const edge = edgesMap.get(item)
+          const source = edge.source
+          const target = edge.target
+          edgesMap.delete(item)
+          inEdgesMap.get(target)?.delete(edge)
+          outEdgesMap.get(source)?.delete(edge)
+          bothEdgesMap.get(source)?.delete(edge)
+          bothEdgesMap.get(target)?.delete(edge)
+          project.edges = project.edges.filter(edge => edge.id !== item)
+        }
+      })
+      graph.value?.removeData(itemType, id)
+    }
+
+    const updateGraph = (customGraph: CustomGraph) => {
+      graph.value = customGraph
+      graph.value?.clear()
+      setTimeout(() => {
+        graph.value?.read({
+          nodes: currentProject.value.nodes,
+          edges: currentProject.value.edges
+        }).then(() => {
+        })
+      })
+    }
+
+    const setSelected = (value: string) => {
+      selected.value = value
+    }
+
+    const isActive = (value: string) => {
+      return selected.value === value
+    }
+
+    /**
+     * Adds a new project to the projects map/object.
+     * @param project - The project object to add.
+     * @returns The id of the added project.
+     */
+    const addProject = (project: Project) => {
+      projects.value[project.id] = project
+      return project.id
+    }
+
+    /**
+     * Adds the specified number of days to the current date/time.
+     *
+     * @param days - The number of days to add.
+     * @returns The updated date/time after adding the days.
+     */
+    const addDays = (days: number) => {
+      return (currentTime.value = dayjs(currentTime.value).add(days, 'd').toDate())
+    }
+
+    const updateTime = () => {
+      currentTime.value = new Date()
+    }
+
+
+    const dailyUpdate = () => {
+      Object.values(projects.value).forEach((project) => {
+        const dataCore = new DataCore(project)
+        const currentX = dateToX(currentTime.value, project.createTime)
+
+        const sortedIndexes = [...dataCore.indexMap.keys()].sort((a, b) => a - b)
+        console.log('sortedIndexes', sortedIndexes)
+        // todo
+      })
+    }
+
+    const forward = (nodeId: ID) => {
+      const project = currentProject.value
+      const coreData = new DataCore(project)
+      const step = (nodeId: ID) => {
+        const current = coreData.getNode(nodeId)
+        if (!current) return
+        coreData.getSuccessorsData(nodeId)
+          .filter(successor => successor.data.x - current.data.x === UNIT)
+          .forEach(successor => {
+              step(successor.id)
+            }
+          )
+        current.data.x += UNIT
+        // todo
+      }
+      step(nodeId)
+    }
+
+    const save = () => {
+      return JSON.stringify(projects.value)
+    }
+
+    const restore = (s: string, date: string) => {
+      projects.value = JSON.parse(s)
+      currentTime.value = new Date(date)
+    }
+
+    return {
+      projects,
+      currentProject,
+      currentTime,
+      selectedNode,
+      actionState,
+      mousePosition,
+      contextmenuPosition,
+      addData,
+      updateData,
+      removeData,
+      updateGraph,
+      isActive,
+      setSelected,
+      addProject,
+      addDays,
+      updateTime,
+      dailyUpdate,
+      save,
+      restore,
+      forward
+    }
   }
-})
+)
 

@@ -34,7 +34,6 @@ export default function useGraph(container: any) {
       container: container.value,
       width: container.value.clientWidth,
       height: container.value.clientHeight,
-      enableStack: false,
       plugins: ['GridPlugin'],
       modes: {
         default: ['DragCanvas', 'CreateNode', 'DragNode', 'CreateEdge', 'HoverNode', 'DoubleClickNode', 'ContextMenu']
@@ -97,7 +96,7 @@ export default function useGraph(container: any) {
   })
 
   onBeforeUnmount(() => {
-    graph.value.saveData(currentProject.id)
+    graph.value.destroy()
     window.removeEventListener('resize', resize)
   })
 
