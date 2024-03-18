@@ -2,8 +2,9 @@
 import { computed, type ComputedRef, inject, ref } from 'vue'
 import { CheckOne } from '@icon-park/vue-next'
 import UnfoldButton from '@/components/UnfoldButton.vue'
+import { type Node } from '@/stores/store'
 
-const tasks = inject<ComputedRef<Record<any, any>[]>>('tasks')
+const tasks = inject<ComputedRef<Node[]>>('tasks')
 
 const isUnfold = ref(false)
 
@@ -56,7 +57,7 @@ const completedTasks = computed(() => {
         align-items: center;
         margin: 0 8px 0 0;
 
-        &>* {
+        & > * {
           display: flex;
           justify-content: center;
           align-items: center;

@@ -47,20 +47,10 @@ function onRef(e: any) {
 }
 
 function test() {
-  // const currentProject = store.currentProject
-  // const graph = graphRef.value
-  // console.log(graph.toJson())
-  // const j = graph.toJson()
-  //
-  // graph.read(JSON.parse(j))
-  // graph.translateTo({ x: 0, y: 0 })
-  // graph.saveData(currentProject.id)
-  // const { userData } = graph
-  // const nodeId = userData.selectItem.id
-  // todo 数据读取错误
-  // store.forward(nodeId)
-  // graph.changeData({ nodes: currentProject.nodes, edges: currentProject.edges }, 'replace')
-  // graph.read({ nodes: currentProject.nodes, edges: currentProject.edges })
+  const id = store.selectedNode.id
+  console.log('pre', store.getPredecessors(id).map(n => n.data.name))
+  console.log('suc', store.getSuccessors(id).map(n => n.data.name))
+  console.log('all', store.getNeighbors(id).map(n => n.data.name))
 }
 
 </script>
@@ -68,8 +58,8 @@ function test() {
 <template>
   <teleport to="body">
     <div v-if="visible"
-         :style="{ 'position': 'absolute', 'left': store.contextmenuPosition.x + 'px', 'top': store.contextmenuPosition.y + 'px' }"
-         @contextmenu.prevent>
+      :style="{ 'position': 'absolute', 'left': store.contextmenuPosition.x + 'px', 'top': store.contextmenuPosition.y + 'px' }"
+      @contextmenu.prevent>
       <div class="menu" :ref="onRef" tabindex="0" @blur="onblur">
         <ul @click="onblur">
           <li @click="handleDelete">删除</li>

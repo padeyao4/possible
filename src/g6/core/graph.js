@@ -103,8 +103,4 @@ export class CustomGraph extends Graph {
       return this.getNodeData(id)
     })
   }
-
-  toJson() {
-    return this.dataController.graphCore.toJSON()
-  }
 }

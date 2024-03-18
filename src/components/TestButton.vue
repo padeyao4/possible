@@ -9,32 +9,15 @@ const graphRef = inject<ShallowRef<CustomGraph>>('graph')
 const store = useStore()
 
 function onClick() {
-  // store.graphProject.nodes.push({
-  //   id: v4(),
-  //   data: {
-  //     name: faker.person.fullName(),
-  //     x: 60,
-  //     y: 300,
-  //     detail: '',
-  //     record: '',
-  //     completed: false,
-  //     sortedIndex: -1,
-  //     project: {
-  //     }
-  //   }
-  // })
-  // const { currentProject } = store
-  // const graph = graphRef.value
-  // currentProject.nodes = graph.getAllNodesData()
-  // currentProject.edges = graph.getAllEdgesData()
-  // store.addDays(3)
-  // store.dailyUpdate()
-  // console.log(store.save())
-  // console.log('graph node:',graphRef.value.getAllNodesData())
-  // console.log('graph edge:',graphRef.value.getAllEdgesData())
-  const p = graphRef.value.getCanvasByViewport({ x: 0, y: 0 })
-  console.log(p)
-  graphRef.value.translate({ dx: p.x, dy: p.y })
+  const { nodesMap, edgesMap } = store.currentProject
+  console.log("-----------------------------------------------")
+  console.log([...nodesMap.values()].map(n => n.data.name))
+  console.log([...edgesMap.values()].map(n => {
+    return nodesMap.get(n.source).data.name + "->" + nodesMap.get(n.target).data.name
+  }))
+  console.log("--------------------")
+  console.log('graph node:', graphRef.value.getAllNodesData().map(n => n.data.name))
+  console.log('graph edge:', graphRef.value.getAllEdgesData().map(n => nodesMap.get(n.source).data.name + "->" + nodesMap.get(n.target).data.name))
 }
 </script>
 
@@ -42,8 +25,7 @@ function onClick() {
   <div>
     <operation-tip content="测试按钮">
       <experiment theme="outline" size="20" fill="#333" :stroke-width="2"
-                  style="display: flex;justify-content: center;align-items: center;width: 24px;height: 24px"
-                  @click="onClick" />
+        style="display: flex;justify-content: center;align-items: center;width: 24px;height: 24px" @click="onClick" />
     </operation-tip>
   </div>
 </template>

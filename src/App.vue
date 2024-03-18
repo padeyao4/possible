@@ -36,7 +36,6 @@ function createProject() {
     edgesMap: new Map<ID, Edge>(),
     inEdgesMap: new Map<ID, Set<Edge>>(),
     outEdgesMap: new Map<ID, Set<Edge>>(),
-    bothEdgesMap: new Map<ID, Set<Edge>>(),
     completed: false,
     sortIndex: projects.value.length + 1,
     editable: true,
