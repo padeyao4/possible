@@ -8,16 +8,11 @@ import TestRestoreButton from '@/components/TestRestoreButton.vue'
 import TimerHeader from '@/components/TimerHeader.vue'
 import useGraph from '@/g6/index.ts'
 import { useStore } from '@/stores/store.ts'
-import { provide, ref, watch } from 'vue'
+import { provide, ref } from 'vue'
 
 const store = useStore()
 const container = ref()
-const { currentProject } = store
 const graph = useGraph(container)
-
-watch(graph, () => {
-  store.updateGraph(graph.value)
-})
 
 provide('graph', graph)
 </script>
@@ -26,7 +21,7 @@ provide('graph', graph)
   <div>
     <main>
       <div class="content">
-        <header>{{ currentProject.name }}</header>
+        <header>{{ store.currentProject.name }}</header>
         <section>
           <timer-header id="timer-header" />
           <div id="container" ref="container"></div>

@@ -7,6 +7,5 @@ const testData = '{"217b817a-f862-420b-ad60-64bbe75ee8d6":{"id":"217b817a-f862-4
 test('test store', () => {
   setActivePinia(createPinia())
   const store = useStore()
-  store.restore(testData,'2024/3/20')
   console.log(store.currentTime.toLocaleDateString())
 })

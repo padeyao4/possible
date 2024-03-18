@@ -30,10 +30,11 @@ function onClick() {
   // store.addDays(3)
   // store.dailyUpdate()
   // console.log(store.save())
-  console.log('edges', store.currentProject.edges)
-  console.log('nodes', store.currentProject.nodes)
-  console.log('graph node:',graphRef.value.getAllNodesData())
-  console.log('graph edge:',graphRef.value.getAllEdgesData())
+  // console.log('graph node:',graphRef.value.getAllNodesData())
+  // console.log('graph edge:',graphRef.value.getAllEdgesData())
+  const p = graphRef.value.getCanvasByViewport({ x: 0, y: 0 })
+  console.log(p)
+  graphRef.value.translate({ dx: p.x, dy: p.y })
 }
 </script>
 

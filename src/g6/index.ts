@@ -13,7 +13,8 @@ import DoubleClickNode from '@/g6/behaviors/double-click-node'
 import ContextMenu from '@/g6/behaviors/context-menu'
 
 export default function useGraph(container: any) {
-  const { currentProject } = useStore()
+  const store = useStore()
+  const { currentProject } = store
   const graph = shallowRef<CustomGraph>()
 
   async function resize() {
@@ -87,17 +88,19 @@ export default function useGraph(container: any) {
         }
       },
       data: {
-        nodes: currentProject.nodes,
-        edges: currentProject.edges
+        nodes: [...currentProject.nodesMap.values()],
+        edges: [...currentProject.edgesMap.values()]
       }
     }) as any
+
+    store.updateGraph(graph.value)
 
     window.addEventListener('resize', resize)
   })
 
   onBeforeUnmount(() => {
-    graph.value.destroy()
     window.removeEventListener('resize', resize)
+    graph.value.destroy()
   })
 
   return graph

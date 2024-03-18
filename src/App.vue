@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import router from '@/router'
-import { useStore } from '@/stores/store'
+import { type Edge, type Node, useStore } from '@/stores/store'
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { v4 } from 'uuid'
 import Draggable from 'vuedraggable/src/vuedraggable'
 import { DeleteFour, Drag, Write } from '@icon-park/vue-next'
+import type { ID } from '@antv/g6'
 
 const route = useRoute()
 const store = useStore()
@@ -31,8 +32,11 @@ function createProject() {
   const id = store.addProject({
     id: v4(),
     name: 'untitled',
-    nodes: [],
-    edges: [],
+    nodesMap: new Map<ID, Node>(),
+    edgesMap: new Map<ID, Edge>(),
+    inEdgesMap: new Map<ID, Set<Edge>>(),
+    outEdgesMap: new Map<ID, Set<Edge>>(),
+    bothEdgesMap: new Map<ID, Set<Edge>>(),
     completed: false,
     sortIndex: projects.value.length + 1,
     editable: true,

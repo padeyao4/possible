@@ -13,13 +13,14 @@ const tasks = computed(() => {
   return Object.values(store.projects)
     .filter(project => !project.completed)
     .map(project => {
-      project.nodes.forEach(node => {
+      [...project.nodesMap.values()].forEach(node => {
         node.data.project = {
           id: project.id,
           name: project.name
         }
       })
-      return project.nodes.filter(node => node.data.x === dateToX(store.currentTime, project.createTime))
+      return [...project.nodesMap.values()]
+        .filter(node => node.data.x === dateToX(store.currentTime, project.createTime))
     }).flat()
 })
 
