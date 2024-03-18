@@ -13,7 +13,8 @@ export interface Node {
 export interface Edge {
   id: ID
   source: ID,
-  target: ID
+  target: ID,
+  data: Record<string, any>
 }
 
 export interface Project {
@@ -28,94 +29,9 @@ export interface Project {
 }
 
 /**
- * Defines a Pinia store that manages project state.
  *
- * Includes computed values, refs, and methods for:
- * - Getting the current project based on route params
- * - Tracking the selected tab
- * - Getting the current date/time
- * - Adding new projects
- * - Incrementing the current date/time
  */
-export const useStore = defineStore('store', () => {
-  const projects = ref<Record<string, Project>>({})
-
-  const selected = ref<string>('today')
-
-  const currentTime = ref(new Date())
-
-  const currentProject = computed<Record<any, any>>(() => {
-    const { id } = useRoute().params
-    return projects.value[id as string]
-  })
-
-  const setSelected = (value: string) => {
-    selected.value = value
-  }
-
-  const isActive = (value: string) => {
-    return selected.value === value
-  }
-
-  /**
-   * Adds a new project to the projects map/object.
-   * @param project - The project object to add.
-   * @returns The id of the added project.
-   */
-  const addProject = (project: Project) => {
-    projects.value[project.id] = project
-    return project.id
-  }
-
-  /**
-   * Adds the specified number of days to the current date/time.
-   *
-   * @param days - The number of days to add.
-   * @returns The updated date/time after adding the days.
-   */
-  const addDays = (days: number) => {
-    return (currentTime.value = dayjs(currentTime.value).add(days, 'd').toDate())
-  }
-
-  const updateTime = () => {
-    currentTime.value = new Date()
-  }
-
-
-  const dailyUpdate = () => {
-    Object.values(projects.value).forEach((project) => {
-      const UNIT = 120
-      const dataCore = new DataCore(project)
-      const currentX = dateToX(currentTime.value, project.createTime)
-
-      const sortedIndexes = [...dataCore.indexMap.keys()].sort((a, b) => a - b)
-      console.log('sortedIndexes', sortedIndexes)
-    })
-  }
-
-  const save = () => {
-    return JSON.stringify(projects.value)
-  }
-
-  const restore = (s: string, date: string) => {
-    projects.value = JSON.parse(s)
-    currentTime.value = new Date(date)
-  }
-
-  return {
-    projects,
-    currentProject,
-    currentTime,
-    isActive,
-    setSelected,
-    addProject,
-    addDays,
-    updateTime,
-    dailyUpdate,
-    save,
-    restore
-  }
-})
+const UNIT = 120
 
 class DataCore {
   project: Project
@@ -182,6 +98,14 @@ class DataCore {
     return this.sourceMap.get(nodeId) ?? []
   }
 
+  public getSuccessorsData(nodeId: ID): Node[] {
+    return this.getNodes(this.getSuccessors(nodeId))
+  }
+
+  public getNode(nodeId: ID): Node | undefined {
+    return this.nodesMap.get(nodeId)
+  }
+
   /**
    * Recursively gets all successor nodes for the given node ID.
    *
@@ -202,3 +126,112 @@ class DataCore {
       .filter((node) => node !== undefined) as Node[]
   }
 }
+
+/**
+ * Defines a Pinia store that manages project state.
+ *
+ * Includes computed values, refs, and methods for:
+ * - Getting the current project based on route params
+ * - Tracking the selected tab
+ * - Getting the current date/time
+ * - Adding new projects
+ * - Incrementing the current date/time
+ */
+export const useStore = defineStore('store', () => {
+  const projects = ref<Record<string, Project>>({})
+
+  const selected = ref<string>('today')
+
+  const currentTime = ref(new Date())
+
+  const currentProject = computed<Project>(() => {
+    const { id } = useRoute().params
+    return projects.value[id as string]
+  })
+
+  const setSelected = (value: string) => {
+    selected.value = value
+  }
+
+  const isActive = (value: string) => {
+    return selected.value === value
+  }
+
+  /**
+   * Adds a new project to the projects map/object.
+   * @param project - The project object to add.
+   * @returns The id of the added project.
+   */
+  const addProject = (project: Project) => {
+    projects.value[project.id] = project
+    return project.id
+  }
+
+  /**
+   * Adds the specified number of days to the current date/time.
+   *
+   * @param days - The number of days to add.
+   * @returns The updated date/time after adding the days.
+   */
+  const addDays = (days: number) => {
+    return (currentTime.value = dayjs(currentTime.value).add(days, 'd').toDate())
+  }
+
+  const updateTime = () => {
+    currentTime.value = new Date()
+  }
+
+
+  const dailyUpdate = () => {
+    Object.values(projects.value).forEach((project) => {
+      const dataCore = new DataCore(project)
+      const currentX = dateToX(currentTime.value, project.createTime)
+
+      const sortedIndexes = [...dataCore.indexMap.keys()].sort((a, b) => a - b)
+      console.log('sortedIndexes', sortedIndexes)
+      // todo
+    })
+  }
+
+  const forward = (nodeId: ID) => {
+    const project = currentProject.value
+    const coreData = new DataCore(project)
+    const step = (nodeId: ID) => {
+      const current = coreData.getNode(nodeId)
+      if (!current) return
+      coreData.getSuccessorsData(nodeId)
+        .filter(successor => successor.data.x - current.data.x === UNIT)
+        .forEach(successor => {
+            step(successor.id)
+          }
+        )
+      current.data.x += UNIT
+    }
+    step(nodeId)
+  }
+
+  const save = () => {
+    return JSON.stringify(projects.value)
+  }
+
+  const restore = (s: string, date: string) => {
+    projects.value = JSON.parse(s)
+    currentTime.value = new Date(date)
+  }
+
+  return {
+    projects,
+    currentProject,
+    currentTime,
+    isActive,
+    setSelected,
+    addProject,
+    addDays,
+    updateTime,
+    dailyUpdate,
+    save,
+    restore,
+    forward
+  }
+})
+

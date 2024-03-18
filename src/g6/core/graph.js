@@ -1,3 +1,4 @@
+import { useStore } from '@/stores/store'
 import { Graph } from '@antv/g6'
 import { reactive } from 'vue'
 
@@ -8,6 +9,19 @@ export class CustomGraph extends Graph {
     status: 'none', // 'edit'|'none'|'contextmenu'
     pointerPosition: { x: 0, y: 0 } // 用于contextmenu定位
   })
+
+  /**
+   * save project data to store
+   * @param {string} projectId
+   */
+  saveData(projectId) {
+    const store = useStore()
+    const project = store.projects[projectId]
+    console.log(project)
+    project.nodes = this.getAllNodesData()
+    project.edges = this.getAllEdgesData()
+    console.log({ nodes: project.nodes, edges: project.edges })
+  }
 
   async transform(options, effectTiming) {
     const { tileLodSize } = this.specification.optimize || {}
@@ -109,5 +123,9 @@ export class CustomGraph extends Graph {
     return [...ids].map(id => {
       return this.getNodeData(id)
     })
+  }
+
+  toJson() {
+    return this.dataController.graphCore.toJSON()
   }
 }

@@ -12,9 +12,9 @@ import { HoverNode } from '@/g6/behaviors/hover-node'
 import DoubleClickNode from '@/g6/behaviors/double-click-node'
 import ContextMenu from '@/g6/behaviors/context-menu'
 
-export default function useGraph(container:any) {
+export default function useGraph(container: any) {
   const { currentProject } = useStore()
-  const graph = shallowRef()
+  const graph = shallowRef<CustomGraph>()
 
   async function resize() {
     const { x: x1, y: y1 } = graph.value.getCanvasByViewport({ x: 0, y: 0 })
@@ -27,7 +27,7 @@ export default function useGraph(container:any) {
     const ExtGraph = extend(CustomGraph, {
       nodes: { CardNode },
       plugins: { GridPlugin },
-      behaviors: { CreateNode, DragCanvas, DragNode, CreateEdge, HoverNode, DoubleClickNode, ContentMenu: ContextMenu }
+      behaviors: { CreateNode, DragCanvas, DragNode, CreateEdge, HoverNode, DoubleClickNode, ContextMenu }
     })
 
     graph.value = new ExtGraph({
@@ -37,7 +37,7 @@ export default function useGraph(container:any) {
       enableStack: false,
       plugins: ['GridPlugin'],
       modes: {
-        default: ['DragCanvas', 'CreateNode', 'DragNode', 'CreateEdge', 'HoverNode', 'DoubleClickNode', 'ContentMenu']
+        default: ['DragCanvas', 'CreateNode', 'DragNode', 'CreateEdge', 'HoverNode', 'DoubleClickNode', 'ContextMenu']
       },
       node: (model) => {
         const { id, data } = model
@@ -91,14 +91,13 @@ export default function useGraph(container:any) {
         nodes: currentProject.nodes,
         edges: currentProject.edges
       }
-    })
+    }) as any
 
     window.addEventListener('resize', resize)
   })
 
   onBeforeUnmount(() => {
-    currentProject.nodes = graph.value.getAllNodesData()
-    currentProject.edges = graph.value.getAllEdgesData()
+    graph.value.saveData(currentProject.id)
     window.removeEventListener('resize', resize)
   })
 

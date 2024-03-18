@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { computed, inject } from 'vue';
+import { computed, inject, type Ref } from 'vue'
+import { useStore } from '@/stores/store'
+import type { CustomGraph } from '@/g6/core/graph'
 
-const graphRef = inject('graph') as any
+const store = useStore()
+const graphRef = inject<Ref<CustomGraph>>('graph')
 
 const visible = computed(() => {
   return graphRef.value?.userData.status === 'contextmenu' ?? false
@@ -24,7 +27,6 @@ function handleDelete() {
   const { userData } = graph
   const id = userData.selectItem.id
   graph.removeData('node', id)
-  // onblur()
 }
 
 /**
@@ -39,14 +41,24 @@ function onblur() {
 function onRef(e: any) {
   setTimeout(() => {
     (e as HTMLElement)?.focus()
-  });
+  })
 }
 
 function test() {
+  // const currentProject = store.currentProject
   const graph = graphRef.value
-  const id = graph.userData.selectItem.id
-  const models = graph.getAllSuccessorss(id)
-  console.log(models.map((m: any) => m.data.name));
+  console.log(graph.toJson())
+  const j = graph.toJson()
+  
+  graph.read(JSON.parse(j))
+  graph.translateTo({ x: 0, y: 0 })
+  // graph.saveData(currentProject.id)
+  // const { userData } = graph
+  // const nodeId = userData.selectItem.id
+  // todo 数据读取错误
+  // store.forward(nodeId)
+  // graph.changeData({ nodes: currentProject.nodes, edges: currentProject.edges }, 'replace')
+  // graph.read({ nodes: currentProject.nodes, edges: currentProject.edges })
 }
 
 </script>
