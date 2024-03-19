@@ -5,6 +5,7 @@ import PickDateButton from '@/components/PickDateButton.vue'
 import ResetButton from '@/components/ResetButton.vue'
 import TestButton from '@/components/TestButton.vue'
 import TestRestoreButton from '@/components/TestRestoreButton.vue'
+import TestRightButton from '@/components/TestRightButton.vue'
 import TimerHeader from '@/components/TimerHeader.vue'
 import useGraph from '@/g6/index.ts'
 import { useStore } from '@/stores/store.ts'
@@ -33,6 +34,7 @@ provide('graph', graph)
         <reset-button />
         <pick-date-button />
         <test-button />
+        <test-right-button />
         <test-restore-button />
       </footer>
     </main>

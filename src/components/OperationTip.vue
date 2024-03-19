@@ -3,15 +3,9 @@ defineProps<{ content: string }>()
 </script>
 
 <template>
-  <el-tooltip
-    :content="content"
-    placement="top"
-    :show-after="200"
-    :offset="10"
-    popper-class="tip-class"
-    :enterable="false"
-  >
-    <slot />
+  <el-tooltip :content="content" placement="top" :show-after="200" :offset="10" popper-class="tip-class"
+    :enterable="false">
+    <slot></slot>
   </el-tooltip>
 </template>
 

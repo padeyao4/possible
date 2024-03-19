@@ -31,20 +31,18 @@ function onRef(e: any) {
 }
 
 function moveRight() {
-  const id = store.selectedNode.id
-  store.moveRight(id)
+  store.moveRight(store.selectedNode.id, store.currentProject)
 }
 
 function moveLeft() {
-  const id = store.selectedNode.id
-  store.moveLeft(id)
+  store.moveLeft(store.selectedNode.id, store.currentProject)
 }
 
 function test() {
-  const id = store.selectedNode.id
-  console.log('pre', store.getPredecessors(id, store.currentProject).map(n => n.data.name))
-  console.log('suc', store.getSuccessors(id, store.currentProject).map(n => n.data.name))
-  console.log('all', store.getNeighbors(id, store.currentProject).map(n => n.data.name))
+  // const id = store.selectedNode.id
+  // console.log('pre', store.getPredecessors(id, store.currentProject).map(n => n.data.name))
+  // console.log('suc', store.getSuccessors(id, store.currentProject).map(n => n.data.name))
+  // console.log('all', store.getNeighbors(id, store.currentProject).map(n => n.data.name))
 }
 
 </script>

@@ -3,8 +3,8 @@ import { dayjs } from 'element-plus'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref, shallowRef } from 'vue'
 import { useRoute } from 'vue-router'
-// import { dateToX } from '@/utils/time'
 import type { CustomGraph } from '@/g6/core/graph'
+import { dateToX } from '@/utils/time'
 
 export interface Node {
   id: ID,
@@ -31,104 +31,7 @@ export interface Project {
   createTime: number
 }
 
-/**
- *
- */
 const UNIT = 120
-
-// class DataCore {
-//   project: Project
-//   nodesMap: Map<ID, Node>
-//   edgesMap: Map<ID, Edge>
-//   sourceMap: Map<ID, ID[]>
-//   targetMap: Map<ID, ID[]>
-//   indexMap: Map<number, ID[]>
-//
-//   constructor(project: Project) {
-//     this.project = project
-//     this.nodesMap = new Map(project.nodes.map((node) => [node.id, node]))
-//     this.edgesMap = new Map(project.edges.map((edge) => [edge.id, edge]))
-//     this.sourceMap = new Map<ID, ID[]>()
-//     this.targetMap = new Map<ID, ID[]>()
-//     this.indexMap = new Map<number, ID[]>()
-//
-//     this.project.edges.forEach((edge) => {
-//       const source = edge.source
-//       const target = edge.target
-//
-//       if (this.sourceMap && source in this.sourceMap) {
-//         this.sourceMap.get(source)?.push(target)
-//       } else {
-//         this.sourceMap.set(source, [target])
-//       }
-//
-//       if (this.targetMap && target in this.targetMap) {
-//         this.targetMap.get(target)?.push(source)
-//       } else {
-//         this.targetMap.set(target, [source])
-//       }
-//     })
-//
-//     this.project.nodes.forEach(node => {
-//       const x = node.data.x
-//       if (this.indexMap && x in this.indexMap) {
-//         this.indexMap.get(x)?.push(node.id)
-//       } else {
-//         this.indexMap.set(x, [node.id])
-//       }
-//     })
-//   }
-//
-//   public getPredecessors(nodeId: ID): ID[] {
-//     return this.targetMap.get(nodeId) ?? []
-//   }
-//
-//   /**
-//    * Recursively gets all predecessor node IDs for the given node ID.
-//    *
-//    * @param nodeId - The ID of the node to get predecessors for
-//    * @returns An array of all predecessor node IDs
-//    */
-//   public getAllPredecessors(nodeId: ID): ID[] {
-//     const ans: ID[] = []
-//     this.getPredecessors(nodeId).forEach((predecessor) => {
-//       ans.push(...this.getAllPredecessors(predecessor))
-//     })
-//     return [...new Set(ans), nodeId]
-//   }
-//
-//   public getSuccessors(nodeId: ID): ID[] {
-//     return this.sourceMap.get(nodeId) ?? []
-//   }
-//
-//   public getSuccessorsData(nodeId: ID): Node[] {
-//     return this.getNodes(this.getSuccessors(nodeId))
-//   }
-//
-//   public getNode(nodeId: ID): Node | undefined {
-//     return this.nodesMap.get(nodeId)
-//   }
-//
-//   /**
-//    * Recursively gets all successor nodes for the given node ID.
-//    *
-//    * It first gets the immediate successors via `getSuccessors`,
-//    * then recursively gets the successors of those nodes,
-//    * and returns a flattened unique array of all successor node IDs.
-//    */
-//   public getAllSuccessors(nodeId: ID): ID[] {
-//     const ans: ID[] = []
-//     this.getSuccessors(nodeId).forEach((successor) => {
-//       ans.push(...this.getAllPredecessors(successor))
-//     })
-//     return [...new Set(ans), nodeId]
-//   }
-//
-//   public getNodes(ids: ID[]) {
-//     return ids.map((id) => this.nodesMap.get(id))
-//       .filter((node) => node !== undefined) as Node[]
-//   }
-// }
 
 /**
  * Defines a Pinia store that manages project state.
@@ -174,6 +77,7 @@ export const useStore = defineStore('store', () => {
       if (itemType === 'node') {
         Object.assign(project.nodesMap.get(id).data, item.data)
       }
+      // todo 
       // if (itemType === 'edge') {
       //   const newEdge = <Edge>item
       //   const id = newEdge.id
@@ -252,18 +156,6 @@ export const useStore = defineStore('store', () => {
     if (!project) return
     (Array.isArray(id) ? id : [id]).forEach(itemId => {
       if (itemType === 'node') {
-        // project.inEdgesMap.get(item)?.forEach(edge => {
-        //   project.outEdgesMap.get(edge.source)?.delete(edge)
-        //   project.edgesMap.delete(edge.id);
-        // })
-        // project.inEdgesMap.delete(item)
-
-        // project.outEdgesMap.get(item)?.forEach(edge => {
-        //   project.inEdgesMap.get(edge.target)?.delete(edge)
-        //   project.edgesMap.delete(edge.id)
-        // })
-        // project.outEdgesMap.delete(item)
-
         project.outEdgesMap.get(itemId)?.forEach((edge) => {
           project.inEdgesMap.get(edge.target)?.delete(edge)
           project.edgesMap.delete(edge.id)
@@ -276,7 +168,6 @@ export const useStore = defineStore('store', () => {
 
         project.outEdgesMap.delete(itemId)
         project.inEdgesMap.delete(itemId)
-
         project.nodesMap.delete(itemId)
 
         // project.nodesMap.delete(item)
@@ -300,7 +191,6 @@ export const useStore = defineStore('store', () => {
   const getSuccessors = (id: ID) => {
     const { outEdgesMap, nodesMap } = currentProject.value;
     return [...outEdgesMap.get(id) ?? []].map(edge => {
-      console.log(edge)
       return nodesMap.get(edge.target)
     })
   }
@@ -349,19 +239,12 @@ export const useStore = defineStore('store', () => {
     currentTime.value = new Date()
   }
 
-  const moveRight = (nodeId: ID) => {
-    const project = currentProject.value
+  const moveRight = (nodeId: ID, project: Project) => {
     const step = (nodeId: ID) => {
       const node = project.nodesMap.get(nodeId)
-      console.log('moveRight', nodeId, node, getSuccessors(nodeId))
       getSuccessors(nodeId)
-        .filter(successor => {
-          console.log(successor);
-          return successor.data.x - node.data.x === UNIT
-        })
-        .forEach(successor => {
-          step(successor.id)
-        })
+        .filter(successor => successor.data.x - node.data.x === UNIT)
+        .forEach(successor => step(successor.id))
       node.data.x += UNIT
       graph.value.updateNodePosition({
         id: nodeId,
@@ -371,34 +254,45 @@ export const useStore = defineStore('store', () => {
     step(nodeId)
   }
 
-  // const dailyUpdate = () => {
-  //   Object.values(projects).forEach((project) => {
-  //     const dataCore = new DataCore(project)
-  //     const currentX = dateToX(currentTime.value, project.createTime)
-  //
-  //     const sortedIndexes = [...dataCore.indexMap.keys()].sort((a, b) => a - b)
-  //     console.log('sortedIndexes', sortedIndexes)
-  //     // todo
-  //   })
-  // }
-  //
-  // const forward = (nodeId: ID) => {
-  //   const project = currentProject.value
-  //   const coreData = new DataCore(project)
-  //   const step = (nodeId: ID) => {
-  //     const current = coreData.getNode(nodeId)
-  //     if (!current) return
-  //     coreData.getSuccessorsData(nodeId)
-  //       .filter(successor => successor.data.x - current.data.x === UNIT)
-  //       .forEach(successor => {
-  //           step(successor.id)
-  //         }
-  //       )
-  //     current.data.x += UNIT
-  //     // todo
-  //   }
-  //   step(nodeId)
-  // }
+  const moveLeft = (nodeId: ID, project: Project) => {
+    const node = project.nodesMap.get(nodeId)
+    const predecessors = getPredecessors(nodeId)
+      .filter((predecessor) => {
+        return node.data.x - predecessor.data.x === UNIT
+      })
+
+    if (predecessors.some((predecessor) => predecessor.data.completed ||
+      !moveLeft(predecessor.id, project))) {
+      return false
+    } else {
+      node.data.x -= UNIT
+      graph.value.updateNodePosition({
+        id: nodeId,
+        data: { x: node.data.x, y: node.data.y }
+      })
+      return true
+    }
+  }
+
+  const dailyUpdate = () => {
+    console.log('start daily update');
+
+    Object.values(projects).forEach((project) => {
+      const currentX = dateToX(currentTime.value, project.createTime)
+
+      let nodes = [...project.nodesMap.values()]
+        .filter((node) => node.data.x < currentX && !node.data.completed)
+        .sort((a, b) => a.data.x - b.data.x)
+      while (nodes.length > 0) {
+        moveRight(nodes[0].id, project)
+        nodes = [...project.nodesMap.values()]
+          .filter((node) => node.data.x < currentX && !node.data.completed)
+          .sort((a, b) => a.data.x - b.data.x)
+      }
+    })
+    console.log('daily update done')
+  }
+
 
   return {
     projects,
@@ -420,9 +314,9 @@ export const useStore = defineStore('store', () => {
     getSuccessors,
     getPredecessors,
     getNeighbors,
-    moveRight
-    // dailyUpdate,
-    // forward
+    moveRight,
+    moveLeft,
+    dailyUpdate,
   }
 }
 )
