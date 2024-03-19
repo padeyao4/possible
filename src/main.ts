@@ -8,7 +8,6 @@ import router from './router'
 import 'default-passive-events'
 import './utils/browser-patch'
 
-
 const app = createApp(App)
 
 app.use(ElementPlus)

@@ -70,39 +70,28 @@ function handleComplete(evt: any, element: any) {
     <main @contextmenu.prevent>
       <aside>
         <header>
-          <div class="selected-item" :class="{selected: store.isActive('today')}"
-               @click="store.setSelected('today');router.push('/today')">我的一天
+          <div class="selected-item" :class="{ selected: store.isActive('today') }"
+            @click="store.setSelected('today'); router.push('/today')">我的一天
           </div>
-          <div class="selected-item" :class="{selected: store.isActive('completed')}"
-               @click="store.setSelected('completed');router.push('/completed')">
+          <div class="selected-item" :class="{ selected: store.isActive('completed') }"
+            @click="store.setSelected('completed'); router.push('/completed')">
             已完成项目
           </div>
         </header>
         <div id="body">
-          <draggable :list="projects"
-                     item-key="id"
-                     chosenClass="chosen-class"
-                     dragClass="drag-class"
-                     handle=".move"
-                     ghostClass="ghost-class"
-                     :forceFallback="true"
-                     @update="onUpdate">
+          <draggable :list="projects" item-key="id" chosenClass="chosen-class" dragClass="drag-class" handle=".move"
+            ghostClass="ghost-class" :forceFallback="true" @update="onUpdate">
             <template #item="{ element }">
-              <div class="selected-item"
-                   @click="store.setSelected(element.id);router.push(`/project/${element.id}`)"
-                   :class="{selected: store.isActive(element.id)}"
-                   :key="element.id">
-                <input v-if="element.editable&&store.isActive(element.id)"
-                       :ref="handleInputRef"
-                       v-model="element.name"
-                       @blur="element.editable=false"
-                       @keydown.enter="element.editable=false" />
+              <div @click="store.setSelected(element.id); router.push(`/project/${element.id}`)"
+                :class="['selected-item', { selected: store.isActive(element.id) }]" :key="element.id">
+                <input v-if="element.editable && store.isActive(element.id)" :ref="handleInputRef" v-model="element.name"
+                  @blur="element.editable = false" @keydown.enter="element.editable = false" />
                 <div v-else class="project-item">
                   <div class="info">{{ element.name }}</div>
                   <div class="operation">
-                    <write theme="outline" size="15" fill="#333" :strokeWidth="1" @click="element.editable=true" />
+                    <write theme="outline" size="15" fill="#333" :strokeWidth="1" @click="element.editable = true" />
                     <delete-four theme="outline" size="15" fill="#333" :strokeWidth="1"
-                                 @click="(evt:any)=>handleComplete(evt,element)" />
+                      @click="(evt: any) => handleComplete(evt, element)" />
                     <drag theme="outline" size="15" fill="#b9b9b9" :strokeWidth="1" class="move" />
                   </div>
                 </div>
@@ -134,14 +123,14 @@ aside {
   width: 240px;
   height: 100vh;
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
-  rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+    rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
 
 header {
   flex-shrink: 0;
   padding: 2px 0;
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
-  rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+    rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
 
 #body {
@@ -149,7 +138,7 @@ header {
   padding: 2px 0;
   overflow-y: auto;
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
-  rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+    rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
 
 footer {
@@ -170,6 +159,10 @@ footer {
   &:hover {
     border-radius: 4px;
     background: var(--active);
+  }
+
+  &:hover .operation {
+    display: flex;
   }
 }
 
@@ -211,10 +204,6 @@ input {
     flex-grow: 1;
   }
 
-  &:hover .operation {
-    display: flex;
-  }
-
   .operation {
     display: none;
     align-items: center;
@@ -222,7 +211,7 @@ input {
     width: 68px;
     flex-shrink: 0;
 
-    & > * {
+    &>* {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -241,6 +230,4 @@ input {
     }
   }
 }
-
-
 </style>

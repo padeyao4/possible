@@ -1,6 +1,6 @@
 {
   "name": "possible",
-  "version": "0.0.51",
+  "version": "0.0.52",
   "private": true,
   "type": "module",
   "scripts": {
@@ -54,3 +54,4 @@
     "vue-tsc": "^1.8.27"
   }
 }
+

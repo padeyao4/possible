@@ -42,7 +42,7 @@ function moveLeft() {
 
 <template>
   <teleport to="body">
-    <div v-if="visible" class="graph-contextmenu-container"
+    <div v-if="visible"
       :style="{ 'position': 'absolute', 'left': store.contextmenuPosition.x + 'px', 'top': store.contextmenuPosition.y + 'px' }"
       @contextmenu.prevent>
       <div class="menu" :ref="onRef" tabindex="0" @blur="onblur">
@@ -57,14 +57,6 @@ function moveLeft() {
 </template>
 
 <style scoped>
-/** todo
-*/
-.graph-contextmenu-container {
-  &:focus {
-    border: none;
-    border-style: none;
-  }
-}
 
 .menu {
   width: 80px;
@@ -74,7 +66,7 @@ function moveLeft() {
   background: #606266;
 
   &:focus {
-    border: none;
+    outline: none;
   }
 }
 
