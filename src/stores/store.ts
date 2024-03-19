@@ -174,38 +174,38 @@ export const useStore = defineStore('store', () => {
       if (itemType === 'node') {
         Object.assign(project.nodesMap.get(id).data, item.data)
       }
-      if (itemType === 'edge') {
-        const newEdge = <Edge>item
-        const id = newEdge.id
+      // if (itemType === 'edge') {
+      //   const newEdge = <Edge>item
+      //   const id = newEdge.id
 
-        const oldEdge = project.edgesMap.get(id)
-        const oldSource = oldEdge.source
-        const oldTarget = oldEdge.target
+      //   const oldEdge = project.edgesMap.get(id)
+      //   const oldSource = oldEdge.source
+      //   const oldTarget = oldEdge.target
 
-        // 修改edgesMap值
-        Object.assign(oldEdge, newEdge)
+      //   // 修改edgesMap值
+      //   Object.assign(oldEdge, newEdge)
 
-        const newSource = oldEdge.source
-        const newTarget = oldEdge.target
+      //   const newSource = oldEdge.source
+      //   const newTarget = oldEdge.target
 
-        if (oldSource !== newSource) {
-          project.outEdgesMap.get(oldSource)?.delete(oldEdge)
-          if (newSource in project.outEdgesMap) {
-            project.outEdgesMap.get(newSource)?.add(oldEdge)
-          } else {
-            project.outEdgesMap.set(newSource, new Set([oldEdge]))
-          }
-        }
+      //   if (oldSource !== newSource) {
+      //     project.outEdgesMap.get(oldSource)?.delete(oldEdge)
+      //     if (newSource in project.outEdgesMap) {
+      //       project.outEdgesMap.get(newSource)?.add(oldEdge)
+      //     } else {
+      //       project.outEdgesMap.set(newSource, new Set([oldEdge]))
+      //     }
+      //   }
 
-        if (oldTarget !== newTarget) {
-          project.inEdgesMap.get(oldTarget)?.delete(oldEdge)
-          if (newTarget in project.inEdgesMap) {
-            project.inEdgesMap.get(newTarget)?.add(oldEdge)
-          } else {
-            project.inEdgesMap.set(newTarget, new Set([oldEdge]))
-          }
-        }
-      }
+      //   if (oldTarget !== newTarget) {
+      //     project.inEdgesMap.get(oldTarget)?.delete(oldEdge)
+      //     if (newTarget in project.inEdgesMap) {
+      //       project.inEdgesMap.get(newTarget)?.add(oldEdge)
+      //     } else {
+      //       project.inEdgesMap.set(newTarget, new Set([oldEdge]))
+      //     }
+      //   }
+      // }
     })
 
     graph.value?.updateData(itemType, models)
@@ -218,25 +218,28 @@ export const useStore = defineStore('store', () => {
     (Array.isArray(models) ? models : [models]).forEach(item => {
       if (itemType === 'node') {
         project.nodesMap.set(item.id, item)
-        // project.nodes.push(item)
+        project.inEdgesMap.set(item.id, new Set())
+        project.outEdgesMap.set(item.id, new Set())
       }
       if (itemType === 'edge') {
         const edge = <Edge>item
-
         project.edgesMap.set(edge.id, edge)
+
+        project.inEdgesMap.get(edge.target)?.add(edge)
+        project.outEdgesMap.get(edge.source)?.add(edge)
+
         // project.edges.push(edge)
+        // if (project.inEdgesMap.has(edge.target)) {
+        //   project.inEdgesMap.get(edge.target).add(edge)
+        // } else {
+        //   project.inEdgesMap.set(edge.target, new Set([edge]))
+        // }
 
-        if (project.inEdgesMap.has(edge.target)) {
-          project.inEdgesMap.get(edge.target).add(edge)
-        } else {
-          project.inEdgesMap.set(edge.target, new Set([edge]))
-        }
-
-        if (project.outEdgesMap.has(edge.source)) {
-          project.outEdgesMap.get(edge.source).add(edge)
-        } else {
-          project.outEdgesMap.set(edge.source, new Set([edge]))
-        }
+        // if (project.outEdgesMap.has(edge.source)) {
+        //   project.outEdgesMap.get(edge.source).add(edge)
+        // } else {
+        //   project.outEdgesMap.set(edge.source, new Set([edge]))
+        // }
       }
     }
     )
@@ -247,22 +250,37 @@ export const useStore = defineStore('store', () => {
   const removeData = (itemType: 'node' | 'edge', id: ID | ID[]) => {
     const project = currentProject.value
     if (!project) return
-    (Array.isArray(id) ? id : [id]).forEach(item => {
+    (Array.isArray(id) ? id : [id]).forEach(itemId => {
       if (itemType === 'node') {
         // project.inEdgesMap.get(item)?.forEach(edge => {
         //   project.outEdgesMap.get(edge.source)?.delete(edge)
         //   project.edgesMap.delete(edge.id);
         // })
-        project.inEdgesMap.delete(item)
+        // project.inEdgesMap.delete(item)
 
         // project.outEdgesMap.get(item)?.forEach(edge => {
         //   project.inEdgesMap.get(edge.target)?.delete(edge)
         //   project.edgesMap.delete(edge.id)
         // })
-        project.outEdgesMap.delete(item)
+        // project.outEdgesMap.delete(item)
 
-        project.nodesMap.delete(item)
-      }
+        project.outEdgesMap.get(itemId)?.forEach((edge) => {
+          project.inEdgesMap.get(edge.target)?.delete(edge)
+          project.edgesMap.delete(edge.id)
+        })
+
+        project.inEdgesMap.get(itemId)?.forEach((edge) => {
+          project.outEdgesMap.get(edge.source)?.delete(edge)
+          project.edgesMap.delete(edge.id)
+        })
+
+        project.outEdgesMap.delete(itemId)
+        project.inEdgesMap.delete(itemId)
+
+        project.nodesMap.delete(itemId)
+
+        // project.nodesMap.delete(item)
+      } // todo
       // if (itemType === 'edge') {
       //   const edge = project.edgesMap.get(item)
       //   const source = edge.source
