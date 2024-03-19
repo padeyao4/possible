@@ -1,7 +1,7 @@
 import { Extensions, type ID, type IG6GraphEvent } from '@antv/g6'
 import { v4 } from 'uuid'
 import { useStore } from '@/stores/store'
-
+import { debug } from '@/utils/debug-utils'
 
 interface DefaultOption {
   shouldBegin: (event: any) => boolean;
@@ -14,7 +14,7 @@ const DEFAULT_CONFIG = {
   shouldBegin: (event: any) => event.button === 0
 }
 
-const DUMMY_ID = 'DUMMY_ID'
+const DUMMY_ID = 'DUMMY_NODE'
 
 export default class CreateEdge extends Extensions.BaseBehavior {
 
@@ -51,6 +51,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
     this.store.addData('node', {
       id: DUMMY_ID,
       data: {
+        name: 'dummy',
         type: 'circle-node',
         x: e.canvas.x,
         y: e.canvas.y,
@@ -63,7 +64,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
     const targetId = id === 'anchorShape0' ? itemId : DUMMY_ID
 
     this.edge = {
-      id: v4(),
+      id: 'DUMMY_EDGE',
       source: sourceId,
       target: targetId,
       data: {
@@ -72,7 +73,8 @@ export default class CreateEdge extends Extensions.BaseBehavior {
       }
     }
 
-    this.store.addData('edge', this.edge)
+    this.store.addData('edge', { ...this.edge })
+    debug(this.graph as any)
   }
 
   creteEdge(sourceId: ID, targetId: ID) {
@@ -95,6 +97,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
         targetAnchor: 0
       }
     })
+    debug(this.graph as any)
   }
 
   onPointerUp(e: IG6GraphEvent) {
@@ -129,6 +132,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
   clearStatus() {
     if (!this.pointDown) return
     this.store.removeData('node', DUMMY_ID)
+    debug(this.graph as any)
     this.pointDown = false
   }
 

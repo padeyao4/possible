@@ -216,23 +216,23 @@ export const useStore = defineStore('store', () => {
     if (!project) return
 
     (Array.isArray(models) ? models : [models]).forEach(item => {
-      const { id } = item
       if (itemType === 'node') {
-        project.nodesMap.set(id, item)
+        project.nodesMap.set(item.id, item)
         // project.nodes.push(item)
       }
       if (itemType === 'edge') {
         const edge = <Edge>item
-        project.edgesMap.set(id, edge)
+
+        project.edgesMap.set(edge.id, edge)
         // project.edges.push(edge)
 
-        if (edge.target in project.inEdgesMap) {
+        if (project.inEdgesMap.has(edge.target)) {
           project.inEdgesMap.get(edge.target).add(edge)
         } else {
           project.inEdgesMap.set(edge.target, new Set([edge]))
         }
 
-        if (edge.source in project.outEdgesMap) {
+        if (project.outEdgesMap.has(edge.source)) {
           project.outEdgesMap.get(edge.source).add(edge)
         } else {
           project.outEdgesMap.set(edge.source, new Set([edge]))
@@ -249,20 +249,28 @@ export const useStore = defineStore('store', () => {
     if (!project) return
     (Array.isArray(id) ? id : [id]).forEach(item => {
       if (itemType === 'node') {
-        project.nodesMap.delete(item)
-        project.inEdgesMap.get(item)?.forEach(edge => project.edgesMap.delete(edge.id))
+        // project.inEdgesMap.get(item)?.forEach(edge => {
+        //   project.outEdgesMap.get(edge.source)?.delete(edge)
+        //   project.edgesMap.delete(edge.id);
+        // })
         project.inEdgesMap.delete(item)
-        project.outEdgesMap.get(item)?.forEach(edge => project.edgesMap.delete(edge.id))
+
+        // project.outEdgesMap.get(item)?.forEach(edge => {
+        //   project.inEdgesMap.get(edge.target)?.delete(edge)
+        //   project.edgesMap.delete(edge.id)
+        // })
         project.outEdgesMap.delete(item)
+
+        project.nodesMap.delete(item)
       }
-      if (itemType === 'edge') {
-        const edge = project.edgesMap.get(item)
-        const source = edge.source
-        const target = edge.target
-        project.edgesMap.delete(item)
-        project.inEdgesMap.get(target)?.delete(edge)
-        project.outEdgesMap.get(source)?.delete(edge)
-      }
+      // if (itemType === 'edge') {
+      //   const edge = project.edgesMap.get(item)
+      //   const source = edge.source
+      //   const target = edge.target
+      //   project.edgesMap.delete(item)
+      //   project.inEdgesMap.get(target)?.delete(edge)
+      //   project.outEdgesMap.get(source)?.delete(edge)
+      // }
     })
     graph.value?.removeData(itemType, id)
   }
@@ -273,7 +281,10 @@ export const useStore = defineStore('store', () => {
 
   const getSuccessors = (id: ID) => {
     const { outEdgesMap, nodesMap } = currentProject.value;
-    return [...outEdgesMap.get(id) ?? []].map(edge => nodesMap.get(edge.target))
+    return [...outEdgesMap.get(id) ?? []].map(edge => {
+      console.log(edge)
+      return nodesMap.get(edge.target)
+    })
   }
 
   const getPredecessors = (id: ID) => {
@@ -320,6 +331,27 @@ export const useStore = defineStore('store', () => {
     currentTime.value = new Date()
   }
 
+  const moveRight = (nodeId: ID) => {
+    const project = currentProject.value
+    const step = (nodeId: ID) => {
+      const node = project.nodesMap.get(nodeId)
+      console.log('moveRight', nodeId, node, getSuccessors(nodeId))
+      getSuccessors(nodeId)
+        .filter(successor => {
+          console.log(successor);
+          return successor.data.x - node.data.x === UNIT
+        })
+        .forEach(successor => {
+          step(successor.id)
+        })
+      node.data.x += UNIT
+      graph.value.updateNodePosition({
+        id: nodeId,
+        data: { x: node.data.x, y: node.data.y }
+      })
+    }
+    step(nodeId)
+  }
 
   // const dailyUpdate = () => {
   //   Object.values(projects).forEach((project) => {
@@ -369,7 +401,8 @@ export const useStore = defineStore('store', () => {
     updateTime,
     getSuccessors,
     getPredecessors,
-    getNeighbors
+    getNeighbors,
+    moveRight
     // dailyUpdate,
     // forward
   }

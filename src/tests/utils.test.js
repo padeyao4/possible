@@ -49,3 +49,18 @@ test('assign', () => {
 
   console.log(a === b, a, b)
 })
+
+test('delete', () => {
+  const aoo = {
+    name: 'hello',
+    age: 18,
+    cars: ['a', 'b']
+  }
+
+  const boo = Object.assign(aoo, {
+    'name': 'world'
+  })
+
+  const s = new Set([aoo, boo])
+  console.log(s)
+})
