@@ -38,13 +38,6 @@ function moveLeft() {
   store.moveLeft(store.selectedNode.id, store.currentProject)
 }
 
-function test() {
-  // const id = store.selectedNode.id
-  // console.log('pre', store.getPredecessors(id, store.currentProject).map(n => n.data.name))
-  // console.log('suc', store.getSuccessors(id, store.currentProject).map(n => n.data.name))
-  // console.log('all', store.getNeighbors(id, store.currentProject).map(n => n.data.name))
-}
-
 </script>
 
 <template>
@@ -54,10 +47,9 @@ function test() {
       @contextmenu.prevent>
       <div class="menu" :ref="onRef" tabindex="0" @blur="onblur">
         <ul @click="onblur">
-          <li @click="handleDelete">删除</li>
           <li @click="moveRight">右移</li>
           <li @click="moveLeft">左移</li>
-          <li @click="test">信息</li>
+          <li @click="handleDelete">删除</li>
         </ul>
       </div>
     </div>

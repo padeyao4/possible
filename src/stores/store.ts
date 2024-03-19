@@ -1,10 +1,10 @@
+import type { CustomGraph } from '@/g6/core/graph'
+import { dateToX } from '@/utils/time'
 import type { ID } from '@antv/g6'
 import { dayjs } from 'element-plus'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref, shallowRef } from 'vue'
 import { useRoute } from 'vue-router'
-import type { CustomGraph } from '@/g6/core/graph'
-import { dateToX } from '@/utils/time'
 
 export interface Node {
   id: ID,
@@ -184,19 +184,19 @@ export const useStore = defineStore('store', () => {
     graph.value?.removeData(itemType, id)
   }
 
-  const getNeighbors = (id: ID) => {
-    return [...new Set([...getSuccessors(id), ...getPredecessors(id)])]
+  const getNeighbors = (id: ID, project: Project) => {
+    return [...new Set([...getSuccessors(id, project), ...getPredecessors(id, project)])]
   }
 
-  const getSuccessors = (id: ID) => {
-    const { outEdgesMap, nodesMap } = currentProject.value;
+  const getSuccessors = (id: ID, project: Project) => {
+    const { outEdgesMap, nodesMap } = project
     return [...outEdgesMap.get(id) ?? []].map(edge => {
       return nodesMap.get(edge.target)
     })
   }
 
-  const getPredecessors = (id: ID) => {
-    const { inEdgesMap, nodesMap } = currentProject.value;
+  const getPredecessors = (id: ID, project: Project) => {
+    const { inEdgesMap, nodesMap } = project;
     return [...inEdgesMap.get(id) ?? []].map(edge => nodesMap.get(edge.source))
   }
 
@@ -239,24 +239,27 @@ export const useStore = defineStore('store', () => {
     currentTime.value = new Date()
   }
 
-  const moveRight = (nodeId: ID, project: Project) => {
-    const step = (nodeId: ID) => {
-      const node = project.nodesMap.get(nodeId)
-      getSuccessors(nodeId)
-        .filter(successor => successor.data.x - node.data.x === UNIT)
-        .forEach(successor => step(successor.id))
-      node.data.x += UNIT
-      graph.value.updateNodePosition({
+  const moveRight = (nodeId: ID, project: Project, drawabled = true) => {
+    const node = project.nodesMap.get(nodeId)
+    getSuccessors(node.id, project)
+      .filter(successor => {
+        return successor.data.x - node.data.x === UNIT
+      })
+      .forEach(successor => {
+        moveRight(successor.id, project, drawabled)
+      })
+    node.data.x += UNIT
+    if (drawabled) {
+      graph.value?.updateNodePosition({
         id: nodeId,
         data: { x: node.data.x, y: node.data.y }
       })
     }
-    step(nodeId)
   }
 
   const moveLeft = (nodeId: ID, project: Project) => {
     const node = project.nodesMap.get(nodeId)
-    const predecessors = getPredecessors(nodeId)
+    const predecessors = getPredecessors(nodeId, project)
       .filter((predecessor) => {
         return node.data.x - predecessor.data.x === UNIT
       })
@@ -276,15 +279,13 @@ export const useStore = defineStore('store', () => {
 
   const dailyUpdate = () => {
     console.log('start daily update');
-
     Object.values(projects).forEach((project) => {
       const currentX = dateToX(currentTime.value, project.createTime)
-
       let nodes = [...project.nodesMap.values()]
         .filter((node) => node.data.x < currentX && !node.data.completed)
         .sort((a, b) => a.data.x - b.data.x)
       while (nodes.length > 0) {
-        moveRight(nodes[0].id, project)
+        moveRight(nodes[0].id, project, project === currentProject.value)
         nodes = [...project.nodesMap.values()]
           .filter((node) => node.data.x < currentX && !node.data.completed)
           .sort((a, b) => a.data.x - b.data.x)
