@@ -26,7 +26,7 @@ const task = computed<Record<any, any>>(() => {
     },
     set: (target, p, newValue) => {
       Reflect.set(target, p, newValue)
-      store.updateData('node', {
+      store.updateNode({
         id: store.selectedNode.id,
         data: target
       })
@@ -64,7 +64,7 @@ const isPending = computed(() => {
 <template>
   <teleport to="body">
     <el-drawer v-model="visible" :close-on-click-modal="false" :show-close="true" modal-class="modal-class"
-               @close="visible = false">
+      @close="visible = false">
       <el-form :model="task" @submit.prevent>
         <el-form-item label="名称">
           <el-input v-model="task.name" />

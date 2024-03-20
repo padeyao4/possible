@@ -8,29 +8,30 @@ import { computed, reactive, ref, shallowRef } from 'vue'
 import { useRoute } from 'vue-router'
 
 export interface Node {
-  id: ID,
+  id: ID
   data: Record<string, any>
 }
 
 export interface Edge {
   id: ID
-  source: ID,
-  target: ID,
+  source: ID
+  target: ID
   data: Record<string, any>
 }
 
 export interface Project {
-  id: string,
-  name: string,
-  nodesMap: Map<ID, Node>,
-  edgesMap: Map<ID, Edge>,
-  inEdgesMap: Map<ID, Set<Edge>>,
-  outEdgesMap: Map<ID, Set<Edge>>,
-  rowsMap: Map<ID, Set<Node>>,
-  colsMap: Map<ID, Set<Node>>,
-  completed: boolean,
-  sortIndex: number,
-  editable: boolean,
+  id: string
+  name: string
+  nodesMap: Map<ID, Node>
+  edgesMap: Map<ID, Edge>
+  inEdgesMap: Map<ID, Set<Edge>>
+  outEdgesMap: Map<ID, Set<Edge>>
+  rowsMap: Map<ID, Set<Node>>
+  colsMap: Map<ID, Set<Node>>
+  coordinateMap: Map<string, Node>
+  completed: boolean
+  sortIndex: number
+  editable: boolean
   createTime: number
 }
 
@@ -72,7 +73,32 @@ export const useStore = defineStore('store', () => {
 
   const updateNode = (model: Node) => {
     if (!currentProject.value) return
-    Object.assign(currentProject.value.nodesMap.get(model.id).data, model.data)
+    const oldNode = currentProject.value.nodesMap.get(model.id)
+
+    const { colsMap, rowsMap, coordinateMap } = currentProject.value
+
+    const { x: oldX, y: oldY } = oldNode.data
+
+    colsMap.get(oldX).delete(oldNode)
+    rowsMap.get(oldY).delete(oldNode)
+    coordinateMap.delete(`${oldX},${oldY}`)
+
+    const { x: newX, y: newY } = model.data
+    if (colsMap.has(newX)) {
+      colsMap.get(newX).add(oldNode)
+    } else {
+      colsMap.set(newX, new Set([oldNode]))
+    }
+
+    rowsMap.get(oldY).delete(oldNode)
+    if (rowsMap.has(newY)) {
+      rowsMap.get(newY).add(oldNode)
+    } else {
+      rowsMap.set(newY, new Set([oldNode]))
+    }
+    coordinateMap.set(`${newX},${newY}`, oldNode)
+
+    Object.assign(oldNode.data, model.data)
     graph.value?.updateData('node', model)
   }
 
@@ -87,21 +113,24 @@ export const useStore = defineStore('store', () => {
 
   const addNode = (model: Node) => {
     if (!currentProject.value) return
-    const { nodesMap, inEdgesMap, outEdgesMap, rowsMap, colsMap } = currentProject.value;
+    const { nodesMap, inEdgesMap, outEdgesMap, rowsMap, colsMap, coordinateMap } = currentProject.value;
+    const { x, y } = model.data
+    if (coordinateMap.has(`${x},${y}`)) return
 
+    coordinateMap.set(`${x},${y}`, model)
     nodesMap.set(model.id, model)
     inEdgesMap.set(model.id, new Set())
     outEdgesMap.set(model.id, new Set())
-    const { x, y } = model.data
+
     if (x in colsMap) {
-      rowsMap.get(x)?.add(model)
+      colsMap.get(x)?.add(model)
     } else {
-      rowsMap.set(x, new Set([model]))
+      colsMap.set(x, new Set([model]))
     }
     if (y in rowsMap) {
-      colsMap.get(y)?.add(model)
+      rowsMap.get(y)?.add(model)
     } else {
-      colsMap.set(y, new Set([model]))
+      rowsMap.set(y, new Set([model]))
     }
 
     graph.value?.addData('node', model)
@@ -110,7 +139,7 @@ export const useStore = defineStore('store', () => {
   const removeNode = (nodeId: ID) => {
     if (!currentProject.value) return
 
-    const { outEdgesMap, inEdgesMap, nodesMap, edgesMap } = currentProject.value
+    const { outEdgesMap, inEdgesMap, nodesMap, edgesMap, rowsMap, colsMap, coordinateMap } = currentProject.value
 
     outEdgesMap.get(nodeId)?.forEach((edge) => {
       inEdgesMap.get(edge.target)?.delete(edge)
@@ -124,14 +153,75 @@ export const useStore = defineStore('store', () => {
 
     outEdgesMap.delete(nodeId)
     inEdgesMap.delete(nodeId)
+
+    const node = nodesMap.get(nodeId)
+    coordinateMap.delete(`${node.data.x},${node.data.y}`)
+    rowsMap.get(node.data.x)?.delete(node)
+    colsMap.get(node.data.y)?.delete(node)
     nodesMap.delete(nodeId)
 
     graph.value?.removeData('node', nodeId)
   }
 
+  const bfsOutEdge = (startNodeId: ID, project: Project, callback: (id: ID) => void) => {
+    const queue = [startNodeId]
+    while (queue.length > 0) {
+      const nodeId = queue.shift()
+      callback(nodeId)
+      project.outEdgesMap.get(nodeId)?.forEach((edge) => {
+        if (!queue.includes(project.nodesMap.get(edge.target).id)) {
+          queue.push(project.nodesMap.get(edge.target).id)
+        }
+      })
+    }
+  }
+
+  const bfsInEdge = (startNodeId: ID, project: Project, callback: (id: ID) => void) => {
+    const queue = [startNodeId]
+    while (queue.length > 0) {
+      const nodeId = queue.shift()
+      callback(nodeId)
+      project.inEdgesMap.get(nodeId)?.forEach((edge) => {
+        if (!queue.includes(project.nodesMap.get(edge.source).id)) {
+          queue.push(project.nodesMap.get(edge.source).id)
+        }
+      })
+    }
+  }
+
+  const bfsAllNodes = (startNodeId: ID, project: Project, callback: (id: ID) => void) => {
+    const visited = new Set<ID>()
+    visited.add(startNodeId)
+    const queue = [startNodeId]
+    const { nodesMap, inEdgesMap, outEdgesMap } = project
+    while (queue.length > 0) {
+      const nodeId = queue.shift()
+      callback(nodeId)
+      outEdgesMap.get(nodeId)?.forEach((edge) => {
+        const targetId = nodesMap.get(edge.target).id
+        if (!visited.has(targetId)) {
+          queue.push(targetId)
+          visited.add(targetId)
+        }
+      })
+      inEdgesMap.get(nodeId)?.forEach((edge) => {
+        const sourceId = nodesMap.get(edge.source).id
+        if (!visited.has(sourceId)) {
+          queue.push(sourceId)
+          visited.add(sourceId)
+        }
+      })
+    }
+  }
+
+  const getRelationNodes = (nodeId: ID, project: Project) => {
+    const allNodeIds = []
+    bfsAllNodes(nodeId, project, (id) => allNodeIds.push(id))
+    return allNodeIds
+  }
 
   const getNeighbors = (id: ID, project: Project) => {
-    return [...new Set([...getSuccessors(id, project), ...getPredecessors(id, project)])]
+    return [...getSuccessors(id, project), ...getPredecessors(id, project)]
   }
 
   const getSuccessors = (id: ID, project: Project) => {
@@ -185,6 +275,21 @@ export const useStore = defineStore('store', () => {
     currentTime.value = new Date()
   }
 
+  const checkNodeOverlap = (node: Partial<Node>, project: Project) => {
+    const { coordinateMap } = project
+    return coordinateMap.has(`${node.data.x},${node.data.y}`)
+  }
+
+  /**
+   * 当前节点的所有关联节点都向下移动,向下移动碰到重叠节点。递归重叠节点向下移动
+   */
+  const moveDown = (node: Node, project: Project) => {
+    // todo
+  }
+
+  /**
+   * 向右移动,如果有重叠节点,重叠节点和重叠节点的关联节点都向下移动
+   */
   const moveRight = (nodeId: ID, project: Project, drawabled = true) => {
     const node = project.nodesMap.get(nodeId)
     getSuccessors(node.id, project)
@@ -194,7 +299,16 @@ export const useStore = defineStore('store', () => {
       .forEach(successor => {
         moveRight(successor.id, project, drawabled)
       })
+    // todo 解决重叠问题
+    // const nextX = node.data.x + UNIT_W
+    // if (checkNodeOverlap({
+    //   data: { x: nextX, y: node.data.y }
+    // }, project)) {
+    //   const overlapNode = project.coordinateMap.get(`${nextX},${node.data.y}`)
+
+    // }
     node.data.x += UNIT_W
+    // todo end
     if (drawabled) {
       graph.value?.updateNodePosition({
         id: nodeId,
@@ -272,7 +386,12 @@ export const useStore = defineStore('store', () => {
     moveRight,
     moveLeft,
     dailyUpdate,
-    getCurrentX
+    getCurrentX,
+    checkNodeOverlap,
+    bfsOutEdge,
+    bfsInEdge,
+    bfsAllNodes,
+    getRelationNodes
   }
 }
 )

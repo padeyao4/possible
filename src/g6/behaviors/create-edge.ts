@@ -48,7 +48,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
     if (id !== 'anchorShape0' && id !== 'anchorShape1') return
     this.pointDown = true
 
-    this.store.addNode({
+    this.graph.addData('node', {
       id: DUMMY_ID,
       data: {
         name: 'dummy',
@@ -58,6 +58,16 @@ export default class CreateEdge extends Extensions.BaseBehavior {
         anchorPoints: [[0.5, 0.5]]
       }
     })
+    // this.store.addNode({
+    //   id: DUMMY_ID,
+    //   data: {
+    //     name: 'dummy',
+    //     type: 'circle-node',
+    //     x: e.canvas.x,
+    //     y: e.canvas.y,
+    //     anchorPoints: [[0.5, 0.5]]
+    //   }
+    // })
 
     this.graph.hideItem(DUMMY_ID)
 
@@ -73,7 +83,8 @@ export default class CreateEdge extends Extensions.BaseBehavior {
         targetAnchor: 0
       }
     }
-    this.store.addEdge({ ...this.edge })
+    // this.store.addEdge({ ...this.edge })
+    this.graph.addData('edge', { ...this.edge })
   }
 
   creteEdge(sourceId: ID, targetId: ID) {
@@ -121,16 +132,22 @@ export default class CreateEdge extends Extensions.BaseBehavior {
   onPointerMove(e: IG6GraphEvent) {
     if (!this.pointDown) return
     const { x, y } = e.canvas
-    this.store.updateNode({
+    this.graph.updateNodePosition({
       id: DUMMY_ID, data: {
         x, y
       }
     })
+    // this.store.updateNode({
+    //   id: DUMMY_ID, data: {
+    //     x, y
+    //   }
+    // })
   }
 
   clearStatus() {
     if (!this.pointDown) return
-    this.store.removeNode(DUMMY_ID)
+    this.graph.removeData('node', DUMMY_ID)
+    // this.store.removeNode(DUMMY_ID)
     this.pointDown = false
   }
 

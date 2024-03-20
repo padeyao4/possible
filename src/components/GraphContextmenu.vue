@@ -38,6 +38,31 @@ function moveLeft() {
   store.moveLeft(store.selectedNode.id, store.currentProject, store.getCurrentX(store.currentProject))
 }
 
+function showNeighbors() {
+  const neighbors = store.getNeighbors(store.selectedNode.id, store.currentProject)
+  console.log('neighbors', neighbors);
+}
+
+function searchOutEdges() {
+  const allNodeIds = []
+  store.bfsOutEdge(store.selectedNode.id, store.currentProject, (node) => allNodeIds.push(node))
+  console.log('outEdges', allNodeIds.map(id => store.currentProject.nodesMap.get(id).data.name));
+}
+
+function searchInEdges() {
+  const allNodeIds = []
+  store.bfsInEdge(store.selectedNode.id, store.currentProject, (node) => allNodeIds.push(node))
+  console.log('inEdges', allNodeIds.map(id => store.currentProject.nodesMap.get(id).data.name));
+}
+
+function searchAll() {
+  const allNodeIds = store.getRelationNodes(store.selectedNode.id, store.currentProject)
+  console.log(
+    'all',
+    allNodeIds.map((id) => store.currentProject.nodesMap.get(id).data.name)
+  )
+}
+
 </script>
 
 <template>
@@ -49,6 +74,10 @@ function moveLeft() {
         <ul @click="onblur">
           <li @click="moveRight">右移</li>
           <li @click="moveLeft">左移</li>
+          <li @click="showNeighbors">邻节点</li>
+          <li @click="searchOutEdges">出节点搜索</li>
+          <li @click="searchInEdges">入节点搜索</li>
+          <li @click="searchAll">全搜索</li>
           <li @click="handleDelete">删除</li>
         </ul>
       </div>
@@ -58,7 +87,7 @@ function moveLeft() {
 
 <style scoped>
 .menu {
-  width: 80px;
+  width: 120px;
   border-radius: 4px;
   padding: 4px 0;
   overflow: hidden;

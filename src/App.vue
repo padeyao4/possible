@@ -39,6 +39,7 @@ function createProject() {
     outEdgesMap: new Map<ID, Set<Edge>>(),
     rowsMap: new Map<ID, Set<Node>>(),
     colsMap: new Map<ID, Set<Node>>(),
+    coordinateMap: new Map<string, Node>(),
     completed: false,
     sortIndex: projects.value.length + 1,
     editable: true,

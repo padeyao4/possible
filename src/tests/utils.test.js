@@ -64,3 +64,15 @@ test('delete', () => {
   const s = new Set([aoo, boo])
   console.log(s)
 })
+
+test('coordinateMap', () => {
+  const coordinateMap = new Map()
+  const x = 0, y = 1
+  coordinateMap.set(`${x},${y}`, 1)
+
+  const ans = coordinateMap.get(`${x},${y}`)
+
+  console.log(ans)
+
+  console.log(coordinateMap.has('22,22'));
+})
