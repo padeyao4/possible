@@ -84,7 +84,7 @@ export default class DragNode extends Extensions.BaseBehavior {
     const dstX = x - this.pointerDownPosition.x + e.canvas.x
     const dstY = y - this.pointerDownPosition.y + e.canvas.y
 
-    this.store.updateData('node', {
+    this.store.updateNode({
       id: this.originNodeData.id,
       data: {
         x: dstX,
@@ -141,11 +141,11 @@ export default class DragNode extends Extensions.BaseBehavior {
   }
 
   restoreNodeState() {
-    this.store.updateData('node', this.originNodeData)
+    this.store.updateNode(this.originNodeData)
   }
 
   updateNodeInfo(x: number, y: number) {
-    this.store.updateData('node', {
+    this.store.updateNode({
       id: this.originNodeData.id,
       data: {
         x, y, completed: x < this.currentX || this.originNodeData.data.completed

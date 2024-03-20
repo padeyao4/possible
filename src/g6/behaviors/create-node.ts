@@ -37,22 +37,24 @@ export default class CreateNode extends Extensions.BaseBehavior {
 
     const project = this.store.currentProject
     const currentX = dateToX(this.store.currentTime, project.createTime)
-
-    this.store.addData('node', {
-      id: v4(),
-      data: {
-        name: faker.person.fullName(),
-        x: posX,
-        y: posY,
-        detail: '',
-        record: '',
-        completed: posX < currentX,
-        sortedIndex: -1,
-        project: {
-          id: project.id,
-          name: project.name
+    
+    this.store.addNode(
+      {
+        id: v4(),
+        data: {
+          name: faker.person.fullName(),
+          x: posX,
+          y: posY,
+          detail: '',
+          record: '',
+          completed: posX < currentX,
+          sortedIndex: -1,
+          project: {
+            id: project.id,
+            name: project.name
+          }
         }
       }
-    })
+    )
   }
 }

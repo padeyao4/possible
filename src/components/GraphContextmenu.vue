@@ -14,7 +14,7 @@ const visible = computed(() => {
  * Removes the node data from the graph and closes the context menu.
  */
 function handleDelete() {
-  store.removeData('node', store.selectedNode.id)
+  store.removeNode(store.selectedNode.id)
 }
 
 /**

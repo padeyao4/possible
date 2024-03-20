@@ -1,7 +1,6 @@
 import { Extensions, type ID, type IG6GraphEvent } from '@antv/g6'
 import { v4 } from 'uuid'
 import { useStore } from '@/stores/store'
-import { debug } from '@/utils/debug-utils'
 
 interface DefaultOption {
   shouldBegin: (event: any) => boolean;
@@ -48,7 +47,8 @@ export default class CreateEdge extends Extensions.BaseBehavior {
     const id = (e.target as any).id
     if (id !== 'anchorShape0' && id !== 'anchorShape1') return
     this.pointDown = true
-    this.store.addData('node', {
+
+    this.store.addNode({
       id: DUMMY_ID,
       data: {
         name: 'dummy',
@@ -58,6 +58,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
         anchorPoints: [[0.5, 0.5]]
       }
     })
+
     this.graph.hideItem(DUMMY_ID)
 
     const sourceId = id === 'anchorShape1' ? itemId : DUMMY_ID
@@ -72,9 +73,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
         targetAnchor: 0
       }
     }
-
-    this.store.addData('edge', { ...this.edge })
-    debug(this.graph as any)
+    this.store.addEdge({ ...this.edge })
   }
 
   creteEdge(sourceId: ID, targetId: ID) {
@@ -88,7 +87,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
       .includes(targetId)
     if (isInclude) return
 
-    this.store.addData('edge', {
+    this.store.addEdge({
       id: v4(),
       source: sourceId,
       target: targetId,
@@ -97,7 +96,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
         targetAnchor: 0
       }
     })
-    debug(this.graph as any)
+
   }
 
   onPointerUp(e: IG6GraphEvent) {
@@ -122,7 +121,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
   onPointerMove(e: IG6GraphEvent) {
     if (!this.pointDown) return
     const { x, y } = e.canvas
-    this.store.updateData('node', {
+    this.store.updateNode({
       id: DUMMY_ID, data: {
         x, y
       }
@@ -131,8 +130,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
 
   clearStatus() {
     if (!this.pointDown) return
-    this.store.removeData('node', DUMMY_ID)
-    debug(this.graph as any)
+    this.store.removeNode(DUMMY_ID)
     this.pointDown = false
   }
 

@@ -1,3 +1,4 @@
+import { UNIT_W } from '@/configs/constant'
 import type { CustomGraph } from '@/g6/core/graph'
 import { dateToX } from '@/utils/time'
 import type { ID } from '@antv/g6'
@@ -33,7 +34,6 @@ export interface Project {
   createTime: number
 }
 
-const UNIT = 120
 
 /**
  * Defines a Pinia store that manages project state.
@@ -70,121 +70,65 @@ export const useStore = defineStore('store', () => {
     return graph.value?.getClientByCanvas(mousePosition.value)
   })
 
-  const updateData = (itemType: 'node' | 'edge', models: Node | Edge | Node[] | Edge[]) => {
-    const project = currentProject.value
-    if (!project) return
-
-    (Array.isArray(models) ? models : [models]).forEach(item => {
-      const { id } = item
-      if (itemType === 'node') {
-        Object.assign(project.nodesMap.get(id).data, item.data)
-      }
-      // todo 
-      // if (itemType === 'edge') {
-      //   const newEdge = <Edge>item
-      //   const id = newEdge.id
-
-      //   const oldEdge = project.edgesMap.get(id)
-      //   const oldSource = oldEdge.source
-      //   const oldTarget = oldEdge.target
-
-      //   // 修改edgesMap值
-      //   Object.assign(oldEdge, newEdge)
-
-      //   const newSource = oldEdge.source
-      //   const newTarget = oldEdge.target
-
-      //   if (oldSource !== newSource) {
-      //     project.outEdgesMap.get(oldSource)?.delete(oldEdge)
-      //     if (newSource in project.outEdgesMap) {
-      //       project.outEdgesMap.get(newSource)?.add(oldEdge)
-      //     } else {
-      //       project.outEdgesMap.set(newSource, new Set([oldEdge]))
-      //     }
-      //   }
-
-      //   if (oldTarget !== newTarget) {
-      //     project.inEdgesMap.get(oldTarget)?.delete(oldEdge)
-      //     if (newTarget in project.inEdgesMap) {
-      //       project.inEdgesMap.get(newTarget)?.add(oldEdge)
-      //     } else {
-      //       project.inEdgesMap.set(newTarget, new Set([oldEdge]))
-      //     }
-      //   }
-      // }
-    })
-
-    graph.value?.updateData(itemType, models)
+  const updateNode = (model: Node) => {
+    if (!currentProject.value) return
+    Object.assign(currentProject.value.nodesMap.get(model.id).data, model.data)
+    graph.value?.updateData('node', model)
   }
 
-  const addData = (itemType: 'node' | 'edge', models: Node | Edge | Node[] | Edge[]) => {
-    const project = currentProject.value
-    if (!project) return
+  const addEdge = (model: Edge) => {
+    if (!currentProject.value) return
+    const { edgesMap, inEdgesMap, outEdgesMap } = currentProject.value;
+    edgesMap.set(model.id, model)
+    inEdgesMap.get(model.target)?.add(model)
+    outEdgesMap.get(model.source)?.add(model)
+    graph.value?.addData('edge', model)
+  }
 
-    (Array.isArray(models) ? models : [models]).forEach(item => {
-      if (itemType === 'node') {
-        project.nodesMap.set(item.id, item)
-        project.inEdgesMap.set(item.id, new Set())
-        project.outEdgesMap.set(item.id, new Set())
-      }
-      if (itemType === 'edge') {
-        const edge = <Edge>item
-        project.edgesMap.set(edge.id, edge)
+  const addNode = (model: Node) => {
+    if (!currentProject.value) return
+    const { nodesMap, inEdgesMap, outEdgesMap, rowsMap, colsMap } = currentProject.value;
 
-        project.inEdgesMap.get(edge.target)?.add(edge)
-        project.outEdgesMap.get(edge.source)?.add(edge)
-
-        // project.edges.push(edge)
-        // if (project.inEdgesMap.has(edge.target)) {
-        //   project.inEdgesMap.get(edge.target).add(edge)
-        // } else {
-        //   project.inEdgesMap.set(edge.target, new Set([edge]))
-        // }
-
-        // if (project.outEdgesMap.has(edge.source)) {
-        //   project.outEdgesMap.get(edge.source).add(edge)
-        // } else {
-        //   project.outEdgesMap.set(edge.source, new Set([edge]))
-        // }
-      }
+    nodesMap.set(model.id, model)
+    inEdgesMap.set(model.id, new Set())
+    outEdgesMap.set(model.id, new Set())
+    const { x, y } = model.data
+    if (x in colsMap) {
+      rowsMap.get(x)?.add(model)
+    } else {
+      rowsMap.set(x, new Set([model]))
     }
-    )
+    if (y in rowsMap) {
+      colsMap.get(y)?.add(model)
+    } else {
+      colsMap.set(y, new Set([model]))
+    }
 
-    graph.value?.addData(itemType, models)
+    graph.value?.addData('node', model)
   }
 
-  const removeData = (itemType: 'node' | 'edge', id: ID | ID[]) => {
-    const project = currentProject.value
-    if (!project) return
-    (Array.isArray(id) ? id : [id]).forEach(itemId => {
-      if (itemType === 'node') {
-        project.outEdgesMap.get(itemId)?.forEach((edge) => {
-          project.inEdgesMap.get(edge.target)?.delete(edge)
-          project.edgesMap.delete(edge.id)
-        })
+  const removeNode = (nodeId: ID) => {
+    if (!currentProject.value) return
 
-        project.inEdgesMap.get(itemId)?.forEach((edge) => {
-          project.outEdgesMap.get(edge.source)?.delete(edge)
-          project.edgesMap.delete(edge.id)
-        })
+    const { outEdgesMap, inEdgesMap, nodesMap, edgesMap } = currentProject.value
 
-        project.outEdgesMap.delete(itemId)
-        project.inEdgesMap.delete(itemId)
-        project.nodesMap.delete(itemId)
-
-        // project.nodesMap.delete(item)
-      } // todo
-      // if (itemType === 'edge') {
-      //   const edge = project.edgesMap.get(item)
-      //   const source = edge.source
-      //   const target = edge.target
-      //   project.edgesMap.delete(item)
-      //   project.inEdgesMap.get(target)?.delete(edge)
-      //   project.outEdgesMap.get(source)?.delete(edge)
-      // }
+    outEdgesMap.get(nodeId)?.forEach((edge) => {
+      inEdgesMap.get(edge.target)?.delete(edge)
+      edgesMap.delete(edge.id)
     })
-    graph.value?.removeData(itemType, id)
+
+    inEdgesMap.get(nodeId)?.forEach((edge) => {
+      outEdgesMap.get(edge.source)?.delete(edge)
+      edgesMap.delete(edge.id)
+    })
+
+    outEdgesMap.delete(nodeId)
+    inEdgesMap.delete(nodeId)
+    nodesMap.delete(nodeId)
+
+    graph.value?.removeData('node', nodeId)
   }
+
 
   const getNeighbors = (id: ID, project: Project) => {
     return [...new Set([...getSuccessors(id, project), ...getPredecessors(id, project)])]
@@ -245,12 +189,12 @@ export const useStore = defineStore('store', () => {
     const node = project.nodesMap.get(nodeId)
     getSuccessors(node.id, project)
       .filter(successor => {
-        return successor.data.x - node.data.x === UNIT
+        return successor.data.x - node.data.x === UNIT_W
       })
       .forEach(successor => {
         moveRight(successor.id, project, drawabled)
       })
-    node.data.x += UNIT
+    node.data.x += UNIT_W
     if (drawabled) {
       graph.value?.updateNodePosition({
         id: nodeId,
@@ -271,13 +215,13 @@ export const useStore = defineStore('store', () => {
 
     const predecessors = getPredecessors(nodeId, project)
       .filter((predecessor) => {
-        return node.data.x - predecessor.data.x === UNIT
+        return node.data.x - predecessor.data.x === UNIT_W
       })
 
     if (predecessors.some((predecessor) => !moveLeft(predecessor.id, project, currentX))) {
       return false
     } else {
-      node.data.x -= UNIT
+      node.data.x -= UNIT_W
       graph.value.updateNodePosition({
         id: nodeId,
         data: { x: node.data.x, y: node.data.y }
@@ -313,9 +257,10 @@ export const useStore = defineStore('store', () => {
     mousePosition,
     contextmenuPosition,
     updateGraph,
-    addData,
-    updateData,
-    removeData,
+    updateNode,
+    addNode,
+    addEdge,
+    removeNode,
     isActive,
     setSelected,
     addProject,
