@@ -78,6 +78,10 @@ function showRightNode() {
   console.log(node?.data.name)
 }
 
+function moveDown() {
+  store.moveDown(store.selectedNode, store.currentProject)
+}
+
 </script>
 
 <template>
@@ -89,6 +93,7 @@ function showRightNode() {
         <ul @click="onblur">
           <li @click="moveRight">右移</li>
           <li @click="moveLeft">左移</li>
+          <li @click="moveDown">下移</li>
           <li @click="showNeighbors">邻节点</li>
           <li @click="searchOutEdges">出节点搜索</li>
           <li @click="searchInEdges">入节点搜索</li>

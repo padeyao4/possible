@@ -255,7 +255,7 @@ export const useStore = defineStore('store', () => {
   }
 
   const getRelationNodes = (nodeId: ID, project: Project) => {
-    const allNodeIds = []
+    const allNodeIds: ID[] = []
     bfsAllNodes(nodeId, project, (id) => allNodeIds.push(id))
     return allNodeIds
   }
@@ -316,16 +316,37 @@ export const useStore = defineStore('store', () => {
   }
 
   const checkNodeOverlap = (node: Partial<Node>, project: Project) => {
-    const { coordinateMap } = project
-    return coordinateMap.has(`${node.data.x},${node.data.y}`)
+    return project.coordinateMap.has(`${node.data.x},${node.data.y}`)
+  }
+
+  const checkSameRelation = (id0: ID, id1: ID, project: Project) => {
+    const s = new Set((getRelationNodes(id1, project)))
+    return (getRelationNodes(id0, project)).some(node => s.has(node))
   }
 
   /**
    * 当前节点的所有关联节点都向下移动,向下移动碰到重叠节点。递归重叠节点向下移动
    */
-  const moveDown = (node: Node, project: Project) => {
-    // todo
+  const moveDown = (model: Node, project: Project, drawabled = true) => {
+    const allNodes = getRelationNodes(model.id, project).map((nodeId) => project.nodesMap.get(nodeId))
+    const s = new Set(allNodes)
 
+    let count = 1
+    while (
+      allNodes.some((node) => {
+        const downNode = project.coordinateMap.get(`${node.data.x},${node.data.y + count * UNIT_H}`)
+        return downNode && !s.has(downNode)
+      })
+    ) {
+      count++
+    }
+
+    allNodes.forEach(node => {
+      updateNodePosition({
+        id: node.id,
+        data: { x: node.data.x, y: node.data.y + count * UNIT_H }
+      }, project, drawabled)
+    })
   }
 
   /**
@@ -370,13 +391,8 @@ export const useStore = defineStore('store', () => {
         moveRight(successor.id, project, drawabled)
       })
     // todo 解决重叠问题
-    // const nextX = node.data.x + UNIT_W
-    // if (checkNodeOverlap({
-    //   data: { x: nextX, y: node.data.y }
-    // }, project)) {
-    //   const overlapNode = project.coordinateMap.get(`${nextX},${node.data.y}`)
+    // const rightNode = findRightNode(nodeId, project)
 
-    // }
     // node.data.x += UNIT_W
 
     updateNodePosition(
@@ -450,6 +466,7 @@ export const useStore = defineStore('store', () => {
     getNeighbors,
     moveRight,
     moveLeft,
+    moveDown,
     dailyUpdate,
     getCurrentX,
     checkNodeOverlap,
