@@ -349,6 +349,34 @@ export const useStore = defineStore('store', () => {
     })
   }
 
+  const moveUp = (model: Node, project: Project, drawabled = true) => {
+    const allNodes = getRelationNodes(model.id, project).map((nodeId) =>
+      project.nodesMap.get(nodeId)
+    )
+    const s = new Set(allNodes)
+
+    let count = 1
+    while (
+      allNodes.some((node) => {
+        const upNode = project.coordinateMap.get(`${node.data.x},${node.data.y - count * UNIT_H}`)
+        return upNode && !s.has(upNode)
+      })
+    ) {
+      count++
+    }
+
+    allNodes.forEach((node) => {
+      updateNodePosition(
+        {
+          id: node.id,
+          data: { x: node.data.x, y: node.data.y - count * UNIT_H }
+        },
+        project,
+        drawabled
+      )
+    })
+  }
+
   /**
    * 找到下方节点
    * @param nodeId 
@@ -362,6 +390,11 @@ export const useStore = defineStore('store', () => {
   const findRightNode = (nodeId: ID, project: Project) => {
     const node = project.nodesMap.get(nodeId)
     return project.coordinateMap.get(`${node.data.x + UNIT_W},${node.data.y}`)
+  }
+
+  const findLeftNode = (nodeId: ID, project: Project) => {
+    const node = project.nodesMap.get(nodeId)
+    return project.coordinateMap.get(`${node.data.x - UNIT_W},${node.data.y}`)
   }
 
   /**
@@ -390,10 +423,18 @@ export const useStore = defineStore('store', () => {
       .forEach(successor => {
         moveRight(successor.id, project, drawabled)
       })
-    // todo 解决重叠问题
-    // const rightNode = findRightNode(nodeId, project)
 
-    // node.data.x += UNIT_W
+    /**
+     * Repeatedly finds the node to the right of the given nodeId and moves it
+     * down until there is no longer a node to the right. This has the effect of
+     * recursively moving the given node and all nodes to its right downwards
+     * until there are no overlapping nodes.
+     */
+    let currentRightNode = findRightNode(nodeId, project)
+    while (currentRightNode) {
+      moveDown(currentRightNode, project, drawabled)
+      currentRightNode = findRightNode(nodeId, project)
+    }
 
     updateNodePosition(
       { id: node.id, data: { x: node.data.x + UNIT_W, y: node.data.y } },
@@ -420,6 +461,11 @@ export const useStore = defineStore('store', () => {
     if (predecessors.some((predecessor) => !moveLeft(predecessor.id, project, currentX))) {
       return false
     } else {
+      let currentLeftNode = findLeftNode(nodeId, project)
+      while (currentLeftNode) {
+        moveDown(currentLeftNode, project, drawabled)
+        currentLeftNode = findLeftNode(nodeId, project)
+      }
       updateNodePosition({ id: node.id, data: { x: node.data.x - UNIT_W, y: node.data.y } }, project, drawabled)
       return true
     }
@@ -467,6 +513,7 @@ export const useStore = defineStore('store', () => {
     moveRight,
     moveLeft,
     moveDown,
+    moveUp,
     dailyUpdate,
     getCurrentX,
     checkNodeOverlap,

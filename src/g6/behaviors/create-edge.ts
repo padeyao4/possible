@@ -9,7 +9,12 @@ interface DefaultOption {
 }
 
 const DEFAULT_CONFIG = {
-  // 鼠标左键生效
+  /**
+   * Checks if the mouse button pressed to start dragging is the primary button.
+   *
+   * @param event - The mouse event.
+   * @returns True if the primary button was pressed.
+   */
   shouldBegin: (event: any) => event.button === 0
 }
 
@@ -58,16 +63,6 @@ export default class CreateEdge extends Extensions.BaseBehavior {
         anchorPoints: [[0.5, 0.5]]
       }
     })
-    // this.store.addNode({
-    //   id: DUMMY_ID,
-    //   data: {
-    //     name: 'dummy',
-    //     type: 'circle-node',
-    //     x: e.canvas.x,
-    //     y: e.canvas.y,
-    //     anchorPoints: [[0.5, 0.5]]
-    //   }
-    // })
 
     this.graph.hideItem(DUMMY_ID)
 
@@ -83,7 +78,6 @@ export default class CreateEdge extends Extensions.BaseBehavior {
         targetAnchor: 0
       }
     }
-    // this.store.addEdge({ ...this.edge })
     this.graph.addData('edge', { ...this.edge })
   }
 
@@ -137,17 +131,11 @@ export default class CreateEdge extends Extensions.BaseBehavior {
         x, y
       }
     })
-    // this.store.updateNode({
-    //   id: DUMMY_ID, data: {
-    //     x, y
-    //   }
-    // })
   }
 
   clearStatus() {
     if (!this.pointDown) return
     this.graph.removeData('node', DUMMY_ID)
-    // this.store.removeNode(DUMMY_ID)
     this.pointDown = false
   }
 
