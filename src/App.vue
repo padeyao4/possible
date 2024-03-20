@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import router from '@/router'
 import { type Edge, type Node, useStore } from '@/stores/store'
-import { computed, onMounted } from 'vue'
+import { computed, onBeforeMount, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { v4 } from 'uuid'
 import Draggable from 'vuedraggable/src/vuedraggable'
@@ -11,6 +11,31 @@ import { faker } from '@faker-js/faker'
 
 const route = useRoute()
 const store = useStore()
+
+const timer = ref()
+
+function scheduleMidnightTask(): void {
+  const now: Date = new Date();
+  const midnight: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+  const delay: number = midnight.getTime() - now.getTime();
+
+  timer.value = setTimeout(() => {
+    store.updateTime()
+    store.dailyUpdate()
+    // 设置下一个午夜的定时器
+    scheduleMidnightTask();
+  }, delay);
+}
+
+onBeforeMount(() => {
+  store.updateTime()
+  store.dailyUpdate()
+  scheduleMidnightTask()
+})
+
+onUnmounted(() => {
+  clearTimeout(timer.value)
+})
 
 const projects = computed({
   get: () => {
