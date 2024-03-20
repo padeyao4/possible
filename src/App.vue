@@ -7,6 +7,7 @@ import { v4 } from 'uuid'
 import Draggable from 'vuedraggable/src/vuedraggable'
 import { DeleteFour, Drag, Write } from '@icon-park/vue-next'
 import type { ID } from '@antv/g6'
+import { faker } from '@faker-js/faker'
 
 const route = useRoute()
 const store = useStore()
@@ -31,15 +32,17 @@ function onUpdate() {
 function createProject() {
   const id = store.addProject({
     id: v4(),
-    name: 'untitled',
+    name: faker.finance.currencyName(),
     nodesMap: new Map<ID, Node>(),
     edgesMap: new Map<ID, Edge>(),
     inEdgesMap: new Map<ID, Set<Edge>>(),
     outEdgesMap: new Map<ID, Set<Edge>>(),
+    rowsMap: new Map<ID, Set<Node>>(),
+    colsMap: new Map<ID, Set<Node>>(),
     completed: false,
     sortIndex: projects.value.length + 1,
     editable: true,
-    createTime: new Date().valueOf()
+    createTime: faker.date.between({ from: '1900/1/1', to: '2024/3/20' }).valueOf()
   })
   store.setSelected(id)
   router.push(`/project/${id}`)
@@ -84,8 +87,8 @@ function handleComplete(evt: any, element: any) {
             <template #item="{ element }">
               <div @click="store.setSelected(element.id); router.push(`/project/${element.id}`)"
                 :class="['selected-item', { selected: store.isActive(element.id) }]" :key="element.id">
-                <input v-if="element.editable && store.isActive(element.id)" :ref="handleInputRef" v-model="element.name"
-                  @blur="element.editable = false" @keydown.enter="element.editable = false" />
+                <input v-if="element.editable && store.isActive(element.id)" :ref="handleInputRef"
+                  v-model="element.name" @blur="element.editable = false" @keydown.enter="element.editable = false" />
                 <div v-else class="project-item">
                   <div class="info">{{ element.name }}</div>
                   <div class="operation">

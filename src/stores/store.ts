@@ -25,6 +25,8 @@ export interface Project {
   edgesMap: Map<ID, Edge>,
   inEdgesMap: Map<ID, Set<Edge>>,
   outEdgesMap: Map<ID, Set<Edge>>,
+  rowsMap: Map<ID, Set<Node>>,
+  colsMap: Map<ID, Set<Node>>,
   completed: boolean,
   sortIndex: number,
   editable: boolean,
@@ -257,15 +259,22 @@ export const useStore = defineStore('store', () => {
     }
   }
 
-  const moveLeft = (nodeId: ID, project: Project) => {
+  const getCurrentX = (project: Project) => {
+    return dateToX(currentTime.value, project.createTime)
+  }
+
+  const moveLeft = (nodeId: ID, project: Project, currentX: number) => {
     const node = project.nodesMap.get(nodeId)
+    if (node.data.completed || node.data.x <= currentX) {
+      return false
+    }
+
     const predecessors = getPredecessors(nodeId, project)
       .filter((predecessor) => {
         return node.data.x - predecessor.data.x === UNIT
       })
 
-    if (predecessors.some((predecessor) => predecessor.data.completed ||
-      !moveLeft(predecessor.id, project))) {
+    if (predecessors.some((predecessor) => !moveLeft(predecessor.id, project, currentX))) {
       return false
     } else {
       node.data.x -= UNIT
@@ -318,6 +327,7 @@ export const useStore = defineStore('store', () => {
     moveRight,
     moveLeft,
     dailyUpdate,
+    getCurrentX
   }
 }
 )

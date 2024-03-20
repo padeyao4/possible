@@ -35,7 +35,7 @@ function moveRight() {
 }
 
 function moveLeft() {
-  store.moveLeft(store.selectedNode.id, store.currentProject)
+  store.moveLeft(store.selectedNode.id, store.currentProject, store.getCurrentX(store.currentProject))
 }
 
 </script>
@@ -57,7 +57,6 @@ function moveLeft() {
 </template>
 
 <style scoped>
-
 .menu {
   width: 80px;
   border-radius: 4px;
