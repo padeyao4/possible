@@ -63,6 +63,21 @@ function searchAll() {
   )
 }
 
+function showDownNode() {
+  const node = store.findDownNode(store.selectedNode.id, store.currentProject)
+  console.log(node);
+}
+
+function showAllDownNode() {
+  const nodes = store.findAllDownNode(store.selectedNode.id, store.currentProject)
+  console.log(nodes.map(node => node.data.name));
+}
+
+function showRightNode() {
+  const node = store.findRightNode(store.selectedNode.id, store.currentProject)
+  console.log(node?.data.name)
+}
+
 </script>
 
 <template>
@@ -78,6 +93,9 @@ function searchAll() {
           <li @click="searchOutEdges">出节点搜索</li>
           <li @click="searchInEdges">入节点搜索</li>
           <li @click="searchAll">全搜索</li>
+          <li @click="showDownNode">下节点</li>
+          <li @click="showAllDownNode">所有下节点</li>
+          <li @click="showRightNode">右节点</li>
           <li @click="handleDelete">删除</li>
         </ul>
       </div>

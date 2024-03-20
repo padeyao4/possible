@@ -1,4 +1,4 @@
-import { UNIT_W } from '@/configs/constant'
+import { UNIT_H, UNIT_W } from '@/configs/constant'
 import type { CustomGraph } from '@/g6/core/graph'
 import { dateToX } from '@/utils/time'
 import type { ID } from '@antv/g6'
@@ -71,7 +71,44 @@ export const useStore = defineStore('store', () => {
     return graph.value?.getClientByCanvas(mousePosition.value)
   })
 
-  const updateNode = (model: Node) => {
+  /**
+   * 更新节点坐标
+   */
+  const updateNodePosition = (model: Partial<Node>, project: Project, drawabled = true) => {
+    const { colsMap, rowsMap, coordinateMap, nodesMap } = project
+
+    const oldNode = nodesMap.get(model.id)
+
+    const { x: oldX, y: oldY } = oldNode.data
+
+    colsMap.get(oldX).delete(oldNode)
+    rowsMap.get(oldY).delete(oldNode)
+    coordinateMap.delete(`${oldX},${oldY}`)
+
+    const { x: newX, y: newY } = model.data
+    if (colsMap.has(newX)) {
+      colsMap.get(newX).add(oldNode)
+    } else {
+      colsMap.set(newX, new Set([oldNode]))
+    }
+
+    rowsMap.get(oldY).delete(oldNode)
+    if (rowsMap.has(newY)) {
+      rowsMap.get(newY).add(oldNode)
+    } else {
+      rowsMap.set(newY, new Set([oldNode]))
+    }
+    coordinateMap.set(`${newX},${newY}`, oldNode)
+
+    oldNode.data.x = model.data.x
+    oldNode.data.y = model.data.y
+
+    if (drawabled) {
+      graph.value?.updateNodePosition(model)
+    }
+  }
+
+  const updateNode = (model: Node, drawabled = true) => {
     if (!currentProject.value) return
     const oldNode = currentProject.value.nodesMap.get(model.id)
 
@@ -99,7 +136,10 @@ export const useStore = defineStore('store', () => {
     coordinateMap.set(`${newX},${newY}`, oldNode)
 
     Object.assign(oldNode.data, model.data)
-    graph.value?.updateData('node', model)
+
+    if (drawabled) {
+      graph.value?.updateData('node', model)
+    }
   }
 
   const addEdge = (model: Edge) => {
@@ -285,6 +325,36 @@ export const useStore = defineStore('store', () => {
    */
   const moveDown = (node: Node, project: Project) => {
     // todo
+
+  }
+
+  /**
+   * 找到下方节点
+   * @param nodeId 
+   * @param project 
+   */
+  const findDownNode = (nodeId: ID, project: Project) => {
+    const node = project.nodesMap.get(nodeId)
+    return project.coordinateMap.get(`${node.data.x},${node.data.y + UNIT_H}`)
+  }
+
+  const findRightNode = (nodeId: ID, project: Project) => {
+    const node = project.nodesMap.get(nodeId)
+    return project.coordinateMap.get(`${node.data.x + UNIT_W},${node.data.y}`)
+  }
+
+  /**
+   * Recursively finds all nodes below the given nodeId by traversing downwards.
+   * Returns nodes from bottom to top.
+   */
+  const findAllDownNode = (nodeId: ID, project: Project) => {
+    const node = project.nodesMap.get(nodeId)
+    const downNode = findDownNode(nodeId, project)
+    if (downNode) {
+      return [...findAllDownNode(downNode.id, project), ...[node]]
+    } else {
+      return [node]
+    }
   }
 
   /**
@@ -307,21 +377,20 @@ export const useStore = defineStore('store', () => {
     //   const overlapNode = project.coordinateMap.get(`${nextX},${node.data.y}`)
 
     // }
-    node.data.x += UNIT_W
-    // todo end
-    if (drawabled) {
-      graph.value?.updateNodePosition({
-        id: nodeId,
-        data: { x: node.data.x, y: node.data.y }
-      })
-    }
+    // node.data.x += UNIT_W
+
+    updateNodePosition(
+      { id: node.id, data: { x: node.data.x + UNIT_W, y: node.data.y } },
+      project,
+      drawabled
+    )
   }
 
   const getCurrentX = (project: Project) => {
     return dateToX(currentTime.value, project.createTime)
   }
 
-  const moveLeft = (nodeId: ID, project: Project, currentX: number) => {
+  const moveLeft = (nodeId: ID, project: Project, currentX: number, drawabled = true) => {
     const node = project.nodesMap.get(nodeId)
     if (node.data.completed || node.data.x <= currentX) {
       return false
@@ -335,11 +404,7 @@ export const useStore = defineStore('store', () => {
     if (predecessors.some((predecessor) => !moveLeft(predecessor.id, project, currentX))) {
       return false
     } else {
-      node.data.x -= UNIT_W
-      graph.value.updateNodePosition({
-        id: nodeId,
-        data: { x: node.data.x, y: node.data.y }
-      })
+      updateNodePosition({ id: node.id, data: { x: node.data.x - UNIT_W, y: node.data.y } }, project, drawabled)
       return true
     }
   }
@@ -391,8 +456,10 @@ export const useStore = defineStore('store', () => {
     bfsOutEdge,
     bfsInEdge,
     bfsAllNodes,
-    getRelationNodes
+    getRelationNodes,
+    findDownNode,
+    findAllDownNode,
+    findRightNode
   }
-}
-)
+})
 
