@@ -523,7 +523,12 @@ export const useStore = defineStore('store', () => {
     getRelationNodes,
     findDownNode,
     findAllDownNode,
-    findRightNode
+    findRightNode,
+    checkSameRelation
   }
-})
+},
+  {
+    persist: false
+  }
+)
 

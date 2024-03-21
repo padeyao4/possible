@@ -8,13 +8,22 @@ import Draggable from 'vuedraggable/src/vuedraggable'
 import { DeleteFour, Drag, Write } from '@icon-park/vue-next'
 import type { ID } from '@antv/g6'
 import { faker } from '@faker-js/faker'
+import { Config } from "@icon-park/vue-next";
+// import SettingsButton from '@/components/SettingsButton.vue'
 
 const route = useRoute()
 const store = useStore()
 
 const timer = ref()
 
-function scheduleMidnightTask(): void {
+/**
+ * Schedules a task to run at midnight every day. 
+ * Calculates the delay until midnight, sets a timeout 
+ * to call store.updateTime() and store.dailyUpdate(), 
+ * then recursively schedules another call to this function 
+ * at the next midnight.
+ */
+function scheduleMidnightTask() {
   const now: Date = new Date();
   const midnight: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
   const delay: number = midnight.getTime() - now.getTime();
@@ -99,10 +108,10 @@ function handleComplete(evt: any, element: any) {
     <main @contextmenu.prevent>
       <aside>
         <header>
-          <div class="selected-item" :class="{ selected: store.isActive('today') }"
+          <div :class="['selected-item', { selected: store.isActive('today') }]"
             @click="store.setSelected('today'); router.push('/today')">我的一天
           </div>
-          <div class="selected-item" :class="{ selected: store.isActive('completed') }"
+          <div :class="['selected-item', { selected: store.isActive('completed') }]"
             @click="store.setSelected('completed'); router.push('/completed')">
             已完成项目
           </div>
@@ -128,8 +137,15 @@ function handleComplete(evt: any, element: any) {
             </template>
           </draggable>
         </div>
-        <footer class="selected-item" @click="createProject">
-          新建项目
+        <footer>
+          <div @click="createProject" class="selected-item create-button">新建项目</div>
+          <div :class="['selected-item', 'settings-button', { 'selected': store.isActive('settings') }]" @click="() => {
+            store.setSelected('settings')
+            router.push('/settings')
+          }
+            ">
+            <config theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon" />
+          </div>
         </footer>
       </aside>
       <section>
@@ -157,14 +173,14 @@ aside {
 
 header {
   flex-shrink: 0;
-  padding: 2px 0;
+  padding: 2px 8px;
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
     rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
 
 #body {
   flex-grow: 1;
-  padding: 2px 0;
+  padding: 2px 8px;
   overflow-y: auto;
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
     rgba(255, 255, 255, 0.25) 0 1px 0 inset;
@@ -181,8 +197,9 @@ footer {
   display: flex;
   align-items: center;
   height: 40px;
-  margin: 4px 8px;
+  margin: 4px 0;
   padding: 0 4px;
+  width: 100%;
   user-select: none;
 
   &:hover {
@@ -231,6 +248,8 @@ input {
     display: flex;
     align-items: center;
     flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   .operation {
@@ -258,5 +277,22 @@ input {
       }
     }
   }
+}
+
+.create-button {
+  margin: 2px 0 2px 4px;
+}
+
+.settings-button {
+  width: 40px;
+  margin-right: 4px;
+}
+
+.icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  width: 40px;
 }
 </style>
