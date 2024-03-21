@@ -1,5 +1,12 @@
 <script setup lang="ts">
+import { useStore } from '@/stores/store';
 
+
+const store = useStore()
+
+function onSave() {
+  store.$hydrate()
+}
 
 </script>
 
@@ -11,7 +18,9 @@
           <div id="main-title">配置</div>
         </header>
         <section>
-          <div>settings</div>
+          <div>
+            <el-button @click="onSave">save</el-button>
+          </div>
         </section>
       </div>
     </main>

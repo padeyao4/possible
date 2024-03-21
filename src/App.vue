@@ -9,7 +9,6 @@ import { DeleteFour, Drag, Write } from '@icon-park/vue-next'
 import type { ID } from '@antv/g6'
 import { faker } from '@faker-js/faker'
 import { Config } from "@icon-park/vue-next";
-// import SettingsButton from '@/components/SettingsButton.vue'
 
 const route = useRoute()
 const store = useStore()

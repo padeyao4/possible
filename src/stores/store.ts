@@ -1,10 +1,11 @@
 import { UNIT_H, UNIT_W } from '@/configs/constant'
 import type { CustomGraph } from '@/g6/core/graph'
+import { customDeserializer, customSerializer } from '@/utils/data-util'
 import { dateToX } from '@/utils/time'
 import type { ID } from '@antv/g6'
 import { dayjs } from 'element-plus'
 import { defineStore } from 'pinia'
-import { computed, reactive, ref, shallowRef } from 'vue'
+import { computed, ref, shallowRef } from 'vue'
 import { useRoute } from 'vue-router'
 
 export interface Node {
@@ -48,7 +49,7 @@ export interface Project {
  */
 export const useStore = defineStore('store', () => {
 
-  const projects = reactive<Record<string, Project>>({})
+  const projects = ref<Record<string, Project>>({})
 
   const selected = ref<string>('today')
 
@@ -64,7 +65,7 @@ export const useStore = defineStore('store', () => {
 
   const currentProject = computed<Project>(() => {
     const { id } = useRoute().params
-    return projects[id as string]
+    return projects.value[id as string]
   })
 
   const contextmenuPosition = computed(() => {
@@ -297,7 +298,7 @@ export const useStore = defineStore('store', () => {
    * @returns The id of the added project.
    */
   const addProject = (project: Project) => {
-    projects[project.id] = project
+    projects.value[project.id] = project
     return project.id
   }
 
@@ -473,7 +474,7 @@ export const useStore = defineStore('store', () => {
 
   const dailyUpdate = () => {
     console.log('start daily update');
-    Object.values(projects).forEach((project) => {
+    Object.values(projects.value).forEach((project) => {
       const currentX = dateToX(currentTime.value, project.createTime)
       let nodes = [...project.nodesMap.values()]
         .filter((node) => node.data.x < currentX && !node.data.completed)
@@ -528,7 +529,14 @@ export const useStore = defineStore('store', () => {
   }
 },
   {
-    persist: false
+    persist: {
+      // storage: new TuariStorage(),
+      paths: ['projects'],
+      serializer: {
+        serialize: customSerializer,
+        deserialize: customDeserializer
+      },
+    }
   }
 )
 
