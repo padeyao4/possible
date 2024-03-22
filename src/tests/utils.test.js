@@ -76,3 +76,14 @@ test('coordinateMap', () => {
 
   console.log(coordinateMap.has('22,22'));
 })
+
+test('async', () => {
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(1)
+    }, 3000)
+  }).then(r => {
+    console.log(r)
+  })
+  console.log('end')
+})

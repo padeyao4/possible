@@ -1,6 +1,6 @@
 import { UNIT_H, UNIT_W } from '@/configs/constant'
 import type { CustomGraph } from '@/g6/core/graph'
-import { customDeserializer, customSerializer } from '@/utils/data-util'
+import { TuariStorage, customDeserializer, customSerializer } from '@/utils/data-util'
 import { dateToX } from '@/utils/time'
 import type { ID } from '@antv/g6'
 import { dayjs } from 'element-plus'
@@ -530,7 +530,7 @@ export const useStore = defineStore('store', () => {
 },
   {
     persist: {
-      // storage: new TuariStorage(),
+      storage: new TuariStorage(),
       paths: ['projects'],
       serializer: {
         serialize: customSerializer,

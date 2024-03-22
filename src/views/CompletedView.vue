@@ -77,7 +77,6 @@ main {
   rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
 
-
 header {
   height: 32px;
 }
@@ -88,7 +87,6 @@ section {
   overflow-y: auto;
   margin: 24px 0;
 }
-
 
 #main-title {
   display: flex;

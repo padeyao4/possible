@@ -2,6 +2,7 @@ import { type Edge, type Node, type Project } from '@/stores/store'
 import type { ID } from '@antv/g6'
 import type { StorageLike } from 'pinia-plugin-persistedstate'
 import { reactive } from 'vue'
+import { Store } from "tauri-plugin-store-api";
 
 
 /**
@@ -54,21 +55,21 @@ export function updateMap(
  * stripping out any reactivity or excess fields that don't need to be persisted.
  */
 export function customSerializer(value) {
-  return JSON.stringify({
-    projects: [...Object.values(value.projects)].map((project: Project) => {
-      const { id, name, completed, sortIndex, editable, createTime } = project
-      return {
-        id,
-        name,
-        completed,
-        sortIndex,
-        editable,
-        createTime,
-        nodes: [...project.nodesMap.values()],
-        edges: [...project.edgesMap.values()]
-      }
+    return JSON.stringify({
+        projects: [...Object.values(value.projects)].map((project: Project) => {
+            const { id, name, completed, sortIndex, editable, createTime } = project
+            return {
+                id,
+                name,
+                completed,
+                sortIndex,
+                editable,
+                createTime,
+                nodes: [...project.nodesMap.values()],
+                edges: [...project.edgesMap.values()]
+            }
+        })
     })
-  })
 }
 
 /**
@@ -81,56 +82,65 @@ export function customSerializer(value) {
  * Returns a Pinia store value containing the deserialized projects.
  */
 export function customDeserializer(value) {
-  const projects = JSON.parse(value)
-    .projects.map((project) => {
-      const { id, name, completed, sortIndex, editable, createTime, nodes, edges } = project
+    const projects = JSON.parse(value)
+        .projects.map((project) => {
+            const { id, name, completed, sortIndex, editable, createTime, nodes, edges } = project
 
-      const nodesMap = new Map<ID, Node>()
-      const edgesMap = new Map<ID, Edge>()
-      const inEdgesMap = new Map<ID, Set<Edge>>()
-      const outEdgesMap = new Map<ID, Set<Edge>>()
-      const rowsMap = new Map<ID, Set<Node>>()
-      const colsMap = new Map<ID, Set<Node>>()
-      const coordinateMap = new Map<string, Node>()
+            const nodesMap = new Map<ID, Node>()
+            const edgesMap = new Map<ID, Edge>()
+            const inEdgesMap = new Map<ID, Set<Edge>>()
+            const outEdgesMap = new Map<ID, Set<Edge>>()
+            const rowsMap = new Map<ID, Set<Node>>()
+            const colsMap = new Map<ID, Set<Node>>()
+            const coordinateMap = new Map<string, Node>()
 
-      nodes.forEach((node) => {
-        updateMap(node, nodesMap, inEdgesMap, outEdgesMap, rowsMap, colsMap, coordinateMap)
-      })
+            nodes.forEach((node) => {
+                updateMap(node, nodesMap, inEdgesMap, outEdgesMap, rowsMap, colsMap, coordinateMap)
+            })
 
-      edges.forEach((edge) => {
-        edgesMap.set(edge.id, edge)
-      })
+            edges.forEach((edge) => {
+                edgesMap.set(edge.id, edge)
+            })
 
-      return {
-        id,
-        name,
-        completed,
-        sortIndex,
-        editable,
-        createTime,
-        nodesMap,
-        edgesMap,
-        inEdgesMap,
-        outEdgesMap,
-        rowsMap,
-        colsMap,
-        coordinateMap
-      }
-    })
-    .map((project) => [project.id, project])
+            return {
+                id,
+                name,
+                completed,
+                sortIndex,
+                editable,
+                createTime,
+                nodesMap,
+                edgesMap,
+                inEdgesMap,
+                outEdgesMap,
+                rowsMap,
+                colsMap,
+                coordinateMap
+            }
+        })
+        .map((project) => [project.id, project])
 
-  return {
-    projects: reactive(Object.fromEntries(projects))
-  }
+    return {
+        projects: reactive(Object.fromEntries(projects))
+    }
 }
 
 export class TuariStorage implements StorageLike {
-    data: Map<string, string> = new Map()
+    store: Store;
+
+    constructor() {
+        this.store = new Store(".settings.dat");
+    }
 
     getItem(key: string): string {
-        return this.data.get(key) || '{}'
+
+        this.store.get(key).then((res) => {
+            console.log('get', key, res)
+        })
+        return '{}'
     }
     setItem(key: string, value: string): void {
-        this.data.set(key, value)
+        // todo
+        this.store.set(key, value)
     }
 }

@@ -1,11 +1,21 @@
 <script setup lang="ts">
 import { useStore } from '@/stores/store';
-
+import { invoke } from '@tauri-apps/api';
+import { computed } from 'vue';
 
 const store = useStore()
 
 function onSave() {
   store.$hydrate()
+}
+
+const isDev = computed(() => {
+  return import.meta.env.DEV
+})
+
+function testTauri() {
+  invoke('greet', { name: 'world' })
+    .then((res) => console.log(res))
 }
 
 </script>
@@ -19,7 +29,9 @@ function onSave() {
         </header>
         <section>
           <div>
+            <el-text>{{ isDev }}</el-text>
             <el-button @click="onSave">save</el-button>
+            <el-button @click="testTauri">test tauri</el-button>
           </div>
         </section>
       </div>
