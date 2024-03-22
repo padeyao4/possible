@@ -22,7 +22,7 @@ const startIndex = computed(() => {
   return convertToIndex(store.currentProject.createTime)
 })
 
-function showTime(index) {
+function showTime(index: number | string) {
   const date = convertToDate(index)
   return timeFormat.format(date) + '\n' + showWeek(date)
 }

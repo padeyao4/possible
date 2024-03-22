@@ -87,11 +87,11 @@ export function deserialize(value: string): Project[] {
     const colsMap = new Map<ID, Set<Node>>()
     const coordinateMap = new Map<string, Node>()
 
-    nodes.forEach((node) => {
+    nodes.forEach((node: Node) => {
       updateMap(node, nodesMap, inEdgesMap, outEdgesMap, rowsMap, colsMap, coordinateMap)
     })
 
-    edges.forEach((edge) => {
+    edges.forEach((edge: Edge) => {
       edgesMap.set(edge.id, edge)
     })
 

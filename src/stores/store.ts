@@ -74,7 +74,7 @@ export const useStore = defineStore('store', () => {
   /**
    * 更新节点坐标
    */
-  const updateNodePosition = (model: Partial<Node>, project: Project, drawabled = true) => {
+  const updateNodePosition = (model: Partial<Node>, project: Project, drawable = true) => {
     const { colsMap, rowsMap, coordinateMap, nodesMap } = project
 
     const oldNode = nodesMap.get(model.id)
@@ -103,12 +103,12 @@ export const useStore = defineStore('store', () => {
     oldNode.data.x = model.data.x
     oldNode.data.y = model.data.y
 
-    if (drawabled) {
+    if (drawable) {
       graph.value?.updateNodePosition(model)
     }
   }
 
-  const updateNode = (model: Node, drawabled = true) => {
+  const updateNode = (model: Node, drawable = true) => {
     if (!currentProject.value) return
     const oldNode = currentProject.value.nodesMap.get(model.id)
 
@@ -137,7 +137,7 @@ export const useStore = defineStore('store', () => {
 
     Object.assign(oldNode.data, model.data)
 
-    if (drawabled) {
+    if (drawable) {
       graph.value?.updateData('node', model)
     }
   }
@@ -327,7 +327,7 @@ export const useStore = defineStore('store', () => {
   /**
    * 当前节点的所有关联节点都向下移动,向下移动碰到重叠节点。递归重叠节点向下移动
    */
-  const moveDown = (model: Node, project: Project, drawabled = true) => {
+  const moveDown = (model: Node, project: Project, drawable = true) => {
     const allNodes = getRelationNodes(model.id, project).map((nodeId) => project.nodesMap.get(nodeId))
     const s = new Set(allNodes)
 
@@ -345,11 +345,11 @@ export const useStore = defineStore('store', () => {
       updateNodePosition({
         id: node.id,
         data: { x: node.data.x, y: node.data.y + count * UNIT_H }
-      }, project, drawabled)
+      }, project, drawable)
     })
   }
 
-  const moveUp = (model: Node, project: Project, drawabled = true) => {
+  const moveUp = (model: Node, project: Project, drawable = true) => {
     const allNodes = getRelationNodes(model.id, project).map((nodeId) =>
       project.nodesMap.get(nodeId)
     )
@@ -372,7 +372,7 @@ export const useStore = defineStore('store', () => {
           data: { x: node.data.x, y: node.data.y - count * UNIT_H }
         },
         project,
-        drawabled
+        drawable
       )
     })
   }
@@ -414,14 +414,14 @@ export const useStore = defineStore('store', () => {
   /**
    * 向右移动,如果有重叠节点,重叠节点和重叠节点的关联节点都向下移动
    */
-  const moveRight = (nodeId: ID, project: Project, drawabled = true) => {
+  const moveRight = (nodeId: ID, project: Project, drawable = true) => {
     const node = project.nodesMap.get(nodeId)
     getSuccessors(node.id, project)
       .filter(successor => {
         return successor.data.x - node.data.x === UNIT_W
       })
       .forEach(successor => {
-        moveRight(successor.id, project, drawabled)
+        moveRight(successor.id, project, drawable)
       })
 
     /**
@@ -432,14 +432,14 @@ export const useStore = defineStore('store', () => {
      */
     let currentRightNode = findRightNode(nodeId, project)
     while (currentRightNode) {
-      moveDown(currentRightNode, project, drawabled)
+      moveDown(currentRightNode, project, drawable)
       currentRightNode = findRightNode(nodeId, project)
     }
 
     updateNodePosition(
       { id: node.id, data: { x: node.data.x + UNIT_W, y: node.data.y } },
       project,
-      drawabled
+      drawable
     )
   }
 
@@ -447,7 +447,7 @@ export const useStore = defineStore('store', () => {
     return dateToX(currentTime.value, project.createTime)
   }
 
-  const moveLeft = (nodeId: ID, project: Project, currentX: number, drawabled = true) => {
+  const moveLeft = (nodeId: ID, project: Project, currentX: number, drawable = true) => {
     const node = project.nodesMap.get(nodeId)
     if (node.data.completed || node.data.x <= currentX) {
       return false
@@ -463,10 +463,10 @@ export const useStore = defineStore('store', () => {
     } else {
       let currentLeftNode = findLeftNode(nodeId, project)
       while (currentLeftNode) {
-        moveDown(currentLeftNode, project, drawabled)
+        moveDown(currentLeftNode, project, drawable)
         currentLeftNode = findLeftNode(nodeId, project)
       }
-      updateNodePosition({ id: node.id, data: { x: node.data.x - UNIT_W, y: node.data.y } }, project, drawabled)
+      updateNodePosition({ id: node.id, data: { x: node.data.x - UNIT_W, y: node.data.y } }, project, drawable)
       return true
     }
   }
@@ -487,13 +487,6 @@ export const useStore = defineStore('store', () => {
     })
     console.log('daily update done')
   }
-
-  const replaceProjects = (projects) => {
-    console.log('replace projects', projects)
-    console.log('current project', currentProject.value)
-    Object.assign(projects.value, projects)
-  }
-
 
   return {
     projects,
@@ -531,7 +524,6 @@ export const useStore = defineStore('store', () => {
     findAllDownNode,
     findRightNode,
     checkSameRelation,
-    replaceProjects
   }
 }
 )

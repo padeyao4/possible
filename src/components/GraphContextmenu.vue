@@ -17,9 +17,6 @@ function handleDelete() {
   store.removeNode(store.selectedNode.id)
 }
 
-/**
- * Hides the context menu by resetting the graph's userData.status to 'none'.
- */
 function onblur() {
   store.actionState = 'none'
 }
@@ -53,8 +50,8 @@ const contextmenuPosition = computed(() => {
   const height = document.body.getBoundingClientRect().height
   const width = document.body.getBoundingClientRect().width
   const menuWidth = contextmenuRef.value?.clientWidth || 0
-  const menuHight = contextmenuRef.value?.clientHeight || 0
-  const maxHeight = (store.contextmenuPosition.y > height - menuHight) ? height - menuHight : store.contextmenuPosition.y
+  const menuHeight = contextmenuRef.value?.clientHeight || 0
+  const maxHeight = (store.contextmenuPosition.y > height - menuHeight) ? height - menuHeight : store.contextmenuPosition.y
   const maxWidth = (store.contextmenuPosition.x > width - menuWidth) ? store.contextmenuPosition.x - menuWidth : store.contextmenuPosition.x
   return {
     left: maxWidth + 'px',
