@@ -76,7 +76,6 @@ export function serialize(value: Record<string, Project>): string {
  * Returns a Pinia store value containing the deserialized projects.
  */
 export function deserialize(value: string): Project[] {
-  console.log('deserialize value', value)
   return JSON.parse(value).map((project: any) => {
     const { id, name, completed, sortIndex, editable, createTime, nodes, edges } = project
 

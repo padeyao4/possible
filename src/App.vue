@@ -53,6 +53,7 @@ onBeforeMount(() => {
     store.$subscribe(() => {
       const content = serialize(store.projects)
       db.set('data', content)
+      db.save().then(() => console.log('saved'))
     }, { detached: true })
   })
 })
