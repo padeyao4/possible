@@ -1,6 +1,5 @@
 import { UNIT_H, UNIT_W } from '@/configs/constant'
 import type { CustomGraph } from '@/g6/core/graph'
-import { TuariStorage, customDeserializer, customSerializer } from '@/utils/data-util'
 import { dateToX } from '@/utils/time'
 import type { ID } from '@antv/g6'
 import { dayjs } from 'element-plus'
@@ -64,7 +63,7 @@ export const useStore = defineStore('store', () => {
   const mousePosition = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 
   const currentProject = computed<Project>(() => {
-    const { id } = useRoute().params
+    const { id } = useRoute()?.params ?? { id: '' }
     return projects.value[id as string]
   })
 
@@ -489,6 +488,12 @@ export const useStore = defineStore('store', () => {
     console.log('daily update done')
   }
 
+  const replaceProjects = (projects) => {
+    console.log('replace projects', projects)
+    console.log('current project', currentProject.value)
+    Object.assign(projects.value, projects)
+  }
+
 
   return {
     projects,
@@ -525,18 +530,9 @@ export const useStore = defineStore('store', () => {
     findDownNode,
     findAllDownNode,
     findRightNode,
-    checkSameRelation
+    checkSameRelation,
+    replaceProjects
   }
-},
-  {
-    persist: {
-      storage: new TuariStorage(),
-      paths: ['projects'],
-      serializer: {
-        serialize: customSerializer,
-        deserialize: customDeserializer
-      },
-    }
-  }
+}
 )
 

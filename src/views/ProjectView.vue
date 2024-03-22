@@ -9,11 +9,17 @@ import TestRightButton from '@/components/TestRightButton.vue'
 import TimerHeader from '@/components/TimerHeader.vue'
 import useGraph from '@/g6/index.ts'
 import { useStore } from '@/stores/store.ts'
-import { provide, ref } from 'vue'
+import { computed, provide, ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 const store = useStore()
 const container = ref()
 const graph = useGraph(container)
+const route = useRoute()
+
+const current = computed(() => {
+  return store.projects[route.params.id]
+})
 
 provide('graph', graph)
 </script>
@@ -22,7 +28,7 @@ provide('graph', graph)
   <div>
     <main>
       <div class="content">
-        <header>{{ store.currentProject.name }}</header>
+        <header>{{ current.name }}</header>
         <section>
           <timer-header id="timer-header" />
           <div id="container" ref="container"></div>
@@ -52,7 +58,7 @@ main {
   flex-grow: 1;
   padding: 24px 24px 0 24px;
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
-    rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+  rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
 
 footer {
@@ -63,7 +69,7 @@ footer {
   height: 48px;
   padding: 0 24px;
 
-  &>* {
+  & > * {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -72,7 +78,7 @@ footer {
     user-select: none;
   }
 
-  &>*:hover {
+  & > *:hover {
     background: rgba(0, 0, 0, 0.1);
   }
 }

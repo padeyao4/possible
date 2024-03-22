@@ -1,22 +1,30 @@
 <script setup lang="ts">
-import { useStore } from '@/stores/store';
 import { invoke } from '@tauri-apps/api';
-import { computed } from 'vue';
+import { Store } from 'tauri-plugin-store-api';
+import { onBeforeUnmount } from 'vue';
 
-const store = useStore()
+const db = new Store('d:/settings.dat')
 
-function onSave() {
-  store.$hydrate()
+function testStore() {
+  db.get('test').then(console.log)
 }
-
-const isDev = computed(() => {
-  return import.meta.env.DEV
-})
 
 function testTauri() {
   invoke('greet', { name: 'world' })
     .then((res) => console.log(res))
 }
+
+function testSetStore() {
+  db.set('test', 'hello world')
+}
+
+function saveStore(){
+  db.save()
+}
+
+onBeforeUnmount(() => {
+  db.save()
+})
 
 </script>
 
@@ -29,9 +37,10 @@ function testTauri() {
         </header>
         <section>
           <div>
-            <el-text>{{ isDev }}</el-text>
-            <el-button @click="onSave">save</el-button>
             <el-button @click="testTauri">test tauri</el-button>
+            <el-button @click="testStore">test kv store</el-button>
+            <el-button @click="testSetStore">test set kv store</el-button>
+            <el-button @click="saveStore">save kv store</el-button>
           </div>
         </section>
       </div>

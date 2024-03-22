@@ -1,9 +1,5 @@
 import { type Edge, type Node, type Project } from '@/stores/store'
 import type { ID } from '@antv/g6'
-import type { StorageLike } from 'pinia-plugin-persistedstate'
-import { reactive } from 'vue'
-import { Store } from "tauri-plugin-store-api";
-
 
 /**
  * Updates the node maps and edge maps with a new node model.
@@ -14,34 +10,34 @@ import { Store } from "tauri-plugin-store-api";
  * Returns true if the node was successfully added, false if the coordinate
  * was already used.
  */
-export function updateMap(
-    model: Node,
-    nodesMap: Map<ID, Node>,
-    inEdgesMap: Map<ID, Set<Edge>>,
-    outEdgesMap: Map<ID, Set<Edge>>,
-    rowsMap: Map<ID, Set<Node>>,
-    colsMap: Map<ID, Set<Node>>,
-    coordinateMap: Map<string, Node>
+function updateMap(
+  model: Node,
+  nodesMap: Map<ID, Node>,
+  inEdgesMap: Map<ID, Set<Edge>>,
+  outEdgesMap: Map<ID, Set<Edge>>,
+  rowsMap: Map<ID, Set<Node>>,
+  colsMap: Map<ID, Set<Node>>,
+  coordinateMap: Map<string, Node>
 ) {
-    const { x, y } = model.data
-    if (coordinateMap.has(`${x},${y}`)) return false
+  const { x, y } = model.data
+  if (coordinateMap.has(`${x},${y}`)) return false
 
-    coordinateMap.set(`${x},${y}`, model)
-    nodesMap.set(model.id, model)
-    inEdgesMap.set(model.id, new Set())
-    outEdgesMap.set(model.id, new Set())
+  coordinateMap.set(`${x},${y}`, model)
+  nodesMap.set(model.id, model)
+  inEdgesMap.set(model.id, new Set())
+  outEdgesMap.set(model.id, new Set())
 
-    if (x in colsMap) {
-        colsMap.get(x)?.add(model)
-    } else {
-        colsMap.set(x, new Set([model]))
-    }
-    if (y in rowsMap) {
-        rowsMap.get(y)?.add(model)
-    } else {
-        rowsMap.set(y, new Set([model]))
-    }
-    return true
+  if (x in colsMap) {
+    colsMap.get(x)?.add(model)
+  } else {
+    colsMap.set(x, new Set([model]))
+  }
+  if (y in rowsMap) {
+    rowsMap.get(y)?.add(model)
+  } else {
+    rowsMap.set(y, new Set([model]))
+  }
+  return true
 }
 
 /**
@@ -54,22 +50,20 @@ export function updateMap(
  * This allows persisting the relevant data from the Pinia store in localStorage while
  * stripping out any reactivity or excess fields that don't need to be persisted.
  */
-export function customSerializer(value) {
-    return JSON.stringify({
-        projects: [...Object.values(value.projects)].map((project: Project) => {
-            const { id, name, completed, sortIndex, editable, createTime } = project
-            return {
-                id,
-                name,
-                completed,
-                sortIndex,
-                editable,
-                createTime,
-                nodes: [...project.nodesMap.values()],
-                edges: [...project.edgesMap.values()]
-            }
-        })
-    })
+export function serialize(value: Record<string, Project>): string {
+  return JSON.stringify([...Object.values(value)].map((project: Project) => {
+    const { id, name, completed, sortIndex, editable, createTime } = project
+    return {
+      id,
+      name,
+      completed,
+      sortIndex,
+      editable,
+      createTime,
+      nodes: [...project.nodesMap.values()],
+      edges: [...project.edgesMap.values()]
+    }
+  }))
 }
 
 /**
@@ -81,66 +75,42 @@ export function customSerializer(value) {
  *
  * Returns a Pinia store value containing the deserialized projects.
  */
-export function customDeserializer(value) {
-    const projects = JSON.parse(value)
-        .projects.map((project) => {
-            const { id, name, completed, sortIndex, editable, createTime, nodes, edges } = project
+export function deserialize(value: string): Project[] {
+  console.log('deserialize value', value)
+  return JSON.parse(value).map((project: any) => {
+    const { id, name, completed, sortIndex, editable, createTime, nodes, edges } = project
 
-            const nodesMap = new Map<ID, Node>()
-            const edgesMap = new Map<ID, Edge>()
-            const inEdgesMap = new Map<ID, Set<Edge>>()
-            const outEdgesMap = new Map<ID, Set<Edge>>()
-            const rowsMap = new Map<ID, Set<Node>>()
-            const colsMap = new Map<ID, Set<Node>>()
-            const coordinateMap = new Map<string, Node>()
+    const nodesMap = new Map<ID, Node>()
+    const edgesMap = new Map<ID, Edge>()
+    const inEdgesMap = new Map<ID, Set<Edge>>()
+    const outEdgesMap = new Map<ID, Set<Edge>>()
+    const rowsMap = new Map<ID, Set<Node>>()
+    const colsMap = new Map<ID, Set<Node>>()
+    const coordinateMap = new Map<string, Node>()
 
-            nodes.forEach((node) => {
-                updateMap(node, nodesMap, inEdgesMap, outEdgesMap, rowsMap, colsMap, coordinateMap)
-            })
+    nodes.forEach((node) => {
+      updateMap(node, nodesMap, inEdgesMap, outEdgesMap, rowsMap, colsMap, coordinateMap)
+    })
 
-            edges.forEach((edge) => {
-                edgesMap.set(edge.id, edge)
-            })
-
-            return {
-                id,
-                name,
-                completed,
-                sortIndex,
-                editable,
-                createTime,
-                nodesMap,
-                edgesMap,
-                inEdgesMap,
-                outEdgesMap,
-                rowsMap,
-                colsMap,
-                coordinateMap
-            }
-        })
-        .map((project) => [project.id, project])
+    edges.forEach((edge) => {
+      edgesMap.set(edge.id, edge)
+    })
 
     return {
-        projects: reactive(Object.fromEntries(projects))
+      id,
+      name,
+      completed,
+      sortIndex,
+      editable,
+      createTime,
+      nodesMap,
+      edgesMap,
+      inEdgesMap,
+      outEdgesMap,
+      rowsMap,
+      colsMap,
+      coordinateMap
     }
-}
+  })
 
-export class TuariStorage implements StorageLike {
-    store: Store;
-
-    constructor() {
-        this.store = new Store(".settings.dat");
-    }
-
-    getItem(key: string): string {
-
-        this.store.get(key).then((res) => {
-            console.log('get', key, res)
-        })
-        return '{}'
-    }
-    setItem(key: string, value: string): void {
-        // todo
-        this.store.set(key, value)
-    }
 }

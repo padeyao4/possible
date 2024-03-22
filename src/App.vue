@@ -1,44 +1,60 @@
 <script setup lang="ts">
 import router from '@/router'
 import { type Edge, type Node, useStore } from '@/stores/store'
-import { computed, onBeforeMount, onMounted, onUnmounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import { v4 } from 'uuid'
-import Draggable from 'vuedraggable/src/vuedraggable'
-import { DeleteFour, Drag, Write } from '@icon-park/vue-next'
 import type { ID } from '@antv/g6'
 import { faker } from '@faker-js/faker'
-import { Config } from "@icon-park/vue-next";
+import { Config, DeleteFour, Drag, Write } from '@icon-park/vue-next'
+import { Store } from 'tauri-plugin-store-api'
+import { v4 } from 'uuid'
+import { deserialize, serialize } from '@/utils/data-util'
+import { computed, onBeforeMount, onMounted, onUnmounted, provide, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import Draggable from 'vuedraggable/src/vuedraggable'
 
+const db = new Store('./db.dat')
 const route = useRoute()
 const store = useStore()
-
 const timer = ref()
 
+provide('db', db)
+
 /**
- * Schedules a task to run at midnight every day. 
- * Calculates the delay until midnight, sets a timeout 
- * to call store.updateTime() and store.dailyUpdate(), 
- * then recursively schedules another call to this function 
+ * Schedules a task to run at midnight every day.
+ * Calculates the delay until midnight, sets a timeout
+ * to call store.updateTime() and store.dailyUpdate(),
+ * then recursively schedules another call to this function
  * at the next midnight.
  */
 function scheduleMidnightTask() {
-  const now: Date = new Date();
-  const midnight: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-  const delay: number = midnight.getTime() - now.getTime();
-
+  const now: Date = new Date()
+  const midnight: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0)
+  const delay: number = midnight.getTime() - now.getTime()
+  clearTimeout(timer.value)
   timer.value = setTimeout(() => {
     store.updateTime()
     store.dailyUpdate()
     // 设置下一个午夜的定时器
-    scheduleMidnightTask();
-  }, delay);
+    scheduleMidnightTask()
+  }, delay)
 }
 
 onBeforeMount(() => {
-  store.updateTime()
-  store.dailyUpdate()
-  scheduleMidnightTask()
+  db.get('data').then(value => {
+    if (value) {
+      const projects = deserialize(value as string)
+      projects.forEach((project) => {
+        store.addProject(project)
+      })
+    }
+  }).then(() => {
+    store.updateTime()
+    store.dailyUpdate()
+    scheduleMidnightTask()
+    store.$subscribe(() => {
+      const content = serialize(store.projects)
+      db.set('data', content)
+    }, { detached: true })
+  })
 })
 
 onUnmounted(() => {
@@ -108,27 +124,28 @@ function handleComplete(evt: any, element: any) {
       <aside>
         <header>
           <div :class="['selected-item', { selected: store.isActive('today') }]"
-            @click="store.setSelected('today'); router.push('/today')">我的一天
+               @click="store.setSelected('today'); router.push('/today')">我的一天
           </div>
           <div :class="['selected-item', { selected: store.isActive('completed') }]"
-            @click="store.setSelected('completed'); router.push('/completed')">
+               @click="store.setSelected('completed'); router.push('/completed')">
             已完成项目
           </div>
         </header>
         <div id="body">
           <draggable :list="projects" item-key="id" chosenClass="chosen-class" dragClass="drag-class" handle=".move"
-            ghostClass="ghost-class" :forceFallback="true" @update="onUpdate">
+                     ghostClass="ghost-class" :forceFallback="true" @update="onUpdate">
             <template #item="{ element }">
               <div @click="store.setSelected(element.id); router.push(`/project/${element.id}`)"
-                :class="['selected-item', { selected: store.isActive(element.id) }]" :key="element.id">
+                   :class="['selected-item', { selected: store.isActive(element.id) }]" :key="element.id">
                 <input v-if="element.editable && store.isActive(element.id)" :ref="handleInputRef"
-                  v-model="element.name" @blur="element.editable = false" @keydown.enter="element.editable = false" />
+                       v-model="element.name" @blur="element.editable = false"
+                       @keydown.enter="element.editable = false" />
                 <div v-else class="project-item">
                   <div class="info">{{ element.name }}</div>
                   <div class="operation">
                     <write theme="outline" size="15" fill="#333" :strokeWidth="1" @click="element.editable = true" />
                     <delete-four theme="outline" size="15" fill="#333" :strokeWidth="1"
-                      @click="(evt: any) => handleComplete(evt, element)" />
+                                 @click="(evt: any) => handleComplete(evt, element)" />
                     <drag theme="outline" size="15" fill="#b9b9b9" :strokeWidth="1" class="move" />
                   </div>
                 </div>
@@ -167,14 +184,14 @@ aside {
   width: 240px;
   height: 100vh;
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
-    rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+  rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
 
 header {
   flex-shrink: 0;
   padding: 2px 8px;
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
-    rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+  rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
 
 #body {
@@ -182,7 +199,7 @@ header {
   padding: 2px 8px;
   overflow-y: auto;
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
-    rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+  rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
 
 footer {
@@ -258,7 +275,7 @@ input {
     width: 68px;
     flex-shrink: 0;
 
-    &>* {
+    & > * {
       display: flex;
       justify-content: center;
       align-items: center;
