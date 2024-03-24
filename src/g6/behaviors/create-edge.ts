@@ -1,6 +1,7 @@
 import { Extensions, type ID, type IG6GraphEvent } from '@antv/g6'
 import { v4 } from 'uuid'
 import { useStore } from '@/stores/store'
+import { useRoute } from 'vue-router'
 
 interface DefaultOption {
   shouldBegin: (event: any) => boolean;
@@ -23,6 +24,8 @@ const DUMMY_ID = 'DUMMY_NODE'
 export default class CreateEdge extends Extensions.BaseBehavior {
 
   store = useStore()
+  route = useRoute()
+  currentProject = this.store.projects[this.route.params.id as string]
 
   pointDown = false
 
@@ -100,8 +103,7 @@ export default class CreateEdge extends Extensions.BaseBehavior {
         sourceAnchor: 1,
         targetAnchor: 0
       }
-    })
-
+    }, this.currentProject)
   }
 
   onPointerUp(e: IG6GraphEvent) {

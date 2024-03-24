@@ -2,8 +2,11 @@
 import { computed, inject, type Ref } from 'vue'
 import type { CustomGraph } from '@/g6/core/graph'
 import { useStore } from '@/stores/store'
+import { useRoute } from 'vue-router'
 
 const store = useStore()
+const route = useRoute()
+const currentProject = store.projects[route.params.id as string]
 
 const graphRef = inject<Ref<CustomGraph>>('graph')
 
@@ -29,7 +32,7 @@ const task = computed<Record<any, any>>(() => {
       store.updateNode({
         id: store.selectedNode.id,
         data: target
-      })
+      }, currentProject)
       return true
     }
   })
@@ -64,7 +67,7 @@ const isPending = computed(() => {
 <template>
   <teleport to="body">
     <el-drawer v-model="visible" :close-on-click-modal="false" :show-close="true" modal-class="modal-class"
-      @close="visible = false">
+               @close="visible = false">
       <el-form :model="task" @submit.prevent>
         <el-form-item label="名称">
           <el-input v-model="task.name" />

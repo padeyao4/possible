@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useStore } from '@/stores/store'
+import { useRoute } from 'vue-router'
+import { dateToX } from '@/utils/time'
 
 const store = useStore()
+const route = useRoute()
+const currentProject = store.projects[route.params.id as string]
 
 const visible = computed(() => {
   return store.actionState === 'contextmenu'
@@ -14,7 +18,7 @@ const visible = computed(() => {
  * Removes the node data from the graph and closes the context menu.
  */
 function handleDelete() {
-  store.removeNode(store.selectedNode.id)
+  store.removeNode(store.selectedNode.id,currentProject)
 }
 
 function onblur() {
@@ -29,19 +33,19 @@ function onRef(e: any) {
 }
 
 function moveRight() {
-  store.moveRight(store.selectedNode.id, store.currentProject)
+  store.moveRight(store.selectedNode.id, currentProject)
 }
 
 function moveLeft() {
-  store.moveLeft(store.selectedNode.id, store.currentProject, store.getCurrentX(store.currentProject))
+  store.moveLeft(store.selectedNode.id, currentProject, dateToX(store.currentTime,currentProject.createTime))
 }
 
 function moveDown() {
-  store.moveDown(store.selectedNode, store.currentProject)
+  store.moveDown(store.selectedNode, currentProject)
 }
 
 function moveUp() {
-  store.moveUp(store.selectedNode, store.currentProject)
+  store.moveUp(store.selectedNode, currentProject)
 }
 
 const contextmenuRef = ref<HTMLElement>()

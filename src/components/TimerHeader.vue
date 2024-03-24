@@ -5,12 +5,14 @@ import { Renderer } from '@antv/g-canvas'
 import { useStore } from '@/stores/store'
 import { convertToDate, convertToIndex, showWeek } from '@/utils/time.js'
 import type { CustomGraph } from '@/g6/core/graph'
+import { useRoute } from 'vue-router'
 
 const store = useStore()
 const graph = inject<ShallowRef<CustomGraph>>('graph')
 const container = ref()
 const canvas = shallowRef()
 const group = shallowRef()
+const route = useRoute()
 
 const timeFormat = new Intl.DateTimeFormat('zh-Hans')
 
@@ -19,7 +21,7 @@ const currentIndex = computed(() => {
 })
 
 const startIndex = computed(() => {
-  return convertToIndex(store.currentProject.createTime)
+  return convertToIndex(store.projects[route.params.id as string].createTime)
 })
 
 function showTime(index: number | string) {

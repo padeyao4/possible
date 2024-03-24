@@ -12,10 +12,13 @@ import { HoverNode } from '@/g6/behaviors/hover-node'
 import DoubleClickNode from '@/g6/behaviors/double-click-node'
 import ContextMenu from '@/g6/behaviors/context-menu'
 import { OFFSET_X } from '@/configs/constant'
+import { useRoute } from 'vue-router'
+import { dateToX } from '@/utils/time'
 
 export default function useGraph(container: any) {
   const store = useStore()
-  const { currentProject } = store
+  const route = useRoute()
+  const currentProject = store.projects[route.params.id as string]
   const graph = shallowRef<CustomGraph>()
 
   async function resize() {
@@ -108,8 +111,8 @@ export default function useGraph(container: any) {
 
   function translateToToday() {
     const { x, y } = graph.value.getCanvasByViewport({ x: 0, y: 0 })
-    const currentX = store.getCurrentX(store.currentProject)
-    graph.value.translate({ dx: x - currentX + OFFSET_X, dy: y })
+    const currentX =  dateToX(store.currentTime, currentProject.createTime)
+    graph.value.translate({ dx: x - currentX + OFFSET_X, dy: y }).then(console.log)
   }
 
   return graph

@@ -6,14 +6,18 @@ import { Local } from '@icon-park/vue-next'
 import { useStore } from '@/stores/store';
 import type { CustomGraph } from '@/g6/core/graph';
 import { OFFSET_X } from '@/configs/constant';
+import { useRoute } from 'vue-router'
+import { dateToX } from '@/utils/time'
 
 const graph = inject<ShallowRef<CustomGraph>>('graph')
 const store = useStore()
+const route = useRoute()
+const currentProject =  store.projects[route.params.id as string]
 
 function handle() {
   setTimeout(() => {
     const { x, y } = graph.value.getCanvasByViewport({ x: 0, y: 0 })
-    const currentX = store.getCurrentX(store.currentProject)
+    const currentX = dateToX(store.currentTime, currentProject.createTime)
     graph.value.translate({ dx: x - currentX + OFFSET_X, dy: y })
   })
 }

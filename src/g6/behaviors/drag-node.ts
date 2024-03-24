@@ -2,6 +2,7 @@ import { Extensions, type IG6GraphEvent } from '@antv/g6'
 import { normalX, normalY } from '@/utils/position-util.js'
 import { useStore } from '@/stores/store'
 import { dateToX } from '@/utils/time'
+import { useRoute } from 'vue-router'
 
 const DEFAULT_CONFIG = {
   // 鼠标左键生效
@@ -27,6 +28,8 @@ export default class DragNode extends Extensions.BaseBehavior {
   }
 
   store = useStore()
+  route = useRoute()
+  currentProject = this.store.projects[this.route.params.id as string]
 
   currentX = 0
 
@@ -69,7 +72,7 @@ export default class DragNode extends Extensions.BaseBehavior {
     this.pointerDown = true
     this.pointerDownPosition = { x: e.canvas.x, y: e.canvas.y }
 
-    this.currentX = dateToX(this.store.currentTime, this.store.currentProject.createTime)
+    this.currentX = dateToX(this.store.currentTime, this.currentProject.createTime)
   }
 
   onPointerMove(e: IG6GraphEvent) {
@@ -84,14 +87,6 @@ export default class DragNode extends Extensions.BaseBehavior {
     const dstX = x - this.pointerDownPosition.x + e.canvas.x
     const dstY = y - this.pointerDownPosition.y + e.canvas.y
 
-    // this.store.updateNode({
-    //   id: this.originNodeData.id,
-    //   data: {
-    //     x: dstX,
-    //     y: dstY,
-    //     completed: normalX(dstX) < this.currentX || this.originNodeData.data.completed
-    //   }
-    // })
     this.graph.updateData('node', {
       id: this.originNodeData.id,
       data: {
@@ -158,7 +153,7 @@ export default class DragNode extends Extensions.BaseBehavior {
       data: {
         x, y, completed: x < this.currentX || this.originNodeData.data.completed
       }
-    })
+    }, this.currentProject)
   }
 
   onPointerUp() {
