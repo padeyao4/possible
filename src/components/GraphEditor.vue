@@ -1,44 +1,70 @@
-<script setup>
-import { computed, inject } from 'vue'
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useStore } from '@/stores/store'
+import { useRoute } from 'vue-router'
 
-const graph = inject('graph')
+const store = useStore()
+const route = useRoute()
+const currentProject = store.projects[route.params.id as string]
 
 const visible = computed({
   get: () => {
-    const { userData } = graph.value ?? { userData: { status: 'none' } }
-    return userData.status === 'edit'
+    return store.actionState === 'edit'
   },
   set: (value) => {
-    const { userData } = graph.value
-    userData.status = value ? 'edit' : 'none'
+    store.actionState = value ? 'edit' : 'none'
   }
 })
 
-const task = computed(() => {
-  const { selectItem } = graph.value.userData
 
-  return new Proxy(selectItem, {
+const task = computed<Record<any, any>>(() => {
+  const data = store.selectedNode.data
+
+  return new Proxy(data, {
     get: (target, p) => {
-      return Reflect.get(target.data, p)
+      return Reflect.get(target, p)
     },
     set: (target, p, newValue) => {
-      Reflect.set(target.data, p, newValue)
-      graph.value.updateData('node', target)
+      Reflect.set(target, p, newValue)
+      store.updateNode({
+        id: store.selectedNode.id,
+        data: target
+      }, currentProject)
       return true
     }
   })
 })
+
+/**
+ * Computed property that returns a boolean indicating if the node is enabled.
+ * Checks if all predecessor nodes are completed by getting all predecessors
+ * via graph.getAllPredecessors() and checking if their 'completed' data is true.
+ */
+const isCompleted = computed(() => {
+  const graph = currentProject.data.graph
+  const nodeId = store.selectedNode.id
+  const models = graph.getAllPredecessors(nodeId)
+  return models.every((model) => model.data.completed)
+})
+
+/**
+ * Computed property that returns a boolean indicating if the node is pending.
+ * Checks if any successor nodes are not completed by getting all successors
+ * via graph.getAllSuccessors() and checking if their 'completed' data is false.
+ */
+const isPending = computed(() => {
+  const graph = currentProject.data.graph
+  const nodeId = store.selectedNode.id
+  const models = graph.getAllSuccessors(nodeId)
+  return models.every((model) => !model.data.completed)
+})
+
 </script>
 
 <template>
   <teleport to="body">
-    <el-drawer
-      v-model="visible"
-      :close-on-click-modal="false"
-      :show-close="true"
-      modal-class="modal-class"
-      @close="visible=false"
-    >
+    <el-drawer v-model="visible" :close-on-click-modal="false" :show-close="true" modal-class="modal-class"
+               @close="visible = false">
       <el-form :model="task" @submit.prevent>
         <el-form-item label="名称">
           <el-input v-model="task.name" />
@@ -50,13 +76,12 @@ const task = computed(() => {
           <el-input v-model="task.record" type="textarea" />
         </el-form-item>
         <el-radio-group v-model="task.completed">
-          <el-radio :value="true" size="default" border>完成</el-radio>
-          <el-radio :value="false" size="default" border>正常</el-radio>
+          <el-radio :value="true" :disabled="!isCompleted" size="default" border>完成</el-radio>
+          <el-radio :value="false" :disabled="!isPending" size="default" border>正常</el-radio>
         </el-radio-group>
       </el-form>
     </el-drawer>
   </teleport>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

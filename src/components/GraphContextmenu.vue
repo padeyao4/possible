@@ -1,51 +1,103 @@
 <script setup lang="ts">
-import { computed, inject } from 'vue'
+import { computed, ref } from 'vue'
+import { useStore } from '@/stores/store'
+import { useRoute } from 'vue-router'
+import { dateToX } from '@/utils/time'
 
-const graphRef = inject('graph') as any
+const store = useStore()
+const route = useRoute()
+const currentProject = store.projects[route.params.id as string]
 
 const visible = computed(() => {
-  return graphRef.value?.userData.status === 'contextmenu' ?? false
+  return store.actionState === 'contextmenu'
 })
 
-const position = computed(() => {
-  const graph = graphRef.value
-  if (!graph) return { x: 0, y: 0 }
-  const position = graph.userData.pointerPosition
-  return graph.getClientByCanvas(position)
-})
-
+/**
+ * Deletes a node from the graph based on the node ID stored in the
+ * graph's userData.selectItem property.
+ * Removes the node data from the graph and closes the context menu.
+ */
 function handleDelete() {
-  const graph = graphRef.value
-  const { userData } = graph
-  const id = userData.selectItem.id
-  graph.removeData('node', id)
+  store.removeNode(store.selectedNode.id, currentProject)
 }
+
+function onblur() {
+  store.actionState = 'none'
+}
+
+function onRef(e: any) {
+  contextmenuRef.value = e
+  setTimeout(() => {
+    (e as HTMLElement)?.focus()
+  })
+}
+
+function moveRight() {
+  store.moveRight(store.selectedNode.id, currentProject)
+}
+
+function moveLeft() {
+  store.moveLeft(store.selectedNode.id, currentProject, dateToX(store.currentTime, currentProject.createTime))
+}
+
+function moveDown() {
+  store.moveDown(store.selectedNode, currentProject)
+}
+
+function moveUp() {
+  store.moveUp(store.selectedNode, currentProject)
+}
+
+const contextmenuRef = ref<HTMLElement>()
+
+const contextmenuPosition = computed(() => {
+  const height = document.body.getBoundingClientRect().height
+  const width = document.body.getBoundingClientRect().width
+  const contextmenuPosition = currentProject.data.graph.getClientByCanvas(store.mousePosition)
+  const menuWidth = contextmenuRef.value?.clientWidth || 0
+  const menuHeight = contextmenuRef.value?.clientHeight || 0
+  const maxHeight = (contextmenuPosition.y > height - menuHeight) ? height - menuHeight : contextmenuPosition.y
+  const maxWidth = (contextmenuPosition.x > width - menuWidth) ? contextmenuPosition.x - menuWidth : contextmenuPosition.x
+  return {
+    left: maxWidth + 'px',
+    top: maxHeight + 'px'
+  }
+})
 
 </script>
 
 <template>
   <teleport to="body">
-    <div v-if="visible"
-         :style="{'position': 'absolute','left':position.x+'px','top':position.y+'px'}"
-         @contextmenu.prevent>
-      <div class="menu" :ref="(e)=>(e as HTMLElement)?.focus()">
-        <ul>
-          <li @pointerdown="handleDelete">删除</li>
-          <li>插入</li>
-        </ul>
-      </div>
+    <div v-if="visible" class="contextmenu" :style="contextmenuPosition" @contextmenu.prevent :ref="onRef" tabindex="0"
+         @blur="onblur" @click="onblur">
+      <ul>
+        <li @click="moveRight">单体右移</li>
+        <li @click="moveLeft">单体左移</li>
+        <li @click="moveUp">整体上移</li>
+        <li @click="moveDown">整体下移</li>
+        <li @click="handleDelete">删除</li>
+      </ul>
     </div>
   </teleport>
 </template>
 
 <style scoped>
-
-.menu {
-  width: 80px;
+.contextmenu {
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0, 10, 0, 1);
+  position: absolute;
+  overflow: hidden;
+  width: 120px;
   border-radius: 4px;
   padding: 4px 0;
-  overflow: hidden;
   background: #606266;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+  z-index: 1000;
+
+  &:focus {
+    outline: none;
+    opacity: 1;
+  }
 }
 
 ul {

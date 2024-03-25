@@ -1,15 +1,17 @@
-import { Extensions } from '@antv/g6'
+import { Extensions, type IG6GraphEvent } from '@antv/g6'
+import { useStore } from '@/stores/store'
 
 const DEFAULT_CONFIG = {
   // 鼠标左键生效
-  shouldBegin: (event) => event.button === 0
+  shouldBegin: (event: any) => event.button === 0
 }
 
 export class DragCanvas extends Extensions.BaseBehavior {
   pointerDownPosition = null
 
+  store = useStore()
 
-  constructor(options) {
+  constructor(options: any) {
     super(Object.assign({}, DEFAULT_CONFIG, options))
   }
 
@@ -21,20 +23,21 @@ export class DragCanvas extends Extensions.BaseBehavior {
     }
   }
 
-  onPointerDown(e) {
+  onPointerDown(e: IG6GraphEvent) {
     if (!this.options.shouldBegin(e)) return
     const { x, y } = e.client
     this.pointerDownPosition = { x, y }
 
-    const self = this
-    window.addEventListener('mouseup', function() {
-      self.onPointerUp()
+    const removePointerUpListener = () => {
+      this.onPointerUp()
       // 有些情况下导致无法只监听一次,需手动添加移除
-      window.removeEventListener('mouseup', this)
-    }, { once: true })
+      window.removeEventListener('mouseup', removePointerUpListener)
+    }
+
+    window.addEventListener('mouseup', removePointerUpListener, { once: true })
   }
 
-  onPointerMove(e) {
+  onPointerMove(e: IG6GraphEvent) {
     if (!this.pointerDownPosition) return
     const { x, y } = e.client
     const dx = x - this.pointerDownPosition.x

@@ -1,53 +1,77 @@
-<script setup>
-import { provide, ref } from 'vue'
-import useGraph from '@/g6/index.js'
-import ResetButton from '@/components/ResetButton.vue'
-import { useStore } from '@/stores/store.ts'
-import TimerHeader from '@/components/TimerHeader.vue'
+<script setup lang="ts">
+import GraphContextmenu from '@/components/GraphContextmenu.vue'
 import GraphEditor from '@/components/GraphEditor.vue'
 import PickDateButton from '@/components/PickDateButton.vue'
-import GraphContextmenu from '@/components/GraphContextmenu.vue'
+import ResetButton from '@/components/ResetButton.vue'
+import TestButton from '@/components/TestButton.vue'
+import TestRestoreButton from '@/components/TestRestoreButton.vue'
+import TestRightButton from '@/components/TestRightButton.vue'
+import GraphTimerHeader from '@/components/GraphTimerHeader.vue'
+import { useStore } from '@/stores/store'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import GraphRuler from '@/components/GraphRuler.vue'
+import GraphContainer from '@/components/GraphContainer.vue'
 
 const store = useStore()
-const container = ref()
-const { currentProject } = store
-const { graph } = useGraph(container)
+const route = useRoute()
 
-provide('graph', graph)
+const currentProject = computed(() => store.projects[route.params.id as string])
 </script>
 
 <template>
-  <div>
+  <div id="project-view">
+    <header>{{ currentProject.name }}</header>
     <main>
+      <graph-timer-header />
       <div class="content">
-        <header>{{ currentProject.name }}</header>
-        <section>
-          <timer-header id="timer-header" />
-          <div id="container" ref="container"></div>
-          <graph-editor />
-          <graph-contextmenu />
-        </section>
+        <graph-ruler />
+        <graph-container />
       </div>
-      <footer>
-        <reset-button />
-        <pick-date-button />
-      </footer>
+      <graph-editor />
+      <graph-contextmenu />
     </main>
+    <footer>
+      <reset-button />
+      <pick-date-button />
+      <test-button />
+      <test-right-button />
+      <test-restore-button />
+    </footer>
   </div>
 </template>
 
 <style scoped>
-main {
+#project-view {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-.content {
-  flex-grow: 1;
-  padding: 24px 24px 0 24px;
-  box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
-  rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+header {
+  outline: none;
+  height: 80px;
+  font-size: 20px;
+  -webkit-app-region: no-drag;
+  user-select: none;
+  width: calc(100vw - 240px);
+  padding: 24px 24px 24px 24px;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
+
+main {
+  display: flex;
+  height: calc(100vh - 48px - 80px);
+  flex-direction: column;
+
+  .content {
+    width: 100%;
+    height: calc(100vh - 48px - 80px - 40px);
+    display: flex;
+    flex-direction: row;
+  }
 }
 
 footer {
@@ -56,7 +80,8 @@ footer {
   align-items: center;
   flex-shrink: 0;
   height: 48px;
-  padding: 0 24px;
+  box-shadow: rgba(27, 31, 35, 0.06) 0 -1px 0,
+  rgba(255, 255, 255, 0.25) 0 -1px 0 inset;
 
   & > * {
     display: flex;
@@ -70,30 +95,5 @@ footer {
   & > *:hover {
     background: rgba(0, 0, 0, 0.1);
   }
-}
-
-header {
-  display: flex;
-  outline: none;
-  flex-shrink: 0;
-  height: 32px;
-  font-size: 20px;
-  -webkit-app-region: no-drag;
-  user-select: none;
-  margin: 0 0 24px 0;
-}
-
-section {
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-}
-
-#timer-header {
-  flex-shrink: 0;
-}
-
-#container {
-  height: calc(100vh - 24px * 2 - 32px - 40px - 48px);
 }
 </style>

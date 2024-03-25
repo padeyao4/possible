@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { computed, type ComputedRef, inject } from 'vue'
-import { CheckOne, Drag, Record, Round } from '@icon-park/vue-next'
+import { computed } from 'vue'
+import { CheckOne, Drag, Round } from '@icon-park/vue-next'
 import Draggable from 'vuedraggable'
+import { useStore } from '@/stores/store'
 
-const tasks = inject<ComputedRef<Record<any, any>[]>>('tasks')
+const store = useStore()
 
 const todoTasks = computed(() => {
-  return tasks?.value
-    .sort((task1, task2) => task1.data.sortedIndex - task2.data.sortedIndex)
+  return [...store.currentTasks].sort((task1, task2) => task1.data.sortedIndex - task2.data.sortedIndex)
     .filter(node => !node.data.completed) ?? []
 })
 
@@ -56,10 +56,13 @@ function onUpdate() {
   margin: 4px 0;
   height: 56px;
   border-radius: 4px;
+  width: calc(100vw - 24px * 2 - 240px);
+  overflow-x: hidden;
   background: rgba(255, 255, 255, 0.8);
 
   .item-content {
     flex-grow: 1;
+    overflow: hidden;
 
     .first-line {
       display: flex;
@@ -92,9 +95,11 @@ function onUpdate() {
     }
 
     .second-line {
-      display: flex;
-      align-items: center;
       margin: 0 0 0 28px;
+      overflow-x: hidden;
+      min-width: 0;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
 

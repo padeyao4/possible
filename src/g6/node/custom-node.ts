@@ -1,15 +1,10 @@
 import { Extensions } from '@antv/g6'
 
-export class CardNode extends Extensions.RectNode {
+export default class CardNode extends Extensions.RectNode {
   /**
    * 自定义text-label,解决label绘制不同步问题
-   * @param model
-   * @param shapeMap
-   * @param diffData
-   * @param diffState
-   * @returns {*&{info: *}}
    */
-  drawOtherShapes(model, shapeMap, diffData, diffState) {
+  drawOtherShapes(model: any, shapeMap: any, diffData: any, diffState: any) {
     const { data: { name } } = model
     const cfg = {
       model, shapeMap, diffData, diffState

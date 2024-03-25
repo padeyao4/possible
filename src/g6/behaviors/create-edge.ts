@@ -1,20 +1,42 @@
-import { Extensions } from '@antv/g6'
+import { Extensions, type ID, type IG6GraphEvent } from '@antv/g6'
 import { v4 } from 'uuid'
+import { useStore } from '@/stores/store'
+import { useRoute } from 'vue-router'
 
-const DEFAULT_CONFIG = {
-  // 鼠标左键生效
-  shouldBegin: (event) => event.button === 0
+interface DefaultOption {
+  shouldBegin: (event: any) => boolean;
+
+  [key: string]: any
 }
 
-const DUMMY_ID = 'DUMMY_ID'
+const DEFAULT_CONFIG = {
+  /**
+   * Checks if the mouse button pressed to start dragging is the primary button.
+   *
+   * @param event - The mouse event.
+   * @returns True if the primary button was pressed.
+   */
+  shouldBegin: (event: any) => event.button === 0
+}
+
+const DUMMY_ID = 'DUMMY_NODE'
 
 export default class CreateEdge extends Extensions.BaseBehavior {
 
-  pointDown = false
-  edge = {}
-  dummyNode = {}
+  store = useStore()
+  route = useRoute()
+  currentProject = this.store.projects[this.route.params.id as string]
 
-  constructor(options) {
+  pointDown = false
+
+  edge: {
+    id: ID,
+    source: ID,
+    target: ID,
+    data: any
+  }
+
+  constructor(options: Partial<DefaultOption>) {
     super(Object.assign({}, DEFAULT_CONFIG, options))
   }
 
@@ -27,48 +49,53 @@ export default class CreateEdge extends Extensions.BaseBehavior {
     }
   }
 
-  onPointerDown(e) {
+  onPointerDown(e: IG6GraphEvent) {
     if (!this.options.shouldBegin(e)) return
-    const { itemId, target: { id } } = e
+    const itemId = e.itemId
+    const id = (e.target as any).id
     if (id !== 'anchorShape0' && id !== 'anchorShape1') return
     this.pointDown = true
-    this.dummyNode = this.graph.addData('node', {
+
+    this.graph.addData('node', {
       id: DUMMY_ID,
       data: {
+        name: 'dummy',
         type: 'circle-node',
         x: e.canvas.x,
         y: e.canvas.y,
         anchorPoints: [[0.5, 0.5]]
       }
     })
-    this.graph.hideItem(this.dummyNode.id)
+
+    this.graph.hideItem(DUMMY_ID)
 
     const sourceId = id === 'anchorShape1' ? itemId : DUMMY_ID
     const targetId = id === 'anchorShape0' ? itemId : DUMMY_ID
 
-    this.edge = this.graph.addData('edge', {
-      id: v4(),
+    this.edge = {
+      id: 'DUMMY_EDGE',
       source: sourceId,
       target: targetId,
       data: {
         sourceAnchor: 1,
         targetAnchor: 0
       }
-    })
+    }
+    this.graph.addData('edge', { ...this.edge })
   }
 
-  creteEdge(sourceId, targetId) {
+  creteEdge(sourceId: ID, targetId: ID) {
     const source = this.graph.getNodeData(sourceId)
     const target = this.graph.getNodeData(targetId)
     if (source.data.x >= target.data.x) return
-
     if (sourceId === targetId) return
+
     const isInclude = this.graph.getNeighborNodesData(sourceId, 'both')
       .map(model => model.id)
       .includes(targetId)
     if (isInclude) return
 
-    this.graph.addData('edge', {
+    this.store.addEdge({
       id: v4(),
       source: sourceId,
       target: targetId,
@@ -76,36 +103,41 @@ export default class CreateEdge extends Extensions.BaseBehavior {
         sourceAnchor: 1,
         targetAnchor: 0
       }
-    })
+    }, this.currentProject)
   }
 
-  onPointerUp(e) {
+  onPointerUp(e: IG6GraphEvent) {
     if (!this.pointDown) return
-    const { itemId, itemType } = e
-    if (itemType === 'node') {
-      const sourceId = this.edge.source === DUMMY_ID ? itemId : this.edge.source
-      const targetId = this.edge.target === DUMMY_ID ? itemId : this.edge.target
-      this.creteEdge(sourceId, targetId)
-    }
-    // todo 当拖动出画面拖动失效
     this.clearStatus()
+    const { itemId, itemType } = e
+    const sourceId = this.edge.source === DUMMY_ID ? itemId : this.edge.source
+    const targetId = this.edge.target === DUMMY_ID ? itemId : this.edge.target
+
+    if (itemType !== 'node') {
+      return
+    }
+
+    const model = this.graph.getNodeData(targetId)
+    if (model.data.completed) {
+      return
+    }
+
+    this.creteEdge(sourceId, targetId)
   }
 
-  onPointerMove(e) {
+  onPointerMove(e: IG6GraphEvent) {
     if (!this.pointDown) return
     const { x, y } = e.canvas
     this.graph.updateNodePosition({
-      id: this.dummyNode.id, data: {
+      id: DUMMY_ID, data: {
         x, y
       }
-    }, true, true)
+    })
   }
 
   clearStatus() {
     if (!this.pointDown) return
-    this.graph.removeData('edge', this.edge.id)
-    this.graph.removeData('node', this.dummyNode.id)
-    this.dummyNode = null
+    this.graph.removeData('node', DUMMY_ID)
     this.pointDown = false
   }
 

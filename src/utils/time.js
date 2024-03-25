@@ -19,7 +19,7 @@ export function convertToDate(index) {
  * 两个时间相差的天数转换为x轴距离
  * @param timestamp1
  * @param timestamp2
- * @returns {*}
+ * @returns {number}
  */
 export function dateToX(timestamp1, timestamp2) {
   const delta = convertToIndex(timestamp1) - convertToIndex(timestamp2)
