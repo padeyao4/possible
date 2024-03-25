@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import GraphContextmenu from '@/components/GraphContextmenu.vue'
 import GraphEditor from '@/components/GraphEditor.vue'
 import PickDateButton from '@/components/PickDateButton.vue'
@@ -7,28 +7,27 @@ import TestButton from '@/components/TestButton.vue'
 import TestRestoreButton from '@/components/TestRestoreButton.vue'
 import TestRightButton from '@/components/TestRightButton.vue'
 import TimerHeader from '@/components/TimerHeader.vue'
-import useGraph from '@/g6/index.ts'
-import { useStore } from '@/stores/store.ts'
-import { computed, provide, ref } from 'vue'
+import useGraph from '@/g6'
+import { useStore } from '@/stores/store'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const store = useStore()
 const container = ref()
-const graph = useGraph(container)
+useGraph(container)
 const route = useRoute()
 
-const current = computed(() => {
-  return store.projects[route.params.id]
+const currentProject = computed(() => {
+  return store.projects[route.params.id as string]
 })
 
-provide('graph', graph)
 </script>
 
 <template>
   <div>
     <main>
       <div class="content">
-        <header>{{ current.name }}</header>
+        <header>{{ currentProject.name }}</header>
         <section>
           <timer-header id="timer-header" />
           <div id="container" ref="container"></div>

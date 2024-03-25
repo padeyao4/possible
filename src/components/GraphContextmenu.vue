@@ -18,7 +18,7 @@ const visible = computed(() => {
  * Removes the node data from the graph and closes the context menu.
  */
 function handleDelete() {
-  store.removeNode(store.selectedNode.id,currentProject)
+  store.removeNode(store.selectedNode.id, currentProject)
 }
 
 function onblur() {
@@ -37,7 +37,7 @@ function moveRight() {
 }
 
 function moveLeft() {
-  store.moveLeft(store.selectedNode.id, currentProject, dateToX(store.currentTime,currentProject.createTime))
+  store.moveLeft(store.selectedNode.id, currentProject, dateToX(store.currentTime, currentProject.createTime))
 }
 
 function moveDown() {
@@ -53,10 +53,11 @@ const contextmenuRef = ref<HTMLElement>()
 const contextmenuPosition = computed(() => {
   const height = document.body.getBoundingClientRect().height
   const width = document.body.getBoundingClientRect().width
+  const contextmenuPosition = currentProject.data.graph.getClientByCanvas(store.mousePosition)
   const menuWidth = contextmenuRef.value?.clientWidth || 0
   const menuHeight = contextmenuRef.value?.clientHeight || 0
-  const maxHeight = (store.contextmenuPosition.y > height - menuHeight) ? height - menuHeight : store.contextmenuPosition.y
-  const maxWidth = (store.contextmenuPosition.x > width - menuWidth) ? store.contextmenuPosition.x - menuWidth : store.contextmenuPosition.x
+  const maxHeight = (contextmenuPosition.y > height - menuHeight) ? height - menuHeight : contextmenuPosition.y
+  const maxWidth = (contextmenuPosition.x > width - menuWidth) ? contextmenuPosition.x - menuWidth : contextmenuPosition.x
   return {
     left: maxWidth + 'px',
     top: maxHeight + 'px'
@@ -68,7 +69,7 @@ const contextmenuPosition = computed(() => {
 <template>
   <teleport to="body">
     <div v-if="visible" class="contextmenu" :style="contextmenuPosition" @contextmenu.prevent :ref="onRef" tabindex="0"
-      @blur="onblur" @click="onblur">
+         @blur="onblur" @click="onblur">
       <ul>
         <li @click="moveRight">单体右移</li>
         <li @click="moveLeft">单体左移</li>

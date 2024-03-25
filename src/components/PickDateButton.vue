@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { inject, ref } from 'vue'
+import { ref } from 'vue'
 import OperationTip from '@/components/OperationTip.vue'
 import { Inspection } from '@icon-park/vue-next'
 import { useStore } from '@/stores/store'
 import { dateToX } from '@/utils/time'
+import { useRoute } from 'vue-router'
 
 const store = useStore()
+const route = useRoute()
 
 const active = ref(false)
 const date = ref()
-const graph = inject('graph') as any
+const currentProject = store.projects[route.params.id as string]
+
 
 function onClick() {
   active.value = true
@@ -23,10 +26,9 @@ function onActive(e: any) {
 
 function onEnter(e: any) {
   if (date.value) {
-    const project = store.currentProject
-    const offset = dateToX(date.value, project.createTime) - 60
-    const { x, y } = graph.value.getCanvasByViewport({ x: 0, y: 0 })
-    graph.value.translate({ dx: x - offset, dy: y })
+    const offset = dateToX(date.value, currentProject.createTime) - 60
+    const { x, y } = currentProject.data.graph.getCanvasByViewport({ x: 0, y: 0 })
+    currentProject.data.graph.translate({ dx: x - offset, dy: y })
   }
   e?.target?.blur()
   active.value = false

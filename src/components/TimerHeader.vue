@@ -1,28 +1,24 @@
 <script setup lang="ts">
-import { computed, inject, onBeforeUnmount, onMounted, ref, type ShallowRef, shallowRef, watch, watchEffect } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch, watchEffect } from 'vue'
 import { Canvas, Group, Text } from '@antv/g'
 import { Renderer } from '@antv/g-canvas'
 import { useStore } from '@/stores/store'
 import { convertToDate, convertToIndex, showWeek } from '@/utils/time.js'
-import type { CustomGraph } from '@/g6/core/graph'
 import { useRoute } from 'vue-router'
 
 const store = useStore()
-const graph = inject<ShallowRef<CustomGraph>>('graph')
 const container = ref()
 const canvas = shallowRef()
 const group = shallowRef()
 const route = useRoute()
 
+const currentProject = store.projects[route.params.id as string]
+
 const timeFormat = new Intl.DateTimeFormat('zh-Hans')
 
-const currentIndex = computed(() => {
-  return convertToIndex(store.currentTime)
-})
+const currentIndex = computed(() => convertToIndex(store.currentTime))
 
-const startIndex = computed(() => {
-  return convertToIndex(store.projects[route.params.id as string].createTime)
-})
+const startIndex = computed(() => convertToIndex(store.projects[route.params.id as string].createTime))
 
 function showTime(index: number | string) {
   const date = convertToDate(index)
@@ -34,8 +30,8 @@ watch([group, currentIndex], () => {
 })
 
 function updateInfo() {
-  if (!graph.value) return
-  const { x } = graph.value.getCanvasByViewport({ x: 0, y: 0 })
+  if (!currentProject.data.graph) return
+  const { x } = currentProject.data.graph.getCanvasByViewport({ x: 0, y: 0 })
   group.value.setPosition(-x % 120, 0)
   const children = group.value.getChildren()
   const offset = x / 120
@@ -89,7 +85,7 @@ onMounted(() => {
     initTexts()
 
     watchEffect(() => {
-      graph.value?.on('viewportchange', updateInfo)
+      currentProject.data.graph?.on('viewportchange', updateInfo)
     })
 
     window.addEventListener('resize', resize)
@@ -97,7 +93,6 @@ onMounted(() => {
 )
 
 onBeforeUnmount(() => {
-  graph.value.off('viewportchange', updateInfo)
   window.removeEventListener('resize', resize)
 })
 </script>

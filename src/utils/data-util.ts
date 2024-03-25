@@ -1,5 +1,6 @@
 import { type Edge, type Node, type Project } from '@/stores/store'
 import type { ID } from '@antv/g6'
+import { shallowReactive, shallowRef } from 'vue'
 
 /**
  * Updates the node maps and edge maps with a new node model.
@@ -86,6 +87,7 @@ export function deserialize(value: string): Project[] {
     const rowsMap = new Map<ID, Set<Node>>()
     const colsMap = new Map<ID, Set<Node>>()
     const coordinateMap = new Map<string, Node>()
+    const data = shallowReactive({ graph: null })
 
     nodes.forEach((node: Node) => {
       updateMap(node, nodesMap, inEdgesMap, outEdgesMap, rowsMap, colsMap, coordinateMap)
@@ -108,8 +110,35 @@ export function deserialize(value: string): Project[] {
       outEdgesMap,
       rowsMap,
       colsMap,
-      coordinateMap
+      coordinateMap,
+      data
     }
   })
 
+}
+
+export interface StorageLike {
+  get: (key: string) => Promise<string>
+  set: (key: string, value: any) => Promise<any>
+  save: () => Promise<any>
+}
+
+export class LocalStorageStore implements StorageLike {
+  get = (key: string) => {
+    return new Promise<string>((resolve) => {
+      resolve(localStorage.getItem(key))
+    })
+  }
+
+  set = (key: string, value: any) => {
+    return new Promise<void>((resolve) => {
+      localStorage.setItem(key, value)
+      resolve()
+    })
+  }
+
+  save = () => {
+    return new Promise<void>(() => {
+    })
+  }
 }

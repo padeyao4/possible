@@ -4,7 +4,7 @@ import { dateToX } from '@/utils/time'
 import type { ID } from '@antv/g6'
 import { dayjs } from 'element-plus'
 import { defineStore } from 'pinia'
-import { computed, ref, type ShallowRef, shallowRef } from 'vue'
+import { ref, type ShallowReactive } from 'vue'
 
 export interface Node {
   id: ID
@@ -32,7 +32,7 @@ export interface Project {
   sortIndex: number
   editable: boolean
   createTime: number
-  // graph: ShallowRef<CustomGraph>
+  data: ShallowReactive<{graph:CustomGraph,[key:string]:any}>
 }
 
 
@@ -54,7 +54,7 @@ export const useStore = defineStore('store', () => {
 
     const currentTime = ref(new Date())
 
-    const graph = shallowRef<CustomGraph>()
+    // const graph = shallowRef<CustomGraph>()
 
     const selectedNode = ref<Node>()
 
@@ -62,14 +62,12 @@ export const useStore = defineStore('store', () => {
 
     const mousePosition = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 
-    const contextmenuPosition = computed(() => {
-      return graph.value?.getClientByCanvas(mousePosition.value)
-    })
+    // const contextmenuPosition = computed(() => graph.value?.getClientByCanvas(mousePosition.value))
 
     /**
      * 更新节点坐标
      */
-    const updateNodePosition = (model: Partial<Node>, project: Project, drawable = true) => {
+    const updateNodePosition = (model: Partial<Node>, project: Project) => {
       const { colsMap, rowsMap, coordinateMap, nodesMap } = project
 
       const oldNode = nodesMap.get(model.id)
@@ -98,12 +96,10 @@ export const useStore = defineStore('store', () => {
       oldNode.data.x = model.data.x
       oldNode.data.y = model.data.y
 
-      if (drawable) {
-        graph.value?.updateNodePosition(model)
-      }
+      project.data.graph?.updateNodePosition(model)
     }
 
-    const updateNode = (model: Node, project: Project, drawable = true) => {
+    const updateNode = (model: Node, project: Project) => {
       const oldNode = project.nodesMap.get(model.id)
 
       const { colsMap, rowsMap, coordinateMap } = project
@@ -131,9 +127,7 @@ export const useStore = defineStore('store', () => {
 
       Object.assign(oldNode.data, model.data)
 
-      if (drawable) {
-        graph.value?.updateData('node', model)
-      }
+      project.data.graph?.updateData('node', model)
     }
 
     const addEdge = (model: Edge, project: Project) => {
@@ -141,7 +135,7 @@ export const useStore = defineStore('store', () => {
       edgesMap.set(model.id, model)
       inEdgesMap.get(model.target)?.add(model)
       outEdgesMap.get(model.source)?.add(model)
-      graph.value?.addData('edge', model)
+      project.data.graph?.addData('edge', model)
     }
 
     const addNode = (model: Node, project: Project) => {
@@ -165,7 +159,7 @@ export const useStore = defineStore('store', () => {
         rowsMap.set(y, new Set([model]))
       }
 
-      graph.value?.addData('node', model)
+      project.data.graph?.addData('node', model)
     }
 
     const removeNode = (nodeId: ID, project: Project) => {
@@ -191,7 +185,7 @@ export const useStore = defineStore('store', () => {
       colsMap.get(node.data.y)?.delete(node)
       nodesMap.delete(nodeId)
 
-      graph.value?.removeData('node', nodeId)
+      project.data.graph?.removeData('node', nodeId)
     }
 
     const bfsOutEdge = (startNodeId: ID, project: Project, callback: (id: ID) => void) => {
@@ -267,12 +261,12 @@ export const useStore = defineStore('store', () => {
       return [...inEdgesMap.get(id) ?? []].map(edge => nodesMap.get(edge.source))
     }
 
-    /**
-     * Updates the graph value to the provided custom graph.
-     */
-    const updateGraph = (custom: CustomGraph) => {
-      graph.value = custom
-    }
+    // /**
+    //  * Updates the graph value to the provided custom graph.
+    //  */
+    // const updateGraph = (custom: CustomGraph) => {
+    //   project.graph.value = custom
+    // }
 
     const setSelected = (value: string) => {
       selected.value = value
@@ -285,11 +279,9 @@ export const useStore = defineStore('store', () => {
     /**
      * Adds a new project to the projects map/object.
      * @param project - The project object to add.
-     * @returns The id of the added project.
      */
     const addProject = (project: Project) => {
       projects.value[project.id] = project
-      return project.id
     }
 
     /**
@@ -318,7 +310,7 @@ export const useStore = defineStore('store', () => {
     /**
      * 当前节点的所有关联节点都向下移动,向下移动碰到重叠节点。递归重叠节点向下移动
      */
-    const moveDown = (model: Node, project: Project, drawable = true) => {
+    const moveDown = (model: Node, project: Project) => {
       const allNodes = getRelationNodes(model.id, project).map((nodeId) => project.nodesMap.get(nodeId))
       const s = new Set(allNodes)
 
@@ -336,11 +328,11 @@ export const useStore = defineStore('store', () => {
         updateNodePosition({
           id: node.id,
           data: { x: node.data.x, y: node.data.y + count * UNIT_H }
-        }, project, drawable)
+        }, project)
       })
     }
 
-    const moveUp = (model: Node, project: Project, drawable = true) => {
+    const moveUp = (model: Node, project: Project) => {
       const allNodes = getRelationNodes(model.id, project).map((nodeId) =>
         project.nodesMap.get(nodeId)
       )
@@ -363,7 +355,6 @@ export const useStore = defineStore('store', () => {
             data: { x: node.data.x, y: node.data.y - count * UNIT_H }
           },
           project,
-          drawable
         )
       })
     }
@@ -405,30 +396,29 @@ export const useStore = defineStore('store', () => {
     /**
      * 向右移动,如果有重叠节点,重叠节点和重叠节点的关联节点都向下移动
      */
-    const moveRight = (nodeId: ID, project: Project, drawable = true) => {
+    const moveRight = (nodeId: ID, project: Project) => {
       const node = project.nodesMap.get(nodeId)
       getSuccessors(node.id, project)
         .filter(successor => {
           return successor.data.x - node.data.x === UNIT_W
         })
         .forEach(successor => {
-          moveRight(successor.id, project, drawable)
+          moveRight(successor.id, project)
         })
 
       let currentRightNode = findRightNode(nodeId, project)
       while (currentRightNode) {
-        moveDown(currentRightNode, project, drawable)
+        moveDown(currentRightNode, project)
         currentRightNode = findRightNode(nodeId, project)
       }
 
       updateNodePosition(
         { id: node.id, data: { x: node.data.x + UNIT_W, y: node.data.y } },
         project,
-        drawable
       )
     }
 
-    const moveLeft = (nodeId: ID, project: Project, currentX: number, drawable = true) => {
+    const moveLeft = (nodeId: ID, project: Project, currentX: number) => {
       const node = project.nodesMap.get(nodeId)
       if (node.data.completed || node.data.x <= currentX) {
         return false
@@ -444,10 +434,10 @@ export const useStore = defineStore('store', () => {
       } else {
         let currentLeftNode = findLeftNode(nodeId, project)
         while (currentLeftNode) {
-          moveDown(currentLeftNode, project, drawable)
+          moveDown(currentLeftNode, project)
           currentLeftNode = findLeftNode(nodeId, project)
         }
-        updateNodePosition({ id: node.id, data: { x: node.data.x - UNIT_W, y: node.data.y } }, project, drawable)
+        updateNodePosition({ id: node.id, data: { x: node.data.x - UNIT_W, y: node.data.y } }, project)
         return true
       }
     }
@@ -460,7 +450,6 @@ export const useStore = defineStore('store', () => {
           .filter((node) => node.data.x < currentX && !node.data.completed)
           .sort((a, b) => a.data.x - b.data.x)
         while (nodes.length > 0) {
-          // todo 判断是否渲染
           moveRight(nodes[0].id, project)
           nodes = [...project.nodesMap.values()]
             .filter((node) => node.data.x < currentX && !node.data.completed)
@@ -476,8 +465,8 @@ export const useStore = defineStore('store', () => {
       selectedNode,
       actionState,
       mousePosition,
-      contextmenuPosition,
-      updateGraph,
+      // contextmenuPosition,
+      // updateGraph,
       updateNode,
       addNode,
       addEdge,

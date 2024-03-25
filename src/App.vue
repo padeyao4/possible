@@ -6,12 +6,14 @@ import { faker } from '@faker-js/faker'
 import { Config, DeleteFour, Drag, Write } from '@icon-park/vue-next'
 import { Store } from 'tauri-plugin-store-api'
 import { v4 } from 'uuid'
-import { deserialize, serialize } from '@/utils/data-util'
-import { computed, onBeforeMount, onMounted, onUnmounted, provide, ref } from 'vue'
+import { deserialize, LocalStorageStore, serialize } from '@/utils/data-util'
+import { computed, onBeforeMount, onMounted, onUnmounted, provide, ref, shallowReactive } from 'vue'
 import { useRoute } from 'vue-router'
 import Draggable from 'vuedraggable/src/vuedraggable'
 
-const db = new Store('./db.dat')
+// const db = new Store('./db.dat')
+const db = import.meta.env.VITE_TAURI === 'true' ? new Store('./db.dat') : new LocalStorageStore()
+console.log(import.meta.env.VITE_TAURI)
 const route = useRoute()
 const store = useStore()
 const timer = ref()
@@ -80,8 +82,9 @@ function onUpdate() {
 }
 
 function createProject() {
-  const id = store.addProject({
-    id: v4(),
+  const id = v4()
+  store.addProject({
+    id,
     name: faker.finance.currencyName(),
     nodesMap: new Map<ID, Node>(),
     edgesMap: new Map<ID, Edge>(),
@@ -93,7 +96,8 @@ function createProject() {
     completed: false,
     sortIndex: projects.value.length + 1,
     editable: true,
-    createTime: faker.date.between({ from: '1900/1/1', to: '2024/3/20' }).valueOf()
+    createTime: faker.date.between({ from: '1900/1/1', to: '2024/3/20' }).valueOf(),
+    data: shallowReactive({ graph: null })
   })
   store.setSelected(id)
   router.push(`/project/${id}`)

@@ -19,13 +19,13 @@ export default function useGraph(container: any) {
   const store = useStore()
   const route = useRoute()
   const currentProject = store.projects[route.params.id as string]
-  const graph = shallowRef<CustomGraph>()
 
   async function resize() {
-    const { x: x1, y: y1 } = graph.value.getCanvasByViewport({ x: 0, y: 0 })
-    graph.value.setSize([container.value.clientWidth, container.value.clientHeight])
-    const { x: x2, y: y2 } = graph.value.getCanvasByViewport({ x: 0, y: 0 })
-    await graph.value.translate({ dx: x2 - x1, dy: y2 - y1 })
+    const graph = currentProject.data.graph
+    const { x: x1, y: y1 } = graph.getCanvasByViewport({ x: 0, y: 0 })
+    graph.setSize([container.value.clientWidth, container.value.clientHeight])
+    const { x: x2, y: y2 } = graph.getCanvasByViewport({ x: 0, y: 0 })
+    await graph.translate({ dx: x2 - x1, dy: y2 - y1 })
   }
 
   onMounted(() => {
@@ -35,7 +35,7 @@ export default function useGraph(container: any) {
       behaviors: { CreateNode, DragCanvas, DragNode, CreateEdge, HoverNode, DoubleClickNode, ContextMenu }
     })
 
-    graph.value = new ExtGraph({
+    const graph = new ExtGraph({
       container: container.value,
       width: container.value.clientWidth,
       height: container.value.clientHeight,
@@ -97,23 +97,20 @@ export default function useGraph(container: any) {
       }
     }) as any
 
-    translateToToday()
-
-    store.updateGraph(graph.value)
+    translateToToday(graph)
+    currentProject.data.graph = graph
 
     window.addEventListener('resize', resize)
   })
 
   onBeforeUnmount(() => {
     window.removeEventListener('resize', resize)
-    graph.value.destroy()
+    currentProject.data.graph = null
   })
 
-  function translateToToday() {
-    const { x, y } = graph.value.getCanvasByViewport({ x: 0, y: 0 })
-    const currentX =  dateToX(store.currentTime, currentProject.createTime)
-    graph.value.translate({ dx: x - currentX + OFFSET_X, dy: y }).then(console.log)
+  function translateToToday(graph: CustomGraph) {
+    const { x, y } = graph.getCanvasByViewport({ x: 0, y: 0 })
+    const currentX = dateToX(store.currentTime, currentProject.createTime)
+    graph.translate({ dx: x - currentX + OFFSET_X, dy: y }).then(console.log)
   }
-
-  return graph
 }

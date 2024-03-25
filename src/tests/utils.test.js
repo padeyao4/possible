@@ -1,5 +1,6 @@
 import { test } from 'vitest'
 import { convertToIndex } from '@/utils/time.js'
+import { isRef, ref, shallowRef } from 'vue'
 
 test('test timestamp util', () => {
   const date = new Date('2024-1-1')
@@ -74,7 +75,7 @@ test('coordinateMap', () => {
 
   console.log(ans)
 
-  console.log(coordinateMap.has('22,22'));
+  console.log(coordinateMap.has('22,22'))
 })
 
 test('async', () => {
@@ -86,4 +87,17 @@ test('async', () => {
     console.log(r)
   })
   console.log('end')
+})
+
+test('nested', () => {
+  const aoo = ref({
+    name: 'hello',
+    address: undefined
+  })
+  aoo.value.address = shallowRef({
+    x1: '湖北',
+    x2: '天门'
+  })
+  console.log(aoo)
+  console.log(isRef(aoo.value.name))
 })

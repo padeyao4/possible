@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { computed, inject, type Ref } from 'vue'
-import type { CustomGraph } from '@/g6/core/graph'
+import { computed } from 'vue'
 import { useStore } from '@/stores/store'
 import { useRoute } from 'vue-router'
 
 const store = useStore()
 const route = useRoute()
 const currentProject = store.projects[route.params.id as string]
-
-const graphRef = inject<Ref<CustomGraph>>('graph')
 
 const visible = computed({
   get: () => {
@@ -44,7 +41,7 @@ const task = computed<Record<any, any>>(() => {
  * via graph.getAllPredecessors() and checking if their 'completed' data is true.
  */
 const isCompleted = computed(() => {
-  const graph = graphRef!.value
+  const graph = currentProject.data.graph
   const nodeId = store.selectedNode.id
   const models = graph.getAllPredecessors(nodeId)
   return models.every((model) => model.data.completed)
@@ -56,7 +53,7 @@ const isCompleted = computed(() => {
  * via graph.getAllSuccessors() and checking if their 'completed' data is false.
  */
 const isPending = computed(() => {
-  const graph = graphRef!.value
+  const graph = currentProject.data.graph
   const nodeId = store.selectedNode.id
   const models = graph.getAllSuccessors(nodeId)
   return models.every((model) => !model.data.completed)
