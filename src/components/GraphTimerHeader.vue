@@ -106,5 +106,6 @@ onBeforeUnmount(() => {
   height: 40px;
   flex-shrink: 0;
   width: calc(100vw - 240px - 24px * 2);
+  margin: 0 24px;
 }
 </style>

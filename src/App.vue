@@ -170,8 +170,6 @@ header {
   flex-grow: 1;
   padding: 2px 8px;
   overflow-y: auto;
-  box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
-  rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
 
 footer {
@@ -179,6 +177,8 @@ footer {
   flex-shrink: 0;
   justify-content: center;
   align-items: center;
+  box-shadow: rgba(27, 31, 35, 0.06) 0 -1px 0,
+  rgba(255, 255, 255, 0.25) 0 -1px 0 inset;
 }
 
 .selected-item {

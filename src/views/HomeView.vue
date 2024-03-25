@@ -49,12 +49,12 @@ const todayTime = computed(() => (
   overflow-y: auto;
   padding: 24px 24px 0 24px;
   height: calc(100vh - 48px);
-  box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
-  rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
 
 footer {
   height: 48px;
+  box-shadow: rgba(27, 31, 35, 0.06) 0 -1px 0,
+  rgba(255, 255, 255, 0.25) 0 -1px 0 inset;
 }
 
 header {

@@ -21,16 +21,16 @@ const currentProject = computed(() => store.projects[route.params.id as string])
 
 <template>
   <div id="project-view">
-    <div class="content">
-      <header>{{ currentProject.name }}</header>
-      <section>
-        <graph-timer-header />
+    <header>{{ currentProject.name }}</header>
+    <main>
+      <graph-timer-header />
+      <div class="content">
         <graph-ruler />
         <graph-container />
-        <graph-editor />
-        <graph-contextmenu />
-      </section>
-    </div>
+      </div>
+      <graph-editor />
+      <graph-contextmenu />
+    </main>
     <footer>
       <reset-button />
       <pick-date-button />
@@ -48,11 +48,32 @@ const currentProject = computed(() => store.projects[route.params.id as string])
   height: 100%;
 }
 
-.content {
-  flex-grow: 1;
-  padding: 24px 24px 0 24px;
-  box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
-  rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+header {
+  display: flex;
+  outline: none;
+  flex-shrink: 0;
+  height: 80px;
+  font-size: 20px;
+  -webkit-app-region: no-drag;
+  user-select: none;
+  padding: 24px 24px 24px 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: calc(100vw - 240px);
+}
+
+main {
+  display: flex;
+  height: calc(100vh - 48px - 80px);
+  flex-direction: column;
+
+  .content {
+    width: 100%;
+    height: calc(100vh - 48px - 80px - 40px);
+    display: flex;
+    flex-direction: row;
+  }
 }
 
 footer {
@@ -61,7 +82,8 @@ footer {
   align-items: center;
   flex-shrink: 0;
   height: 48px;
-  padding: 0 24px;
+  box-shadow: rgba(27, 31, 35, 0.06) 0 -1px 0,
+  rgba(255, 255, 255, 0.25) 0 -1px 0 inset;
 
   & > * {
     display: flex;
@@ -75,26 +97,5 @@ footer {
   & > *:hover {
     background: rgba(0, 0, 0, 0.1);
   }
-}
-
-header {
-  display: flex;
-  outline: none;
-  flex-shrink: 0;
-  height: 32px;
-  font-size: 20px;
-  -webkit-app-region: no-drag;
-  user-select: none;
-  margin: 0 0 24px 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: calc(100vw - 240px - 24px * 2);
-}
-
-section {
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
 }
 </style>

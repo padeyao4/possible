@@ -21,7 +21,6 @@ const store = useStore()
 const route = useRoute()
 const currentProject = store.projects[route.params.id as string]
 
-
 async function resize() {
   const graph = currentProject.data.graph
   const { x: x1, y: y1 } = graph.getCanvasByViewport({ x: 0, y: 0 })
@@ -123,6 +122,6 @@ function translateToToday(graph: CustomGraph) {
 
 <style scoped>
 #graph-container {
-  height: calc(100vh - 24px * 2 - 32px - 40px - 48px);
+  width: calc(100vw - 24px * 2 - 240px);
 }
 </style>
