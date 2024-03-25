@@ -3,7 +3,7 @@ import router from '@/router'
 import { type Edge, type Node, useStore } from '@/stores/store'
 import type { ID } from '@antv/g6'
 import { faker } from '@faker-js/faker'
-import { Config, DeleteFour, Drag, Write } from '@icon-park/vue-next'
+import { Config, DeleteFour, Drag, Write, Plus, Sun, ListSuccess } from '@icon-park/vue-next'
 import { Store } from 'tauri-plugin-store-api'
 import { v4 } from 'uuid'
 import { deserialize, LocalStorageStore, serialize } from '@/utils/data-util'
@@ -11,11 +11,10 @@ import { computed, onBeforeMount, onMounted, onUnmounted, provide, ref, shallowR
 import { useRoute } from 'vue-router'
 import Draggable from 'vuedraggable/src/vuedraggable'
 
-// const db = new Store('./db.dat')
 const db = import.meta.env.VITE_TAURI === 'true' ? new Store('./db.dat') : new LocalStorageStore()
-console.log(import.meta.env.VITE_TAURI)
 const route = useRoute()
 const store = useStore()
+const { isActive } = store
 const timer = ref()
 
 provide('db', db)
@@ -75,7 +74,7 @@ const projects = computed({
   }
 })
 
-function onUpdate() {
+function onUpdateSort() {
   projects.value.forEach((value, index) => {
     value.sortIndex = index
   })
@@ -99,8 +98,7 @@ function createProject() {
     createTime: faker.date.between({ from: '1900/1/1', to: '2024/3/20' }).valueOf(),
     data: shallowReactive({ graph: null })
   })
-  store.setSelected(id)
-  router.push(`/project/${id}`)
+  linkTo(`/project/${id}`)
 }
 
 function handleInputRef(e: any) {
@@ -121,6 +119,11 @@ function handleComplete(evt: any, element: any) {
   router.push('/completed')
 }
 
+function linkTo(uri: string) {
+  store.setSelected(uri)
+  router.push(uri)
+}
+
 </script>
 
 <template>
@@ -128,21 +131,26 @@ function handleComplete(evt: any, element: any) {
     <main @contextmenu.prevent>
       <aside>
         <header>
-          <div :class="['selected-item', { selected: store.isActive('today') }]"
-               @click="store.setSelected('today'); router.push('/today')">我的一天
+          <div :class="['selected-item', { selected: isActive('/today') }]"
+               @click="linkTo('/today')">
+            <sun theme="multi-color" size="20" :fill="['#333' ,'#2F88FF' ,'#FFF' ,'#43CCF8']" :strokeWidth="3"
+                 strokeLinecap="butt" class="item-icon" />
+            我的一天
           </div>
-          <div :class="['selected-item', { selected: store.isActive('completed') }]"
-               @click="store.setSelected('completed'); router.push('/completed')">
+          <div :class="['selected-item', { selected: isActive('/completed') }]"
+               @click="linkTo('/completed')">
+            <list-success theme="outline" size="20" fill="#333" :strokeWidth="3" strokeLinecap="butt"
+                          class="item-icon" />
             已完成项目
           </div>
         </header>
         <div id="body">
           <draggable :list="projects" item-key="id" chosenClass="chosen-class" dragClass="drag-class" handle=".move"
-                     ghostClass="ghost-class" :forceFallback="true" @update="onUpdate">
+                     ghostClass="ghost-class" :forceFallback="true" @update="onUpdateSort">
             <template #item="{ element }">
-              <div @click="store.setSelected(element.id); router.push(`/project/${element.id}`)"
-                   :class="['selected-item', { selected: store.isActive(element.id) }]" :key="element.id">
-                <input v-if="element.editable && store.isActive(element.id)" :ref="handleInputRef"
+              <div @click="linkTo(`/project/${element.id}`)"
+                   :class="['selected-item', { selected: isActive(`/project/${element.id}`) }]" :key="element.id">
+                <input v-if="element.editable && isActive(`/project/${element.id}`)" :ref="handleInputRef"
                        v-model="element.name" @blur="element.editable = false"
                        @keydown.enter="element.editable = false" />
                 <div v-else class="project-item">
@@ -159,13 +167,14 @@ function handleComplete(evt: any, element: any) {
           </draggable>
         </div>
         <footer>
-          <div @click="createProject" class="selected-item create-button">新建项目</div>
-          <div :class="['selected-item', 'settings-button', { 'selected': store.isActive('settings') }]" @click="() => {
-            store.setSelected('settings')
-            router.push('/settings')
-          }
-            ">
-            <config theme="outline" size="24" fill="#333" :strokeWidth="2" class="icon" />
+          <div @click="createProject" class="selected-item create-button">
+            <plus theme="multi-color" size="20" :fill="['#333' ,'#2F88FF' ,'#FFF' ,'#43CCF8']" :strokeWidth="3"
+                  strokeLinecap="butt" class="item-icon" />
+            新建项目
+          </div>
+          <div :class="['selected-item', 'settings-button', { 'selected': isActive('/settings') }]"
+               @click="linkTo('/settings')">
+            <config theme="outline" size="24" fill="#333" :strokeWidth="2" class="setting-icon" />
           </div>
         </footer>
       </aside>
@@ -188,6 +197,7 @@ aside {
   flex-shrink: 0;
   width: 240px;
   height: 100vh;
+  padding-top: 12px;
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
   rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
@@ -255,10 +265,11 @@ input {
   outline-style: none;
   user-select: auto;
   border: 0;
+  margin-left: 4px;
   font-size: 15px;
   height: 100%;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .project-item {
@@ -269,6 +280,7 @@ input {
     display: flex;
     align-items: center;
     flex-grow: 1;
+    margin: 0 4px 0 4px;
     white-space: nowrap;
     overflow: hidden;
   }
@@ -309,11 +321,18 @@ input {
   margin-right: 4px;
 }
 
-.icon {
+.setting-icon {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 40px;
   width: 40px;
+}
+
+.item-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 4px 8px 4px 4px;
 }
 </style>

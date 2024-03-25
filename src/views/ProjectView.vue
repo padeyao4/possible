@@ -91,6 +91,10 @@ header {
   -webkit-app-region: no-drag;
   user-select: none;
   margin: 0 0 24px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: calc(100vw - 240px - 24px * 2);
 }
 
 section {

@@ -56,10 +56,13 @@ function onUpdate() {
   margin: 4px 0;
   height: 56px;
   border-radius: 4px;
+  width: calc(100vw - 24px * 2 - 240px);
+  overflow-x: hidden;
   background: rgba(255, 255, 255, 0.8);
 
   .item-content {
     flex-grow: 1;
+    overflow: hidden;
 
     .first-line {
       display: flex;
@@ -95,6 +98,7 @@ function onUpdate() {
       display: flex;
       align-items: center;
       margin: 0 0 0 28px;
+      overflow-x: hidden;
     }
   }
 

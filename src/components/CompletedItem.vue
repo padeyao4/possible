@@ -39,6 +39,7 @@ const completedTasks = computed(() => {
   align-items: center;
   padding: 0 16px;
   margin: 4px 0;
+  width: calc(100vw - 240px - 24px * 2);
   height: 56px;
   border-radius: 4px;
   color: rgba(0, 0, 0, 0.3);
@@ -46,6 +47,7 @@ const completedTasks = computed(() => {
 
   .item-content {
     flex-grow: 1;
+    overflow-x: hidden;
 
     .first-line {
       display: flex;
