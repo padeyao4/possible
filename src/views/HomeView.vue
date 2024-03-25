@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useStore } from '@/stores/store'
-import { computed, provide } from 'vue'
-import { dateToX, showWeek } from '@/utils/time'
+import { computed } from 'vue'
+import { showWeek } from '@/utils/time'
 import TodoItem from '@/components/TodoItem.vue'
 import CompletedItem from '@/components/CompletedItem.vue'
 
@@ -9,27 +9,11 @@ const store = useStore()
 
 const timeFormat = new Intl.DateTimeFormat('zh-Hans')
 
-const tasks = computed(() => {
-  return Object.values(store.projects)
-    .filter(project => !project.completed)
-    .map(project => {
-      [...project.nodesMap.values()].forEach(node => {
-        node.data.project = {
-          id: project.id,
-          name: project.name
-        }
-      })
-      return [...project.nodesMap.values()]
-        .filter(node => node.data.x === dateToX(store.currentTime, project.createTime))
-    }).flat()
-})
-
 const todayTime = computed(() => (
     timeFormat.format(store.currentTime) + ',' + showWeek(store.currentTime)
   )
 )
 
-provide('tasks', tasks)
 </script>
 
 <template>

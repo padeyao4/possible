@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { computed, type ComputedRef, inject, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { CheckOne } from '@icon-park/vue-next'
 import UnfoldButton from '@/components/UnfoldButton.vue'
-import { type Node } from '@/stores/store'
+import { useStore } from '@/stores/store'
 
-const tasks = inject<ComputedRef<Node[]>>('tasks')
+const store = useStore()
 
 const isUnfold = ref(false)
 
 const completedTasks = computed(() => {
-  return tasks?.value.filter(node => node.data.completed) ?? []
+  return store.currentTasks.filter(node => node.data.completed) ?? []
 })
 
 </script>
@@ -20,7 +20,7 @@ const completedTasks = computed(() => {
       <div v-for="task in completedTasks" :key="task.id" class="completed-item">
         <div class="item-content">
           <div class="first-line">
-            <div class="check-group" @click="task.data.completed = false">
+            <div class="check-group" @click="()=>{task.data.completed = false}">
               <CheckOne theme="filled" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt" class="round" />
               <CheckOne theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt" class="check" />
             </div>

@@ -3,7 +3,7 @@ import router from '@/router'
 import { type Edge, type Node, useStore } from '@/stores/store'
 import type { ID } from '@antv/g6'
 import { faker } from '@faker-js/faker'
-import { Config, DeleteFour, Drag, Write, Plus, Sun, ListSuccess } from '@icon-park/vue-next'
+import { Config, DeleteFour, Drag, ListSuccess, Plus, Sun, Write } from '@icon-park/vue-next'
 import { Store } from 'tauri-plugin-store-api'
 import { v4 } from 'uuid'
 import { deserialize, LocalStorageStore, serialize } from '@/utils/data-util'
@@ -124,6 +124,10 @@ function linkTo(uri: string) {
   router.push(uri)
 }
 
+const count = computed(() => {
+  return store.currentTasks.filter(task => !task.data.completed).length
+})
+
 </script>
 
 <template>
@@ -131,11 +135,14 @@ function linkTo(uri: string) {
     <main @contextmenu.prevent>
       <aside>
         <header>
-          <div :class="['selected-item', { selected: isActive('/today') }]"
+          <div :class="['selected-item','today-layout', { selected: isActive('/today') }]"
                @click="linkTo('/today')">
-            <sun theme="multi-color" size="20" :fill="['#333' ,'#2F88FF' ,'#FFF' ,'#43CCF8']" :strokeWidth="3"
-                 strokeLinecap="butt" class="item-icon" />
-            我的一天
+            <div class="today-content">
+              <sun theme="multi-color" size="20" :fill="['#333' ,'#2F88FF' ,'#FFF' ,'#43CCF8']" :strokeWidth="3"
+                   strokeLinecap="butt" class="item-icon" />
+              我的一天
+            </div>
+            <div v-if="count!==0" class="counter-icon">{{ count }}</div>
           </div>
           <div :class="['selected-item', { selected: isActive('/completed') }]"
                @click="linkTo('/completed')">
@@ -334,5 +341,28 @@ input {
   justify-content: center;
   align-items: center;
   margin: 4px 8px 4px 4px;
+}
+
+.counter-icon {
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.06);
+  margin: 4px;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  border-radius: 50%;
+}
+
+.today-content {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.today-layout {
+  display: flex;
 }
 </style>

@@ -4,11 +4,23 @@ import { dateToX } from '@/utils/time'
 import type { ID } from '@antv/g6'
 import { dayjs } from 'element-plus'
 import { defineStore } from 'pinia'
-import { ref, type ShallowReactive } from 'vue'
+import { computed, ref, type ShallowReactive } from 'vue'
 
 export interface Node {
   id: ID
-  data: Record<string, any>
+  data: Partial<{
+    name: string
+    x: number
+    y: number
+    detail: string
+    record: string
+    completed: boolean
+    sortedIndex: number
+    project: {
+      id: ID,
+      name: string
+    }
+  }>
 }
 
 export interface Edge {
@@ -32,7 +44,7 @@ export interface Project {
   sortIndex: number
   editable: boolean
   createTime: number
-  data: ShallowReactive<{graph:CustomGraph,[key:string]:any}>
+  data: ShallowReactive<{ graph: CustomGraph, [key: string]: any }>
 }
 
 
@@ -54,15 +66,11 @@ export const useStore = defineStore('store', () => {
 
     const currentTime = ref(new Date())
 
-    // const graph = shallowRef<CustomGraph>()
-
     const selectedNode = ref<Node>()
 
     const actionState = ref<'none' | 'dragend' | 'edit' | 'contextmenu'>('none')
 
     const mousePosition = ref<{ x: number, y: number }>({ x: 0, y: 0 })
-
-    // const contextmenuPosition = computed(() => graph.value?.getClientByCanvas(mousePosition.value))
 
     /**
      * 更新节点坐标
@@ -261,13 +269,6 @@ export const useStore = defineStore('store', () => {
       return [...inEdgesMap.get(id) ?? []].map(edge => nodesMap.get(edge.source))
     }
 
-    // /**
-    //  * Updates the graph value to the provided custom graph.
-    //  */
-    // const updateGraph = (custom: CustomGraph) => {
-    //   project.graph.value = custom
-    // }
-
     const setSelected = (value: string) => {
       selected.value = value
     }
@@ -354,7 +355,7 @@ export const useStore = defineStore('store', () => {
             id: node.id,
             data: { x: node.data.x, y: node.data.y - count * UNIT_H }
           },
-          project,
+          project
         )
       })
     }
@@ -414,7 +415,7 @@ export const useStore = defineStore('store', () => {
 
       updateNodePosition(
         { id: node.id, data: { x: node.data.x + UNIT_W, y: node.data.y } },
-        project,
+        project
       )
     }
 
@@ -459,14 +460,23 @@ export const useStore = defineStore('store', () => {
       console.log('daily update done')
     }
 
+    const currentTasks = computed<Node[]>(() => {
+      return Object.values(projects.value)
+        .filter(project => !project.completed)
+        .map(project => {
+          const currentX = dateToX(currentTime.value, project.createTime)
+          return [...project.nodesMap.values()]
+            .filter(node => node.data.x === currentX)
+        }).flat()
+    })
+
     return {
       projects,
       currentTime,
       selectedNode,
       actionState,
       mousePosition,
-      // contextmenuPosition,
-      // updateGraph,
+      currentTasks,
       updateNode,
       addNode,
       addEdge,
