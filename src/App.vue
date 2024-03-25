@@ -4,64 +4,17 @@ import { type Edge, type Node, useStore } from '@/stores/store'
 import type { ID } from '@antv/g6'
 import { faker } from '@faker-js/faker'
 import { Config, DeleteFour, Drag, ListSuccess, Plus, Sun, Write } from '@icon-park/vue-next'
-import { Store } from 'tauri-plugin-store-api'
 import { v4 } from 'uuid'
-import { deserialize, LocalStorageStore, serialize } from '@/utils/data-util'
-import { computed, onBeforeMount, onMounted, onUnmounted, provide, ref, shallowReactive } from 'vue'
+import { useLoadData } from '@/utils/data-util'
+import { computed, onMounted, shallowReactive } from 'vue'
 import { useRoute } from 'vue-router'
 import Draggable from 'vuedraggable/src/vuedraggable'
 
-const db = import.meta.env.VITE_TAURI === 'true' ? new Store('./db.dat') : new LocalStorageStore()
 const route = useRoute()
 const store = useStore()
 const { isActive } = store
-const timer = ref()
 
-provide('db', db)
-
-/**
- * Schedules a task to run at midnight every day.
- * Calculates the delay until midnight, sets a timeout
- * to call store.updateTime() and store.dailyUpdate(),
- * then recursively schedules another call to this function
- * at the next midnight.
- */
-function scheduleMidnightTask() {
-  const now: Date = new Date()
-  const midnight: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0)
-  const delay: number = midnight.getTime() - now.getTime()
-  clearTimeout(timer.value)
-  timer.value = setTimeout(() => {
-    store.updateTime()
-    store.dailyUpdate()
-    // 设置下一个午夜的定时器
-    scheduleMidnightTask()
-  }, delay)
-}
-
-onBeforeMount(() => {
-  db.get('data').then(value => {
-    if (value) {
-      const projects = deserialize(value as string)
-      projects.forEach((project) => {
-        store.addProject(project)
-      })
-    }
-  }).then(() => {
-    store.updateTime()
-    store.dailyUpdate()
-    scheduleMidnightTask()
-    store.$subscribe(() => {
-      const content = serialize(store.projects)
-      db.set('data', content)
-      db.save().then(() => console.log('saved'))
-    }, { detached: true })
-  })
-})
-
-onUnmounted(() => {
-  clearTimeout(timer.value)
-})
+useLoadData()
 
 const projects = computed({
   get: () => {
@@ -108,8 +61,7 @@ function handleInputRef(e: any) {
 }
 
 onMounted(() => {
-  store.setSelected('today')
-  router.push('/today')
+  linkTo('/today')
 })
 
 function handleComplete(evt: any, element: any) {

@@ -1,6 +1,7 @@
-import { type Edge, type Node, type Project } from '@/stores/store'
+import { type Edge, type Node, type Project, useStore } from '@/stores/store'
 import type { ID } from '@antv/g6'
-import { shallowReactive, shallowRef } from 'vue'
+import { onBeforeMount, onUnmounted, ref, shallowReactive } from 'vue'
+import { Store } from 'tauri-plugin-store-api'
 
 /**
  * Updates the node maps and edge maps with a new node model.
@@ -51,7 +52,7 @@ function updateMap(
  * This allows persisting the relevant data from the Pinia store in localStorage while
  * stripping out any reactivity or excess fields that don't need to be persisted.
  */
-export function serialize(value: Record<string, Project>): string {
+function serialize(value: Record<string, Project>): string {
   return JSON.stringify([...Object.values(value)].map((project: Project) => {
     const { id, name, completed, sortIndex, editable, createTime } = project
     return {
@@ -76,7 +77,7 @@ export function serialize(value: Record<string, Project>): string {
  *
  * Returns a Pinia store value containing the deserialized projects.
  */
-export function deserialize(value: string): Project[] {
+function deserialize(value: string): Project[] {
   return JSON.parse(value).map((project: any) => {
     const { id, name, completed, sortIndex, editable, createTime, nodes, edges } = project
 
@@ -117,13 +118,13 @@ export function deserialize(value: string): Project[] {
 
 }
 
-export interface StorageLike {
+interface StorageLike {
   get: (key: string) => Promise<string>
   set: (key: string, value: any) => Promise<any>
   save: () => Promise<any>
 }
 
-export class LocalStorageStore implements StorageLike {
+class LocalStorageStore implements StorageLike {
   get = (key: string) => {
     return new Promise<string>((resolve) => {
       resolve(localStorage.getItem(key))
@@ -137,8 +138,51 @@ export class LocalStorageStore implements StorageLike {
     })
   }
 
-  save = () => {
-    return new Promise<void>(() => {
-    })
+  save = () => new Promise<void>(() => {
+  })
+}
+
+export function useLoadData(){
+  const timer = ref()
+  const store = useStore()
+
+  const db = import.meta.env?.VITE_TAURI === 'true' ? new Store('./db.dat') : new LocalStorageStore()
+
+  function scheduleMidnightTask() {
+    const now: Date = new Date()
+    const midnight: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0)
+    const delay: number = midnight.getTime() - now.getTime()
+    clearTimeout(timer.value)
+    timer.value = setTimeout(() => {
+      store.updateTime()
+      store.dailyUpdate()
+      // 设置下一个午夜的定时器
+      scheduleMidnightTask()
+    }, delay)
   }
+
+  onBeforeMount(() => {
+    db.get('data').then((value: string) => {
+      if (value) {
+        const projects = deserialize(value)
+        projects.forEach((project) => {
+          store.addProject(project)
+        })
+      }
+    }).then(() => {
+      store.updateTime()
+      store.dailyUpdate()
+      scheduleMidnightTask()
+      store.$subscribe(() => {
+        const content = serialize(store.projects)
+        db.set('data', content)
+        db.save().then(() => console.log('saved'))
+      }, { detached: true })
+    })
+  })
+
+  onUnmounted(() => {
+    clearTimeout(timer.value)
+  })
+
 }
