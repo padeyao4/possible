@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, shallowRef, watchEffect } from 'vue'
+import { onBeforeUnmount, onMounted, ref, shallowRef, watchEffect } from 'vue'
 import { useStore } from '@/stores/store'
 import { useRoute } from 'vue-router'
 import { Canvas, Group, Text } from '@antv/g'
@@ -12,6 +12,11 @@ const canvas = shallowRef()
 const group = shallowRef()
 const route = useRoute()
 const currentProject = store.projects[route.params.id as string]
+
+function resize() {
+  canvas.value.resize(container.value.clientWidth, container.value.clientHeight)
+  initTexts()
+}
 
 onMounted(() => {
   canvas.value = new Canvas({
@@ -27,6 +32,11 @@ onMounted(() => {
     currentProject.data.graph?.on('viewportchange', updateInfo)
   })
 
+  window.addEventListener('resize', resize)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', resize)
 })
 
 function updateInfo() {
