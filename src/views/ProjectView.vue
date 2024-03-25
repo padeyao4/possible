@@ -6,21 +6,17 @@ import ResetButton from '@/components/ResetButton.vue'
 import TestButton from '@/components/TestButton.vue'
 import TestRestoreButton from '@/components/TestRestoreButton.vue'
 import TestRightButton from '@/components/TestRightButton.vue'
-import TimerHeader from '@/components/TimerHeader.vue'
-import useGraph from '@/g6'
+import GraphTimerHeader from '@/components/GraphTimerHeader.vue'
 import { useStore } from '@/stores/store'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import GraphRuler from '@/components/GraphRuler.vue'
+import GraphContainer from '@/components/GraphContainer.vue'
 
 const store = useStore()
-const container = ref()
-useGraph(container)
 const route = useRoute()
 
-const currentProject = computed(() => {
-  return store.projects[route.params.id as string]
-})
-
+const currentProject = computed(() => store.projects[route.params.id as string])
 </script>
 
 <template>
@@ -28,8 +24,9 @@ const currentProject = computed(() => {
     <div class="content">
       <header>{{ currentProject.name }}</header>
       <section>
-        <timer-header id="timer-header" />
-        <div id="container" ref="container"></div>
+        <graph-timer-header />
+        <graph-ruler />
+        <graph-container />
         <graph-editor />
         <graph-contextmenu />
       </section>
@@ -99,13 +96,5 @@ section {
   display: flex;
   flex-grow: 1;
   flex-direction: column;
-}
-
-#timer-header {
-  flex-shrink: 0;
-}
-
-#container {
-  height: calc(100vh - 24px * 2 - 32px - 40px - 48px);
 }
 </style>

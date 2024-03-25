@@ -98,14 +98,13 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div>
-    <div id="container" ref="container"></div>
-  </div>
+  <div id="graph-timer-header" ref="container"></div>
 </template>
 
 <style scoped>
-#container {
+#graph-timer-header {
   height: 40px;
+  flex-shrink: 0;
   width: calc(100vw - 240px - 24px * 2);
 }
 </style>

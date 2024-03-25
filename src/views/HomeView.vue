@@ -39,6 +39,7 @@ const todayTime = computed(() => (
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
   background: #82bbb5;
 }
 

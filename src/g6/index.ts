@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, shallowRef } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { extend } from '@antv/g6'
 import CardNode from '@/g6/node/custom-node'
 import CreateNode from '@/g6/behaviors/create-node'
