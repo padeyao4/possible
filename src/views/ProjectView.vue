@@ -24,30 +24,28 @@ const currentProject = computed(() => {
 </script>
 
 <template>
-  <div>
-    <main>
-      <div class="content">
-        <header>{{ currentProject.name }}</header>
-        <section>
-          <timer-header id="timer-header" />
-          <div id="container" ref="container"></div>
-          <graph-editor />
-          <graph-contextmenu />
-        </section>
-      </div>
-      <footer>
-        <reset-button />
-        <pick-date-button />
-        <test-button />
-        <test-right-button />
-        <test-restore-button />
-      </footer>
-    </main>
+  <div id="project-view">
+    <div class="content">
+      <header>{{ currentProject.name }}</header>
+      <section>
+        <timer-header id="timer-header" />
+        <div id="container" ref="container"></div>
+        <graph-editor />
+        <graph-contextmenu />
+      </section>
+    </div>
+    <footer>
+      <reset-button />
+      <pick-date-button />
+      <test-button />
+      <test-right-button />
+      <test-restore-button />
+    </footer>
   </div>
 </template>
 
 <style scoped>
-main {
+#project-view {
   display: flex;
   flex-direction: column;
   height: 100%;

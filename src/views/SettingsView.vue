@@ -3,23 +3,21 @@
 </script>
 
 <template>
-  <div>
-    <main>
-      <div class="content">
-        <header>
-          <div id="main-title">配置</div>
-        </header>
-        <section>
-          <div>
-          </div>
-        </section>
-      </div>
-    </main>
+  <div id="settings-view">
+    <div class="content">
+      <header>
+        <div id="main-title">配置</div>
+      </header>
+      <section>
+        <div>
+        </div>
+      </section>
+    </div>
   </div>
 </template>
 
 <style scoped>
-main {
+#settings-view {
   display: flex;
   flex-direction: column;
   height: 100%;

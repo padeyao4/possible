@@ -17,27 +17,25 @@ const todayTime = computed(() => (
 </script>
 
 <template>
-  <div>
-    <main>
-      <div class="content">
-        <header>
-          <div id="main-title">我的一天</div>
-          <div id="sub-title">{{ todayTime }}</div>
-        </header>
-        <section>
-          <todo-item />
-          <completed-item />
-        </section>
-      </div>
-      <footer>
-        <!--todo-->
-      </footer>
-    </main>
+  <div id="home-view">
+    <div class="content">
+      <header>
+        <div id="main-title">我的一天</div>
+        <div id="sub-title">{{ todayTime }}</div>
+      </header>
+      <section>
+        <todo-item />
+        <completed-item />
+      </section>
+    </div>
+    <footer>
+      <!--todo-->
+    </footer>
   </div>
 </template>
 
 <style scoped>
-main {
+#home-view {
   display: flex;
   flex-direction: column;
   height: 100%;

@@ -30,40 +30,38 @@ function formatDate(e: any) {
 </script>
 
 <template>
-  <div>
-    <main>
-      <div class="content">
-        <header>
-          <div id="main-title">已完成项目</div>
-        </header>
-        <section>
-          <el-table :data="filterTableData" style="width: 100%; height: 100%; border-radius: 4px">
-            <el-table-column label="时间" prop="createTime" :formatter="formatDate" />
-            <el-table-column label="名称" prop="name" />
-            <el-table-column align="right">
-              <template #header>
-                <el-input v-model="search" size="small" placeholder="输入名称" />
-              </template>
-              <template #default="scope">
-                <el-popconfirm title="删除当前项目吗"
-                               :hide-after=0
-                               @confirm="handleDelete(scope.$index, scope.row)">
-                  <template #reference>
-                    <el-button size="small" type="danger">删除</el-button>
-                  </template>
-                </el-popconfirm>
-                <el-button size="small" @click="handleEdit(scope.$index, scope.row)">恢复</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </section>
-      </div>
-    </main>
+  <div id="completed-view">
+    <div class="content">
+      <header>
+        <div id="main-title">已完成项目</div>
+      </header>
+      <section>
+        <el-table :data="filterTableData" style="width: 100%; height: 100%; border-radius: 4px">
+          <el-table-column label="时间" prop="createTime" :formatter="formatDate" />
+          <el-table-column label="名称" prop="name" />
+          <el-table-column align="right">
+            <template #header>
+              <el-input v-model="search" size="small" placeholder="输入名称" />
+            </template>
+            <template #default="scope">
+              <el-popconfirm title="删除当前项目吗"
+                             :hide-after=0
+                             @confirm="handleDelete(scope.$index, scope.row)">
+                <template #reference>
+                  <el-button size="small" type="danger">删除</el-button>
+                </template>
+              </el-popconfirm>
+              <el-button size="small" @click="handleEdit(scope.$index, scope.row)">恢复</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </section>
+    </div>
   </div>
 </template>
 
 <style scoped>
-main {
+#completed-view {
   display: flex;
   flex-direction: column;
   height: 100%;

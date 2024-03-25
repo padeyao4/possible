@@ -83,65 +83,63 @@ const count = computed(() => {
 </script>
 
 <template>
-  <div>
-    <main @contextmenu.prevent>
-      <aside>
-        <header>
-          <div :class="['selected-item','today-layout', { selected: isActive('/today') }]"
-               @click="linkTo('/today')">
-            <div class="today-content">
-              <sun theme="multi-color" size="20" :fill="['#333' ,'#2F88FF' ,'#FFF' ,'#43CCF8']" :strokeWidth="3"
-                   strokeLinecap="butt" class="item-icon" />
-              我的一天
-            </div>
-            <div v-if="count!==0" class="counter-icon">{{ count }}</div>
+  <main @contextmenu.prevent>
+    <aside>
+      <header>
+        <div :class="['selected-item','today-layout', { selected: isActive('/today') }]"
+             @click="linkTo('/today')">
+          <div class="today-content">
+            <sun theme="multi-color" size="20" :fill="['#333' ,'#2F88FF' ,'#FFF' ,'#43CCF8']" :strokeWidth="3"
+                 strokeLinecap="butt" class="item-icon" />
+            我的一天
           </div>
-          <div :class="['selected-item', { selected: isActive('/completed') }]"
-               @click="linkTo('/completed')">
-            <list-success theme="outline" size="20" fill="#333" :strokeWidth="3" strokeLinecap="butt"
-                          class="item-icon" />
-            已完成项目
-          </div>
-        </header>
-        <div id="body">
-          <draggable :list="projects" item-key="id" chosenClass="chosen-class" dragClass="drag-class" handle=".move"
-                     ghostClass="ghost-class" :forceFallback="true" @update="onUpdateSort">
-            <template #item="{ element }">
-              <div @click="linkTo(`/project/${element.id}`)"
-                   :class="['selected-item', { selected: isActive(`/project/${element.id}`) }]" :key="element.id">
-                <input v-if="element.editable && isActive(`/project/${element.id}`)" :ref="handleInputRef"
-                       v-model="element.name" @blur="element.editable = false"
-                       @keydown.enter="element.editable = false" />
-                <div v-else class="project-item">
-                  <div class="info">{{ element.name }}</div>
-                  <div class="operation">
-                    <write theme="outline" size="15" fill="#333" :strokeWidth="1" @click="element.editable = true" />
-                    <delete-four theme="outline" size="15" fill="#333" :strokeWidth="1"
-                                 @click="(evt: any) => handleComplete(evt, element)" />
-                    <drag theme="outline" size="15" fill="#b9b9b9" :strokeWidth="1" class="move" />
-                  </div>
+          <div v-if="count!==0" class="counter-icon">{{ count }}</div>
+        </div>
+        <div :class="['selected-item', { selected: isActive('/completed') }]"
+             @click="linkTo('/completed')">
+          <list-success theme="outline" size="20" fill="#333" :strokeWidth="3" strokeLinecap="butt"
+                        class="item-icon" />
+          已完成项目
+        </div>
+      </header>
+      <div id="body">
+        <draggable :list="projects" item-key="id" chosenClass="chosen-class" dragClass="drag-class" handle=".move"
+                   ghostClass="ghost-class" :forceFallback="true" @update="onUpdateSort">
+          <template #item="{ element }">
+            <div @click="linkTo(`/project/${element.id}`)"
+                 :class="['selected-item', { selected: isActive(`/project/${element.id}`) }]" :key="element.id">
+              <input v-if="element.editable && isActive(`/project/${element.id}`)" :ref="handleInputRef"
+                     v-model="element.name" @blur="element.editable = false"
+                     @keydown.enter="element.editable = false" />
+              <div v-else class="project-item">
+                <div class="info">{{ element.name }}</div>
+                <div class="operation">
+                  <write theme="outline" size="15" fill="#333" :strokeWidth="1" @click="element.editable = true" />
+                  <delete-four theme="outline" size="15" fill="#333" :strokeWidth="1"
+                               @click="(evt: any) => handleComplete(evt, element)" />
+                  <drag theme="outline" size="15" fill="#b9b9b9" :strokeWidth="1" class="move" />
                 </div>
               </div>
-            </template>
-          </draggable>
+            </div>
+          </template>
+        </draggable>
+      </div>
+      <footer>
+        <div @click="createProject" class="selected-item create-button">
+          <plus theme="multi-color" size="20" :fill="['#333' ,'#2F88FF' ,'#FFF' ,'#43CCF8']" :strokeWidth="3"
+                strokeLinecap="butt" class="item-icon" />
+          新建项目
         </div>
-        <footer>
-          <div @click="createProject" class="selected-item create-button">
-            <plus theme="multi-color" size="20" :fill="['#333' ,'#2F88FF' ,'#FFF' ,'#43CCF8']" :strokeWidth="3"
-                  strokeLinecap="butt" class="item-icon" />
-            新建项目
-          </div>
-          <div :class="['selected-item', 'settings-button', { 'selected': isActive('/settings') }]"
-               @click="linkTo('/settings')">
-            <config theme="outline" size="24" fill="#333" :strokeWidth="2" class="setting-icon" />
-          </div>
-        </footer>
-      </aside>
-      <section>
-        <router-view :key="route.fullPath" id="content" />
-      </section>
-    </main>
-  </div>
+        <div :class="['selected-item', 'settings-button', { 'selected': isActive('/settings') }]"
+             @click="linkTo('/settings')">
+          <config theme="outline" size="24" fill="#333" :strokeWidth="2" class="setting-icon" />
+        </div>
+      </footer>
+    </aside>
+    <section>
+      <router-view :key="route.fullPath" />
+    </section>
+  </main>
 </template>
 
 <style scoped>
@@ -214,10 +212,6 @@ section {
   box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
   border-radius: 8px 0 0 0;
   overflow: hidden;
-}
-
-#content {
-  flex-grow: 1;
 }
 
 input {
