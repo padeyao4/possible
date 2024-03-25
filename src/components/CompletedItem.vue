@@ -80,9 +80,11 @@ const completedTasks = computed(() => {
     }
 
     .second-line {
-      display: flex;
-      align-items: center;
       margin: 0 0 0 28px;
+      min-width: 0;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow-x: hidden;
     }
   }
 }

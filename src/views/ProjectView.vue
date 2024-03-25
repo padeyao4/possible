@@ -49,18 +49,16 @@ const currentProject = computed(() => store.projects[route.params.id as string])
 }
 
 header {
-  display: flex;
   outline: none;
-  flex-shrink: 0;
   height: 80px;
   font-size: 20px;
   -webkit-app-region: no-drag;
   user-select: none;
+  width: calc(100vw - 240px);
   padding: 24px 24px 24px 24px;
   white-space: nowrap;
-  overflow: hidden;
+  overflow-x: hidden;
   text-overflow: ellipsis;
-  width: calc(100vw - 240px);
 }
 
 main {

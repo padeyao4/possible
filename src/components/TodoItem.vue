@@ -95,10 +95,11 @@ function onUpdate() {
     }
 
     .second-line {
-      display: flex;
-      align-items: center;
       margin: 0 0 0 28px;
       overflow-x: hidden;
+      min-width: 0;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
 

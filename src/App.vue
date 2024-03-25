@@ -230,12 +230,11 @@ input {
   width: 100%;
 
   .info {
-    display: flex;
-    align-items: center;
     flex-grow: 1;
     margin: 0 4px 0 4px;
     white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .operation {
