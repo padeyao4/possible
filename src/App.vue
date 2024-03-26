@@ -67,8 +67,7 @@ onMounted(() => {
 function handleComplete(evt: any, element: any) {
   evt.stopPropagation()
   element.completed = true
-  store.setSelected('completed')
-  router.push('/completed')
+  linkTo('/completed')
 }
 
 function linkTo(uri: string) {
