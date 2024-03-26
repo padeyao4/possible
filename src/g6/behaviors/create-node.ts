@@ -1,10 +1,7 @@
 import { Extensions, type IG6GraphEvent } from '@antv/g6'
-import { normalX, normalY } from '@/utils/position-util.js'
-import { v4 } from 'uuid'
-import { faker } from '@faker-js/faker'
 import { useStore } from '@/stores/store'
-import { dateToX } from '@/utils/time'
 import { useRoute } from 'vue-router'
+import { createNode } from '@/utils/data-util'
 
 const DEFAULT_CONFIG = {
   // 鼠标左键生效
@@ -31,32 +28,6 @@ export default class CreateNode extends Extensions.BaseBehavior {
 
     const { x, y } = e.canvas
 
-    const posX = normalX(x)
-    const posY = normalY(y)
-
-    if (this.graph.checkNodeOverlap(posX, posY)) {
-      return
-    }
-
-    const currentX = dateToX(this.store.currentTime, this.currentProject.createTime)
-
-    this.store.addNode(
-      {
-        id: v4(),
-        data: {
-          name: faker.person.fullName(),
-          x: posX,
-          y: posY,
-          detail: '',
-          record: '',
-          completed: posX < currentX,
-          sortedIndex: -1,
-          project: {
-            id: this.currentProject.id,
-            name: this.currentProject.name
-          }
-        }
-      }, this.currentProject
-    )
+    createNode(x, y, this.currentProject)
   }
 }

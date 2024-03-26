@@ -32,6 +32,9 @@ dependencies:
   element-plus:
     specifier: ^2.6.2
     version: 2.6.2(vue@3.4.21)
+  loglevel:
+    specifier: ^1.9.1
+    version: 1.9.1
   pinia:
     specifier: ^2.1.7
     version: 2.1.7(typescript@5.3.3)(vue@3.4.21)
@@ -1288,6 +1291,15 @@ packages:
 
   /@types/uuid@9.0.8:
     resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
+    dev: true
+
+  /@types/vuedraggable@2.24.0(vue@3.4.21):
+    resolution: {integrity: sha512-QdR7Vi36ga+cjlILUWVxUBERCRWDoNbjvnWJ6SzoxPlPJUQaY1XjBprF4aH4CI/xSch8TJg5x3rjgTLlt85rew==}
+    deprecated: This is a stub types definition. vuedraggable provides its own type definitions, so you do not need this installed.
+    dependencies:
+      vuedraggable: 4.1.0(vue@3.4.21)
+    transitivePeerDependencies:
+      - vue
     dev: true
 
   /@types/web-bluetooth@0.0.16:
@@ -2971,6 +2983,11 @@ packages:
   /lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
 
+  /loglevel@1.9.1:
+    resolution: {integrity: sha512-hP3I3kCrDIMuRwAwHltphhDM1r8i55H33GgqjXbrisuJhF4kRhW1dNuxsRklp4bXl8DSdLaNLuiL4A/LWRfxvg==}
+    engines: {node: '>= 0.6.0'}
+    dev: false
+
   /loupe@2.3.7:
     resolution: {integrity: sha512-zSMINGVYkdpYSOBmLi0D1Uo7JU9nVdQKrHxC8eYlV+9YKK9WePqAlL7lSlorG/U2Fw1w0hTBmaa/jrQ3UbPHtA==}
     dependencies:
@@ -3551,7 +3568,6 @@ packages:
 
   /sortablejs@1.14.0:
     resolution: {integrity: sha512-pBXvQCs5/33fdN1/39pPL0NZF20LeRbLQ5jtnheIPN9JQAaufGjKdWduZn4U7wCtVuzKhmRkI0DFYHYRbB2H1w==}
-    dev: false
 
   /source-map-js@1.2.0:
     resolution: {integrity: sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==}
@@ -4020,7 +4036,6 @@ packages:
     dependencies:
       sortablejs: 1.14.0
       vue: 3.4.21(typescript@5.3.3)
-    dev: false
 
   /w3c-xmlserializer@5.0.0:
     resolution: {integrity: sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA==}

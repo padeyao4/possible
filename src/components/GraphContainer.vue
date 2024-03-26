@@ -15,6 +15,7 @@ import DoubleClickNode from '@/g6/behaviors/double-click-node'
 import ContextMenu from '@/g6/behaviors/context-menu'
 import { dateToX } from '@/utils/time'
 import { OFFSET_X } from '@/configs/constant'
+import log from 'loglevel'
 
 const container = ref()
 const store = useStore()
@@ -24,6 +25,7 @@ const currentProject = store.projects[route.params.id as string]
 async function resize() {
   const graph = currentProject.data.graph
   const { x: x1, y: y1 } = graph.getCanvasByViewport({ x: 0, y: 0 })
+  if (isNaN(x1) || isNaN(y1) || container.value.clientWidth <= 1 || container.value.clientHeight <= 1) return
   graph.setSize([container.value.clientWidth, container.value.clientHeight])
   const { x: x2, y: y2 } = graph.getCanvasByViewport({ x: 0, y: 0 })
   await graph.translate({ dx: x2 - x1, dy: y2 - y1 })
@@ -112,7 +114,7 @@ onBeforeUnmount(() => {
 function translateToToday(graph: CustomGraph) {
   const { x, y } = graph.getCanvasByViewport({ x: 0, y: 0 })
   const currentX = dateToX(store.currentTime, currentProject.createTime)
-  graph.translate({ dx: x - currentX + OFFSET_X, dy: y }).then(console.log)
+  graph.translate({ dx: x - currentX + OFFSET_X, dy: y }).then(() => log.debug('graph translate to today'))
 }
 </script>
 
@@ -123,5 +125,6 @@ function translateToToday(graph: CustomGraph) {
 <style scoped>
 #graph-container {
   width: calc(100vw - 24px * 2 - 240px);
+  min-width: 1px !important;
 }
 </style>

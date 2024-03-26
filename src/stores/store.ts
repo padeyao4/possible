@@ -68,7 +68,7 @@ export const useStore = defineStore('store', () => {
 
     const selectedNode = ref<Node>()
 
-    const actionState = ref<'none' | 'dragend' | 'edit' | 'contextmenu'>('none')
+    const actionState = ref<'none' | 'dragend' | 'edit' | 'node:contextmenu' | 'canvas:contextmenu'>('none')
 
     const mousePosition = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 
@@ -262,6 +262,16 @@ export const useStore = defineStore('store', () => {
       return [...outEdgesMap.get(id) ?? []].map(edge => {
         return nodesMap.get(edge.target)
       })
+    }
+
+    const getAllSuccessors = (id: ID, project: Project) => {
+      const successors = getSuccessors(id, project)
+      let ans = [...successors]
+      successors.forEach(successor => {
+        const nextSuccessors = getAllSuccessors(successor.id, project)
+        ans = [...ans, ...nextSuccessors]
+      })
+      return [...new Set(ans)]
     }
 
     const getPredecessors = (id: ID, project: Project) => {
@@ -470,6 +480,14 @@ export const useStore = defineStore('store', () => {
         }).flat()
     })
 
+    /**
+     * 根据获取项目今天x轴数值
+     * @param project
+     */
+    const currentX = (project: Project) => {
+      return dateToX(currentTime.value, project.createTime)
+    }
+
     return {
       projects,
       currentTime,
@@ -487,6 +505,7 @@ export const useStore = defineStore('store', () => {
       addDays,
       updateTime,
       getSuccessors,
+      getAllSuccessors,
       getPredecessors,
       getNeighbors,
       moveRight,
@@ -502,7 +521,8 @@ export const useStore = defineStore('store', () => {
       findDownNode,
       findAllDownNode,
       findRightNode,
-      checkSameRelation
+      checkSameRelation,
+      currentX
     }
   }
 )

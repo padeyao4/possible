@@ -3,13 +3,14 @@ import { computed, ref } from 'vue'
 import { useStore } from '@/stores/store'
 import { useRoute } from 'vue-router'
 import { dateToX } from '@/utils/time'
+import { createNode } from '@/utils/data-util'
 
 const store = useStore()
 const route = useRoute()
 const currentProject = store.projects[route.params.id as string]
 
 const visible = computed(() => {
-  return store.actionState === 'contextmenu'
+  return store.actionState === 'node:contextmenu' || store.actionState === 'canvas:contextmenu'
 })
 
 /**
@@ -51,18 +52,21 @@ function moveUp() {
 const contextmenuRef = ref<HTMLElement>()
 
 const contextmenuPosition = computed(() => {
-  const height = document.body.getBoundingClientRect().height
-  const width = document.body.getBoundingClientRect().width
-  const contextmenuPosition = currentProject.data.graph.getClientByCanvas(store.mousePosition)
-  const menuWidth = contextmenuRef.value?.clientWidth || 0
-  const menuHeight = contextmenuRef.value?.clientHeight || 0
-  const maxHeight = (contextmenuPosition.y > height - menuHeight) ? height - menuHeight : contextmenuPosition.y
-  const maxWidth = (contextmenuPosition.x > width - menuWidth) ? contextmenuPosition.x - menuWidth : contextmenuPosition.x
+  const { height, width } = document.body.getBoundingClientRect()
+  const { x, y } = currentProject.data.graph.getClientByCanvas(store.mousePosition)
+  const { clientWidth, clientHeight } = contextmenuRef.value ?? { clientWidth: 0, clientHeight: 0 }
+  const maxHeight = (y > height - clientHeight) ? height - clientHeight : y
+  const maxWidth = (x > width - clientWidth) ? x - clientWidth : x
   return {
     left: maxWidth + 'px',
     top: maxHeight + 'px'
   }
 })
+
+function onCreateNode() {
+  const { x, y } = store.mousePosition
+  createNode(x, y, currentProject)
+}
 
 </script>
 
@@ -70,12 +74,15 @@ const contextmenuPosition = computed(() => {
   <teleport to="body">
     <div v-if="visible" class="contextmenu" :style="contextmenuPosition" @contextmenu.prevent :ref="onRef" tabindex="0"
          @blur="onblur" @click="onblur">
-      <ul>
+      <ul v-if="store.actionState==='node:contextmenu'">
         <li @click="moveRight">单体右移</li>
         <li @click="moveLeft">单体左移</li>
         <li @click="moveUp">整体上移</li>
         <li @click="moveDown">整体下移</li>
         <li @click="handleDelete">删除</li>
+      </ul>
+      <ul v-else>
+        <li @click="onCreateNode">新建</li>
       </ul>
     </div>
   </teleport>

@@ -37,7 +37,9 @@ function onUpdate() {
                 <CheckOne theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt"
                           class="check" />
               </div>
-              {{ element.data.name }}
+              <div class="info">
+                {{ element.data.name }}
+              </div>
             </div>
             <div class="second-line">{{ element.data.project.name }}</div>
           </div>
@@ -116,5 +118,11 @@ function onUpdate() {
   &:hover .move-bar {
     display: flex;
   }
+}
+
+.info {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
 }
 </style>
