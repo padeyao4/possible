@@ -264,6 +264,16 @@ export const useStore = defineStore('store', () => {
       })
     }
 
+    const getAllSuccessors = (id: ID, project: Project) => {
+      const successors = getSuccessors(id,project)
+      let ans = [...successors]
+      successors.forEach(successor=>{
+        const nextSuccessors = getAllSuccessors(successor.id,project)
+        ans = [...ans,...nextSuccessors]
+      })
+      return [...new Set(ans)]
+    }
+
     const getPredecessors = (id: ID, project: Project) => {
       const { inEdgesMap, nodesMap } = project
       return [...inEdgesMap.get(id) ?? []].map(edge => nodesMap.get(edge.source))
@@ -487,6 +497,7 @@ export const useStore = defineStore('store', () => {
       addDays,
       updateTime,
       getSuccessors,
+      getAllSuccessors,
       getPredecessors,
       getNeighbors,
       moveRight,

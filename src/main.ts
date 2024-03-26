@@ -7,6 +7,9 @@ import App from './App.vue'
 import './assets/main.css'
 import router from './router'
 import './utils/browser-patch'
+import log from 'loglevel'
+
+log.setDefaultLevel(import.meta.env.DEV ? 'trace' : 'silent')
 
 const app = createApp(App)
 app.use(ElementPlus)

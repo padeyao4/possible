@@ -25,6 +25,7 @@
     "@tauri-apps/api": "^1.5.3",
     "default-passive-events": "^2.0.0",
     "element-plus": "^2.6.2",
+    "loglevel": "^1.9.1",
     "pinia": "^2.1.7",
     "tauri-plugin-store-api": "github:tauri-apps/tauri-plugin-store#v1",
     "uuid": "^9.0.1",

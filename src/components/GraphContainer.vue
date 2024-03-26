@@ -15,6 +15,7 @@ import DoubleClickNode from '@/g6/behaviors/double-click-node'
 import ContextMenu from '@/g6/behaviors/context-menu'
 import { dateToX } from '@/utils/time'
 import { OFFSET_X } from '@/configs/constant'
+import log from 'loglevel'
 
 const container = ref()
 const store = useStore()
@@ -112,7 +113,7 @@ onBeforeUnmount(() => {
 function translateToToday(graph: CustomGraph) {
   const { x, y } = graph.getCanvasByViewport({ x: 0, y: 0 })
   const currentX = dateToX(store.currentTime, currentProject.createTime)
-  graph.translate({ dx: x - currentX + OFFSET_X, dy: y }).then(console.log)
+  graph.translate({ dx: x - currentX + OFFSET_X, dy: y }).then(() => log.debug('graph translate to today'))
 }
 </script>
 

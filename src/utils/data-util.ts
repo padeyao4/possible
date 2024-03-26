@@ -2,6 +2,7 @@ import { type Edge, type Node, type Project, useStore } from '@/stores/store'
 import type { ID } from '@antv/g6'
 import { onBeforeMount, onUnmounted, ref, shallowReactive } from 'vue'
 import { Store } from 'tauri-plugin-store-api'
+import log from 'loglevel'
 
 /**
  * Updates the node maps and edge maps with a new node model.
@@ -96,6 +97,8 @@ function deserialize(value: string): Project[] {
 
     edges.forEach((edge: Edge) => {
       edgesMap.set(edge.id, edge)
+      inEdgesMap.get(edge.target)?.add(edge)
+      outEdgesMap.get(edge.source)?.add(edge)
     })
 
     return {
@@ -175,8 +178,8 @@ export function useLoadData(){
       scheduleMidnightTask()
       store.$subscribe(() => {
         const content = serialize(store.projects)
-        db.set('data', content)
-        db.save().then(() => console.log('saved'))
+        db.set('data', content).then(()=>log.debug('set data'))
+        db.save().then(()=>log.debug('save data'))
       }, { detached: true })
     })
   })
