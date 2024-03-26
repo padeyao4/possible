@@ -20,7 +20,7 @@ const completedTasks = computed(() => {
       <div v-for="task in completedTasks" :key="task.id" class="completed-item">
         <div class="item-content">
           <div class="first-line">
-            <div class="check-group" @click="()=>{task.data.completed = false}">
+            <div class="check-group" @click="task.data.completed = false">
               <CheckOne theme="filled" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt" class="round" />
               <CheckOne theme="outline" size="20" fill="#333" :stroke-width="2" stroke-linecap="butt" class="check" />
             </div>
@@ -87,5 +87,11 @@ const completedTasks = computed(() => {
       overflow-x: hidden;
     }
   }
+}
+
+del {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
 }
 </style>
