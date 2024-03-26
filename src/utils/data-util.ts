@@ -3,6 +3,9 @@ import type { ID } from '@antv/g6'
 import { onBeforeMount, onUnmounted, ref, shallowReactive } from 'vue'
 import { Store } from 'tauri-plugin-store-api'
 import log from 'loglevel'
+import { v4 } from 'uuid'
+import { faker } from '@faker-js/faker'
+import { normalX, normalY } from '@/utils/position-util'
 
 /**
  * Updates the node maps and edge maps with a new node model.
@@ -145,7 +148,7 @@ class LocalStorageStore implements StorageLike {
   })
 }
 
-export function useLoadData(){
+export function useLoadData() {
   const timer = ref()
   const store = useStore()
 
@@ -178,8 +181,8 @@ export function useLoadData(){
       scheduleMidnightTask()
       store.$subscribe(() => {
         const content = serialize(store.projects)
-        db.set('data', content).then(()=>log.debug('set data'))
-        db.save().then(()=>log.debug('save data'))
+        db.set('data', content).then(() => log.debug('set data'))
+        db.save().then(() => log.debug('save data'))
       }, { detached: true })
     })
   })
@@ -188,4 +191,36 @@ export function useLoadData(){
     clearTimeout(timer.value)
   })
 
+}
+
+export function createNode(x: number, y: number, project: Project) {
+  const posX = normalX(x)
+  const posY = normalY(y)
+  const store = useStore()
+
+  if (store.checkNodeOverlap({ data: { x: posX, y: posY } }, project)) {
+    log.warn('the node already exists at current location')
+    return
+  }
+
+  const currentX = store.currentX(project)
+
+  store.addNode(
+    {
+      id: v4(),
+      data: {
+        name: faker.person.fullName(),
+        x: posX,
+        y: posY,
+        detail: '',
+        record: '',
+        completed: posX < currentX,
+        sortedIndex: -1,
+        project: {
+          id: project.id,
+          name: project.name
+        }
+      }
+    }, project
+  )
 }
