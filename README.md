@@ -1,52 +1,54 @@
-# .
+## Possible
 
-This template should help get you started developing with Vue 3 in Vite.
+**简介**
 
-## Recommended IDE Setup
+这是一个使用 Vue + Tauri 开发的任务管理软件，可以帮助您按时间管理任务。软件界面参考了微软的 Todo List 软件，并加入了一些新功能，例如：
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+* 使用带有时间轴的画布来显示任务，可以清晰地显示任务之间的关联关系。
+* 任务之间的关系可以用有向无环图表示，项目和项目之间的关系是独立的。
+* 软件会每天筛选出当天需要执行的任务，显示在每日任务中。
 
-## Type Support for `.vue` Imports in TS
+**演示地址**
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+[https://padeyao4.github.io/possible/](https://padeyao4.github.io/possible/)
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+**功能**
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+* 任务管理：添加、编辑、删除任务，设置任务的开始时间、结束时间、优先级等。
+* 项目管理：创建、编辑、删除项目，将任务添加到项目中。
+* 时间轴：使用时间轴来显示任务，可以清晰地显示任务之间的关联关系。
+* 任务关系：可以使用有向无环图来表示任务之间的关系。
+* 每日任务：软件会每天筛选出当天需要执行的任务，显示在每日任务中。
 
-## Customize configuration
+**使用说明**
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+1. 克隆项目到本地：
 
-## Project Setup
-
-```sh
-pnpm install
+```
+git clone https://github.com/padeyao4/possible.git
 ```
 
-### Compile and Hot-Reload for Development
+2. 安装依赖：
 
-```sh
-pnpm dev
+```
+npm install
 ```
 
-### Type-Check, Compile and Minify for Production
+3. 运行项目：
 
-```sh
-pnpm build
+```
+npm run dev
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+4. 打开浏览器，访问 `http://localhost:3000`
 
-```sh
-pnpm test:unit
-```
 
-### Lint with [ESLint](https://eslint.org/)
+**开发计划**
 
-```sh
-pnpm lint
-```
+* 添加更多功能，例如：任务提醒、任务完成度统计等。
+* 优化代码，提高性能。
+* 发布到各个应用商店。
+
+以上readme由AI生成
+**欢迎大家使用和反馈！**
+
