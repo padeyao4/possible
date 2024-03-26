@@ -7,8 +7,16 @@ export default class ContextMenu extends Extensions.BaseBehavior {
   getEvents() {
     return {
       'node:contextmenu': this.onNodeContextmenu,
-      'canvas:contextmenu': this.onCanvasContextmenu
+      'canvas:contextmenu': this.onCanvasContextmenu,
+      'edge:contextmenu': this.onEdgeContextmenu
     }
+  }
+
+  onEdgeContextmenu(e: IG6GraphEvent) {
+    const { x, y } = e.canvas
+    this.store.mousePosition = { x, y }
+    this.store.selectedItem = this.graph.getEdgeData(e.itemId)
+    this.store.actionState = 'edge:contextmenu'
   }
 
   onCanvasContextmenu(e: IG6GraphEvent) {
@@ -20,7 +28,7 @@ export default class ContextMenu extends Extensions.BaseBehavior {
   onNodeContextmenu(e: IG6GraphEvent) {
     const { itemId } = e
     const { x, y } = e.canvas
-    this.store.selectedNode = this.graph.getNodeData(itemId)
+    this.store.selectedItem = this.graph.getNodeData(itemId)
     this.store.mousePosition = { x, y }
     this.store.actionState = 'node:contextmenu'
   }

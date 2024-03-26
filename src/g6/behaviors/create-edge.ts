@@ -78,7 +78,11 @@ export default class CreateEdge extends Extensions.BaseBehavior {
       target: targetId,
       data: {
         sourceAnchor: 1,
-        targetAnchor: 0
+        targetAnchor: 0,
+        keyShape: {
+          strokeWidth: 2,
+          cursor: 'pointer'
+        }
       }
     }
     this.graph.addData('edge', { ...this.edge })

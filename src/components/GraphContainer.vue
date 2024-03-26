@@ -16,6 +16,7 @@ import ContextMenu from '@/g6/behaviors/context-menu'
 import { dateToX } from '@/utils/time'
 import { OFFSET_X } from '@/configs/constant'
 import log from 'loglevel'
+import { HoverEdge } from '@/g6/behaviors/hover-edge'
 
 const container = ref()
 const store = useStore()
@@ -35,7 +36,7 @@ onMounted(() => {
   const ExtGraph = extend(CustomGraph, {
     nodes: { CardNode },
     plugins: { GridPlugin },
-    behaviors: { CreateNode, DragCanvas, DragNode, CreateEdge, HoverNode, DoubleClickNode, ContextMenu }
+    behaviors: { CreateNode, DragCanvas, DragNode, CreateEdge, HoverNode, DoubleClickNode, ContextMenu, HoverEdge }
   })
 
   const graph = new ExtGraph({
@@ -44,7 +45,7 @@ onMounted(() => {
     height: container.value.clientHeight,
     plugins: ['GridPlugin'],
     modes: {
-      default: ['DragCanvas', 'CreateNode', 'DragNode', 'CreateEdge', 'HoverNode', 'DoubleClickNode', 'ContextMenu']
+      default: ['DragCanvas', 'CreateNode', 'DragNode', 'CreateEdge', 'HoverNode', 'DoubleClickNode', 'ContextMenu', 'HoverEdge']
     },
     node: (model) => {
       const { id, data } = model
@@ -82,16 +83,24 @@ onMounted(() => {
             r: 4,
             fill: '#fff',
             cursor: 'pointer',
-            opacity: 1
+            opacity: 1,
           },
           {
             position: [1, 0.5],
             r: 4,
             fill: '#fff',
             cursor: 'pointer',
-            opacity: 1
+            opacity: 1,
           }
-        ]
+        ],
+      }
+    },
+    edgeState: {
+      hover: {
+        keyShape: {
+          strokeWidth: 2,
+          cursor: 'pointer',
+        }
       }
     },
     data: {

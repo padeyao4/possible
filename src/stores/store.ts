@@ -66,9 +66,9 @@ export const useStore = defineStore('store', () => {
 
     const currentTime = ref(new Date())
 
-    const selectedNode = ref<Node>()
+    const selectedItem = ref<Node | Edge>()
 
-    const actionState = ref<'none' | 'dragend' | 'edit' | 'node:contextmenu' | 'canvas:contextmenu'>('none')
+    const actionState = ref<'none' | 'dragend' | 'edit' | 'node:contextmenu' | 'canvas:contextmenu' | 'edge:contextmenu'>('none')
 
     const mousePosition = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 
@@ -194,6 +194,15 @@ export const useStore = defineStore('store', () => {
       nodesMap.delete(nodeId)
 
       project.data.graph?.removeData('node', nodeId)
+    }
+
+    const removeEdge = (edgeId: ID, project: Project) => {
+      const { outEdgesMap, inEdgesMap, edgesMap } = project
+      const edge = edgesMap.get(edgeId)
+      edgesMap.delete(edgeId)
+      outEdgesMap.get(edge.source).delete(edge)
+      inEdgesMap.get(edge.target).delete(edge)
+      project.data.graph?.removeData('edge', edgeId)
     }
 
     const bfsOutEdge = (startNodeId: ID, project: Project, callback: (id: ID) => void) => {
@@ -491,7 +500,7 @@ export const useStore = defineStore('store', () => {
     return {
       projects,
       currentTime,
-      selectedNode,
+      selectedItem,
       actionState,
       mousePosition,
       currentTasks,
@@ -499,6 +508,7 @@ export const useStore = defineStore('store', () => {
       addNode,
       addEdge,
       removeNode,
+      removeEdge,
       isActive,
       setSelected,
       addProject,

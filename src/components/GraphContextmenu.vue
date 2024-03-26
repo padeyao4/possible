@@ -10,7 +10,7 @@ const route = useRoute()
 const currentProject = store.projects[route.params.id as string]
 
 const visible = computed(() => {
-  return store.actionState === 'node:contextmenu' || store.actionState === 'canvas:contextmenu'
+  return store.actionState === 'node:contextmenu' || store.actionState === 'canvas:contextmenu' || store.actionState === 'edge:contextmenu'
 })
 
 /**
@@ -19,7 +19,7 @@ const visible = computed(() => {
  * Removes the node data from the graph and closes the context menu.
  */
 function handleDelete() {
-  store.removeNode(store.selectedNode.id, currentProject)
+  store.removeNode(store.selectedItem.id, currentProject)
 }
 
 function onblur() {
@@ -34,19 +34,19 @@ function onRef(e: any) {
 }
 
 function moveRight() {
-  store.moveRight(store.selectedNode.id, currentProject)
+  store.moveRight(store.selectedItem.id, currentProject)
 }
 
 function moveLeft() {
-  store.moveLeft(store.selectedNode.id, currentProject, dateToX(store.currentTime, currentProject.createTime))
+  store.moveLeft(store.selectedItem.id, currentProject, dateToX(store.currentTime, currentProject.createTime))
 }
 
 function moveDown() {
-  store.moveDown(store.selectedNode, currentProject)
+  store.moveDown(store.selectedItem, currentProject)
 }
 
 function moveUp() {
-  store.moveUp(store.selectedNode, currentProject)
+  store.moveUp(store.selectedItem, currentProject)
 }
 
 const contextmenuRef = ref<HTMLElement>()
@@ -68,6 +68,10 @@ function onCreateNode() {
   createNode(x, y, currentProject)
 }
 
+function onDeleteEdge() {
+  store.removeEdge(store.selectedItem.id, currentProject)
+}
+
 </script>
 
 <template>
@@ -80,6 +84,9 @@ function onCreateNode() {
         <li @click="moveUp">整体上移</li>
         <li @click="moveDown">整体下移</li>
         <li @click="handleDelete">删除</li>
+      </ul>
+      <ul v-else-if="store.actionState==='edge:contextmenu'">
+        <li @click="onDeleteEdge">删除</li>
       </ul>
       <ul v-else>
         <li @click="onCreateNode">新建</li>
