@@ -22,7 +22,7 @@ jobs:
 
       - uses: pnpm/action-setup@0609f0983b7a228f052f81ef4c3d6510cae254ad
         with:
-          version: 6.10.0
+          version: 8.15.5
 
       # 1、生成静态文件
       - name: Build
@@ -33,7 +33,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          REPOSITORY_NAME: possible/padeyao4.github.io
+          REPOSITORY_NAME: padeyao4/possible
           BRANCH: page
           FOLDER: dist
           #注意这里的 public 是仓库根目录下的 public，也就是 npm run build 生成静态资源的路径，比如有的人是 `docs/.vuepress/dist`
