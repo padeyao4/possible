@@ -14,13 +14,19 @@ jobs:
     steps:
       # 拉取代码
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v3
         with:
-          persist-credentials: false
+          node-version: ${{ matrix.node-version }}
+
+      - uses: pnpm/action-setup@0609f0983b7a228f052f81ef4c3d6510cae254ad
+        with:
+          version: 6.10.0
 
       # 1、生成静态文件
       - name: Build
-        run: npm install && npm run build
+        run: pnpm install && VITE_TAURI=false pnpm run build-only
 
       # 2、部署到 GitHub Pages
       - name: Deploy
