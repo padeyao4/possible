@@ -29,7 +29,6 @@ const todayTime = computed(() => (
       </section>
     </div>
     <footer>
-      <!--todo-->
     </footer>
   </div>
 </template>
