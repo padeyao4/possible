@@ -1,4 +1,4 @@
-import { UNIT_H, UNIT_W } from '@/configs/constant'
+import { OFFSET_X, OFFSET_Y, UNIT_H, UNIT_W } from '@/configs/constant'
 import type { CustomGraph } from '@/g6/core/graph'
 import { dateToX } from '@/utils/time'
 import type { ID, Point } from '@antv/g6'
@@ -341,6 +341,8 @@ export const useStore = defineStore('store', () => {
     }
 
     const createProject = () => {
+      const projectCreateTime = faker.date.between({ from: '1900/1/1', to: '2024/3/20' }).valueOf()
+      const defaultOffsetX = dateToX(currentTime.value, projectCreateTime) - OFFSET_X
       const project = {
         id: v4(),
         name: faker.finance.currencyName(),
@@ -354,9 +356,9 @@ export const useStore = defineStore('store', () => {
         completed: false,
         sortIndex: Object.values(projects).length + 1,
         editable: true,
-        createTime: faker.date.between({ from: '1900/1/1', to: '2024/3/20' }).valueOf(),
+        createTime: projectCreateTime,
         data: shallowReactive({ graph: null }),
-        offset: { x: 0, y: 0 }
+        offset: { x: defaultOffsetX, y: -OFFSET_Y }
       }
       addProject(project)
       return project.id
