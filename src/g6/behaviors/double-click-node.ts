@@ -23,7 +23,7 @@ export default class DoubleClickNode extends Extensions.BaseBehavior {
   doubleClick(e: IG6GraphEvent) {
     if (!this.options.shouldBegin(e)) return
     const { itemId } = e
-    this.store.selectedNode = { ...this.graph.getNodeData(itemId) }
+    this.store.selectedItem = { ...this.graph.getNodeData(itemId) }
     this.store.actionState = 'edit'
   }
 }
