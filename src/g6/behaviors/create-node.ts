@@ -1,7 +1,6 @@
 import { Extensions, type IG6GraphEvent } from '@antv/g6'
 import { useStore } from '@/stores/store'
 import { useRoute } from 'vue-router'
-import { createNode } from '@/utils/data-util'
 
 const DEFAULT_CONFIG = {
   // 鼠标左键生效
@@ -28,6 +27,6 @@ export default class CreateNode extends Extensions.BaseBehavior {
 
     const { x, y } = e.canvas
 
-    createNode(x, y, this.currentProject)
+    this.store.createNode(x, y, this.currentProject)
   }
 }

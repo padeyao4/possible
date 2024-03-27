@@ -13,8 +13,6 @@ import CreateEdge from '@/g6/behaviors/create-edge'
 import { HoverNode } from '@/g6/behaviors/hover-node'
 import DoubleClickNode from '@/g6/behaviors/double-click-node'
 import ContextMenu from '@/g6/behaviors/context-menu'
-import { dateToX } from '@/utils/time'
-import { OFFSET_X } from '@/configs/constant'
 import log from 'loglevel'
 import { HoverEdge } from '@/g6/behaviors/hover-edge'
 
@@ -75,6 +73,17 @@ onMounted(() => {
         }
       } as any
     },
+    edge: (model) => {
+      const { id, source, target, data } = model
+      return {
+        id, source, target,
+        data: {
+          sourceAnchor: 1,
+          targetAnchor: 0,
+          ...data
+        }
+      }
+    },
     nodeState: {
       hover: {
         anchorShapes: [
@@ -83,23 +92,23 @@ onMounted(() => {
             r: 4,
             fill: '#fff',
             cursor: 'pointer',
-            opacity: 1,
+            opacity: 1
           },
           {
             position: [1, 0.5],
             r: 4,
             fill: '#fff',
             cursor: 'pointer',
-            opacity: 1,
+            opacity: 1
           }
-        ],
+        ]
       }
     },
     edgeState: {
       hover: {
         keyShape: {
           strokeWidth: 2,
-          cursor: 'pointer',
+          cursor: 'pointer'
         }
       }
     },
@@ -109,7 +118,11 @@ onMounted(() => {
     }
   }) as any
 
-  translateToToday(graph)
+  graph.translate({
+    dx: -currentProject.offset.x,
+    dy: -currentProject.offset.y
+  }).then(() => log.debug('graph translate to before location'))
+
   currentProject.data.graph = graph
 
   window.addEventListener('resize', resize)
@@ -117,14 +130,10 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', resize)
+  currentProject.offset = currentProject.data.graph.getCanvasByViewport({ x: 0, y: 0 })
   currentProject.data.graph = null
 })
 
-function translateToToday(graph: CustomGraph) {
-  const { x, y } = graph.getCanvasByViewport({ x: 0, y: 0 })
-  const currentX = dateToX(store.currentTime, currentProject.createTime)
-  graph.translate({ dx: x - currentX + OFFSET_X, dy: y }).then(() => log.debug('graph translate to today'))
-}
 </script>
 
 <template>

@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import router from '@/router'
-import { type Edge, type Node, useStore } from '@/stores/store'
-import type { ID } from '@antv/g6'
-import { faker } from '@faker-js/faker'
+import { useStore } from '@/stores/store'
 import { Config, DeleteFour, Drag, ListSuccess, Plus, Sun, Write } from '@icon-park/vue-next'
-import { v4 } from 'uuid'
 import { useLoadData } from '@/utils/data-util'
-import { computed, onMounted, shallowReactive } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import Draggable from 'vuedraggable/src/vuedraggable'
 
@@ -34,23 +31,7 @@ function onUpdateSort() {
 }
 
 function createProject() {
-  const id = v4()
-  store.addProject({
-    id,
-    name: faker.finance.currencyName(),
-    nodesMap: new Map<ID, Node>(),
-    edgesMap: new Map<ID, Edge>(),
-    inEdgesMap: new Map<ID, Set<Edge>>(),
-    outEdgesMap: new Map<ID, Set<Edge>>(),
-    rowsMap: new Map<ID, Set<Node>>(),
-    colsMap: new Map<ID, Set<Node>>(),
-    coordinateMap: new Map<string, Node>(),
-    completed: false,
-    sortIndex: projects.value.length + 1,
-    editable: true,
-    createTime: faker.date.between({ from: '1900/1/1', to: '2024/3/20' }).valueOf(),
-    data: shallowReactive({ graph: null })
-  })
+  const id = store.createProject()
   linkTo(`/project/${id}`)
 }
 
@@ -153,7 +134,6 @@ aside {
   flex-shrink: 0;
   width: 240px;
   height: 100vh;
-  padding-top: 12px;
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
   rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
@@ -308,5 +288,11 @@ input {
 
 .today-layout {
   display: flex;
+}
+
+:deep(.icon) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

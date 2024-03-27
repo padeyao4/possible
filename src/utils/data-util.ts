@@ -3,9 +3,6 @@ import type { ID } from '@antv/g6'
 import { onBeforeMount, onUnmounted, ref, shallowReactive } from 'vue'
 import { Store } from 'tauri-plugin-store-api'
 import log from 'loglevel'
-import { v4 } from 'uuid'
-import { faker } from '@faker-js/faker'
-import { normalX, normalY } from '@/utils/position-util'
 
 /**
  * Updates the node maps and edge maps with a new node model.
@@ -58,8 +55,9 @@ function updateMap(
  */
 function serialize(value: Record<string, Project>): string {
   return JSON.stringify([...Object.values(value)].map((project: Project) => {
-    const { id, name, completed, sortIndex, editable, createTime } = project
+    const { id, name, completed, sortIndex, editable, createTime,offset } = project
     return {
+      offset,
       id,
       name,
       completed,
@@ -83,7 +81,7 @@ function serialize(value: Record<string, Project>): string {
  */
 function deserialize(value: string): Project[] {
   return JSON.parse(value).map((project: any) => {
-    const { id, name, completed, sortIndex, editable, createTime, nodes, edges } = project
+    const { id, name, completed, sortIndex, editable, createTime, nodes, edges,offset } = project
 
     const nodesMap = new Map<ID, Node>()
     const edgesMap = new Map<ID, Edge>()
@@ -118,7 +116,8 @@ function deserialize(value: string): Project[] {
       rowsMap,
       colsMap,
       coordinateMap,
-      data
+      data,
+      offset
     }
   })
 
@@ -191,36 +190,4 @@ export function useLoadData() {
     clearTimeout(timer.value)
   })
 
-}
-
-export function createNode(x: number, y: number, project: Project) {
-  const posX = normalX(x)
-  const posY = normalY(y)
-  const store = useStore()
-
-  if (store.checkNodeOverlap({ data: { x: posX, y: posY } }, project)) {
-    log.warn('the node already exists at current location')
-    return
-  }
-
-  const currentX = store.currentX(project)
-
-  store.addNode(
-    {
-      id: v4(),
-      data: {
-        name: faker.person.fullName(),
-        x: posX,
-        y: posY,
-        detail: '',
-        record: '',
-        completed: posX < currentX,
-        sortedIndex: -1,
-        project: {
-          id: project.id,
-          name: project.name
-        }
-      }
-    }, project
-  )
 }

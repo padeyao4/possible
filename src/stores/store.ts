@@ -1,10 +1,14 @@
 import { UNIT_H, UNIT_W } from '@/configs/constant'
 import type { CustomGraph } from '@/g6/core/graph'
 import { dateToX } from '@/utils/time'
-import type { ID } from '@antv/g6'
+import type { ID, Point } from '@antv/g6'
 import { dayjs } from 'element-plus'
 import { defineStore } from 'pinia'
-import { computed, ref, type ShallowReactive } from 'vue'
+import { computed, ref, shallowReactive, type ShallowReactive } from 'vue'
+import { faker } from '@faker-js/faker'
+import { v4 } from 'uuid'
+import { normalX, normalY } from '@/utils/position-util'
+import log from 'loglevel'
 
 export interface Node {
   id: ID
@@ -44,6 +48,7 @@ export interface Project {
   sortIndex: number
   editable: boolean
   createTime: number
+  offset: Point
   data: ShallowReactive<{ graph: CustomGraph, [key: string]: any }>
 }
 
@@ -144,6 +149,7 @@ export const useStore = defineStore('store', () => {
       inEdgesMap.get(model.target)?.add(model)
       outEdgesMap.get(model.source)?.add(model)
       project.data.graph?.addData('edge', model)
+      return model.id
     }
 
     const addNode = (model: Node, project: Project) => {
@@ -168,6 +174,36 @@ export const useStore = defineStore('store', () => {
       }
 
       project.data.graph?.addData('node', model)
+      return model.id
+    }
+
+    const createNode = (x: number, y: number, project: Project) => {
+      const posX = normalX(x)
+      const posY = normalY(y)
+
+      if (checkNodeOverlap({ data: { x: posX, y: posY } }, project)) {
+        log.warn('the node already exists at current location')
+        return
+      }
+
+      return addNode(
+        {
+          id: v4(),
+          data: {
+            name: faker.person.fullName(),
+            x: posX,
+            y: posY,
+            detail: '',
+            record: '',
+            completed: false,
+            sortedIndex: -1,
+            project: {
+              id: project.id,
+              name: project.name
+            }
+          }
+        }, project
+      )
     }
 
     const removeNode = (nodeId: ID, project: Project) => {
@@ -304,6 +340,28 @@ export const useStore = defineStore('store', () => {
       projects.value[project.id] = project
     }
 
+    const createProject = () => {
+      const project = {
+        id: v4(),
+        name: faker.finance.currencyName(),
+        nodesMap: new Map<ID, Node>(),
+        edgesMap: new Map<ID, Edge>(),
+        inEdgesMap: new Map<ID, Set<Edge>>(),
+        outEdgesMap: new Map<ID, Set<Edge>>(),
+        rowsMap: new Map<ID, Set<Node>>(),
+        colsMap: new Map<ID, Set<Node>>(),
+        coordinateMap: new Map<string, Node>(),
+        completed: false,
+        sortIndex: Object.values(projects).length + 1,
+        editable: true,
+        createTime: faker.date.between({ from: '1900/1/1', to: '2024/3/20' }).valueOf(),
+        data: shallowReactive({ graph: null }),
+        offset: { x: 0, y: 0 }
+      }
+      addProject(project)
+      return project.id
+    }
+
     /**
      * Adds the specified number of days to the current date/time.
      *
@@ -438,18 +496,15 @@ export const useStore = defineStore('store', () => {
       )
     }
 
-    const moveLeft = (nodeId: ID, project: Project, currentX: number) => {
+    const moveLeft = (nodeId: ID, project: Project) => {
       const node = project.nodesMap.get(nodeId)
-      if (node.data.completed || node.data.x <= currentX) {
-        return false
-      }
 
       const predecessors = getPredecessors(nodeId, project)
         .filter((predecessor) => {
           return node.data.x - predecessor.data.x === UNIT_W
         })
 
-      if (predecessors.some((predecessor) => !moveLeft(predecessor.id, project, currentX))) {
+      if (predecessors.some((predecessor) => !moveLeft(predecessor.id, project))) {
         return false
       } else {
         let currentLeftNode = findLeftNode(nodeId, project)
@@ -460,6 +515,63 @@ export const useStore = defineStore('store', () => {
         updateNodePosition({ id: node.id, data: { x: node.data.x - UNIT_W, y: node.data.y } }, project)
         return true
       }
+    }
+
+    const appendNode = (nodeId: ID, project: Project) => {
+      moveRight(nodeId, project)
+      moveLeft(nodeId, project)
+      const { nodesMap, outEdgesMap } = project
+      const currentNode = nodesMap.get(nodeId)
+      const nextId = createNode(currentNode.data.x + UNIT_W, currentNode.data.y, project)
+      outEdgesMap.get(nodeId).forEach(edge => {
+        removeEdge(edge.id, project)
+        addEdge({
+          id: v4(),
+          source: nextId,
+          target: edge.target,
+          data: {
+            sourceAnchor: 1,
+            targetAnchor: 0
+          }
+        }, project)
+      })
+      addEdge({
+        id: v4(),
+        source: nodeId,
+        target: nextId,
+        data: {
+          sourceAnchor: 1,
+          targetAnchor: 0
+        }
+      }, project)
+    }
+
+    const insertNode = (nodeId: ID, project: Project) => {
+      moveRight(nodeId, project)
+      const { nodesMap, inEdgesMap } = project
+      const currentNode = nodesMap.get(nodeId)
+      const nextId = createNode(currentNode.data.x - UNIT_W, currentNode.data.y, project)
+      inEdgesMap.get(nodeId).forEach(edge => {
+        removeEdge(edge.id, project)
+        addEdge({
+          id: v4(),
+          source: edge.source,
+          target: nextId,
+          data: {
+            sourceAnchor: 1,
+            targetAnchor: 0
+          }
+        }, project)
+      })
+      addEdge({
+        id: v4(),
+        source: nextId,
+        target: nodeId,
+        data: {
+          sourceAnchor: 1,
+          targetAnchor: 0
+        }
+      }, project)
     }
 
     const dailyUpdate = () => {
@@ -506,6 +618,7 @@ export const useStore = defineStore('store', () => {
       currentTasks,
       updateNode,
       addNode,
+      createNode,
       addEdge,
       removeNode,
       removeEdge,
@@ -522,6 +635,8 @@ export const useStore = defineStore('store', () => {
       moveLeft,
       moveDown,
       moveUp,
+      appendNode,
+      insertNode,
       dailyUpdate,
       checkNodeOverlap,
       bfsOutEdge,
@@ -532,7 +647,8 @@ export const useStore = defineStore('store', () => {
       findAllDownNode,
       findRightNode,
       checkSameRelation,
-      currentX
+      currentX,
+      createProject
     }
   }
 )
