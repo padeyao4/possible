@@ -151,7 +151,9 @@ export function useLoadData() {
   const timer = ref()
   const store = useStore()
 
-  const db = import.meta.env?.VITE_TAURI === 'true' ? new Store('./db.dat') : new LocalStorageStore()
+  // windows下 store存储地址在 C:\Users\username\AppData\Roaming\com.github.padeyao4\db.dat
+  const db = import.meta.env?.VITE_TAURI === 'true' ? new Store(import.meta.env?.VITE_DATA_PATH??'./test.db') : new LocalStorageStore()
+
 
   function scheduleMidnightTask() {
     const now: Date = new Date()

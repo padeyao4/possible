@@ -1,14 +1,14 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
-    "beforeBuildCommand": "pnpm run build",
-    "beforeDevCommand": "pnpm run dev",
-    "devPath": "http://localhost:5173/possible/",
+    "beforeBuildCommand": "pnpm run build --mode prod",
+    "beforeDevCommand": "pnpm run dev --mode staging",
+    "devPath": "http://localhost:5173/",
     "distDir": "../dist"
   },
   "package": {
     "productName": "possible",
-    "version": "0.0.52"
+    "version": "0.0.54"
   },
   "tauri": {
     "allowlist": {
