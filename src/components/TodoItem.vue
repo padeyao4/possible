@@ -58,7 +58,6 @@ function onUpdate() {
   margin: 4px 0;
   height: 56px;
   border-radius: 4px;
-  width: calc(100vw - 24px * 2 - 240px);
   overflow-x: hidden;
   background: rgba(255, 255, 255, 0.8);
 

@@ -6,9 +6,11 @@ import { useSettings } from '@/stores/settings'
 const settings = useSettings()
 
 onMounted(() => {
-  appWindow.isMaximized().then((r) => {
-    settings.isMaximize = r
-  })
+  if(showTitlebar){
+    appWindow.isMaximized().then((r) => {
+      settings.isMaximize = r
+    })
+  }
 })
 
 function onMaximize() {
