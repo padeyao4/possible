@@ -46,16 +46,16 @@ const currentProject = computed(() => store.projects[route.params.id as string])
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
 }
 
 header {
+  display: flex;
+  align-items: center;
   outline: none;
-  height: 80px;
+  height: 40px;
   font-size: 20px;
-  -webkit-app-region: no-drag;
-  user-select: none;
-  width: calc(100vw - 240px);
-  padding: 24px 24px 24px 24px;
+  margin: 24px;
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
@@ -63,12 +63,12 @@ header {
 
 main {
   display: flex;
-  height: calc(100vh - 48px - 80px);
+  height: calc(100vh - 48px - 88px);
   flex-direction: column;
 
   .content {
     width: 100%;
-    height: calc(100vh - 48px - 80px - 40px);
+    height: calc(100vh - 24px * 2 - 88px - 40px);;
     display: flex;
     flex-direction: row;
   }

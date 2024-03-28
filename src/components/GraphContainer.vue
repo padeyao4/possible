@@ -143,6 +143,7 @@ onBeforeUnmount(() => {
 <style scoped>
 #graph-container {
   width: calc(100vw - 24px * 2 - 240px);
+  height: 100%;
   min-width: 1px !important;
 }
 </style>
