@@ -6,7 +6,10 @@ import { useLoadData } from '@/utils/data-util'
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import Draggable from 'vuedraggable/src/vuedraggable'
+import WindowTitlebar from '@/components/WindowTitlebar.vue'
+import { useSettings } from '@/stores/settings'
 
+const settings = useSettings()
 const route = useRoute()
 const store = useStore()
 const { isActive } = store
@@ -60,10 +63,15 @@ const count = computed(() => {
   return store.currentTasks.filter(task => !task.data.completed).length
 })
 
+const isMaximized = computed(() => {
+  return import.meta.env?.VITE_TITLEBAR === 'true' && settings.isMaximize
+})
+
 </script>
 
 <template>
-  <main @contextmenu.prevent>
+  <main @contextmenu.prevent :class="{'maximize-window':isMaximized}">
+    <window-titlebar/>
     <aside>
       <header>
         <div :class="['selected-item','today-layout', { selected: isActive('/today') }]"
@@ -126,6 +134,12 @@ const count = computed(() => {
 main {
   display: flex;
   background: var(--background);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.maximize-window {
+  border-radius: 0;
 }
 
 aside {
@@ -134,6 +148,7 @@ aside {
   flex-shrink: 0;
   width: 240px;
   height: 100vh;
+  padding-top: 24px;
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
   rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }

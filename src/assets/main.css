@@ -26,12 +26,11 @@ body {
     Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     font-size: 15px;
     text-rendering: optimizeLegibility;
-    border-radius: 8px;
-    overflow: hidden;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    background: rgba(255, 255, 255, 0);
 }
 
 
