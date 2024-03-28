@@ -76,6 +76,10 @@
         "decorations": false,
         "transparent": true
       }
-    ]
+    ],
+    "systemTray": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
+    }
   }
 }

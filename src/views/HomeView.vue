@@ -18,9 +18,9 @@ const todayTime = computed(() => (
 
 <template>
   <div id="home-view">
-    <header>
-      <div>我的一天</div>
-      <div>{{ todayTime }}</div>
+    <header data-tauri-drag-region>
+      <div data-tauri-drag-region>我的一天</div>
+      <div data-tauri-drag-region>{{ todayTime }}</div>
     </header>
     <main>
       <todo-item />

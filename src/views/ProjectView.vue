@@ -21,7 +21,7 @@ const currentProject = computed(() => store.projects[route.params.id as string])
 
 <template>
   <div id="project-view">
-    <header>{{ currentProject.name }}</header>
+    <header data-tauri-drag-region>{{ currentProject.name }}</header>
     <main>
       <graph-timer-header />
       <div class="content">

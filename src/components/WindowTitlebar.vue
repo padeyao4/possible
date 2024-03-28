@@ -53,9 +53,10 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
 <style scoped>
 .titlebar {
   height: 24px;
-  border-radius: 0 8px 0 8px;
+  border-radius: 8px 8px 0 0;
   overflow: hidden;
   background: rgba(0, 0, 0, 0);
+  margin: 3px 3px 0 3px;
   user-select: none;
   display: flex;
   justify-content: flex-end;
@@ -74,7 +75,7 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
   justify-content: center;
   align-items: center;
   width: 48px;
-  height: 24px;
+  height: 21px;
 }
 
 .titlebar-button:hover {

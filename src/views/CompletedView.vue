@@ -31,7 +31,7 @@ function formatDate(e: any) {
 
 <template>
   <div id="completed-view">
-    <header>
+    <header data-tauri-drag-region>
       已完成项目
     </header>
     <main>
