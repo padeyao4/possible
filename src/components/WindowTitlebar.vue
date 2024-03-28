@@ -6,7 +6,7 @@ import { useSettings } from '@/stores/settings'
 const settings = useSettings()
 
 onMounted(() => {
-  if(showTitlebar){
+  if (showTitlebar) {
     appWindow.isMaximized().then((r) => {
       settings.isMaximize = r
     })
@@ -21,6 +21,10 @@ function onMaximize() {
       })
     })
   })
+}
+
+function onClose() {
+  appWindow.hide()
 }
 
 const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
@@ -44,7 +48,7 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
         alt="maximize"
       />
     </div>
-    <div class="titlebar-button" id="titlebar-close" @click="appWindow.close()">
+    <div class="titlebar-button" id="titlebar-close" @click="onClose">
       <img src="https://api.iconify.design/mdi:close.svg" alt="close" />
     </div>
   </div>
@@ -79,6 +83,6 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
 }
 
 .titlebar-button:hover {
-  background: rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.1);
 }
 </style>
