@@ -2,6 +2,7 @@
 import { appWindow } from '@tauri-apps/api/window'
 import { onMounted } from 'vue'
 import { useSettings } from '@/stores/settings'
+import { Icon } from '@iconify/vue'
 
 const settings = useSettings()
 
@@ -36,20 +37,14 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
     v-if="showTitlebar"
     data-tauri-drag-region
     :class="['titlebar',{'cancel-radius':settings.isMaximize}]">
-    <div class="titlebar-button" id="titlebar-minimize" @click="appWindow.minimize()">
-      <img
-        src="https://api.iconify.design/mdi:window-minimize.svg"
-        alt="minimize"
-      />
+    <div class="titlebar-button system-icon-other" id="titlebar-minimize" @click="appWindow.minimize()">
+      <Icon icon="clarity:window-min-line" width="20" height="20" class="system-icon" />
     </div>
-    <div class="titlebar-button" id="titlebar-maximize" @click="onMaximize">
-      <img
-        src="https://api.iconify.design/mdi:window-maximize.svg"
-        alt="maximize"
-      />
+    <div class="titlebar-button system-icon-other" id="titlebar-maximize" @click="onMaximize">
+      <Icon icon="clarity:window-max-line" width="20" height="20" class="system-icon" />
     </div>
-    <div class="titlebar-button" id="titlebar-close" @click="onClose">
-      <img src="https://api.iconify.design/mdi:close.svg" alt="close" />
+    <div class="titlebar-button system-icon-close" id="titlebar-close" @click="onClose">
+      <Icon icon="clarity:window-close-line" width="20" height="20" class="system-icon" />
     </div>
   </div>
 </template>
@@ -82,7 +77,20 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
   height: 21px;
 }
 
-.titlebar-button:hover {
-  background: rgba(0, 0, 0, 0.1);
+.system-icon-other:hover {
+  background: rgba(0, 0, 0, 0.06);
 }
+
+.system-icon {
+  color: #6f6f6f;
+}
+
+.system-icon-close:hover {
+  background: #c73d3d;
+
+  & > * {
+    color: #edeef2;
+  }
+}
+
 </style>

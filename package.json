@@ -36,6 +36,7 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
+    "@iconify/vue": "^4.1.1",
     "@rushstack/eslint-patch": "^1.10.0",
     "@tauri-apps/cli": "^1.5.11",
     "@tsconfig/node20": "^20.1.4",
