@@ -96,6 +96,7 @@ function onUpdate() {
     }
 
     .second-line {
+      font-weight: 250;
       margin: 0 0 0 28px;
       overflow-x: hidden;
       min-width: 0;

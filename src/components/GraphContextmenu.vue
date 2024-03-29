@@ -87,8 +87,8 @@ function onInsert(){
       <ul v-if="store.actionState==='node:contextmenu'">
         <li @click="onAppend">追加</li>
         <li @click="onInsert">插入</li>
-        <li @click="moveRight">单体右移</li>
-        <li @click="moveLeft">单体左移</li>
+        <li @click="moveRight">右移</li>
+        <li @click="moveLeft">左移</li>
         <li @click="moveUp">整体上移</li>
         <li @click="moveDown">整体下移</li>
         <li @click="handleDelete">删除</li>

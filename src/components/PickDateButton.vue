@@ -5,6 +5,7 @@ import { Inspection } from '@icon-park/vue-next'
 import { useStore } from '@/stores/store'
 import { dateToX } from '@/utils/time'
 import { useRoute } from 'vue-router'
+import { OFFSET_X, OFFSET_Y } from '@/configs/constant'
 
 const store = useStore()
 const route = useRoute()
@@ -26,9 +27,9 @@ function onActive(e: any) {
 
 function onEnter(e: any) {
   if (date.value) {
-    const offset = dateToX(date.value, currentProject.createTime) - 60
+    const offset = dateToX(date.value, currentProject.createTime)
     const { x, y } = currentProject.data.graph.getCanvasByViewport({ x: 0, y: 0 })
-    currentProject.data.graph.translate({ dx: x - offset, dy: y })
+    currentProject.data.graph.translate({ dx: x - offset + OFFSET_X, dy: y + OFFSET_Y })
   }
   e?.target?.blur()
   active.value = false

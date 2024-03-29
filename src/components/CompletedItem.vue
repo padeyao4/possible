@@ -84,6 +84,7 @@ const completedTasks = computed(() => {
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow-x: hidden;
+      font-weight: 250;
     }
   }
 }

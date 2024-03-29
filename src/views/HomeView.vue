@@ -59,7 +59,7 @@ header {
 
   & div:nth-child(2) {
     font-size: 14px;
-    font-weight: 1;
+    font-weight: 300;
     color: rgba(0, 0, 0, 0.8);
   }
 }

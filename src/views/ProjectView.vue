@@ -3,9 +3,6 @@ import GraphContextmenu from '@/components/GraphContextmenu.vue'
 import GraphEditor from '@/components/GraphEditor.vue'
 import PickDateButton from '@/components/PickDateButton.vue'
 import ResetButton from '@/components/ResetButton.vue'
-import TestButton from '@/components/TestButton.vue'
-import TestRestoreButton from '@/components/TestRestoreButton.vue'
-import TestRightButton from '@/components/TestRightButton.vue'
 import GraphTimerHeader from '@/components/GraphTimerHeader.vue'
 import { useStore } from '@/stores/store'
 import { computed } from 'vue'
@@ -34,9 +31,6 @@ const currentProject = computed(() => store.projects[route.params.id as string])
     <footer>
       <reset-button />
       <pick-date-button />
-      <test-button />
-      <test-right-button />
-      <test-restore-button />
     </footer>
   </div>
 </template>

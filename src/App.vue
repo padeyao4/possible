@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import router from '@/router'
-import { useStore } from '@/stores/store'
-import { Config, DeleteFour, Drag, ListSuccess, Plus, Sun, Write } from '@icon-park/vue-next'
+import { type Project, useStore } from '@/stores/store'
+import { DeleteFour, Drag, ListSuccess, Plus, Sun, Write } from '@icon-park/vue-next'
 import { useLoadData } from '@/utils/data-util'
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -22,7 +22,6 @@ const projects = computed({
       .filter(project => project.completed === false)
       .sort((p1, p2) => p1.sortIndex - p2.sortIndex)
   },
-  // 空函数用于消除告警
   set: () => {
   }
 })
@@ -67,11 +66,18 @@ const isMaximized = computed(() => {
   return import.meta.env?.VITE_TITLEBAR === 'true' && settings.isMaximize
 })
 
+function onCheckInputSubmit(model: Project) {
+  if (model.name.trim() === '') {
+    model.name = '无标题列表'
+  }
+  model.editable = false
+}
+
 </script>
 
 <template>
   <main @contextmenu.prevent :class="{'maximize-window':isMaximized}">
-    <window-titlebar/>
+    <window-titlebar />
     <aside>
       <header>
         <div :class="['selected-item','today-layout', { selected: isActive('/today') }]"
@@ -95,10 +101,11 @@ const isMaximized = computed(() => {
                    ghostClass="ghost-class" :forceFallback="true" @update="onUpdateSort">
           <template #item="{ element }">
             <div @click="linkTo(`/project/${element.id}`)"
-                 :class="['selected-item', { selected: isActive(`/project/${element.id}`) }]" :key="element.id">
+                 :class="['selected-item', { selected: isActive(`/project/${element.id}`) }]"
+                 :key="element.id">
               <input v-if="element.editable && isActive(`/project/${element.id}`)" :ref="handleInputRef"
-                     v-model="element.name" @blur="element.editable = false"
-                     @keydown.enter="element.editable = false" />
+                     v-model="element.name" @blur="onCheckInputSubmit(element)"
+                     @keydown.enter="onCheckInputSubmit(element)" />
               <div v-else class="project-item">
                 <div class="info">{{ element.name }}</div>
                 <div class="operation">
@@ -117,10 +124,6 @@ const isMaximized = computed(() => {
           <plus theme="multi-color" size="20" :fill="['#333' ,'#2F88FF' ,'#FFF' ,'#43CCF8']" :strokeWidth="3"
                 strokeLinecap="butt" class="item-icon" />
           新建项目
-        </div>
-        <div :class="['selected-item', 'settings-button', { 'selected': isActive('/settings') }]"
-             @click="linkTo('/settings')">
-          <config theme="outline" size="24" fill="#333" :strokeWidth="2" class="setting-icon" />
         </div>
       </footer>
     </aside>
@@ -310,4 +313,5 @@ input {
   justify-content: center;
   align-items: center;
 }
+
 </style>
