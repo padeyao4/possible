@@ -9,6 +9,7 @@ import { faker } from '@faker-js/faker'
 import { v4 } from 'uuid'
 import { normalX, normalY } from '@/utils/position-util'
 import log from 'loglevel'
+import type { PointLike } from '@antv/g'
 
 export interface Node {
   id: ID
@@ -72,7 +73,7 @@ export const useStore = defineStore('store', () => {
 
     const actionState = ref<'none' | 'dragend' | 'edit' | 'node:contextmenu' | 'canvas:contextmenu' | 'edge:contextmenu'>('none')
 
-    const mousePosition = ref<{ x: number, y: number }>({ x: 0, y: 0 })
+    const mousePosition = ref<PointLike>({ x: 0, y: 0 })
 
     /**
      * 更新节点坐标
@@ -187,7 +188,7 @@ export const useStore = defineStore('store', () => {
         {
           id: v4(),
           data: {
-            name: faker.person.fullName(),
+            name: '无名称任务',
             x: posX,
             y: posY,
             detail: '',
@@ -339,7 +340,7 @@ export const useStore = defineStore('store', () => {
       const defaultOffsetX = dateToX(currentTime.value, projectCreateTime) - OFFSET_X
       const project = {
         id: v4(),
-        name: faker.finance.currencyName(),
+        name: '无标题列表',
         nodesMap: new Map<ID, Node>(),
         edgesMap: new Map<ID, Edge>(),
         inEdgesMap: new Map<ID, Set<Edge>>(),
