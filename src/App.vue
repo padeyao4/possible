@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import router from '@/router'
 import { type Project, useStore } from '@/stores/store'
-import { DeleteFour, Drag, ListSuccess, Plus, Sun, Write } from '@icon-park/vue-next'
+import { DeleteFour, Drag, ListSuccess, Plus, Sun, Write,Config } from '@icon-park/vue-next'
 import { useLoadData } from '@/utils/data-util'
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -124,6 +124,10 @@ function onCheckInputSubmit(model: Project) {
           <plus theme="multi-color" size="20" :fill="['#333' ,'#2F88FF' ,'#FFF' ,'#43CCF8']" :strokeWidth="3"
                 strokeLinecap="butt" class="item-icon" />
           新建项目
+        </div>
+        <div :class="['selected-item', 'settings-button', { 'selected': isActive('/settings') }]"
+             @click="linkTo('/settings')">
+          <config theme="outline" size="24" fill="#333" :strokeWidth="2" class="setting-icon" />
         </div>
       </footer>
     </aside>
