@@ -178,6 +178,7 @@ footer {
   flex-shrink: 0;
   justify-content: center;
   align-items: center;
+  height: 48px;
   box-shadow: rgba(27, 31, 35, 0.06) 0 -1px 0,
   rgba(255, 255, 255, 0.25) 0 -1px 0 inset;
 }
