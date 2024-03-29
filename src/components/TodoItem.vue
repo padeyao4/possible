@@ -41,7 +41,7 @@ function onUpdate() {
                 {{ element.data.name }}
               </div>
             </div>
-            <div class="second-line">{{ element.data.project.name }}</div>
+            <div class="second-line">{{ store.projects[element.data.projectId].name }}</div>
           </div>
           <Drag theme="outline" size="20" fill="#333" :stroke-width="2" class="move-bar" />
         </div>

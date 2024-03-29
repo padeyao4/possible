@@ -20,10 +20,7 @@ export interface Node {
     record: string
     completed: boolean
     sortedIndex: number
-    project: {
-      id: ID,
-      name: string
-    }
+    projectId: ID
   }>
 }
 
@@ -35,7 +32,7 @@ export interface Edge {
 }
 
 export interface Project {
-  id: string
+  id: ID
   name: string
   nodesMap: Map<ID, Node>
   edgesMap: Map<ID, Edge>
@@ -197,10 +194,7 @@ export const useStore = defineStore('store', () => {
             record: '',
             completed: false,
             sortedIndex: -1,
-            project: {
-              id: project.id,
-              name: project.name
-            }
+            projectId: project.id
           }
         }, project
       )
@@ -598,7 +592,7 @@ export const useStore = defineStore('store', () => {
         .filter(project => !project.completed)
         .map(project => {
           const currentX = dateToX(currentTime.value, project.createTime)
-          return [...project.nodesMap.values()]
+          return Array.from(project.nodesMap.values())
             .filter(node => node.data.x === currentX)
         }).flat()
     })

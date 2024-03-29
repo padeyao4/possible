@@ -26,7 +26,7 @@ const completedTasks = computed(() => {
             </div>
             <del>{{ task.data.name }}</del>
           </div>
-          <div class="second-line">{{ task.data.project.name }}</div>
+          <div class="second-line">{{ store.projects[task.data.projectId].name }}</div>
         </div>
       </div>
     </template>
