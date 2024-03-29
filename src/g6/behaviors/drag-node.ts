@@ -1,12 +1,11 @@
 import { Extensions, type IG6GraphEvent } from '@antv/g6'
 import { normalX, normalY } from '@/utils/position-util.js'
 import { useStore } from '@/stores/store'
-import { dateToX } from '@/utils/time'
 import { useRoute } from 'vue-router'
 
 const DEFAULT_CONFIG = {
   // 鼠标左键生效
-  shouldBegin: (event) => event.button === 0
+  shouldBegin: (event:any) => event.button === 0
 }
 
 export default class DragNode extends Extensions.BaseBehavior {
@@ -23,15 +22,12 @@ export default class DragNode extends Extensions.BaseBehavior {
     data: {
       x: 0,
       y: 0,
-      completed: false
     }
   }
 
   store = useStore()
   route = useRoute()
   currentProject = this.store.projects[this.route.params.id as string]
-
-  currentX = 0
 
   constructor(options: any) {
     super(Object.assign({}, DEFAULT_CONFIG, options))
@@ -46,7 +42,7 @@ export default class DragNode extends Extensions.BaseBehavior {
     }
   }
 
-  onPointerDown(e) {
+  onPointerDown(e:any) {
     if (!this.options.shouldBegin(e)) return
 
     // 解决鼠标拖出画布无法监听事件
@@ -66,13 +62,10 @@ export default class DragNode extends Extensions.BaseBehavior {
       data: {
         x: model.data.x,
         y: model.data.y,
-        completed: model.data.completed as boolean
       }
     }
     this.pointerDown = true
     this.pointerDownPosition = { x: e.canvas.x, y: e.canvas.y }
-
-    this.currentX = dateToX(this.store.currentTime, this.currentProject.createTime)
   }
 
   onPointerMove(e: IG6GraphEvent) {
@@ -87,12 +80,11 @@ export default class DragNode extends Extensions.BaseBehavior {
     const dstX = x - this.pointerDownPosition.x + e.canvas.x
     const dstY = y - this.pointerDownPosition.y + e.canvas.y
 
-    this.graph.updateData('node', {
+    this.graph.updateNodePosition({
       id: this.originNodeData.id,
       data: {
         x: dstX,
-        y: dstY,
-        completed: normalX(dstX) < this.currentX || this.originNodeData.data.completed
+        y: dstY
       }
     })
   }
@@ -121,7 +113,7 @@ export default class DragNode extends Extensions.BaseBehavior {
     const dx = x - this.originNodeData.data.x
 
     if (dx > 0) {
-      const outBound = this.graph.getSuccessors(nodeId)
+      const outBound = this.store.getSuccessors(nodeId,this.currentProject)
         .map(model => model.data.x)
         .some(x => nextX >= x)
       if (outBound) {
@@ -131,7 +123,7 @@ export default class DragNode extends Extensions.BaseBehavior {
     }
 
     if (dx < 0) {
-      const outBound = this.graph.getPredecessors(nodeId)
+      const outBound = this.store.getPredecessors(nodeId,this.currentProject)
         .map(model => model.data.x)
         .some(x => nextX <= x)
       if (outBound) {
@@ -151,7 +143,7 @@ export default class DragNode extends Extensions.BaseBehavior {
     this.store.updateNode({
       id: this.originNodeData.id,
       data: {
-        x, y, completed: x < this.currentX || this.originNodeData.data.completed
+        x, y
       }
     }, this.currentProject)
   }

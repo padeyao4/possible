@@ -1,18 +1,29 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
-    "beforeBuildCommand": "pnpm run build",
-    "beforeDevCommand": "pnpm run dev",
-    "devPath": "http://localhost:5173",
+    "beforeBuildCommand": "pnpm run build --mode prod",
+    "beforeDevCommand": "pnpm run dev --mode staging",
+    "devPath": "http://localhost:5173/",
     "distDir": "../dist"
   },
   "package": {
     "productName": "possible",
-    "version": "0.0.52"
+    "version": "0.1.0"
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "all": false,
+      "window": {
+        "all": false,
+        "close": true,
+        "hide": true,
+        "show": true,
+        "maximize": true,
+        "minimize": true,
+        "unmaximize": true,
+        "unminimize": true,
+        "startDragging": true
+      }
     },
     "bundle": {
       "active": true,
@@ -61,8 +72,14 @@
         "title": "possible",
         "width": 800,
         "minHeight": 600,
-        "minWidth": 800
+        "minWidth": 800,
+        "decorations": false,
+        "transparent": true
       }
-    ]
+    ],
+    "systemTray": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
+    }
   }
 }

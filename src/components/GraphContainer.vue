@@ -13,9 +13,8 @@ import CreateEdge from '@/g6/behaviors/create-edge'
 import { HoverNode } from '@/g6/behaviors/hover-node'
 import DoubleClickNode from '@/g6/behaviors/double-click-node'
 import ContextMenu from '@/g6/behaviors/context-menu'
-import { dateToX } from '@/utils/time'
-import { OFFSET_X } from '@/configs/constant'
 import log from 'loglevel'
+import { HoverEdge } from '@/g6/behaviors/hover-edge'
 
 const container = ref()
 const store = useStore()
@@ -35,7 +34,7 @@ onMounted(() => {
   const ExtGraph = extend(CustomGraph, {
     nodes: { CardNode },
     plugins: { GridPlugin },
-    behaviors: { CreateNode, DragCanvas, DragNode, CreateEdge, HoverNode, DoubleClickNode, ContextMenu }
+    behaviors: { CreateNode, DragCanvas, DragNode, CreateEdge, HoverNode, DoubleClickNode, ContextMenu, HoverEdge }
   })
 
   const graph = new ExtGraph({
@@ -44,7 +43,7 @@ onMounted(() => {
     height: container.value.clientHeight,
     plugins: ['GridPlugin'],
     modes: {
-      default: ['DragCanvas', 'CreateNode', 'DragNode', 'CreateEdge', 'HoverNode', 'DoubleClickNode', 'ContextMenu']
+      default: ['DragCanvas', 'CreateNode', 'DragNode', 'CreateEdge', 'HoverNode', 'DoubleClickNode', 'ContextMenu', 'HoverEdge']
     },
     node: (model) => {
       const { id, data } = model
@@ -74,6 +73,17 @@ onMounted(() => {
         }
       } as any
     },
+    edge: (model) => {
+      const { id, source, target, data } = model
+      return {
+        id, source, target,
+        data: {
+          sourceAnchor: 1,
+          targetAnchor: 0,
+          ...data
+        }
+      }
+    },
     nodeState: {
       hover: {
         anchorShapes: [
@@ -94,13 +104,25 @@ onMounted(() => {
         ]
       }
     },
+    edgeState: {
+      hover: {
+        keyShape: {
+          strokeWidth: 2,
+          cursor: 'pointer'
+        }
+      }
+    },
     data: {
       nodes: [...currentProject.nodesMap.values()],
       edges: [...currentProject.edgesMap.values()]
     }
   }) as any
 
-  translateToToday(graph)
+  graph.translate({
+    dx: -currentProject.offset.x,
+    dy: -currentProject.offset.y
+  }).then(() => log.debug('graph translate to before location'))
+
   currentProject.data.graph = graph
 
   window.addEventListener('resize', resize)
@@ -108,14 +130,10 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', resize)
+  currentProject.offset = currentProject.data.graph.getCanvasByViewport({ x: 0, y: 0 })
   currentProject.data.graph = null
 })
 
-function translateToToday(graph: CustomGraph) {
-  const { x, y } = graph.getCanvasByViewport({ x: 0, y: 0 })
-  const currentX = dateToX(store.currentTime, currentProject.createTime)
-  graph.translate({ dx: x - currentX + OFFSET_X, dy: y }).then(() => log.debug('graph translate to today'))
-}
 </script>
 
 <template>
@@ -125,6 +143,7 @@ function translateToToday(graph: CustomGraph) {
 <style scoped>
 #graph-container {
   width: calc(100vw - 24px * 2 - 240px);
+  height: 100%;
   min-width: 1px !important;
 }
 </style>

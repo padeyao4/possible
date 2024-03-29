@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import router from '@/router'
-import { type Edge, type Node, useStore } from '@/stores/store'
-import type { ID } from '@antv/g6'
-import { faker } from '@faker-js/faker'
-import { Config, DeleteFour, Drag, ListSuccess, Plus, Sun, Write } from '@icon-park/vue-next'
-import { v4 } from 'uuid'
+import { type Project, useStore } from '@/stores/store'
+import { DeleteFour, Drag, ListSuccess, Plus, Sun, Write,Config } from '@icon-park/vue-next'
 import { useLoadData } from '@/utils/data-util'
-import { computed, onMounted, shallowReactive } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import Draggable from 'vuedraggable/src/vuedraggable'
+import WindowTitlebar from '@/components/WindowTitlebar.vue'
+import { useSettings } from '@/stores/settings'
 
+const settings = useSettings()
 const route = useRoute()
 const store = useStore()
 const { isActive } = store
@@ -22,7 +22,6 @@ const projects = computed({
       .filter(project => project.completed === false)
       .sort((p1, p2) => p1.sortIndex - p2.sortIndex)
   },
-  // 空函数用于消除告警
   set: () => {
   }
 })
@@ -34,23 +33,7 @@ function onUpdateSort() {
 }
 
 function createProject() {
-  const id = v4()
-  store.addProject({
-    id,
-    name: faker.finance.currencyName(),
-    nodesMap: new Map<ID, Node>(),
-    edgesMap: new Map<ID, Edge>(),
-    inEdgesMap: new Map<ID, Set<Edge>>(),
-    outEdgesMap: new Map<ID, Set<Edge>>(),
-    rowsMap: new Map<ID, Set<Node>>(),
-    colsMap: new Map<ID, Set<Node>>(),
-    coordinateMap: new Map<string, Node>(),
-    completed: false,
-    sortIndex: projects.value.length + 1,
-    editable: true,
-    createTime: faker.date.between({ from: '1900/1/1', to: '2024/3/20' }).valueOf(),
-    data: shallowReactive({ graph: null })
-  })
+  const id = store.createProject()
   linkTo(`/project/${id}`)
 }
 
@@ -67,8 +50,7 @@ onMounted(() => {
 function handleComplete(evt: any, element: any) {
   evt.stopPropagation()
   element.completed = true
-  store.setSelected('completed')
-  router.push('/completed')
+  linkTo('/completed')
 }
 
 function linkTo(uri: string) {
@@ -80,10 +62,22 @@ const count = computed(() => {
   return store.currentTasks.filter(task => !task.data.completed).length
 })
 
+const isMaximized = computed(() => {
+  return import.meta.env?.VITE_TITLEBAR === 'true' && settings.isMaximize
+})
+
+function onCheckInputSubmit(model: Project) {
+  if (model.name.trim() === '') {
+    model.name = '无标题列表'
+  }
+  model.editable = false
+}
+
 </script>
 
 <template>
-  <main @contextmenu.prevent>
+  <main @contextmenu.prevent :class="{'maximize-window':isMaximized}">
+    <window-titlebar />
     <aside>
       <header>
         <div :class="['selected-item','today-layout', { selected: isActive('/today') }]"
@@ -107,10 +101,11 @@ const count = computed(() => {
                    ghostClass="ghost-class" :forceFallback="true" @update="onUpdateSort">
           <template #item="{ element }">
             <div @click="linkTo(`/project/${element.id}`)"
-                 :class="['selected-item', { selected: isActive(`/project/${element.id}`) }]" :key="element.id">
+                 :class="['selected-item', { selected: isActive(`/project/${element.id}`) }]"
+                 :key="element.id">
               <input v-if="element.editable && isActive(`/project/${element.id}`)" :ref="handleInputRef"
-                     v-model="element.name" @blur="element.editable = false"
-                     @keydown.enter="element.editable = false" />
+                     v-model="element.name" @blur="onCheckInputSubmit(element)"
+                     @keydown.enter="onCheckInputSubmit(element)" />
               <div v-else class="project-item">
                 <div class="info">{{ element.name }}</div>
                 <div class="operation">
@@ -146,6 +141,12 @@ const count = computed(() => {
 main {
   display: flex;
   background: var(--background);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.maximize-window {
+  border-radius: 0;
 }
 
 aside {
@@ -154,7 +155,7 @@ aside {
   flex-shrink: 0;
   width: 240px;
   height: 100vh;
-  padding-top: 12px;
+  padding-top: 24px;
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
   rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
@@ -310,4 +311,11 @@ input {
 .today-layout {
   display: flex;
 }
+
+:deep(.icon) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 </style>

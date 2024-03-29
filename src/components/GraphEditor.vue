@@ -18,7 +18,7 @@ const visible = computed({
 
 
 const task = computed<Record<any, any>>(() => {
-  const data = store.selectedNode.data
+  const data = store.selectedItem.data
 
   return new Proxy(data, {
     get: (target, p) => {
@@ -27,7 +27,7 @@ const task = computed<Record<any, any>>(() => {
     set: (target, p, newValue) => {
       Reflect.set(target, p, newValue)
       store.updateNode({
-        id: store.selectedNode.id,
+        id: store.selectedItem.id,
         data: target
       }, currentProject)
       return true
@@ -42,7 +42,7 @@ const task = computed<Record<any, any>>(() => {
  */
 const isCompleted = computed(() => {
   const graph = currentProject.data.graph
-  const nodeId = store.selectedNode.id
+  const nodeId = store.selectedItem.id
   const models = graph.getAllPredecessors(nodeId)
   return models.every((model) => model.data.completed)
 })
@@ -54,7 +54,7 @@ const isCompleted = computed(() => {
  */
 const isPending = computed(() => {
   const graph = currentProject.data.graph
-  const nodeId = store.selectedNode.id
+  const nodeId = store.selectedItem.id
   const models = graph.getAllSuccessors(nodeId)
   return models.every((model) => !model.data.completed)
 })

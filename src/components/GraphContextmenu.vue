@@ -2,15 +2,26 @@
 import { computed, ref } from 'vue'
 import { useStore } from '@/stores/store'
 import { useRoute } from 'vue-router'
-import { dateToX } from '@/utils/time'
-import { createNode } from '@/utils/data-util'
 
+const contextmenuRef = ref<HTMLElement>()
 const store = useStore()
 const route = useRoute()
 const currentProject = store.projects[route.params.id as string]
 
 const visible = computed(() => {
-  return store.actionState === 'node:contextmenu' || store.actionState === 'canvas:contextmenu'
+  return store.actionState === 'node:contextmenu' || store.actionState === 'canvas:contextmenu' || store.actionState === 'edge:contextmenu'
+})
+
+const contextmenuPosition = computed(() => {
+  const { height, width } = document.body.getBoundingClientRect()
+  const { x, y } = currentProject.data.graph.getClientByCanvas(store.mousePosition)
+  const { clientWidth, clientHeight } = contextmenuRef.value ?? { clientWidth: 0, clientHeight: 0 }
+  const maxHeight = (y > height - clientHeight) ? height - clientHeight : y
+  const maxWidth = (x > width - clientWidth) ? x - clientWidth : x
+  return {
+    left: maxWidth + 'px',
+    top: maxHeight + 'px'
+  }
 })
 
 /**
@@ -19,7 +30,7 @@ const visible = computed(() => {
  * Removes the node data from the graph and closes the context menu.
  */
 function handleDelete() {
-  store.removeNode(store.selectedNode.id, currentProject)
+  store.removeNode(store.selectedItem.id, currentProject)
 }
 
 function onblur() {
@@ -34,38 +45,37 @@ function onRef(e: any) {
 }
 
 function moveRight() {
-  store.moveRight(store.selectedNode.id, currentProject)
+  store.moveRight(store.selectedItem.id, currentProject)
 }
 
 function moveLeft() {
-  store.moveLeft(store.selectedNode.id, currentProject, dateToX(store.currentTime, currentProject.createTime))
+  store.moveLeft(store.selectedItem.id, currentProject)
 }
 
 function moveDown() {
-  store.moveDown(store.selectedNode, currentProject)
+  store.moveDown(store.selectedItem, currentProject)
 }
 
 function moveUp() {
-  store.moveUp(store.selectedNode, currentProject)
+  store.moveUp(store.selectedItem, currentProject)
 }
 
-const contextmenuRef = ref<HTMLElement>()
-
-const contextmenuPosition = computed(() => {
-  const { height, width } = document.body.getBoundingClientRect()
-  const { x, y } = currentProject.data.graph.getClientByCanvas(store.mousePosition)
-  const { clientWidth, clientHeight } = contextmenuRef.value ?? { clientWidth: 0, clientHeight: 0 }
-  const maxHeight = (y > height - clientHeight) ? height - clientHeight : y
-  const maxWidth = (x > width - clientWidth) ? x - clientWidth : x
-  return {
-    left: maxWidth + 'px',
-    top: maxHeight + 'px'
-  }
-})
 
 function onCreateNode() {
   const { x, y } = store.mousePosition
-  createNode(x, y, currentProject)
+  store.createNode(x, y, currentProject)
+}
+
+function onDeleteEdge() {
+  store.removeEdge(store.selectedItem.id, currentProject)
+}
+
+function onAppend(){
+  store.appendNode(store.selectedItem.id, currentProject)
+}
+
+function onInsert(){
+  store.insertNode(store.selectedItem.id, currentProject)
 }
 
 </script>
@@ -75,11 +85,16 @@ function onCreateNode() {
     <div v-if="visible" class="contextmenu" :style="contextmenuPosition" @contextmenu.prevent :ref="onRef" tabindex="0"
          @blur="onblur" @click="onblur">
       <ul v-if="store.actionState==='node:contextmenu'">
-        <li @click="moveRight">单体右移</li>
-        <li @click="moveLeft">单体左移</li>
+        <li @click="onAppend">追加</li>
+        <li @click="onInsert">插入</li>
+        <li @click="moveRight">右移</li>
+        <li @click="moveLeft">左移</li>
         <li @click="moveUp">整体上移</li>
         <li @click="moveDown">整体下移</li>
         <li @click="handleDelete">删除</li>
+      </ul>
+      <ul v-else-if="store.actionState==='edge:contextmenu'">
+        <li @click="onDeleteEdge">删除</li>
       </ul>
       <ul v-else>
         <li @click="onCreateNode">新建</li>

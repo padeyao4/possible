@@ -1,8 +1,9 @@
 {
   "extends": "@tsconfig/node20/tsconfig.json",
   "include": [
-    "vite.config.*",
-    "vitest.config.*",
+    "vite.config.ts",
+    "vite.config.page.ts",
+    "vitest.config.ts",
     "cypress.config.*",
     "nightwatch.conf.*",
     "playwright.config.*"

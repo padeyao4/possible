@@ -26,7 +26,7 @@ const completedTasks = computed(() => {
             </div>
             <del>{{ task.data.name }}</del>
           </div>
-          <div class="second-line">{{ task.data.project.name }}</div>
+          <div class="second-line">{{ store.projects[task.data.projectId].name }}</div>
         </div>
       </div>
     </template>
@@ -39,7 +39,6 @@ const completedTasks = computed(() => {
   align-items: center;
   padding: 0 16px;
   margin: 4px 0;
-  width: calc(100vw - 240px - 24px * 2);
   height: 56px;
   border-radius: 4px;
   color: rgba(0, 0, 0, 0.3);
@@ -85,6 +84,7 @@ const completedTasks = computed(() => {
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow-x: hidden;
+      font-weight: 250;
     }
   }
 }

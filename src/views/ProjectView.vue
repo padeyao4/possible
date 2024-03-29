@@ -3,9 +3,6 @@ import GraphContextmenu from '@/components/GraphContextmenu.vue'
 import GraphEditor from '@/components/GraphEditor.vue'
 import PickDateButton from '@/components/PickDateButton.vue'
 import ResetButton from '@/components/ResetButton.vue'
-import TestButton from '@/components/TestButton.vue'
-import TestRestoreButton from '@/components/TestRestoreButton.vue'
-import TestRightButton from '@/components/TestRightButton.vue'
 import GraphTimerHeader from '@/components/GraphTimerHeader.vue'
 import { useStore } from '@/stores/store'
 import { computed } from 'vue'
@@ -21,7 +18,7 @@ const currentProject = computed(() => store.projects[route.params.id as string])
 
 <template>
   <div id="project-view">
-    <header>{{ currentProject.name }}</header>
+    <header data-tauri-drag-region>{{ currentProject.name }}</header>
     <main>
       <graph-timer-header />
       <div class="content">
@@ -34,9 +31,6 @@ const currentProject = computed(() => store.projects[route.params.id as string])
     <footer>
       <reset-button />
       <pick-date-button />
-      <test-button />
-      <test-right-button />
-      <test-restore-button />
     </footer>
   </div>
 </template>
@@ -46,16 +40,16 @@ const currentProject = computed(() => store.projects[route.params.id as string])
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
 }
 
 header {
+  display: flex;
+  align-items: center;
   outline: none;
-  height: 80px;
+  height: 40px;
   font-size: 20px;
-  -webkit-app-region: no-drag;
-  user-select: none;
-  width: calc(100vw - 240px);
-  padding: 24px 24px 24px 24px;
+  margin: 24px;
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
@@ -63,12 +57,12 @@ header {
 
 main {
   display: flex;
-  height: calc(100vh - 48px - 80px);
+  height: calc(100vh - 48px - 88px);
   flex-direction: column;
 
   .content {
     width: 100%;
-    height: calc(100vh - 48px - 80px - 40px);
+    height: calc(100vh - 24px * 2 - 88px - 40px);;
     display: flex;
     flex-direction: row;
   }

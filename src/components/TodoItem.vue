@@ -41,7 +41,7 @@ function onUpdate() {
                 {{ element.data.name }}
               </div>
             </div>
-            <div class="second-line">{{ element.data.project.name }}</div>
+            <div class="second-line">{{ store.projects[element.data.projectId].name }}</div>
           </div>
           <Drag theme="outline" size="20" fill="#333" :stroke-width="2" class="move-bar" />
         </div>
@@ -58,7 +58,6 @@ function onUpdate() {
   margin: 4px 0;
   height: 56px;
   border-radius: 4px;
-  width: calc(100vw - 24px * 2 - 240px);
   overflow-x: hidden;
   background: rgba(255, 255, 255, 0.8);
 
@@ -97,6 +96,7 @@ function onUpdate() {
     }
 
     .second-line {
+      font-weight: 250;
       margin: 0 0 0 28px;
       overflow-x: hidden;
       min-width: 0;

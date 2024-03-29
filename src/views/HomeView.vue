@@ -18,19 +18,14 @@ const todayTime = computed(() => (
 
 <template>
   <div id="home-view">
-    <div class="content">
-      <header>
-        <div id="main-title">我的一天</div>
-        <div id="sub-title">{{ todayTime }}</div>
-      </header>
-      <section>
-        <todo-item />
-        <completed-item />
-      </section>
-    </div>
-    <footer>
-      <!--todo-->
-    </footer>
+    <header data-tauri-drag-region>
+      <div data-tauri-drag-region>我的一天</div>
+      <div data-tauri-drag-region>{{ todayTime }}</div>
+    </header>
+    <main>
+      <todo-item />
+      <completed-item />
+    </main>
   </div>
 </template>
 
@@ -41,43 +36,38 @@ const todayTime = computed(() => (
   height: 100%;
   width: 100%;
   background: #82bbb5;
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  padding: 24px 24px 0 24px;
-  height: calc(100vh - 48px);
-}
-
-footer {
-  height: 48px;
-  box-shadow: rgba(27, 31, 35, 0.06) 0 -1px 0,
-  rgba(255, 255, 255, 0.25) 0 -1px 0 inset;
+  overflow: hidden;
 }
 
 header {
-  height: 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 58px;
   flex-shrink: 0;
+  margin: 24px 24px 12px 24px;
+  overflow-y: hidden;
+
+  & > * {
+    display: flex;
+    align-items: center;
+  }
+
+  & div:first-child {
+    font-size: 20px;
+  }
+
+  & div:nth-child(2) {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(0, 0, 0, 0.8);
+  }
 }
 
-section {
-  flex-grow: 1;
+main {
+  padding: 12px 24px 24px 24px;
+  height: calc(100vh - 24px * 3 - 58px);
   overflow-y: auto;
-}
-
-#main-title {
-  display: flex;
-  align-items: center;
-  font-size: 20px;
-}
-
-#sub-title {
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  font-weight: 1;
-  color: rgba(0, 0, 0, 0.8);
+  overflow-x: hidden;
 }
 </style>
