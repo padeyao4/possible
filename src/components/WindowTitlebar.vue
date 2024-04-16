@@ -1,27 +1,31 @@
 <script setup lang="ts">
 import { appWindow } from '@tauri-apps/api/window'
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { useSettings } from '@/stores/settings'
 import { Icon } from '@iconify/vue'
 
 const settings = useSettings()
 
+const listener = () => {
+  appWindow.isMaximized().then((r) => {
+    settings.isMaximize = r
+  })
+}
+
 onMounted(() => {
   if (showTitlebar) {
-    appWindow.isMaximized().then((r) => {
-      settings.isMaximize = r
-    })
+    window.addEventListener('resize', listener)
+  }
+})
+
+onUnmounted(() => {
+  if (showTitlebar) {
+    window.removeEventListener('resize', listener)
   }
 })
 
 function onMaximize() {
-  appWindow.toggleMaximize().then(() => {
-    setTimeout(() => {
-      appWindow.isMaximized().then((r) => {
-        settings.isMaximize = r
-      })
-    })
-  })
+  appWindow.toggleMaximize()
 }
 
 function onClose() {
@@ -37,7 +41,7 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
     v-if="showTitlebar"
     :class="['titlebar',{'cancel-radius':settings.isMaximize}]">
     <div class="drag-area" data-tauri-drag-region></div>
-    <div class="mouse-style">
+    <div v-if="!settings.isMaximize" class="mouse-style">
       <div class="top"></div>
       <div class="bottom"></div>
       <div class="left"></div>
@@ -130,7 +134,8 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
         cursor: w-resize;
       }
     }
-    .top-left{
+
+    .top-left {
       position: fixed;
       height: 5px;
       width: 5px;
@@ -141,7 +146,8 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
         cursor: nw-resize;
       }
     }
-    .top-right{
+
+    .top-right {
       position: fixed;
       height: 5px;
       width: 5px;
@@ -152,7 +158,8 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
         cursor: sw-resize;
       }
     }
-    .bottom-right{
+
+    .bottom-right {
       position: fixed;
       height: 5px;
       width: 5px;
@@ -163,7 +170,8 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
         cursor: nw-resize;
       }
     }
-    .bottom-left{
+
+    .bottom-left {
       position: fixed;
       height: 5px;
       width: 5px;
@@ -175,6 +183,10 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
       }
     }
   }
+}
+
+.cancel-radius {
+  border-radius: 0;
 }
 
 .titlebar-button {
