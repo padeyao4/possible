@@ -125,10 +125,10 @@ function onCheckInputSubmit(model: Project) {
                 strokeLinecap="butt" class="item-icon" />
           新建项目
         </div>
-<!--        <div :class="['selected-item', 'settings-button', { 'selected': isActive('/settings') }]"-->
-<!--             @click="linkTo('/settings')">-->
-<!--          <config theme="outline" size="24" fill="#333" :strokeWidth="2" class="setting-icon" />-->
-<!--        </div>-->
+        <div :class="['selected-item', 'settings-button', { 'selected': isActive('/settings') }]"
+             @click="linkTo('/settings')">
+          <config theme="outline" size="24" fill="#333" :strokeWidth="2" class="setting-icon" />
+        </div>
       </footer>
     </aside>
     <section>
