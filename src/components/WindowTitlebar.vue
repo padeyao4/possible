@@ -35,8 +35,8 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
 <template>
   <div
     v-if="showTitlebar"
-    data-tauri-drag-region
     :class="['titlebar',{'cancel-radius':settings.isMaximize}]">
+    <div class="drag-area" data-tauri-drag-region></div>
     <div class="titlebar-button system-icon-other" id="titlebar-minimize" @click="appWindow.minimize()">
       <Icon icon="clarity:window-min-line" width="20" height="20" class="system-icon" />
     </div>
@@ -55,7 +55,7 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
   border-radius: 8px 8px 0 0;
   overflow: hidden;
   background: rgba(0, 0, 0, 0);
-  margin: 3px 3px 0 3px;
+  margin: 0;
   user-select: none;
   display: flex;
   justify-content: flex-end;
@@ -65,16 +65,12 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
   right: 0;
 }
 
-.cancel-radius {
-  border-radius: 0;
-}
-
 .titlebar-button {
   display: inline-flex;
   justify-content: center;
   align-items: center;
   width: 48px;
-  height: 21px;
+  height: 24px;
 }
 
 .system-icon-other:hover {
@@ -91,6 +87,12 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
   & > * {
     color: #edeef2;
   }
+}
+
+.drag-area {
+  width: 100%;
+  height: 100%;
+  margin: 5px 0 0 5px;
 }
 
 </style>
