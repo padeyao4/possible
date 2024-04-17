@@ -2,7 +2,7 @@
 import router from '@/router'
 import { type Project, useStore } from '@/stores/store'
 import { DeleteFour, Drag, ListSuccess, Plus, Sun, Write,Config } from '@icon-park/vue-next'
-import { useLoadData } from '@/utils/data-util'
+import { loadData } from '@/utils/data-util'
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import Draggable from 'vuedraggable/src/vuedraggable'
@@ -15,7 +15,7 @@ const route = useRoute()
 const store = useStore()
 const { isActive } = store
 
-useLoadData()
+loadData()
 
 const projects = computed({
   get: () => {
