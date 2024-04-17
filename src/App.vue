@@ -8,6 +8,7 @@ import { useRoute } from 'vue-router'
 import Draggable from 'vuedraggable/src/vuedraggable'
 import WindowTitlebar from '@/components/WindowTitlebar.vue'
 import { useSettings } from '@/stores/settings'
+import ResizeCursorStyle from '@/components/ResizeCursorStyle.vue'
 
 const settings = useSettings()
 const route = useRoute()
@@ -76,8 +77,8 @@ function onCheckInputSubmit(model: Project) {
 </script>
 
 <template>
+  <window-titlebar />
   <main @contextmenu.prevent :class="{'maximize-window':isMaximized}">
-    <window-titlebar />
     <aside>
       <header>
         <div :class="['selected-item','today-layout', { selected: isActive('/today') }]"
@@ -135,6 +136,7 @@ function onCheckInputSubmit(model: Project) {
       <router-view :key="route.fullPath" />
     </section>
   </main>
+  <resize-cursor-style/>
 </template>
 
 <style scoped>
