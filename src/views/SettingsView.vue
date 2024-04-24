@@ -31,7 +31,6 @@
   rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
 
-
 header {
   height: 32px;
 }

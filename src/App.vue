@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import router from '@/router'
 import { type Project, useStore } from '@/stores/store'
-import { DeleteFour, Drag, ListSuccess, Plus, Sun, Write,Config } from '@icon-park/vue-next'
+import { DeleteFour, Drag, ListSuccess, Plus, Sun, Write, Config } from '@icon-park/vue-next'
 import { loadData } from '@/utils/data-util'
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -133,10 +133,14 @@ function onCheckInputSubmit(model: Project) {
       </footer>
     </aside>
     <section>
-      <router-view :key="route.fullPath" />
+      <router-view v-slot="{ Component }">
+        <transition name="none">
+          <component :is="Component" :key="route.fullPath" />
+        </transition>
+      </router-view>
     </section>
   </main>
-  <resize-cursor-style/>
+  <resize-cursor-style />
 </template>
 
 <style scoped>
