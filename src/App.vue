@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import router from '@/router'
 import { type Project, useStore } from '@/stores/store'
-import { DeleteFour, Drag, ListSuccess, Plus, Sun, Write, Config } from '@icon-park/vue-next'
+import { Config, DeleteFour, Drag, ListSuccess, Plus, Sun, Write } from '@icon-park/vue-next'
 import { loadData } from '@/utils/data-util'
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -9,6 +9,7 @@ import Draggable from 'vuedraggable/src/vuedraggable'
 import WindowTitlebar from '@/components/WindowTitlebar.vue'
 import { useSettings } from '@/stores/settings'
 import ResizeCursorStyle from '@/components/ResizeCursorStyle.vue'
+import { setDragCursor } from '@/utils/other-utils'
 
 const settings = useSettings()
 const route = useRoute()
@@ -26,12 +27,6 @@ const projects = computed({
   set: () => {
   }
 })
-
-function onUpdateSort() {
-  projects.value.forEach((value, index) => {
-    value.sortIndex = index
-  })
-}
 
 function createProject() {
   const id = store.createProject()
@@ -74,6 +69,32 @@ function onCheckInputSubmit(model: Project) {
   model.editable = false
 }
 
+function onDragstart() {
+  setDragCursor(true)
+  for (let element of document.getElementsByClassName('drag-class')) {
+    element.classList.add('selected')
+  }
+  for (let element of document.getElementsByClassName('slide-list')) {
+    element.classList.remove('operation-hover')
+  }
+}
+
+function onDragend() {
+  setDragCursor(false)
+  for (let element of document.getElementsByClassName('drag-class')) {
+    element.classList.remove('selected')
+  }
+  for (let element of document.getElementsByClassName('slide-list')) {
+    element.classList.add('operation-hover')
+  }
+}
+
+function onUpdate() {
+  projects.value.forEach((value, index) => {
+    value.sortIndex = index
+  })
+}
+
 </script>
 
 <template>
@@ -81,7 +102,7 @@ function onCheckInputSubmit(model: Project) {
   <main @contextmenu.prevent :class="{'maximize-window':isMaximized}">
     <aside>
       <header>
-        <div :class="['selected-item','today-layout', { selected: isActive('/today') }]"
+        <div :class="['selected-item','today-layout','common-hover', { selected: isActive('/today') }]"
              @click="linkTo('/today')">
           <div class="today-content">
             <sun theme="multi-color" size="20" :fill="['#333' ,'#2F88FF' ,'#FFF' ,'#43CCF8']" :strokeWidth="3"
@@ -90,7 +111,7 @@ function onCheckInputSubmit(model: Project) {
           </div>
           <div v-if="count!==0" class="counter-icon">{{ count }}</div>
         </div>
-        <div :class="['selected-item', { selected: isActive('/completed') }]"
+        <div :class="['selected-item','common-hover', { selected: isActive('/completed') }]"
              @click="linkTo('/completed')">
           <list-success theme="outline" size="20" fill="#333" :strokeWidth="3" strokeLinecap="butt"
                         class="item-icon" />
@@ -98,11 +119,19 @@ function onCheckInputSubmit(model: Project) {
         </div>
       </header>
       <div id="body">
-        <draggable :list="projects" item-key="id" chosenClass="chosen-class" dragClass="drag-class" handle=".move"
-                   ghostClass="ghost-class" :forceFallback="true" @update="onUpdateSort">
+        <draggable :list="projects" item-key="id"
+                   chosenClass="chosen-class"
+                   dragClass="drag-class"
+                   handle=".move"
+                   ghostClass="ghost-class"
+                   :forceFallback="true"
+                   animation="300"
+                   @start="onDragstart"
+                   @end="onDragend"
+                   @update="onUpdate">
           <template #item="{ element }">
             <div @click="linkTo(`/project/${element.id}`)"
-                 :class="['selected-item', { selected: isActive(`/project/${element.id}`) }]"
+                 :class="['selected-item', 'operation-hover', 'slide-list', { selected: isActive(`/project/${element.id}`) }]"
                  :key="element.id">
               <input v-if="element.editable && isActive(`/project/${element.id}`)" :ref="handleInputRef"
                      v-model="element.name" @blur="onCheckInputSubmit(element)"
@@ -113,7 +142,7 @@ function onCheckInputSubmit(model: Project) {
                   <write theme="outline" size="15" fill="#333" :strokeWidth="1" @click="element.editable = true" />
                   <delete-four theme="outline" size="15" fill="#333" :strokeWidth="1"
                                @click="(evt: any) => handleComplete(evt, element)" />
-                  <drag theme="outline" size="15" fill="#b9b9b9" :strokeWidth="1" class="move" />
+                  <drag theme="outline" size="15" fill="#b9b9b9" :strokeWidth="1" class="move move-bar" />
                 </div>
               </div>
             </div>
@@ -121,12 +150,12 @@ function onCheckInputSubmit(model: Project) {
         </draggable>
       </div>
       <footer>
-        <div @click="createProject" class="selected-item create-button">
+        <div @click="createProject" class="selected-item create-button common-hover">
           <plus theme="multi-color" size="20" :fill="['#333' ,'#2F88FF' ,'#FFF' ,'#43CCF8']" :strokeWidth="3"
                 strokeLinecap="butt" class="item-icon" />
           新建项目
         </div>
-        <div :class="['selected-item', 'settings-button', { 'selected': isActive('/settings') }]"
+        <div :class="['selected-item', 'settings-button','common-hover', { 'selected': isActive('/settings') }]"
              @click="linkTo('/settings')">
           <config theme="outline" size="24" fill="#333" :strokeWidth="2" class="setting-icon" />
         </div>
@@ -197,14 +226,23 @@ footer {
   padding: 0 4px;
   width: 100%;
   user-select: none;
+}
 
+.common-hover {
   &:hover {
     border-radius: 4px;
     background: var(--active);
   }
+}
 
+.operation-hover {
   &:hover .operation {
     display: flex;
+  }
+
+  &:hover {
+    border-radius: 4px;
+    background: var(--active);
   }
 }
 
@@ -264,7 +302,7 @@ input {
       }
     }
 
-    .move {
+    .move-bar {
       &:hover {
         cursor: grab;
       }

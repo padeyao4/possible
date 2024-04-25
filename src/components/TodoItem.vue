@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { CheckOne, Drag, Round } from '@icon-park/vue-next'
 import Draggable from 'vuedraggable'
 import { useStore } from '@/stores/store'
+import { setDragCursor } from '@/utils/other-utils'
 
 const store = useStore()
 
@@ -15,11 +16,6 @@ function onUpdate() {
   todoTasks?.value.forEach((value, index) => {
     value.data.sortedIndex = index
   })
-}
-
-const setDragCursor = (value: boolean) => {
-  const html = document.getElementsByTagName('html').item(0)
-  html.classList.toggle('grabbing', value)
 }
 
 
@@ -49,6 +45,7 @@ function onDragEnd() {
                handle=".move"
                ghostClass="ghost-class"
                :forceFallback="true"
+               animation="300"
                @end="onDragEnd"
                @start="onDragStart"
                @update="onUpdate">
@@ -136,7 +133,7 @@ function onDragEnd() {
     width: 32px;
     height: 48px;
     flex-shrink: 0;
-    cursor: move;
+    cursor: grab;
   }
 }
 
