@@ -41,6 +41,7 @@ onMounted(() => {
     container: container.value,
     width: container.value.clientWidth,
     height: container.value.clientHeight,
+    renderer: 'svg',
     plugins: ['GridPlugin'],
     modes: {
       default: ['DragCanvas', 'CreateNode', 'DragNode', 'CreateEdge', 'HoverNode', 'DoubleClickNode', 'ContextMenu', 'HoverEdge']

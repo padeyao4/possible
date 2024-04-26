@@ -84,3 +84,68 @@ body {
     /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);*/
     background-color: rgba(0, 0, 0, 0.5);
 }
+
+/**
+ * element-plus modal class
+ */
+.modal-class {
+}
+
+/**
+页面过渡特效
+ */
+
+/**
+fade style
+ */
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.25s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
+/**
+slide style
+ */
+.slide-enter-active,
+.slide-leave-active {
+    transition: all 0.75s ease-in-out;
+}
+
+.slide-enter-to {
+    position: absolute;
+    right: 0;
+}
+
+.slide-enter-from {
+    position: absolute;
+    right: -100%;
+}
+
+.slide-leave-to {
+    position: absolute;
+    left: -100%;
+}
+
+.slide-enter-from {
+    position: absolute;
+    left: 0;
+}
+
+/**
+scale style
+ */
+.scale-enter-active,
+.scale-leave-active {
+    transition: all 0.5s ease;
+}
+
+.scale-enter-from,
+.scale-leave-to {
+    opacity: 0;
+    transform: scale(0.9);
+}

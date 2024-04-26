@@ -62,26 +62,39 @@ const isPending = computed(() => {
 </script>
 
 <template>
-  <teleport to="body">
-    <el-drawer v-model="visible" :close-on-click-modal="false" :show-close="true" modal-class="modal-class"
-               @close="visible = false">
-      <el-form :model="task" @submit.prevent>
-        <el-form-item label="名称">
-          <el-input v-model="task.name" />
-        </el-form-item>
-        <el-form-item label="详情">
-          <el-input v-model="task.detail" type="textarea" />
-        </el-form-item>
-        <el-form-item label="记录">
-          <el-input v-model="task.record" type="textarea" />
-        </el-form-item>
-        <el-radio-group v-model="task.completed">
-          <el-radio :value="true" :disabled="!isCompleted" size="default" border>完成</el-radio>
-          <el-radio :value="false" :disabled="!isPending" size="default" border>正常</el-radio>
-        </el-radio-group>
-      </el-form>
-    </el-drawer>
-  </teleport>
+  <el-drawer v-model="visible" :close-on-click-modal="false" :show-close="true"
+             modal-class="modal-class"
+             @close="visible = false">
+    <template #header>
+      <div class="custom-header" data-tauri-drag-region></div>
+      <div class="empty"></div>
+    </template>
+    <el-form :model="task" @submit.prevent>
+      <el-form-item label="名称">
+        <el-input v-model="task.name" />
+      </el-form-item>
+      <el-form-item label="详情">
+        <el-input v-model="task.detail" type="textarea" />
+      </el-form-item>
+      <el-form-item label="记录">
+        <el-input v-model="task.record" type="textarea" />
+      </el-form-item>
+      <el-radio-group v-model="task.completed">
+        <el-radio :value="true" :disabled="!isCompleted" size="default" border>完成</el-radio>
+        <el-radio :value="false" :disabled="!isPending" size="default" border>正常</el-radio>
+      </el-radio-group>
+    </el-form>
+  </el-drawer>
 </template>
 
-<style scoped></style>
+<style scoped>
+.custom-header {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+}
+
+.empty {
+  width: 100%;
+}
+</style>

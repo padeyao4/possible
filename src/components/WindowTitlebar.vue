@@ -1,27 +1,31 @@
 <script setup lang="ts">
 import { appWindow } from '@tauri-apps/api/window'
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { useSettings } from '@/stores/settings'
 import { Icon } from '@iconify/vue'
 
 const settings = useSettings()
 
+const listener = () => {
+  appWindow.isMaximized().then((r) => {
+    settings.isMaximize = r
+  })
+}
+
 onMounted(() => {
   if (showTitlebar) {
-    appWindow.isMaximized().then((r) => {
-      settings.isMaximize = r
-    })
+    window.addEventListener('resize', listener)
+  }
+})
+
+onUnmounted(() => {
+  if (showTitlebar) {
+    window.removeEventListener('resize', listener)
   }
 })
 
 function onMaximize() {
-  appWindow.toggleMaximize().then(() => {
-    setTimeout(() => {
-      appWindow.isMaximized().then((r) => {
-        settings.isMaximize = r
-      })
-    })
-  })
+  appWindow.toggleMaximize()
 }
 
 function onClose() {
@@ -35,8 +39,8 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
 <template>
   <div
     v-if="showTitlebar"
-    data-tauri-drag-region
     :class="['titlebar',{'cancel-radius':settings.isMaximize}]">
+    <div class="drag-area" data-tauri-drag-region></div>
     <div class="titlebar-button system-icon-other" id="titlebar-minimize" @click="appWindow.minimize()">
       <Icon icon="clarity:window-min-line" width="20" height="20" class="system-icon" />
     </div>
@@ -55,7 +59,7 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
   border-radius: 8px 8px 0 0;
   overflow: hidden;
   background: rgba(0, 0, 0, 0);
-  margin: 3px 3px 0 3px;
+  margin: 0;
   user-select: none;
   display: flex;
   justify-content: flex-end;
@@ -63,6 +67,12 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
   top: 0;
   left: 0;
   right: 0;
+
+  .drag-area {
+    width: 100%;
+    height: 100%;
+    margin: 5px 0 0 5px;
+  }
 }
 
 .cancel-radius {
@@ -74,7 +84,7 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
   justify-content: center;
   align-items: center;
   width: 48px;
-  height: 21px;
+  height: 24px;
 }
 
 .system-icon-other:hover {
@@ -92,5 +102,4 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
     color: #edeef2;
   }
 }
-
 </style>
