@@ -1,11 +1,13 @@
+import { OFFSET_ORIGIN_POINT } from '@/configs/constant'
+
 export function normalX(x) {
   const offset = x >= 0 ? 60 : -60
-  return (x - x % 120 + offset)
+  return (x - x % 120 + offset - OFFSET_ORIGIN_POINT.x)
 }
 
 export function normalY(y) {
   const offset = y >= 0 ? 30 : -30
-  return (y - y % 60 + offset)
+  return (y - y % 60 + offset - OFFSET_ORIGIN_POINT.y)
 }
 
 export function toX(index) {

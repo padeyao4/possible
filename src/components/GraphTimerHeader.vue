@@ -5,6 +5,7 @@ import { Renderer } from '@antv/g-canvas'
 import { useStore } from '@/stores/store'
 import { convertToDate, convertToIndex, showWeek } from '@/utils/time.js'
 import { useRoute } from 'vue-router'
+import { OFFSET_ORIGIN_POINT } from '@/configs/constant'
 
 const store = useStore()
 const container = ref()
@@ -31,7 +32,7 @@ watch([group, currentIndex], () => {
 
 function updateInfo() {
   if (!currentProject.data.graph) return
-  const { x } = currentProject.data.graph.getCanvasByViewport({ x: 0, y: 0 })
+  const { x } = currentProject.data.graph.getCanvasByViewport(OFFSET_ORIGIN_POINT)
   group.value.setPosition(-x % 120, 0)
   const children = group.value.getChildren()
   const offset = x / 120
@@ -56,7 +57,7 @@ function initTexts() {
       id: (i + startIndex.value).toString(),
       style: {
         x: i * 120 + 60,
-        y: 20,
+        y: 24,
         text: '',
         fontSize: 14,
         fill: '#000000',
@@ -99,13 +100,27 @@ onBeforeUnmount(() => {
 
 <template>
   <div id="graph-timer-header" ref="container"></div>
+  <div id="ignore-block"></div>
 </template>
 
 <style scoped>
 #graph-timer-header {
-  height: 40px;
-  flex-shrink: 0;
+  position: absolute !important;
+  background: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  height: 48px;
+  top: 0;
+  left: 0;
+  right: 0;
   width: calc(100vw - 240px - 24px * 2);
-  margin: 0 24px;
+}
+
+#ignore-block {
+  width: 24px;
+  height: 48px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #edeef2;
 }
 </style>

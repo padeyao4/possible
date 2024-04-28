@@ -4,7 +4,7 @@ import { useStore } from '@/stores/store'
 import { useRoute } from 'vue-router'
 import { Canvas, Group, Text } from '@antv/g'
 import { Renderer } from '@antv/g-canvas'
-import { UNIT_H } from '@/configs/constant'
+import { OFFSET_ORIGIN_POINT, UNIT_H } from '@/configs/constant'
 
 const store = useStore()
 const container = ref()
@@ -41,7 +41,7 @@ onBeforeUnmount(() => {
 
 function updateInfo() {
   if (!currentProject.data.graph) return
-  const { y } = currentProject.data.graph.getCanvasByViewport({ x: 0, y: 0 })
+  const { y } = currentProject.data.graph.getCanvasByViewport(OFFSET_ORIGIN_POINT)
   group.value.setPosition(0, -y % UNIT_H)
   const children = group.value.getChildren()
   const offset = y / UNIT_H
@@ -83,6 +83,12 @@ function initTexts() {
 
 <style scoped>
 #graph-ruler {
+  position: absolute !important;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.1);
+  left: 0;
+  top: 0;
+  bottom: 0;
   width: 24px;
   height: 100%;
 }

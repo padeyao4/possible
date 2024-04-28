@@ -1,6 +1,7 @@
 import { Extensions } from '@antv/g6'
 import { createDOM } from '@antv/g6/lib/util/dom'
 import { modifyCSS } from '@antv/dom-util'
+import { OFFSET_ORIGIN_POINT } from '@/configs/constant'
 
 export default class GridPlugin extends Extensions.BasePlugin {
   private canvas: HTMLElement
@@ -38,7 +39,7 @@ export default class GridPlugin extends Extensions.BasePlugin {
   }
 
   updateGrid() {
-    const x = this.graph.getCanvasByViewport({ x: 0, y: 0 }).x
+    const x = this.graph.getCanvasByViewport(OFFSET_ORIGIN_POINT).x
     const transform = `matrix(1,0,0,1,${-x % 120},0)`
     modifyCSS(this.grid, {
       transform

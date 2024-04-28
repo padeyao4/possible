@@ -179,6 +179,8 @@ main {
   background: var(--background);
   border-radius: 8px;
   overflow: hidden;
+  width: 100vw;
+  height: 100vh;
 }
 
 .maximize-window {
@@ -259,6 +261,8 @@ section {
   box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
   border-radius: 8px 0 0 0;
   overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 
 input {
