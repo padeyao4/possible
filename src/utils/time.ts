@@ -1,4 +1,4 @@
-import { toX } from '@/utils/position-util.ts'
+import { toX } from '@/utils/position-util'
 
 /**
  * 将utc时间转本地时间。计算距离1970.1.1的日期天数
