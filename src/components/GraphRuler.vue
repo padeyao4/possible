@@ -15,7 +15,6 @@ const currentProject = store.projects[route.params.id as string]
 
 function resize() {
   canvas.value.resize(container.value.clientWidth, container.value.clientHeight)
-  initTexts()
 }
 
 onMounted(() => {
@@ -55,7 +54,7 @@ function updateInfo() {
 function initTexts() {
   group.value.removeChildren()
   const childrenSize = Math.ceil(container.value.clientHeight / UNIT_H) + 1
-  for (let i = -1; i < childrenSize; i++) {
+  for (let i = 0; i < childrenSize; i++) {
     const text = new Text({
       id: i.toString(),
       style: {
