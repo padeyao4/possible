@@ -1,5 +1,5 @@
 import { test } from 'vitest'
-import { convertToIndex } from '@/utils/time.js'
+import { convertToIndex } from '@/utils/time.ts'
 import { isRef, ref, shallowRef } from 'vue'
 
 test('test timestamp util', () => {

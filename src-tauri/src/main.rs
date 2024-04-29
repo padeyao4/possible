@@ -3,6 +3,7 @@
 
 use tauri::{AppHandle, CustomMenuItem, Manager, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem, Window};
 use tauri::SystemTray;
+use webbrowser;
 use window_shadows::set_shadow;
 
 fn main() {
@@ -40,6 +41,10 @@ fn system_tray_handle(app: &AppHandle, event: SystemTrayEvent) {
         SystemTrayEvent::MenuItemClick { id, .. } => {
             match id.as_str() {
                 "quit" => app.exit(0),
+                "feedback" => {
+                    let url = "https://github.com/padeyao4/possible/issues";
+                    webbrowser::open(url).unwrap();
+                }
                 "open" => open_main_window(&window),
                 _ => {}
             }

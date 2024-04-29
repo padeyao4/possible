@@ -1,4 +1,4 @@
-import { OFFSET_X, OFFSET_Y, UNIT_H, UNIT_W } from '@/configs/constant'
+import { OFFSET_ORIGIN_POINT, OFFSET_X, OFFSET_Y, UNIT_H, UNIT_W } from '@/configs/constant'
 import type { CustomGraph } from '@/g6/core/graph'
 import { dateToX } from '@/utils/time'
 import type { ID, Point } from '@antv/g6'
@@ -592,9 +592,9 @@ export const useStore = defineStore('store', () => {
       return Object.values(projects.value)
         .filter(project => !project.completed)
         .map(project => {
-          const currentX = dateToX(currentTime.value, project.createTime)
+          const current = currentX(project)
           return Array.from(project.nodesMap.values())
-            .filter(node => node.data.x === currentX)
+            .filter(node => node.data.x === current)
         }).flat()
     })
 
@@ -603,7 +603,7 @@ export const useStore = defineStore('store', () => {
      * @param project
      */
     const currentX = (project: Project) => {
-      return dateToX(currentTime.value, project.createTime)
+      return dateToX(currentTime.value, project.createTime) - OFFSET_ORIGIN_POINT.x
     }
 
     return {

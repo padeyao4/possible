@@ -5,6 +5,7 @@ import { Renderer } from '@antv/g-canvas'
 import { useStore } from '@/stores/store'
 import { convertToDate, convertToIndex, showWeek } from '@/utils/time.js'
 import { useRoute } from 'vue-router'
+import { OFFSET_ORIGIN_POINT, UNIT_W, HALF_UNIT_W } from '@/configs/constant'
 
 const store = useStore()
 const container = ref()
@@ -20,7 +21,7 @@ const currentIndex = computed(() => convertToIndex(store.currentTime))
 
 const startIndex = computed(() => convertToIndex(store.projects[route.params.id as string].createTime))
 
-function showTime(index: number | string) {
+function showTime(index: number) {
   const date = convertToDate(index)
   return timeFormat.format(date) + '\n' + showWeek(date)
 }
@@ -31,10 +32,10 @@ watch([group, currentIndex], () => {
 
 function updateInfo() {
   if (!currentProject.data.graph) return
-  const { x } = currentProject.data.graph.getCanvasByViewport({ x: 0, y: 0 })
-  group.value.setPosition(-x % 120, 0)
+  const { x } = currentProject.data.graph.getCanvasByViewport(OFFSET_ORIGIN_POINT)
+  group.value.setPosition(-x % UNIT_W, 0)
   const children = group.value.getChildren()
-  const offset = x / 120
+  const offset = x / UNIT_W
   const delta = offset >= 0 ? Math.floor(offset) : Math.ceil(offset)
   for (let i = 0; i < children.length; i++) {
     const index = +children[i].id + delta
@@ -50,13 +51,13 @@ function resize() {
 
 function initTexts() {
   group.value.removeChildren()
-  const childrenSize = Math.ceil(container.value.clientWidth / 120) + 1
+  const childrenSize = Math.ceil(container.value.clientWidth / UNIT_W) + 1
   for (let i = -1; i < childrenSize; i++) {
     const text = new Text({
       id: (i + startIndex.value).toString(),
       style: {
-        x: i * 120 + 60,
-        y: 20,
+        x: i * UNIT_W + HALF_UNIT_W,
+        y: 24,
         text: '',
         fontSize: 14,
         fill: '#000000',
@@ -98,14 +99,35 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <div id="blur-block"></div>
   <div id="graph-timer-header" ref="container"></div>
 </template>
 
 <style scoped>
+#blur-block {
+  position: absolute !important;
+  pointer-events: none;
+  height: 48px;
+  top: 0;
+  left: 0;
+  right: 0;
+  backdrop-filter: blur(5px);
+  box-shadow: inset 0 0 0 3000px rgba(255, 255, 255, 0.3);
+  overflow: hidden;
+  border-radius: 4px 4px 0 0;
+  background: rgba(0,0,0,0.05);
+}
+
 #graph-timer-header {
-  height: 40px;
-  flex-shrink: 0;
+  position: absolute !important;
+  pointer-events: none;
+  height: 48px;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-radius: 4px 4px 0 0;
   width: calc(100vw - 240px - 24px * 2);
-  margin: 0 24px;
+  overflow: hidden;
+  clip-path: polygon(24px 0, 100% 0, 100% 48px, 24px 48px);
 }
 </style>

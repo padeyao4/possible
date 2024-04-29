@@ -4,7 +4,7 @@ import { useStore } from '@/stores/store'
 import { useRoute } from 'vue-router'
 import { Canvas, Group, Text } from '@antv/g'
 import { Renderer } from '@antv/g-canvas'
-import { UNIT_H } from '@/configs/constant'
+import { OFFSET_ORIGIN_POINT, UNIT_H } from '@/configs/constant'
 
 const store = useStore()
 const container = ref()
@@ -15,7 +15,6 @@ const currentProject = store.projects[route.params.id as string]
 
 function resize() {
   canvas.value.resize(container.value.clientWidth, container.value.clientHeight)
-  initTexts()
 }
 
 onMounted(() => {
@@ -41,7 +40,7 @@ onBeforeUnmount(() => {
 
 function updateInfo() {
   if (!currentProject.data.graph) return
-  const { y } = currentProject.data.graph.getCanvasByViewport({ x: 0, y: 0 })
+  const { y } = currentProject.data.graph.getCanvasByViewport(OFFSET_ORIGIN_POINT)
   group.value.setPosition(0, -y % UNIT_H)
   const children = group.value.getChildren()
   const offset = y / UNIT_H
@@ -55,7 +54,7 @@ function updateInfo() {
 function initTexts() {
   group.value.removeChildren()
   const childrenSize = Math.ceil(container.value.clientHeight / UNIT_H) + 1
-  for (let i = -1; i < childrenSize; i++) {
+  for (let i = 0; i < childrenSize; i++) {
     const text = new Text({
       id: i.toString(),
       style: {
@@ -78,12 +77,31 @@ function initTexts() {
 </script>
 
 <template>
+  <div id="rule-blur-block"></div>
   <div id="graph-ruler" ref="container"></div>
 </template>
 
 <style scoped>
-#graph-ruler {
+#rule-blur-block {
+  position: absolute;
+  pointer-events: none;
+  left: 0;
+  top: 0;
+  bottom: 0;
   width: 24px;
   height: 100%;
+  backdrop-filter: blur(5px);
+  box-shadow: inset 0 0 0 3000px rgba(255, 255, 255, 0.3);
+}
+
+#graph-ruler {
+  position: absolute !important;
+  pointer-events: none;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 24px;
+  height: 100%;
+  clip-path: polygon(0 48px, 24px 48px, 24px 100%, 0 100%);
 }
 </style>

@@ -155,7 +155,8 @@ function onUpdate() {
                 strokeLinecap="butt" class="item-icon" />
           新建项目
         </div>
-        <div :class="['selected-item', 'settings-button','common-hover', { 'selected': isActive('/settings') }]"
+        <div v-show="false"
+             :class="['selected-item', 'settings-button','common-hover', { 'selected': isActive('/settings') }]"
              @click="linkTo('/settings')">
           <config theme="outline" size="24" fill="#333" :strokeWidth="2" class="setting-icon" />
         </div>
@@ -178,6 +179,8 @@ main {
   background: var(--background);
   border-radius: 8px;
   overflow: hidden;
+  width: 100vw;
+  height: 100vh;
 }
 
 .maximize-window {
@@ -258,6 +261,8 @@ section {
   box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
   border-radius: 8px 0 0 0;
   overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 
 input {

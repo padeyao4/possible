@@ -20,11 +20,9 @@ const currentProject = computed(() => store.projects[route.params.id as string])
   <div id="project-view">
     <header data-tauri-drag-region>{{ currentProject.name }}</header>
     <main>
+      <graph-container />
+      <graph-ruler />
       <graph-timer-header />
-      <div class="content">
-        <graph-ruler />
-        <graph-container />
-      </div>
       <graph-editor />
       <graph-contextmenu />
     </main>
@@ -53,19 +51,19 @@ header {
   white-space: nowrap;
   overflow-x: hidden;
   text-overflow: ellipsis;
+  flex-shrink: 0;
 }
 
 main {
+  position: relative;
   display: flex;
-  height: calc(100vh - 48px - 88px);
-  flex-direction: column;
-
-  .content {
-    width: 100%;
-    height: calc(100vh - 24px * 2 - 88px - 40px);;
-    display: flex;
-    flex-direction: row;
-  }
+  flex-grow: 1;
+  height: calc(100vh - 24px * 2 - 40px - 48px);
+  width: calc(100vw - 240px - 24px * 2);
+  margin: 0 24px;
+  border-radius: 4px 4px 0 0;
+  overflow: hidden;
+  background: #eef2f799;
 }
 
 footer {
