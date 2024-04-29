@@ -93,8 +93,6 @@ function initTexts() {
   height: 100%;
   backdrop-filter: blur(5px);
   box-shadow: inset 0 0 0 3000px rgba(255, 255, 255, 0.3);
-  border-radius: 8px 0 0 0;
-  background: rgba(0,0,0,0.05);
 }
 
 #graph-ruler {

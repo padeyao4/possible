@@ -61,7 +61,7 @@ main {
   height: calc(100vh - 24px * 2 - 40px - 48px);
   width: calc(100vw - 240px - 24px * 2);
   margin: 0 24px;
-  border-radius: 8px 8px 0 0;
+  border-radius: 4px 4px 0 0;
   overflow: hidden;
   background: #eef2f799;
 }

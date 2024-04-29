@@ -101,7 +101,6 @@ onBeforeUnmount(() => {
 <template>
   <div id="blur-block"></div>
   <div id="graph-timer-header" ref="container"></div>
-  <div id="empty-block"></div>
 </template>
 
 <style scoped>
@@ -114,8 +113,8 @@ onBeforeUnmount(() => {
   right: 0;
   backdrop-filter: blur(5px);
   box-shadow: inset 0 0 0 3000px rgba(255, 255, 255, 0.3);
-  border-radius: 8px 0 0 0;
   overflow: hidden;
+  border-radius: 4px 4px 0 0;
   background: rgba(0,0,0,0.05);
 }
 
@@ -126,6 +125,7 @@ onBeforeUnmount(() => {
   top: 0;
   left: 0;
   right: 0;
+  border-radius: 4px 4px 0 0;
   width: calc(100vw - 240px - 24px * 2);
   overflow: hidden;
   clip-path: polygon(24px 0, 100% 0, 100% 48px, 24px 48px);
