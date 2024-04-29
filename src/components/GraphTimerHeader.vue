@@ -5,7 +5,7 @@ import { Renderer } from '@antv/g-canvas'
 import { useStore } from '@/stores/store'
 import { convertToDate, convertToIndex, showWeek } from '@/utils/time.js'
 import { useRoute } from 'vue-router'
-import { OFFSET_ORIGIN_POINT } from '@/configs/constant'
+import { OFFSET_ORIGIN_POINT, UNIT_W, HALF_UNIT_W } from '@/configs/constant'
 
 const store = useStore()
 const container = ref()
@@ -33,9 +33,9 @@ watch([group, currentIndex], () => {
 function updateInfo() {
   if (!currentProject.data.graph) return
   const { x } = currentProject.data.graph.getCanvasByViewport(OFFSET_ORIGIN_POINT)
-  group.value.setPosition(-x % 120, 0)
+  group.value.setPosition(-x % UNIT_W, 0)
   const children = group.value.getChildren()
-  const offset = x / 120
+  const offset = x / UNIT_W
   const delta = offset >= 0 ? Math.floor(offset) : Math.ceil(offset)
   for (let i = 0; i < children.length; i++) {
     const index = +children[i].id + delta
@@ -51,12 +51,12 @@ function resize() {
 
 function initTexts() {
   group.value.removeChildren()
-  const childrenSize = Math.ceil(container.value.clientWidth / 120) + 1
+  const childrenSize = Math.ceil(container.value.clientWidth / UNIT_W) + 1
   for (let i = -1; i < childrenSize; i++) {
     const text = new Text({
       id: (i + startIndex.value).toString(),
       style: {
-        x: i * 120 + 60,
+        x: i * UNIT_W + HALF_UNIT_W,
         y: 24,
         text: '',
         fontSize: 14,
