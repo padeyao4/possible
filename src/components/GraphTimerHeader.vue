@@ -21,7 +21,7 @@ const currentIndex = computed(() => convertToIndex(store.currentTime))
 
 const startIndex = computed(() => convertToIndex(store.projects[route.params.id as string].createTime))
 
-function showTime(index: number | string) {
+function showTime(index: number) {
   const date = convertToDate(index)
   return timeFormat.format(date) + '\n' + showWeek(date)
 }

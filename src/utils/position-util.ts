@@ -15,7 +15,7 @@ export function normalY(y: number) {
 
 export function toX(index: number) {
   const offset = index >= 0 ? HALF_UNIT_W : -HALF_UNIT_W
-  return (offset + index * UNIT_W)
+  return offset + index * UNIT_W
 }
 
 export function toY(index: number) {
