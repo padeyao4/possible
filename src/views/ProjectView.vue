@@ -63,7 +63,7 @@ main {
   margin: 0 24px;
   border-radius: 8px 8px 0 0;
   overflow: hidden;
-  background: rgba(0, 0, 0, 0.01);
+  background: #eef2f799;
 }
 
 footer {

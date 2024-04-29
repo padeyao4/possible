@@ -99,28 +99,32 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <div id="blur-block"></div>
   <div id="graph-timer-header" ref="container"></div>
-  <div id="ignore-block"></div>
+  <div id="empty-block"></div>
 </template>
 
 <style scoped>
+#blur-block {
+  position: absolute !important;
+  height: 48px;
+  top: 0;
+  left: 0;
+  right: 0;
+  backdrop-filter: blur(5px);
+  box-shadow: inset 0 0 0 3000px rgba(255, 255, 255, 0.3);
+  border-radius: 8px 0 0 0;
+}
+
 #graph-timer-header {
   position: absolute !important;
-  background: rgba(0, 0, 0, 0.3);
   pointer-events: none;
   height: 48px;
   top: 0;
   left: 0;
   right: 0;
   width: calc(100vw - 240px - 24px * 2);
-}
-
-#ignore-block {
-  width: 24px;
-  height: 48px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: #edeef2;
+  overflow: hidden;
+  clip-path: polygon(24px 0, 100% 0, 100% 48px, 24px 48px);
 }
 </style>

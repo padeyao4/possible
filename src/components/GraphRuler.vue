@@ -85,11 +85,13 @@ function initTexts() {
 #graph-ruler {
   position: absolute !important;
   pointer-events: none;
-  background: rgba(0, 0, 0, 0.1);
   left: 0;
   top: 0;
   bottom: 0;
   width: 24px;
   height: 100%;
+  backdrop-filter: blur(5px);
+  box-shadow: inset 0 0 0 3000px rgba(255, 255, 255, 0.3);
+  clip-path: polygon(0 48px, 24px 48px, 24px 100%, 0 100%);
 }
 </style>
