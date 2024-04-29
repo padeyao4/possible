@@ -107,6 +107,7 @@ onBeforeUnmount(() => {
 <style scoped>
 #blur-block {
   position: absolute !important;
+  pointer-events: none;
   height: 48px;
   top: 0;
   left: 0;
@@ -114,6 +115,8 @@ onBeforeUnmount(() => {
   backdrop-filter: blur(5px);
   box-shadow: inset 0 0 0 3000px rgba(255, 255, 255, 0.3);
   border-radius: 8px 0 0 0;
+  overflow: hidden;
+  background: rgba(0,0,0,0.05);
 }
 
 #graph-timer-header {

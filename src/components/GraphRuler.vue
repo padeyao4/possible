@@ -78,12 +78,13 @@ function initTexts() {
 </script>
 
 <template>
+  <div id="rule-blur-block"></div>
   <div id="graph-ruler" ref="container"></div>
 </template>
 
 <style scoped>
-#graph-ruler {
-  position: absolute !important;
+#rule-blur-block {
+  position: absolute;
   pointer-events: none;
   left: 0;
   top: 0;
@@ -92,6 +93,18 @@ function initTexts() {
   height: 100%;
   backdrop-filter: blur(5px);
   box-shadow: inset 0 0 0 3000px rgba(255, 255, 255, 0.3);
+  border-radius: 8px 0 0 0;
+  background: rgba(0,0,0,0.05);
+}
+
+#graph-ruler {
+  position: absolute !important;
+  pointer-events: none;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 24px;
+  height: 100%;
   clip-path: polygon(0 48px, 24px 48px, 24px 100%, 0 100%);
 }
 </style>
