@@ -31,17 +31,16 @@ git clone https://github.com/padeyao4/possible.git
 2. 安装依赖：
 
 ```
-npm install
+bun install
 ```
 
 3. 运行项目：
 
 ```
-npm run dev
+bun run dev
 ```
 
 4. 打开浏览器，访问 `http://localhost:3000`
-
 
 **开发计划**
 

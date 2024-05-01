@@ -5,16 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
+    "build": "vite build",
     "tauri-build": "tauri build",
     "preview": "vite preview",
     "tauri-dev": "tauri dev",
     "test:unit": "vitest",
-    "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
-    "predeploy": "pnpm run build -c vite.config.page.ts --mode dev",
+    "predeploy": "build -c vite.config.page.ts --mode dev",
     "deploy": "gh-pages -d dist -b page"
   },
   "dependencies": {
