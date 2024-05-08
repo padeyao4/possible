@@ -15,6 +15,10 @@ const currentProject = store.projects[route.params.id as string]
 
 function resize() {
   canvas.value.resize(container.value.clientWidth, container.value.clientHeight)
+  // 调节大小后会导致刻度尺显示长度不足。重新初始化解决该问题
+  initTexts()
+  // 重新初始化后，显示错误。需调整刻度尺位置
+  updateInfo()
 }
 
 onMounted(() => {
