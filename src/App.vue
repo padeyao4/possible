@@ -3,9 +3,15 @@ import PoAside from '@/components/PoAside/index.vue'
 import { useRoute } from 'vue-router'
 import { useSettings } from '@/stores/settings'
 import PoSeparation from '@/components/PoSeparation.vue'
+import { onMounted } from 'vue'
+import { testProjects } from '@/stores/service/project-service'
 
 const route = useRoute()
 const settings = useSettings()
+
+onMounted(() => {
+  testProjects()
+})
 
 </script>
 

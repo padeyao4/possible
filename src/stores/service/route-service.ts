@@ -4,5 +4,5 @@ import router from '@/router'
 export function linkTo(path: string) {
   const settings = useSettings()
   settings.active = path
-  router.push(path)
+  router.push(path).then()
 }

@@ -25,6 +25,7 @@
     "@icon-park/vue-next": "^1.4.2",
     "@tauri-apps/api": "^1.5.4",
     "@vueuse/core": "^10.9.0",
+    "@vueuse/router": "^10.9.0",
     "default-passive-events": "^2.0.0",
     "element-plus": "^2.7.1",
     "loglevel": "^1.9.1",

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
 export type ID = string | number
 
@@ -46,5 +47,9 @@ export interface Project {
 
 
 export const useState = defineStore('state', () => {
+  const projectMap = ref<Map<ID, Project>>(new Map<ID, Project>())
 
+  return {
+    projectMap
+  }
 })

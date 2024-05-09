@@ -1,22 +1,46 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, onMounted, watchEffect } from 'vue'
 import Draggable from 'vuedraggable/src/vuedraggable'
+import { useState } from '@/stores/state'
+import { linkTo } from '@/stores/service/route-service'
+import { useSettings } from '@/stores/settings'
 
-const list = ref(Array.from({ length: 3 }, (_, k) => {
-  return { id: k, value: k }
-}))
+const { projectMap } = useState()
+const settings = useSettings()
+
+const list = computed(() => {
+  return Array.from(projectMap.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex)
+})
 
 function onstart() {
-
+  // todo
 }
 
 function onend() {
-
+  // todo
 }
 
 function onupdate() {
-
+  list.value.forEach((value, index) => {
+    value.sortIndex = index
+  })
 }
+
+function onclick(e: MouseEvent) {
+  const el = e.target as HTMLElement
+  const path = el.getAttribute('data-key')
+  linkTo(path)
+}
+
+onMounted(() => {
+  watchEffect(() => {
+    const el = document.getElementById('aside-body')
+    for (let child of el.children) {
+      const key = child.getAttribute('data-key')
+      child.toggleAttribute('active', key === settings.active)
+    }
+  })
+})
 
 </script>
 
@@ -34,7 +58,9 @@ function onupdate() {
              @end="onend"
              @update="onupdate">
     <template #item="{ element }">
-      <div class="operation move">{{ element.value }}</div>
+      <div class="operation move" :key="element.id" :data-key="`/project/${element.id}`" @click="onclick">
+        {{ element.name }}
+      </div>
     </template>
   </draggable>
 </template>
@@ -53,6 +79,11 @@ function onupdate() {
     padding: 4px;
     margin: 4px;
     user-select: none;
+
+    &[active] {
+      background: #529b2e;
+      border-radius: 4px;
+    }
   }
 }
 </style>
