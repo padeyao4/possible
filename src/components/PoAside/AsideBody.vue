@@ -43,7 +43,7 @@ function onupdate() {
 #aside-body {
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
+  overflow-y: auto;
 
   & > * {
     display: flex;
