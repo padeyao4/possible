@@ -61,8 +61,18 @@ export function testProjects() {
       addNode(project, node1)
       addNode(project, node2)
       addProject(project)
+      addEdge(project, node1, node2)
     }
   }
+}
+
+export function addEdge(project: Project, node1: Node, node2: Node) {
+  const edge = {
+    id: v4(),
+    source: node1.id,
+    target: node2.id
+  }
+  project.edgeMap.set(edge.id, edge)
 }
 
 export function currentProject(): Project {
