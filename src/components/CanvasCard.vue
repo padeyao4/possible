@@ -13,8 +13,13 @@ const transform = computed(() => {
 
 <template>
   <g :transform="transform" :key="node.id">
-    <rect :width="node.width*settings.unitWidth" :height="node.height*settings.unitHeight" rx="8" />
-    <text>hello</text>
+    <rect
+      :width="node.width*settings.unitWidth"
+      :height="node.height*settings.unitHeight"
+      stroke="#000"
+      stroke-width="1"
+      fill="#fff"
+      rx="8" />
   </g>
 </template>
 

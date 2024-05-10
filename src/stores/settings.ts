@@ -6,12 +6,10 @@ export const useSettings = defineStore('settings', () => {
   const unitWidth = ref(120)
   const unitHeight = ref(80)
   const active = ref('today')
-  const projectId = ref()
   return {
     active,
     sideWidth,
     unitHeight,
     unitWidth,
-    projectId
   }
 })

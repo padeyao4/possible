@@ -3,6 +3,7 @@ import { v4 } from 'uuid'
 import type { ID } from '@antv/g6'
 import { faker } from '@faker-js/faker'
 import { useSettings } from '@/stores/settings'
+import { isCross } from '@/lib/math'
 
 export function createProjectTemplate(): Project {
   const projectCreateTime = faker.date.between({ from: '1900/1/1', to: '2024/3/20' }).valueOf()
@@ -30,8 +31,8 @@ function createNodeTemplate(): Node {
     id: v4(),
     name: faker.string.sample({ min: 2, max: 5 }),
     x: faker.number.int({ min: 0, max: 10 }),
-    y: faker.number.int({ min: 0, max: 10 }),
-    height: faker.number.int({ min: 1, max: 5 }),
+    y: faker.number.int({ min: 0, max: 5 }),
+    height: faker.number.int({ min: 1, max: 3 }),
     width: faker.number.int({ min: 1, max: 5 }),
     detail: faker.string.sample({ min: 2, max: 20 }),
     record: faker.string.sample({ min: 2, max: 20 }),
@@ -54,9 +55,13 @@ export function addNode(project: Project, node: Node) {
 export function testProjects() {
   for (let i = 0; i < 10; i++) {
     const project = createProjectTemplate()
-    const node = createNodeTemplate()
-    addNode(project, node)
-    addProject(project)
+    const node1 = createNodeTemplate()
+    const node2 = createNodeTemplate()
+    if (!isCross(node1, node2) && node1.x + node1.width < node2.x) {
+      addNode(project, node1)
+      addNode(project, node2)
+      addProject(project)
+    }
   }
 }
 
