@@ -3,6 +3,7 @@ import { v4 } from 'uuid'
 import type { ID } from '@antv/g6'
 import { faker } from '@faker-js/faker'
 import { useRouteParams } from '@vueuse/router'
+import { useSettings } from '@/stores/settings'
 
 export function createProjectTemplate(): Project {
   const projectCreateTime = faker.date.between({ from: '1900/1/1', to: '2024/3/20' }).valueOf()
@@ -25,14 +26,38 @@ export function createProjectTemplate(): Project {
   }
 }
 
+function createNodeTemplate(): Node {
+  const settings = useSettings()
+  return {
+    id: v4(),
+    name: faker.string.sample({ min: 2, max: 5 }),
+    x: faker.number.int({ min: 20, max: 800 }),
+    y: faker.number.int({ min: 20, max: 800 }),
+    height: settings.unitHeight,
+    width: settings.unitWidth,
+    detail: faker.string.sample({ min: 2, max: 20 }),
+    record: faker.string.sample({ min: 2, max: 20 }),
+    completed: false,
+    sortedIndex: -1,
+    projectId: -1
+  }
+}
+
 export function addProject(project: Project) {
   const { projectMap } = useState()
   projectMap.set(project.id, project)
 }
 
+export function addNode(project: Project, node: Node) {
+  node.projectId = project.id
+  project.nodeMap.set(node.id, node)
+}
+
 export function testProjects() {
   for (let i = 0; i < 10; i++) {
     const project = createProjectTemplate()
+    const node = createNodeTemplate()
+    addNode(project, node)
     addProject(project)
   }
 }
