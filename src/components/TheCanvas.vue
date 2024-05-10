@@ -6,17 +6,18 @@ import CanvasHeader from '@/components/CanvasHeader.vue'
 import CanvasRuler from '@/components/CanvasRuler.vue'
 import CanvasGrid from '@/components/CanvasGrid.vue'
 import { Register } from '@/lib/base'
-import { DragCanvas } from '@/lib/drag-canvas'
+import { DragCanvas } from '@/lib/behavior/drag-canvas'
 import { useEventListener } from '@vueuse/core'
 import ThePath from '@/components/ThePath.vue'
-import { DragCard } from '@/lib/drag-card'
+import { DragCard } from '@/lib/behavior/drag-card'
+import { ResizeCard } from '@/lib/behavior/resize-card'
 
 const project = currentProject()
 
 const register = new Register()
 
 onMounted(() => {
-  register.addBehaviors(DragCanvas,DragCard)
+  register.addBehaviors(DragCanvas, DragCard, ResizeCard)
   useEventListener(document, 'mouseup', (e: MouseEvent) => {
     register.onmouseup(e)
   })

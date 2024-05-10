@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { currentProject } from '@/stores/service/project-service'
-import PoCanvas from '@/components/TheCanvas.vue'
+import TheCanvas from '@/components/TheCanvas.vue'
 
 const project = currentProject()
 
@@ -10,7 +10,7 @@ const project = currentProject()
   <div id="project-view">
     <div id="header">{{ project?.name }}</div>
     <div id="body">
-      <po-canvas />
+      <the-canvas />
     </div>
     <div id="footer">footer</div>
   </div>

@@ -8,13 +8,14 @@ export class DragCanvas extends BaseBehavior {
 
   offset = { x: 0, y: 0 }
 
+  project = currentProject()
+
   onmousemove(e: MouseEvent) {
     if (!this.isDown) return
     const dx = e.x - this.position.x
     const dy = e.y - this.position.y
-    const project = currentProject()
-    project.offset.x = this.offset.x + dx
-    project.offset.y = this.offset.y + dy
+    this.project.offset.x = this.offset.x + dx
+    this.project.offset.y = this.offset.y + dy
   }
 
   onmousedown(e: MouseEvent) {
@@ -22,8 +23,7 @@ export class DragCanvas extends BaseBehavior {
     this.isDown = true
     this.position.x = e.x
     this.position.y = e.y
-    const project = currentProject()
-    const { x, y } = project.offset
+    const { x, y } = this.project.offset
     this.offset.x = x
     this.offset.y = y
   }
