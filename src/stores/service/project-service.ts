@@ -26,14 +26,13 @@ export function createProjectTemplate(): Project {
 }
 
 function createNodeTemplate(): Node {
-  const settings = useSettings()
   return {
     id: v4(),
     name: faker.string.sample({ min: 2, max: 5 }),
-    x: faker.number.int({ min: 20, max: 800 }),
-    y: faker.number.int({ min: 20, max: 800 }),
-    height: settings.unitHeight,
-    width: settings.unitWidth,
+    x: faker.number.int({ min: 0, max: 10 }),
+    y: faker.number.int({ min: 0, max: 10 }),
+    height: faker.number.int({ min: 1, max: 5 }),
+    width: faker.number.int({ min: 1, max: 5 }),
     detail: faker.string.sample({ min: 2, max: 20 }),
     record: faker.string.sample({ min: 2, max: 20 }),
     completed: false,

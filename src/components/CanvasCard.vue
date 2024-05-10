@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import { type Node } from '@/stores/state'
+import { computed } from 'vue'
+import { useSettings } from '@/stores/settings'
 
-defineProps<{ node: Node }>()
+const props = defineProps<{ node: Node }>()
+const settings = useSettings()
+
+const transform = computed(() => {
+  return `translate(${props.node.x * settings.unitWidth},${props.node.y * settings.unitHeight})`
+})
 </script>
 
 <template>
-  <g :transform="`translate(${node.x},${node.y})`" :key="node.id">
-    <rect :width="node.width" :height="node.height" rx="8" />
+  <g :transform="transform" :key="node.id">
+    <rect :width="node.width*settings.unitWidth" :height="node.height*settings.unitHeight" rx="8" />
     <text>hello</text>
   </g>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import { useSettings } from '@/stores/settings'
 import { currentProject } from '@/stores/service/project-service'
@@ -15,11 +15,17 @@ watchEffect(() => {
   const size = Math.ceil(height.value / settings.unitHeight)
   rulers.value = Array.from({ length: size }, (_, i) => i + 1)
 })
+
+const dyStyle = computed(() => {
+  return {
+    transform: `translateY(${project.offset.y % settings.unitHeight}px)`
+  }
+})
 </script>
 
 <template>
   <div id="canvas-ruler">
-    <div id="group" :style="{transform: `translateY(${project.offset.y%settings.unitHeight}px)`}">
+    <div id="group" :style="dyStyle">
       <div v-for="item in rulers" :key="item" :style="{'height':`${settings.unitHeight}px`}">{{ item }}</div>
     </div>
   </div>
