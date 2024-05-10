@@ -1,5 +1,3 @@
-import type { Ref } from 'vue'
-
 export abstract class BaseBehavior {
   svg: HTMLElement
 
@@ -47,31 +45,14 @@ export abstract class BaseBehavior {
 export class Register {
   behaviors: BaseBehavior[]
 
-  svgRef: Ref<HTMLElement>
-
-  groupRef: Ref<SVGGElement>
-
-  gridRef: Ref<HTMLElement>
-
-  rulerRef: Ref<HTMLElement>
-
-  headerRef: Ref<HTMLElement>
-
-  constructor(svgRef: Ref<HTMLElement>,
-              groupRef: Ref<SVGGElement>,
-              gridRef: Ref<HTMLElement>,
-              rulerRef: Ref<HTMLElement>,
-              headerRef: Ref<HTMLElement>) {
-    this.svgRef = svgRef
-    this.gridRef = gridRef
-    this.groupRef = groupRef
-    this.rulerRef = rulerRef
-    this.headerRef = headerRef
+  constructor() {
     this.behaviors = []
   }
 
-  addBehaviors(...behaviors: BaseBehavior[]) {
-    this.behaviors.push(...behaviors)
+  addBehaviors(...behaviors: (typeof BaseBehavior)[]) {
+    behaviors.forEach(b => {
+      this.behaviors.push(Reflect.construct(b, []))
+    })
   }
 
   onmouseup(e: MouseEvent) {

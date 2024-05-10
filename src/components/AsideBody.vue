@@ -29,7 +29,7 @@ function onupdate() {
 
 function onclick(e: MouseEvent) {
   const el = e.target as HTMLElement
-  const path = el.getAttribute('data-key')
+  const path = el.getAttribute('data-path')
   linkTo(path)
 }
 
@@ -49,8 +49,8 @@ function onclick(e: MouseEvent) {
              @end="onend"
              @update="onupdate">
     <template #item="{ element }">
-      <div :class="['operation','move',{'active':settings.active===`/project/${element.id}`}]" :key="element.id"
-           :data-key="`/project/${element.id}`" @click="onclick">
+      <div :class="['operation','move',{'active':settings.active===element.id}]" :key="element.id"
+           :data-path="`/project/${element.id}`" @click="onclick">
         {{ element.name }}
       </div>
     </template>

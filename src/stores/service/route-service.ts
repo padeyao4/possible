@@ -3,6 +3,8 @@ import router from '@/router'
 
 export function linkTo(path: string) {
   const settings = useSettings()
-  settings.active = path
-  router.push(path).then()
+  setTimeout(async () => {
+    await router.push(path)
+  })
+  settings.active = path.split('/').pop()
 }

@@ -2,7 +2,9 @@
 import { ref, watchEffect } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import { useSettings } from '@/stores/settings'
+import { currentProject } from '@/stores/service/project-service'
 
+const project = currentProject()
 const settings = useSettings()
 
 const rulers = ref<number[]>([])
@@ -17,7 +19,9 @@ watchEffect(() => {
 
 <template>
   <div id="canvas-ruler">
-    <div v-for="item in rulers" :key="item" :style="{'height':`${settings.unitHeight}px`}">{{ item }}</div>
+    <div id="group" :style="{transform: `translateY(${project.offset.y%settings.unitHeight}px)`}">
+      <div v-for="item in rulers" :key="item" :style="{'height':`${settings.unitHeight}px`}">{{ item }}</div>
+    </div>
   </div>
 </template>
 
@@ -30,5 +34,11 @@ watchEffect(() => {
   width: 20px;
   overflow-y: hidden;
   background: #6f6f6f;
+}
+
+#group {
+  background: #529b2e40;
+  height: 100%;
+  width: 100%;
 }
 </style>

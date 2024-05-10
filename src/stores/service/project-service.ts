@@ -2,7 +2,6 @@ import { type Edge, type Node, type Project, useState } from '@/stores/state'
 import { v4 } from 'uuid'
 import type { ID } from '@antv/g6'
 import { faker } from '@faker-js/faker'
-import { useRouteParams } from '@vueuse/router'
 import { useSettings } from '@/stores/settings'
 
 export function createProjectTemplate(): Project {
@@ -62,8 +61,8 @@ export function testProjects() {
   }
 }
 
-export function currentProject(): Project | undefined {
+export function currentProject(): Project {
+  const settings = useSettings()
   const { projectMap } = useState()
-  const projectId = useRouteParams<string>('id')
-  return projectMap.get(projectId.value)
+  return projectMap.get(settings.active) ?? createProjectTemplate()
 }

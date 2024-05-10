@@ -10,7 +10,7 @@ onMounted(() => {
     const root = document.getElementById('aside-header')
     const els = root.children
     for (let el of els) {
-      const eq = el.getAttribute('data-key') === settings.active
+      const eq = el.getAttribute('data-path') === '/' + settings.active
       el.toggleAttribute('active', eq)
     }
   })
@@ -18,7 +18,7 @@ onMounted(() => {
 
 function onclick(e: MouseEvent) {
   const el = e.target as HTMLElement
-  const key = el.getAttribute('data-key')
+  const key = el.getAttribute('data-path')
   if (key !== null) {
     linkTo(key)
   }
@@ -28,9 +28,9 @@ function onclick(e: MouseEvent) {
 
 <template>
   <div id="aside-header" @click="onclick">
-    <div data-key="/today">我的一天</div>
-    <div data-key="/backlog">备忘录</div>
-    <div data-key="/manage">任务管理</div>
+    <div data-path="/today">我的一天</div>
+    <div data-path="/backlog">备忘录</div>
+    <div data-path="/manage">任务管理</div>
   </div>
 </template>
 

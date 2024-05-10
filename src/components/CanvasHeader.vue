@@ -2,9 +2,11 @@
 import { ref, watchEffect } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import { useSettings } from '@/stores/settings'
+import { currentProject } from '@/stores/service/project-service'
 
 const settings = useSettings()
 const timers = ref<number[]>([])
+const project = currentProject()
 
 const { width } = useWindowSize()
 
@@ -16,7 +18,9 @@ watchEffect(() => {
 
 <template>
   <div id="canvas-header">
-    <div v-for="item in timers" class="item" :key="item" :style="{'width':`${settings.unitWidth}px`}">{{ item }}</div>
+    <div id="group" :style="{transform: `translateX(${project.offset.x%settings.unitWidth}px)`}">
+      <div v-for="item in timers" class="item" :key="item" :style="{'width':`${settings.unitWidth}px`}">{{ item }}</div>
+    </div>
   </div>
 </template>
 
@@ -31,6 +35,14 @@ watchEffect(() => {
   height: 40px;
   background: #95d475;
   overflow-x: hidden;
+}
+
+#group {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  background: #b8823040;
 }
 
 .item {
