@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, watchEffect } from 'vue'
+import { computed } from 'vue'
 import Draggable from 'vuedraggable/src/vuedraggable'
 import { useState } from '@/stores/state'
 import { linkTo } from '@/stores/service/route-service'
@@ -7,6 +7,7 @@ import { useSettings } from '@/stores/settings'
 
 const { projectMap } = useState()
 const settings = useSettings()
+
 
 const list = computed(() => {
   return Array.from(projectMap.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex)
@@ -32,16 +33,6 @@ function onclick(e: MouseEvent) {
   linkTo(path)
 }
 
-onMounted(() => {
-  watchEffect(() => {
-    const el = document.getElementById('aside-body')
-    for (let child of el.children) {
-      const key = child.getAttribute('data-key')
-      child.toggleAttribute('active', key === settings.active)
-    }
-  })
-})
-
 </script>
 
 <template>
@@ -58,7 +49,8 @@ onMounted(() => {
              @end="onend"
              @update="onupdate">
     <template #item="{ element }">
-      <div class="operation move" :key="element.id" :data-key="`/project/${element.id}`" @click="onclick">
+      <div :class="['operation','move',{'active':settings.active===`/project/${element.id}`}]" :key="element.id"
+           :data-key="`/project/${element.id}`" @click="onclick">
         {{ element.name }}
       </div>
     </template>
@@ -79,11 +71,11 @@ onMounted(() => {
     padding: 4px;
     margin: 4px;
     user-select: none;
-
-    &[active] {
-      background: #529b2e;
-      border-radius: 4px;
-    }
   }
+}
+
+.active {
+  background: #529b2e;
+  border-radius: 4px;
 }
 </style>

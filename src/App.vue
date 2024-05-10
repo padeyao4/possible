@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import PoAside from '@/components/PoAside/index.vue'
+import PoAside from '@/components/TheAside.vue'
 import { useRoute } from 'vue-router'
 import { useSettings } from '@/stores/settings'
-import PoSeparation from '@/components/PoSeparation.vue'
+import PoSeparation from '@/components/TheSeparation.vue'
 import { onMounted } from 'vue'
 import { testProjects } from '@/stores/service/project-service'
 

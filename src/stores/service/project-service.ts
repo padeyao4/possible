@@ -2,6 +2,7 @@ import { type Edge, type Node, type Project, useState } from '@/stores/state'
 import { v4 } from 'uuid'
 import type { ID } from '@antv/g6'
 import { faker } from '@faker-js/faker'
+import { useRouteParams } from '@vueuse/router'
 
 export function createProjectTemplate(): Project {
   const projectCreateTime = faker.date.between({ from: '1900/1/1', to: '2024/3/20' }).valueOf()
@@ -34,4 +35,10 @@ export function testProjects() {
     const project = createProjectTemplate()
     addProject(project)
   }
+}
+
+export function currentProject(): Project | undefined {
+  const { projectMap } = useState()
+  const projectId = useRouteParams<string>('id')
+  return projectMap.get(projectId.value)
 }

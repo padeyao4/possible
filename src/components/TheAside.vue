@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
-import AsideHeader from '@/components/PoAside/AsideHeader.vue'
-import AsideBody from '@/components/PoAside/AsideBody.vue'
-import AsideFooter from '@/components/PoAside/AsideFooter.vue'
+import AsideHeader from '@/components/AsideHeader.vue'
+import AsideBody from '@/components/AsideBody.vue'
+import AsideFooter from '@/components/AsideFooter.vue'
 </script>
 
 <template>
