@@ -18,7 +18,7 @@ export class DragCanvas extends BaseBehavior {
   }
 
   onmousedown(e: MouseEvent) {
-    if (this.isDown) return
+    if (this.isDown || (e.target as Element).tagName !== 'svg') return
     this.isDown = true
     this.position.x = e.x
     this.position.y = e.y

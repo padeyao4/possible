@@ -26,7 +26,10 @@ const dyStyle = computed(() => {
 <template>
   <div id="canvas-ruler">
     <div id="group" :style="dyStyle">
-      <div v-for="item in rulers" :key="item" :style="{'height':`${settings.unitHeight}px`}">{{ item }}</div>
+      <div v-for="item in rulers"
+           :key="item"
+           :style="{'height':`${settings.unitHeight}px`}">{{ item }}
+      </div>
     </div>
   </div>
 </template>

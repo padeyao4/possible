@@ -17,6 +17,7 @@ const transform = computed(() => {
       :width="node.width*settings.unitWidth"
       :height="node.height*settings.unitHeight"
       stroke="#000"
+      :data-key="node.id"
       stroke-width="1"
       fill="#fff"
       rx="8" />

@@ -1,19 +1,4 @@
 export abstract class BaseBehavior {
-  svg: HTMLElement
-
-  group: SVGGElement
-
-  grid: HTMLElement
-
-  ruler: HTMLElement
-
-  protected constructor(svg: HTMLElement, group: SVGGElement, grid: HTMLElement, ruler: HTMLElement) {
-    this.svg = svg
-    this.group = group
-    this.grid = grid
-    this.ruler = ruler
-  }
-
   onmouseup(e: MouseEvent) {
   }
 
