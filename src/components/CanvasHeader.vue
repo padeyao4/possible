@@ -41,7 +41,7 @@ const translateX = computed(() => {
   top: 0;
   left: 0;
   right: 0;
-  height: 40px;
+  height: 39px;
   overflow-x: hidden;
 }
 
