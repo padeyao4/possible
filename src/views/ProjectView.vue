@@ -9,7 +9,7 @@ const project = currentProject()
 <template>
   <div id="project-view">
     <div id="header">{{ project?.name }}</div>
-    <div id="body" class="border-top-shadow">
+    <div id="body" class="border-top-shadow canvas-background-color">
       <the-canvas />
     </div>
     <div id="footer"></div>
@@ -34,7 +34,6 @@ const project = currentProject()
 #body {
   height: calc(100vh - 48px - 64px);
   padding: 0 16px;
-  background-color: #eef2f799;
 }
 
 #footer {

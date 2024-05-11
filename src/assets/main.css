@@ -95,6 +95,11 @@ body {
     rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
 
+.border-right-shadow {
+    box-shadow: rgba(27, 31, 35, 0.06) 1px 0 0 0,
+    rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+}
+
 .border-left-shadow {
     box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
 }

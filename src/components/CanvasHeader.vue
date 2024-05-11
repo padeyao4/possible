@@ -25,7 +25,7 @@ const translateX = computed(() => {
 </script>
 
 <template>
-  <div id="canvas-header" class="drop-blur">
+  <div id="canvas-header" class="canvas-background-color border-bottom-shadow">
     <div id="group" :style="{'transform': `translateX(${translateX}px)`}">
       <div v-for="item in timers" class="item" :key="item" :style="{'width':`${settings.unitWidth}px`}">{{ item + x }}
       </div>

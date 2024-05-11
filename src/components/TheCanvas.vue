@@ -11,6 +11,7 @@ import CanvasContent from '@/components/CanvasContent.vue'
     <canvas-content />
     <canvas-header />
     <canvas-ruler />
+    <div id="block" class="canvas-background-color"></div>
   </div>
 </template>
 
@@ -19,5 +20,13 @@ import CanvasContent from '@/components/CanvasContent.vue'
   position: relative;
   width: 100%;
   height: 100%;
+}
+
+#block {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 21px;
+  height: 40px;
 }
 </style>

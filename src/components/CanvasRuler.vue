@@ -27,7 +27,7 @@ const translateY = computed(() => {
 </script>
 
 <template>
-  <div id="canvas-ruler" class="canvas-background-color">
+  <div id="canvas-ruler" class="canvas-background-color border-right-shadow">
     <div :style="{'transform':`translateY(${translateY}px)`}">
       <div v-for="item in rulers"
            :key="item"
@@ -43,7 +43,7 @@ const translateY = computed(() => {
   top: 0;
   left: 0;
   bottom: 0;
-  width: 19px;
+  width: 20px;
   overflow-y: hidden;
 }
 </style>
