@@ -15,6 +15,10 @@ watchEffect(() => {
   timers.value = Array.from({ length: size }, (_, i) => i + 1)
 })
 
+const x = computed(() => {
+  return Math.floor(-project.offset.x / settings.unitWidth) - 2
+})
+
 const translateX = computed(() => {
   return project.offset.x % settings.unitWidth + 20 - settings.unitWidth
 })
@@ -22,8 +26,9 @@ const translateX = computed(() => {
 
 <template>
   <div id="canvas-header" class="drop-blur">
-    <div id="group" :style="{transform: `translateX(${translateX}px)`}">
-      <div v-for="item in timers" class="item" :key="item" :style="{'width':`${settings.unitWidth}px`}">{{ item }}</div>
+    <div id="group" :style="{'transform': `translateX(${translateX}px)`}">
+      <div v-for="item in timers" class="item" :key="item" :style="{'width':`${settings.unitWidth}px`}">{{ item + x }}
+      </div>
     </div>
     <div id="no" class="drop-blur"></div>
   </div>
