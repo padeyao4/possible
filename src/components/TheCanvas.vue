@@ -1,64 +1,22 @@
 <script setup lang="ts">
-import { currentProject } from '@/stores/service/project-service'
-import { computed, onMounted } from 'vue'
-import CanvasCard from '@/components/CanvasCard.vue'
 import CanvasHeader from '@/components/CanvasHeader.vue'
 import CanvasRuler from '@/components/CanvasRuler.vue'
 import CanvasGrid from '@/components/CanvasGrid.vue'
-import { Register } from '@/lib/base'
-import { DragCanvas } from '@/lib/behavior/drag-canvas'
-import { useEventListener } from '@vueuse/core'
-import ThePath from '@/components/ThePath.vue'
-import { DragCard } from '@/lib/behavior/drag-card'
-import { ResizeCard } from '@/lib/behavior/resize-card'
-
-const project = currentProject()
-
-const register = new Register()
-
-onMounted(() => {
-  register.addBehaviors(DragCanvas, DragCard, ResizeCard)
-  useEventListener(document, 'mouseup', (e: MouseEvent) => {
-    register.onmouseup(e)
-  })
-})
-
+import CanvasContent from '@/components/CanvasContent.vue'
 </script>
 
 <template>
-  <div id="po-canvas">
+  <div id="the-canvas">
     <canvas-grid />
-    <svg id="svg"
-         @mousedown="register.onmousedown($event)"
-         @mouseup="register.onmouseup($event)"
-         @mouseout="register.onmouseout($event)"
-         @mouseenter="register.onmouseenter($event)"
-         @mouseleave="register.onmouseleave($event)"
-         @mouseover="register.onmouseover($event)"
-         @wheel="register.onwheel($event)"
-         @click="register.onclick($event)"
-         @mousemove="register.onmousemove($event)"
-    >
-      <g id="group" :transform="`translate(${project?.offset.x+20},${project?.offset.y+40})`">
-        <the-path />
-        <canvas-card v-for="node in project.nodeMap.values()" :node="node" :key="node.id" />
-      </g>
-    </svg>
+    <canvas-content />
     <canvas-header />
     <canvas-ruler />
   </div>
 </template>
 
 <style scoped>
-#po-canvas {
+#the-canvas {
   position: relative;
-  width: 100%;
-  height: 100%;
-  background: #b8823050;
-}
-
-#svg {
-  background: #79bbff;
   width: 100%;
   height: 100%;
 }

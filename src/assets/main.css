@@ -50,13 +50,6 @@ body {
 
 /*--------------------------------------------------------*/
 
-.operation {
-    &:hover {
-        background: #529b2e;
-        border-radius: 4px;
-    }
-}
-
 .ghost-class {
     opacity: 0;
 }
@@ -69,4 +62,18 @@ body {
 
 .grabbing * {
     cursor: grabbing !important;
+}
+
+/*--------------------------------------------------------*/
+
+.side-list-item {
+    &:hover {
+        background: #e5ebef;
+        border-radius: 4px;
+    }
+
+    &[data-active='true'] {
+        background: #e5ebef;
+        border-radius: 4px;
+    }
 }

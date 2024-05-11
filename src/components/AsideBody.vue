@@ -8,7 +8,6 @@ import { useSettings } from '@/stores/settings'
 const { projectMap } = useState()
 const settings = useSettings()
 
-
 const list = computed(() => {
   return Array.from(projectMap.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex)
 })
@@ -30,7 +29,7 @@ function onupdate() {
 function onclick(e: MouseEvent) {
   const el = e.target as HTMLElement
   const path = el.getAttribute('data-path')
-  linkTo(path)
+  linkTo('/project/' + path)
 }
 
 </script>
@@ -49,8 +48,8 @@ function onclick(e: MouseEvent) {
              @end="onend"
              @update="onupdate">
     <template #item="{ element }">
-      <div :class="['operation','move',{'active':settings.active===element.id}]" :key="element.id"
-           :data-path="`/project/${element.id}`" @click="onclick">
+      <div class="move side-list-item" :key="element.id"
+           :data-path="element.id" @click="onclick">
         {{ element.name }}
       </div>
     </template>
@@ -72,10 +71,5 @@ function onclick(e: MouseEvent) {
     margin: 4px;
     user-select: none;
   }
-}
-
-.active {
-  background: #529b2e;
-  border-radius: 4px;
 }
 </style>

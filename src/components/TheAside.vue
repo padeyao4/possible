@@ -3,6 +3,20 @@
 import AsideHeader from '@/components/AsideHeader.vue'
 import AsideBody from '@/components/AsideBody.vue'
 import AsideFooter from '@/components/AsideFooter.vue'
+import { onMounted, watchEffect } from 'vue'
+import { useSettings } from '@/stores/settings'
+
+const settings = useSettings()
+
+onMounted(() => {
+  watchEffect(() => {
+    const els = document.getElementsByClassName('side-list-item')
+    for (const el of els) {
+      const path = el.getAttribute('data-path')
+      el.setAttribute('data-active', path === settings.active)
+    }
+  })
+})
 </script>
 
 <template>
