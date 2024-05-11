@@ -32,7 +32,7 @@ export class DragCard extends BaseBehavior {
 
   onmousedown(e: MouseEvent) {
     const el = e.target as Element
-    if (this.isDown || el.tagName !== 'rect') return
+    if (this.isDown || !el.hasAttribute('data-key')) return
     const nodeId = el.getAttribute('data-key')
     const node = this.project.nodeMap.get(nodeId)
     Object.assign(this.oldNode, node)
