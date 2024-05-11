@@ -17,7 +17,8 @@ watchEffect(() => {
 })
 
 const y = computed(() => {
-  return 0
+  const absY = Math.abs(project.offset.y)
+  return Math.floor(absY / settings.unitHeight) - 2
 })
 
 const translateY = computed(() => {
