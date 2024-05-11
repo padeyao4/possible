@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useSettings } from '@/stores/settings'
-import { onMounted, watchEffect } from 'vue'
 import { linkTo } from '@/stores/service/route-service'
 
 const settings = useSettings()

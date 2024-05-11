@@ -21,10 +21,11 @@ const translateX = computed(() => {
 </script>
 
 <template>
-  <div id="canvas-header">
+  <div id="canvas-header" class="drop-blur">
     <div id="group" :style="{transform: `translateX(${translateX}px)`}">
       <div v-for="item in timers" class="item" :key="item" :style="{'width':`${settings.unitWidth}px`}">{{ item }}</div>
     </div>
+    <div id="no" class="drop-blur"></div>
   </div>
 </template>
 
@@ -37,13 +38,20 @@ const translateX = computed(() => {
   left: 0;
   right: 0;
   height: 40px;
-  background: #95d475;
   overflow-x: hidden;
 }
 
 #group {
   display: flex;
   flex-direction: row;
+}
+
+#no {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 40px;
 }
 
 .item {
