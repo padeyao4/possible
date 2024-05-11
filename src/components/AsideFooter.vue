@@ -1,8 +1,15 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { Plus } from '@icon-park/vue-next'
+</script>
 
 <template>
   <div id="aside-footer">
-    <div>创建项目</div>
+    <div class="side-list-item">
+      <plus theme="outline" size="20" fill="#333" :strokeWidth="3" strokeLinecap="butt" class="side-icon" />
+      <div class="side-item-text">
+        创建项目
+      </div>
+    </div>
   </div>
 </template>
 
@@ -17,13 +24,7 @@
     align-items: center;
     height: 40px;
     padding: 4px;
-    margin: 4px;
-    user-select: none;
-
-    &:hover {
-      background: #529b2e;
-      border-radius: 4px;
-    }
+    margin: 4px 12px;
   }
 }
 </style>

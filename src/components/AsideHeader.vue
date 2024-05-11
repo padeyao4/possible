@@ -1,24 +1,39 @@
 <script setup lang="ts">
 import { useSettings } from '@/stores/settings'
 import { linkTo } from '@/stores/service/route-service'
+import { Config, DeleteFour, Drag, ListSuccess, Plus, Sun, Bookmark, Write, AllApplication } from '@icon-park/vue-next'
 
 const settings = useSettings()
 
-function onclick(e: MouseEvent) {
-  const el = e.target as HTMLElement
-  const key = el.getAttribute('data-path')
-  if (key !== null) {
-    linkTo('/' + key)
-  }
+function onclick(path: string) {
+  setTimeout(() => {
+    linkTo(path)
+  })
 }
 
 </script>
 
 <template>
-  <div id="aside-header" @click="onclick">
-    <div class="side-list-item" data-path="today">我的一天</div>
-    <div class="side-list-item" data-path="backlog">备忘录</div>
-    <div class="side-list-item" data-path="manage">任务管理</div>
+  <div id="aside-header">
+    <div class="side-list-item" data-path="today" @click="onclick('/today')">
+      <sun theme="multi-color" size="20" :fill="['#333' ,'#2F88FF' ,'#FFF' ,'#43CCF8']" :strokeWidth="3"
+           strokeLinecap="butt" class="side-icon" />
+      <div class="side-item-text">
+        我的一天
+      </div>
+    </div>
+    <div class="side-list-item" data-path="backlog" @click="onclick('/backlog')">
+      <bookmark theme="outline" size="20" fill="#333" :strokeWidth="3" strokeLinecap="butt" class="side-icon" />
+      <div class="side-item-text">
+        备忘录
+      </div>
+    </div>
+    <div class="side-list-item" data-path="manage" @click="onclick('/manage')">
+      <all-application theme="outline" size="20" fill="#333" :strokeWidth="3" strokeLinecap="butt" class="side-icon" />
+      <div class="side-item-text">
+        任务管理
+      </div>
+    </div>
   </div>
 </template>
 
@@ -33,7 +48,7 @@ function onclick(e: MouseEvent) {
     align-items: center;
     height: 40px;
     padding: 4px;
-    margin: 4px;
+    margin: 4px 12px;
     user-select: none;
   }
 }

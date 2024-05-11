@@ -26,10 +26,10 @@ function onupdate() {
   })
 }
 
-function onclick(e: MouseEvent) {
-  const el = e.target as HTMLElement
-  const path = el.getAttribute('data-path')
-  linkTo('/project/' + path)
+function onclick(projectId: string) {
+  setTimeout(() => {
+    linkTo('/project/' + projectId)
+  })
 }
 
 </script>
@@ -49,8 +49,8 @@ function onclick(e: MouseEvent) {
              @update="onupdate">
     <template #item="{ element }">
       <div class="move side-list-item" :key="element.id"
-           :data-path="element.id" @click="onclick">
-        {{ element.name }}
+           :data-path="element.id" @click="onclick(element.id)">
+        <div class="info"> {{ element.name }}</div>
       </div>
     </template>
   </draggable>
@@ -68,8 +68,12 @@ function onclick(e: MouseEvent) {
     align-items: center;
     height: 40px;
     padding: 4px;
-    margin: 4px;
+    margin: 4px 12px;
     user-select: none;
   }
+}
+
+.info {
+  margin: 0 4px;
 }
 </style>
