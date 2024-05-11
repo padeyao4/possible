@@ -27,7 +27,7 @@ const translateY = computed(() => {
 </script>
 
 <template>
-  <div id="canvas-ruler" class="drop-blur">
+  <div id="canvas-ruler" class="canvas-background-color">
     <div :style="{'transform':`translateY(${translateY}px)`}">
       <div v-for="item in rulers"
            :key="item"
@@ -43,8 +43,7 @@ const translateY = computed(() => {
   top: 0;
   left: 0;
   bottom: 0;
-  width: 20px;
+  width: 19px;
   overflow-y: hidden;
-  clip-path: polygon(0 40px, 20px 40px, 20px 100%, 0 100%);
 }
 </style>

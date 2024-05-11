@@ -30,7 +30,6 @@ const translateX = computed(() => {
       <div v-for="item in timers" class="item" :key="item" :style="{'width':`${settings.unitWidth}px`}">{{ item + x }}
       </div>
     </div>
-    <div id="no" class="drop-blur"></div>
   </div>
 </template>
 
@@ -49,14 +48,6 @@ const translateX = computed(() => {
 #group {
   display: flex;
   flex-direction: row;
-}
-
-#no {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 20px;
-  height: 40px;
 }
 
 .item {
