@@ -20,7 +20,7 @@ const height = computed(() => {
 </script>
 
 <template>
-  <g :transform="transform" :key="node.id" >
+  <g :transform="transform">
     <rect
       :width="width"
       :height="height"
@@ -31,14 +31,14 @@ const height = computed(() => {
       fill="#fff"
       rx="8" />
     <g opacity="0.1">
-      <rect data-direction="lt" x="0" y="0" width="5" height="5" />
-      <rect data-direction="rt" :x="width-5" y="0" width="5" height="5" />
-      <rect data-direction="t" x="5" y="0" :width="width-10" height="5" />
-      <rect data-direction="b" x="5" :y="height-5" :width="width-10" height="5" />
-      <rect data-direction="l" x="0" y="5" :width="5" :height="height-10" />
-      <rect data-direction="r" :x="width-5" y="5" :width="5" :height="height-10" />
-      <rect data-direction="lb" x="0" :y="height-5" width="5" height="5" />
-      <rect data-direction="rb" :x="width-5" :y="height-5" width="5" height="5" />
+      <rect :data-key="node.id" data-direction="lt" x="0" y="0" width="5" height="5" />
+      <rect :data-key="node.id" data-direction="rt" :x="width-5" y="0" width="5" height="5" />
+      <rect :data-key="node.id" data-direction="t" x="5" y="0" :width="width-10" height="5" />
+      <rect :data-key="node.id" data-direction="b" x="5" :y="height-5" :width="width-10" height="5" />
+      <rect :data-key="node.id" data-direction="l" x="0" y="5" :width="5" :height="height-10" />
+      <rect :data-key="node.id" data-direction="r" :x="width-5" y="5" :width="5" :height="height-10" />
+      <rect :data-key="node.id" data-direction="lb" x="0" :y="height-5" width="5" height="5" />
+      <rect :data-key="node.id" data-direction="rb" :x="width-5" :y="height-5" width="5" height="5" />
     </g>
   </g>
 </template>
