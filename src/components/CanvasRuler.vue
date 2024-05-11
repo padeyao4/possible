@@ -16,16 +16,14 @@ watchEffect(() => {
   rulers.value = Array.from({ length: size }, (_, i) => i + 1)
 })
 
-const dyStyle = computed(() => {
-  return {
-    transform: `translateY(${project.offset.y % settings.unitHeight}px)`
-  }
+const translateY = computed(() => {
+  return project.offset.y % settings.unitHeight + 40 - settings.unitHeight
 })
 </script>
 
 <template>
   <div id="canvas-ruler">
-    <div id="group" :style="dyStyle">
+    <div :style="{'transform':`translateY(${translateY}px)`}">
       <div v-for="item in rulers"
            :key="item"
            :style="{'height':`${settings.unitHeight}px`}">{{ item }}
@@ -43,11 +41,5 @@ const dyStyle = computed(() => {
   width: 20px;
   overflow-y: hidden;
   background: #6f6f6f;
-}
-
-#group {
-  background: #529b2e40;
-  height: 100%;
-  width: 100%;
 }
 </style>

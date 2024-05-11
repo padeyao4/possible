@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { currentProject } from '@/stores/service/project-service'
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import CanvasCard from '@/components/CanvasCard.vue'
 import CanvasHeader from '@/components/CanvasHeader.vue'
 import CanvasRuler from '@/components/CanvasRuler.vue'
@@ -22,6 +22,7 @@ onMounted(() => {
     register.onmouseup(e)
   })
 })
+
 </script>
 
 <template>
@@ -38,7 +39,7 @@ onMounted(() => {
          @click="register.onclick($event)"
          @mousemove="register.onmousemove($event)"
     >
-      <g id="group" :transform="`translate(${project?.offset.x},${project?.offset.y})`">
+      <g id="group" :transform="`translate(${project?.offset.x+20},${project?.offset.y+40})`">
         <the-path />
         <canvas-card v-for="node in project.nodeMap.values()" :node="node" :key="node.id" />
       </g>

@@ -30,7 +30,7 @@ const height = computed(() => {
       stroke-width="1"
       fill="#fff"
       rx="8" />
-    <g opacity="0.1">
+    <g opacity="0">
       <rect :data-key="node.id" data-direction="lt" x="0" y="0" width="5" height="5" />
       <rect :data-key="node.id" data-direction="rt" :x="width-5" y="0" width="5" height="5" />
       <rect :data-key="node.id" data-direction="t" x="5" y="0" :width="width-10" height="5" />

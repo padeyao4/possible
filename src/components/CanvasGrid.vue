@@ -1,16 +1,21 @@
 <script setup lang="ts">
 import { useSettings } from '@/stores/settings'
 import { currentProject } from '@/stores/service/project-service'
+import { computed } from 'vue'
 
 const settings = useSettings()
 const project = currentProject()
+
+const translateX = computed(() => {
+  return project.offset.x % settings.unitWidth + 20 - settings.unitWidth
+})
 </script>
 
 <template>
   <div id="canvas-grid">
     <div
       id="container"
-      :style="{'background-size':`${settings.unitWidth}px`,'transform':`translateX(${project.offset.x%settings.unitWidth}px)`}" />
+      :style="{'background-size':`${settings.unitWidth}px`,'transform':`translateX(${translateX}px)`}" />
   </div>
 </template>
 
@@ -27,7 +32,7 @@ const project = currentProject()
 }
 
 #container {
-  width: 100%;
+  width: 200%;
   height: 100%;
   background-image: linear-gradient(
     90deg,

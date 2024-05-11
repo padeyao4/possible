@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import { useSettings } from '@/stores/settings'
 import { currentProject } from '@/stores/service/project-service'
@@ -14,11 +14,15 @@ watchEffect(() => {
   const size = Math.ceil(width.value / settings.unitWidth)
   timers.value = Array.from({ length: size }, (_, i) => i + 1)
 })
+
+const translateX = computed(() => {
+  return project.offset.x % settings.unitWidth + 20 - settings.unitWidth
+})
 </script>
 
 <template>
   <div id="canvas-header">
-    <div id="group" :style="{transform: `translateX(${project.offset.x%settings.unitWidth}px)`}">
+    <div id="group" :style="{transform: `translateX(${translateX}px)`}">
       <div v-for="item in timers" class="item" :key="item" :style="{'width':`${settings.unitWidth}px`}">{{ item }}</div>
     </div>
   </div>
@@ -40,9 +44,6 @@ watchEffect(() => {
 #group {
   display: flex;
   flex-direction: row;
-  width: 100%;
-  height: 100%;
-  background: #b8823040;
 }
 
 .item {
