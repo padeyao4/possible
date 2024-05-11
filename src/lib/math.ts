@@ -20,3 +20,7 @@ export function isCross(rect1: RectLike, rect2: RectLike): boolean {
 export function campMin(n: number, min: number) {
   return n >= min ? n : min
 }
+
+export function campMax(n, max: number) {
+  return n <= max ? n : max
+}

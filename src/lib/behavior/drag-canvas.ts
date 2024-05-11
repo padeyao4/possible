@@ -1,5 +1,6 @@
 import { BaseBehavior } from '@/lib/base'
 import { currentProject } from '@/stores/service/project-service'
+import { campMax, campMin } from '@/lib/math'
 
 export class DragCanvas extends BaseBehavior {
   isDown = false
@@ -14,8 +15,8 @@ export class DragCanvas extends BaseBehavior {
     if (!this.isDown) return
     const dx = e.x - this.position.x
     const dy = e.y - this.position.y
-    this.project.offset.x = this.offset.x + dx
-    this.project.offset.y = this.offset.y + dy
+    this.project.offset.x = campMax(this.offset.x + dx, 0)
+    this.project.offset.y = campMax(this.offset.y + dy, 0)
   }
 
   onmousedown(e: MouseEvent) {

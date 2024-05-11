@@ -16,6 +16,10 @@ watchEffect(() => {
   rulers.value = Array.from({ length: size }, (_, i) => i + 1)
 })
 
+const y = computed(() => {
+  return 0
+})
+
 const translateY = computed(() => {
   return project.offset.y % settings.unitHeight + 40 - settings.unitHeight
 })
@@ -26,7 +30,7 @@ const translateY = computed(() => {
     <div :style="{'transform':`translateY(${translateY}px)`}">
       <div v-for="item in rulers"
            :key="item"
-           :style="{'height':`${settings.unitHeight}px`}">{{ item }}
+           :style="{'height':`${settings.unitHeight}px`}">{{ item + y }}
       </div>
     </div>
   </div>
