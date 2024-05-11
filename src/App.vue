@@ -4,6 +4,8 @@ import { useRoute } from 'vue-router'
 import { useSettings } from '@/stores/settings'
 import PoSeparation from '@/components/TheSeparation.vue'
 import { testProjects } from '@/stores/service/project-service'
+import WindowTitlebar from '@/components/WindowTitlebar.vue'
+import ResizeCursorStyle from '@/components/ResizeCursorStyle.vue'
 
 const route = useRoute()
 const settings = useSettings()
@@ -13,12 +15,13 @@ testProjects()
 </script>
 
 <template>
+  <window-titlebar />
   <div id="main">
     <div id="aside" :style="{'width':`${settings.sideWidth}px`}">
       <the-aside />
     </div>
     <div id="container" :style="{'width': `calc(100vw - ${settings.sideWidth}px)`}">
-      <router-view :key="route.fullPath" />
+      <router-view :key="route.fullPath" style="height: 100%" />
     </div>
     <po-separation :style="{'left':`${settings.sideWidth}px`}" />
   </div>

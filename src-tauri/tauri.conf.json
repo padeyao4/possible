@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
-    "beforeBuildCommand": "bun run build --mode prod",
-    "beforeDevCommand": "bun run dev --mode staging",
+    "beforeBuildCommand": "pnpm run build --mode prod",
+    "beforeDevCommand": "pnpm run dev --mode staging",
     "devPath": "http://localhost:5173/",
     "distDir": "../dist"
   },

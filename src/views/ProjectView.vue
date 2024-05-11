@@ -7,8 +7,10 @@ const project = currentProject()
 </script>
 
 <template>
-  <div id="project-view">
-    <div id="header">{{ project?.name }}</div>
+  <div class="project-view">
+    <div id="header">
+      <div id="title">{{ project?.name }}</div>
+    </div>
     <div id="body" class="border-top-shadow canvas-background-color">
       <the-canvas />
     </div>
@@ -17,27 +19,35 @@ const project = currentProject()
 </template>
 
 <style scoped>
-
-#project-view {
-  height: 100vh;
+.project-view {
+  display: flex;
+  flex-direction: column;
 }
 
 #header {
   display: flex;
   align-items: center;
   width: 100%;
-  height: 64px;
-  padding: 24px 16px;
+  margin-top: 24px;
+  margin-bottom: 12px;
   font-size: 20px;
 }
 
+#title {
+  height: 40px;
+  margin-left: 16px;
+  display: flex;
+  align-items: center;
+}
+
 #body {
-  height: calc(100vh - 48px - 64px);
   padding: 0 16px;
+  flex-grow: 1;
 }
 
 #footer {
   height: 48px;
+  flex-shrink: 0;
   background: transparent !important;
   box-shadow: rgba(27, 31, 35, 0.06) 0 -1px 0,
   rgba(255, 255, 255, 0.25) 0 -1px 0 inset;

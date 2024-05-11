@@ -26,6 +26,7 @@ function onclick(e: MouseEvent) {
 #aside-header {
   box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
   rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+  margin-top: 24px;
 
   & > * {
     display: flex;

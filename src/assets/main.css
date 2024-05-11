@@ -20,7 +20,6 @@ body {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    user-select: none;
     background: rgba(255, 255, 255, 0);
 }
 
@@ -56,8 +55,8 @@ body {
 
 .drag-class {
     box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
-    background: #529b2e;
     border-radius: 4px;
+    background: #e5ebef;
 }
 
 .grabbing * {
