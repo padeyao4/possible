@@ -3,11 +3,13 @@
 </script>
 
 <template>
-  <div>
-    manage
+  <div class="manage-view">
+
   </div>
 </template>
 
 <style scoped>
-
+.manage-view{
+  background-color: #5c83ab;
+}
 </style>

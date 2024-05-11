@@ -4,6 +4,7 @@ import Draggable from 'vuedraggable/src/vuedraggable'
 import { useState } from '@/stores/state'
 import { linkTo } from '@/stores/service/route-service'
 import { useSettings } from '@/stores/settings'
+import AsideBodyItem from '@/components/AsideBodyItem.vue'
 
 const { projectMap } = useState()
 const settings = useSettings()
@@ -33,7 +34,6 @@ function onclick(projectId: string) {
 }
 
 </script>
-
 <template>
   <draggable :list="list"
              id="aside-body"
@@ -48,32 +48,15 @@ function onclick(projectId: string) {
              @end="onend"
              @update="onupdate">
     <template #item="{ element }">
-      <div class="move side-list-item" :key="element.id"
-           :data-path="element.id" @click="onclick(element.id)">
-        <div class="info"> {{ element.name }}</div>
-      </div>
+      <aside-body-item :project="element" :key="element.id" />
     </template>
   </draggable>
 </template>
 
 <style scoped>
 #aside-body {
-  display: flex;
   flex-direction: column;
   overflow-y: auto;
-
-  & > * {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    height: 40px;
-    padding: 4px;
-    margin: 4px 12px;
-    user-select: none;
-  }
-}
-
-.info {
-  margin: 0 4px;
+  width: 100%;
 }
 </style>

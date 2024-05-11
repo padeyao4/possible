@@ -8,15 +8,6 @@ import { useSettings } from '@/stores/settings'
 
 const settings = useSettings()
 
-onMounted(() => {
-  watchEffect(() => {
-    const els = document.getElementsByClassName('side-list-item')
-    for (const el of els) {
-      const path = el.getAttribute('data-path')
-      el.setAttribute('data-active', path === settings.active)
-    }
-  })
-})
 </script>
 
 <template>

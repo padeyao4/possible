@@ -20,7 +20,7 @@ export function createProjectTemplate(): Project {
     coordinateMap: new Map<string, Node>(),
     completed: false,
     sortIndex: Array.from(projectMap.values()).length + 1,
-    editable: true,
+    editable: false,
     createTime: projectCreateTime,
     offset: { x: 0, y: 0 }
   }
