@@ -41,7 +41,6 @@ const project = currentProject()
 }
 
 #body {
-  padding: 0 16px;
   flex-grow: 1;
 }
 

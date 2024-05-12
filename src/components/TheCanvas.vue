@@ -37,7 +37,7 @@ const projectContextmenuRef = ref()
   position: absolute;
   top: 0;
   left: 0;
-  width: 21px;
+  width: 40px;
   height: 40px;
 }
 </style>

@@ -43,9 +43,10 @@ const translateY = computed(() => {
   top: 0;
   left: 0;
   bottom: 0;
-  width: 20px;
+  width: 40px;
   overflow-y: hidden;
   pointer-events: none;
+  padding-left: 16px;
   border-right: 1px solid rgba(27, 31, 35, 0.06);
 }
 </style>
