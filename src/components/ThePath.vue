@@ -2,11 +2,12 @@
 import { currentProject } from '@/stores/service/project-service'
 import { computed } from 'vue'
 import { useSettings } from '@/stores/settings'
+import type { Edge, Point } from '@/stores/state'
 
 const project = currentProject()
 const setting = useSettings()
 
-const edges = computed(() => {
+const edges = computed<{ id: string, from: Point, to: Point }[]>(() => {
   const { nodeMap, edgeMap } = project
   const ans = []
   const { unitWidth, unitHeight } = setting
@@ -34,6 +35,8 @@ const edges = computed(() => {
   <path v-for="edge in edges"
         :d="`M ${edge.from.x},${edge.from.y} L ${edge.to.x},${edge.to.y}`"
         stroke="#000"
+        :data-key="edge.id"
+        data-type="edge"
         stroke-opacity="0.7"
         stroke-width="" />
 </template>

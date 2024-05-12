@@ -28,7 +28,7 @@ export class ResizeCard extends BaseBehavior {
   }
 
   onmousedown(e: MouseEvent) {
-    if (this.isPressed) return
+    if (this.isPressed || e.button !== 0) return
     const el = e.target as Element
     if (el.hasAttribute('data-direction')) {
       console.log('resize down')

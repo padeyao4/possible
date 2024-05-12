@@ -41,6 +41,7 @@ const translateY = computed(() => {
        @wheel="register.onwheel($event)"
        @click="register.onclick($event)"
        @mousemove="register.onmousemove($event)"
+       data-type="canvas"
   >
     <g id="group" :transform="`translate(${translateX},${translateY})`">
       <the-path />
