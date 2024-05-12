@@ -20,7 +20,7 @@ const x = computed(() => {
 })
 
 const translateX = computed(() => {
-  return project.offset.x % settings.unitWidth + 20 - settings.unitWidth
+  return project.offset.x % settings.unitWidth + settings.offsetX - settings.unitWidth
 })
 </script>
 

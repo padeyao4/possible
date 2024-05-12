@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { inject, type Ref, ref } from 'vue'
+import { inject, provide, type Ref, ref } from 'vue'
 import CanvasContextmenu from '@/components/CanvasContextmenu.vue'
 
 const modeRef = ref<HTMLElement>()
-const contextmenu = ref<HTMLElement>()
+const contextmenuRef = ref<HTMLElement>()
 const contextmenuType = ref<'canvas' | 'node' | 'edge'>('')
 const theCanvasRef = inject<Ref<HTMLElement>>('canvas')
 
-function onclick() {
-  console.log('click')
+provide('contextmenu', contextmenuRef)
+
+function handleCancelMenu() {
   modeRef.value.toggleAttribute('data-pointer-event', false)
-  contextmenu.value.toggleAttribute('data-show', false)
+  contextmenuRef.value.toggleAttribute('data-show', false)
 }
 
 function oncontextmenu(e: PointerEvent) {
@@ -37,11 +38,13 @@ function handleNodeType(e: PointerEvent) {
 }
 
 function handleCanvasType(e: PointerEvent) {
-  const el = contextmenu.value
+  const el = contextmenuRef.value
   contextmenuType.value = 'canvas'
   el.style.top = e.y + 'px'
   el.style.left = e.x + 'px'
   el.style.opacity = 0
+  el.setAttribute('data-x', e.x)
+  el.setAttribute('data-y', e.y)
   el.toggleAttribute('data-show', true)
 
   setTimeout(() => {
@@ -65,8 +68,8 @@ defineExpose({ oncontextmenu })
 </script>
 
 <template>
-  <div id="contextmenu-mode" ref="modeRef" @click="onclick" @contextmenu.prevent="onclick">
-    <div id="canvas-contextmenu" ref="contextmenu">
+  <div id="contextmenu-mode" ref="modeRef" @click="handleCancelMenu" @contextmenu.prevent="handleCancelMenu">
+    <div id="project-contextmenu" ref="contextmenuRef">
       <canvas-contextmenu v-if="contextmenuType==='canvas'" />
     </div>
   </div>
@@ -87,7 +90,7 @@ defineExpose({ oncontextmenu })
   }
 }
 
-#canvas-contextmenu {
+#project-contextmenu {
   display: none;
   position: absolute;
   top: 0;

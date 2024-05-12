@@ -22,7 +22,7 @@ const y = computed(() => {
 })
 
 const translateY = computed(() => {
-  return project.offset.y % settings.unitHeight + 40 - settings.unitHeight
+  return project.offset.y % settings.unitHeight + settings.offsetY - settings.unitHeight
 })
 </script>
 

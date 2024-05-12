@@ -26,7 +26,7 @@ export function createProjectTemplate(): Project {
   }
 }
 
-function createNodeTemplate(): Node {
+export function createNodeTemplate(): Node {
   return {
     id: v4(),
     name: faker.string.sample({ min: 20, max: 30 }),

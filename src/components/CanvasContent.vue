@@ -9,8 +9,10 @@ import { DragCanvas } from '@/lib/behavior/drag-canvas'
 import { useEventListener } from '@vueuse/core'
 import { DragCard } from '@/lib/behavior/drag-card'
 import { ResizeCard } from '@/lib/behavior/resize-card'
+import { useSettings } from '@/stores/settings'
 
 const project = currentProject()
+const settings = useSettings()
 
 const register = new Register()
 
@@ -22,11 +24,11 @@ onMounted(() => {
 })
 
 const translateX = computed(() => {
-  return project?.offset.x + 20
+  return project?.offset.x + settings.offsetX
 })
 
 const translateY = computed(() => {
-  return project?.offset.y + 40
+  return project?.offset.y + settings.offsetY
 })
 </script>
 
