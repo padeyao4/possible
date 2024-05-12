@@ -43,6 +43,7 @@ const translateX = computed(() => {
   right: 0;
   height: 39px;
   overflow-x: hidden;
+  pointer-events: none;
 }
 
 #group {

@@ -29,7 +29,7 @@ export function createProjectTemplate(): Project {
 function createNodeTemplate(): Node {
   return {
     id: v4(),
-    name: faker.string.sample({ min: 2, max: 5 }),
+    name: faker.string.sample({ min: 20, max: 30 }),
     x: faker.number.int({ min: 0, max: 10 }),
     y: faker.number.int({ min: 0, max: 5 }),
     height: faker.number.int({ min: 1, max: 3 }),

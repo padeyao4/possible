@@ -6,8 +6,12 @@ import { useSettings } from '@/stores/settings'
 const props = defineProps<{ node: Node }>()
 const settings = useSettings()
 
-const transform = computed(() => {
-  return `translate(${props.node.x * settings.unitWidth},${props.node.y * settings.unitHeight})`
+const translateX = computed(() => {
+  return props.node.x * settings.unitWidth
+})
+
+const translateY = computed(() => {
+  return props.node.y * settings.unitHeight
 })
 
 const width = computed(() => {
@@ -20,15 +24,28 @@ const height = computed(() => {
 </script>
 
 <template>
-  <g :transform="transform">
+  <g :transform="`translate(${translateX},${translateY})`">
     <rect
       :width="width"
       :height="height"
+      opacity="0.8"
+      stroke-width="1"
       stroke="#000"
+      fill="#fff"
+      rx="8" />
+    <foreignObject :width="width" :height="height">
+      <div id="text">
+        <p id="content">
+         {{ node.name}}
+        </p>
+      </div>
+    </foreignObject>
+    <rect
+      :width="width"
+      :height="height"
+      opacity="0"
       :data-key="node.id"
       data-main
-      stroke-width="1"
-      fill="#fff"
       rx="8" />
     <g opacity="0">
       <rect :data-key="node.id" data-direction="lt" x="0" y="0" width="5" height="5" />
@@ -44,5 +61,24 @@ const height = computed(() => {
 </template>
 
 <style scoped>
+#text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  overflow: hidden;
+}
 
+#content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 100;
+  font-size: 13px;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
 </style>
