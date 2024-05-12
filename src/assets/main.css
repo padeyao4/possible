@@ -90,6 +90,29 @@ body {
     margin: 0 4px;
 }
 
+/*-------------canvas contextmenu-----------*/
+.canvas-contextmenu-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    padding: 8px;
+    color: white;
+
+    & > * {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 32px;
+
+        &:hover {
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+    }
+}
+
 /*----------美化样式---------------*/
 
 .drop-blur {

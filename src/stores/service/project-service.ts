@@ -15,9 +15,6 @@ export function createProjectTemplate(): Project {
     edgeMap: new Map<ID, Edge>(),
     inMap: new Map<ID, Set<Edge>>(),
     outMap: new Map<ID, Set<Edge>>(),
-    rowMap: new Map<ID, Set<Node>>(),
-    colMap: new Map<ID, Set<Node>>(),
-    coordinateMap: new Map<string, Node>(),
     completed: false,
     sortIndex: Array.from(projectMap.values()).length + 1,
     editable: false,
@@ -48,8 +45,49 @@ export function addProject(project: Project) {
 }
 
 export function addNode(project: Project, node: Node) {
+  const { nodeMap, inMap, outMap } = project
   node.projectId = project.id
-  project.nodeMap.set(node.id, node)
+  nodeMap.set(node.id, node)
+  inMap.set(node.id, new Set<Edge>())
+  outMap.set(node.id, new Set<Edge>())
+}
+
+
+export function deleteNodeById(project: Project, nodeId: ID) {
+  const { edgeMap, inMap, outMap, nodeMap } = project
+
+  outMap.get(nodeId)?.forEach((edge) => {
+    inMap.get(edge.target)?.delete(edge)
+    edgeMap.delete(edge.id)
+  })
+
+  inMap.get(nodeId)?.forEach((edge) => {
+    outMap.get(edge.source)?.delete(edge)
+    edgeMap.delete(edge.id)
+  })
+
+  outMap.delete(nodeId)
+  inMap.delete(nodeId)
+
+  nodeMap.delete(nodeId)
+}
+
+export function addEdge(project: Project, node1: Node, node2: Node) {
+  const { edgeMap, inMap, outMap } = project
+  const edge = {
+    id: v4(),
+    source: node1.id,
+    target: node2.id
+  }
+  edgeMap.set(edge.id, edge)
+  inMap.get(edge.target).add(edge)
+  outMap.get(edge.source).add(edge)
+}
+
+export function currentProject(): Project {
+  const settings = useSettings()
+  const { projectMap } = useState()
+  return projectMap.get(settings.active) ?? createProjectTemplate()
 }
 
 export function testProjects() {
@@ -64,19 +102,4 @@ export function testProjects() {
       addEdge(project, node1, node2)
     }
   }
-}
-
-export function addEdge(project: Project, node1: Node, node2: Node) {
-  const edge = {
-    id: v4(),
-    source: node1.id,
-    target: node2.id
-  }
-  project.edgeMap.set(edge.id, edge)
-}
-
-export function currentProject(): Project {
-  const settings = useSettings()
-  const { projectMap } = useState()
-  return projectMap.get(settings.active) ?? createProjectTemplate()
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { inject, provide, type Ref, ref } from 'vue'
 import CanvasContextmenu from '@/components/CanvasContextmenu.vue'
+import NodeContextmenu from '@/components/NodeContextmenu.vue'
 
 const modeRef = ref<HTMLElement>()
 const contextmenuRef = ref<HTMLElement>()
@@ -17,48 +18,32 @@ function handleCancelMenu() {
 function oncontextmenu(e: PointerEvent) {
   e.stopPropagation()
   e.preventDefault()
-  const el = e.target as Element
-  if (el.hasAttribute('data-type')) {
-    const elementType = el.getAttribute('data-type')
-    switch (elementType) {
-      case 'node':
-        handleNodeType(e)
-        break
-      case 'canvas':
-        handleCanvasType(e)
-        break
-      case 'edge':
-        break
-    }
-  }
-}
+  const target = e.target as Element
+  if (!target.hasAttribute('data-type')) return
 
-function handleNodeType(e: PointerEvent) {
-  // todo
-}
+  const elementType = target.getAttribute('data-type')
+  const contextmenu = contextmenuRef.value
+  contextmenuType.value = elementType
 
-function handleCanvasType(e: PointerEvent) {
-  const el = contextmenuRef.value
-  contextmenuType.value = 'canvas'
-  el.style.top = e.y + 'px'
-  el.style.left = e.x + 'px'
-  el.style.opacity = 0
-  el.setAttribute('data-x', e.x)
-  el.setAttribute('data-y', e.y)
-  el.toggleAttribute('data-show', true)
-
+  contextmenu.style.top = e.y + 'px'
+  contextmenu.style.left = e.x + 'px'
+  contextmenu.style.opacity = 0
+  contextmenu.setAttribute('data-x', e.x)
+  contextmenu.setAttribute('data-y', e.y)
+  contextmenu.toggleAttribute('data-show', true)
+  const targetId = target.getAttribute('data-key') ?? ''
+  contextmenu.setAttribute('data-target-id', targetId)
   setTimeout(() => {
-    const menuRect = el.getBoundingClientRect()
+    const menuRect = contextmenu.getBoundingClientRect()
     const canvasRect = theCanvasRef.value.getBoundingClientRect()
-
     if (menuRect.right > canvasRect.right) {
-      el.style.left = (e.x - menuRect.width) + 'px'
+      contextmenu.style.left = (e.x - menuRect.width) + 'px'
     }
-
     if (menuRect.bottom > canvasRect.bottom) {
-      el.style.top = (canvasRect.bottom - menuRect.height) + 'px'
+      contextmenu.style.top = (canvasRect.bottom - menuRect.height) + 'px'
     }
-    el.style.opacity = 1
+    contextmenu.style.opacity = 1
+    document.body.style.cursor = 'default'
   })
   modeRef.value.toggleAttribute('data-pointer-event', true)
 }
@@ -71,6 +56,7 @@ defineExpose({ oncontextmenu })
   <div id="contextmenu-mode" ref="modeRef" @click="handleCancelMenu" @contextmenu.prevent="handleCancelMenu">
     <div id="project-contextmenu" ref="contextmenuRef">
       <canvas-contextmenu v-if="contextmenuType==='canvas'" />
+      <node-contextmenu v-if="contextmenuType==='node'" />
     </div>
   </div>
 </template>

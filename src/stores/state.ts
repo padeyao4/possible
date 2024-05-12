@@ -35,9 +35,6 @@ export interface Project {
   edgeMap: Map<ID, Edge>
   inMap: Map<ID, Set<Edge>>
   outMap: Map<ID, Set<Edge>>
-  rowMap: Map<ID, Set<Node>>
-  colMap: Map<ID, Set<Node>>
-  coordinateMap: Map<string, Node>
   completed: boolean
   sortIndex: number
   editable: boolean
