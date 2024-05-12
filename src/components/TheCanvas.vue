@@ -25,11 +25,13 @@ function oncontextmenu(e: PointerEvent) {
   }
 }
 
-const contextmenuType = ref<'canvas' | 'node' | 'edge'>()
+const contextmenuType = ref<'canvas' | 'node' | 'edge'>('')
 
 function handleNodeType(e: PointerEvent) {
   // todo
 }
+
+const theCanvasRef = ref<HTMLElement>()
 
 function handleCanvasType(e: PointerEvent) {
   const el = document.getElementById('canvas-contextmenu')
@@ -37,13 +39,27 @@ function handleCanvasType(e: PointerEvent) {
   el.style.top = e.y + 'px'
   el.style.left = e.x + 'px'
   el.toggleAttribute('data-show', true)
+
+  setTimeout(()=>{
+    const menuRect = el.getBoundingClientRect()
+    const canvasRect = theCanvasRef.value.getBoundingClientRect()
+
+    if (menuRect.right > canvasRect.right) {
+      el.style.left = (e.x - menuRect.width) + 'px'
+    }
+
+    if (menuRect.bottom > canvasRect.bottom) {
+      el.style.top = (canvasRect.bottom - menuRect.height) + 'px'
+    }
+  })
+
   const mode = document.getElementById('contextmenu-mode')
   mode.toggleAttribute('data-pointer-event', true)
 }
 </script>
 
 <template>
-  <div id="the-canvas" @contextmenu.capture="oncontextmenu">
+  <div id="the-canvas" @contextmenu.capture="oncontextmenu" ref="theCanvasRef">
     <canvas-grid />
     <canvas-content />
     <canvas-header />
