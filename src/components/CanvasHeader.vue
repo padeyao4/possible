@@ -52,6 +52,8 @@ const translateX = computed(() => {
 }
 
 .item {
+  display: flex;
+  align-items: center;
   flex-shrink: 0;
 }
 </style>

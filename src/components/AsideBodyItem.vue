@@ -2,7 +2,6 @@
 import type { Project } from '@/stores/state'
 import { linkTo } from '@/stores/service/route-service'
 import { Drag, Write } from '@icon-park/vue-next'
-import { nextTick } from 'vue'
 import { useSettings } from '@/stores/settings'
 
 const settings = useSettings()
@@ -81,16 +80,19 @@ function handleEdit() {
   padding: 2px 12px;
 
   &:first-child {
-    padding: 4px 12px 2px 12px;
+    margin-top: 2px;
+    padding: 2px 12px;
   }
 }
 
 .project-item {
+  position: relative;
   display: flex;
   align-items: center;
   height: 40px;
   padding: 4px;
   width: 100%;
+  z-index: 3;
 }
 
 input {
@@ -108,6 +110,10 @@ input {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.hide {
+  display: none;
 }
 
 .operation {

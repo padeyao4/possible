@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import Draggable from 'vuedraggable/src/vuedraggable'
 import { useState } from '@/stores/state'
 import { linkTo } from '@/stores/service/route-service'
@@ -8,17 +8,34 @@ import AsideBodyItem from '@/components/AsideBodyItem.vue'
 
 const { projectMap } = useState()
 const settings = useSettings()
+const sideBodyRef = ref()
 
 const list = computed(() => {
   return Array.from(projectMap.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex)
 })
 
 function onstart() {
-  // todo
+  document.body.style.cursor = 'move'
+  const el = sideBodyRef.value.targetDomElement as HTMLElement
+  el.toggleAttribute('data-show', true)
+  const els = document.getElementsByClassName('project-item')
+  for (let el1 of els) {
+    el1.classList.remove('side-list-item')
+    el1.children[1].classList.remove('operation')
+    el1.children[1].classList.add('hide')
+  }
 }
 
 function onend() {
-  // todo
+  const el = sideBodyRef.value.targetDomElement as HTMLElement
+  el.toggleAttribute('data-show', false)
+  const els = document.getElementsByClassName('project-item')
+  for (let el1 of els) {
+    el1.classList.add('side-list-item')
+    el1.children[1].classList.add('operation')
+    el1.children[1].classList.remove('hide')
+  }
+  document.body.style.cursor = 'default'
 }
 
 function onupdate() {
@@ -37,6 +54,7 @@ function onclick(projectId: string) {
 <template>
   <draggable :list="list"
              id="aside-body"
+             ref="sideBodyRef"
              item-key="id"
              chosenClass="chosen-class"
              dragClass="drag-class"
@@ -58,5 +76,16 @@ function onclick(projectId: string) {
   flex-direction: column;
   overflow-y: auto;
   width: 100%;
+
+  &[data-show]::before {
+    position: fixed;
+    content: '';
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    opacity: 0;
+  }
 }
 </style>
