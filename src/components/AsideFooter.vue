@@ -1,10 +1,21 @@
 <script setup lang="ts">
 import { Plus } from '@icon-park/vue-next'
+import { addProject, createProjectTemplate } from '@/stores/service/project-service'
+import { linkTo } from '@/stores/service/route-service'
+
+function onclick() {
+  const project = createProjectTemplate()
+  addProject(project)
+  setTimeout(()=>{
+    linkTo('/project/'+project.id)
+    project.editable = true
+  })
+}
 </script>
 
 <template>
   <div id="aside-footer">
-    <div class="side-list-item">
+    <div class="side-list-item" @click="onclick">
       <plus theme="outline" size="20" fill="#333" :strokeWidth="3" strokeLinecap="butt" class="side-icon" />
       <div class="side-item-text">
         创建项目
