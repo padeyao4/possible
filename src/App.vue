@@ -10,7 +10,6 @@ const route = useRoute()
 const settings = useSettings()
 
 testProjects()
-
 </script>
 
 <template>

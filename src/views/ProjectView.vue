@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { currentProject } from '@/stores/service/project-service'
 import TheCanvas from '@/components/TheCanvas.vue'
+import TheFooter from '@/components/TheFooter.vue'
 
 const project = currentProject()
 
@@ -14,7 +15,9 @@ const project = currentProject()
     <div id="body" class="border-top-shadow canvas-background-color">
       <the-canvas />
     </div>
-    <div id="footer"></div>
+    <div id="footer">
+      <the-footer />
+    </div>
   </div>
 </template>
 

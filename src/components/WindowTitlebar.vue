@@ -31,13 +31,13 @@ if (showTitlebar) {
     id="titlebar">
     <div class="drag-area" data-tauri-drag-region></div>
     <div class="titlebar-button system-icon-other" @click="appWindow.minimize()">
-      <Icon icon="clarity:window-min-line" width="20" height="20" class="system-icon" />
+      <icon icon="clarity:window-min-line" width="20" height="20" class="system-icon" />
     </div>
     <div class="titlebar-button system-icon-other" id="titlebar-maximize" @click="onMaximize">
-      <Icon icon="clarity:window-max-line" width="20" height="20" class="system-icon" />
+      <icon icon="clarity:window-max-line" width="20" height="20" class="system-icon" />
     </div>
     <div class="titlebar-button system-icon-close" @click="onClose">
-      <Icon icon="clarity:window-close-line" width="20" height="20" class="system-icon" />
+      <icon icon="clarity:window-close-line" width="20" height="20" class="system-icon" />
     </div>
   </div>
   <div v-if="showTitlebar" id="mouse-style">
