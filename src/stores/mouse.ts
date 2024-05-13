@@ -8,7 +8,11 @@ export function changeMouseStyle(style: string) {
   }
 }
 
-export function lockStyle(style: string) {
+export function unlockMouseStyle() {
+  useMouseState().unlock()
+}
+
+export function lockMouseStyle(style: string) {
   const mouseState = useMouseState()
   if (!mouseState.isLock) {
     mouseState.lock()

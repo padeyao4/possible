@@ -1,6 +1,7 @@
 import { BaseBehavior } from '@/lib/base'
 import { currentProject } from '@/stores/service/project-service'
 import { campMax, campMin } from '@/lib/math'
+import { changeMouseStyle, lockMouseStyle, unlockMouseStyle } from '@/stores/mouse'
 
 export class DragCanvas extends BaseBehavior {
   isDown = false
@@ -10,6 +11,13 @@ export class DragCanvas extends BaseBehavior {
   offset = { x: 0, y: 0 }
 
   project = currentProject()
+
+  onmouseover(e: MouseEvent) {
+    const el = e.target as Element
+    if (el.getAttribute('data-type') === 'canvas') {
+      changeMouseStyle('default')
+    }
+  }
 
   onmousemove(e: MouseEvent) {
     if (!this.isDown) return
@@ -28,11 +36,21 @@ export class DragCanvas extends BaseBehavior {
     const { x, y } = this.project.offset
     this.offset.x = x
     this.offset.y = y
+    lockMouseStyle('grabbing')
+  }
+
+  onmouseout(e: MouseEvent) {
+    const el = e.target as Element
+    if (el.getAttribute('data-type') === 'canvas') {
+      changeMouseStyle('default')
+    }
   }
 
   onmouseup(e: MouseEvent): void {
     if (this.isDown) {
       this.isDown = false
+      unlockMouseStyle()
+      this.onmouseover(e)
     }
   }
 }

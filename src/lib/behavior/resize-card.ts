@@ -3,30 +3,15 @@ import { currentProject } from '@/stores/service/project-service'
 import { useSettings } from '@/stores/settings'
 import { type Node } from '@/stores/state'
 import { campMin } from '@/lib/math'
-import { changeMouseStyle, useMouseState } from '@/stores/mouse'
+import { changeMouseStyle, lockMouseStyle, unlockMouseStyle, useMouseState } from '@/stores/mouse'
 
 export class ResizeCard extends BaseBehavior {
   settings = useSettings()
   project = currentProject()
-  mouse = useMouseState()
   isPressed = false
   mousePoint = { x: 0, y: 0 }
   oldNode = {} as any
-
-  // onmouseover(e: MouseEvent) {
-  //   if (this.isPressed) return
-  //   this.changeCursorStyle(e)
-  // }
-
-  // private changeCursorStyle(e: MouseEvent) {
-  //   const el = e.target as Element
-  //   if (el.hasAttribute('data-direction')) {
-  //     const direction = el.getAttribute('data-direction')
-  //     this.setMouseStyle(direction)
-  //   } else {
-  //     this.setMouseStyle('none')
-  //   }
-  // }
+  direction = ''
 
   onmouseover(e: MouseEvent) {
     const el = e.target as Element
@@ -45,9 +30,8 @@ export class ResizeCard extends BaseBehavior {
     const el = e.target as Element
     if (el.hasAttribute('data-direction')) {
       this.isPressed = true
-      const direction = el.getAttribute('data-direction')
-      this.setMouseStyle(direction)
-      this.mouse.lock()
+      this.direction = el.getAttribute('data-direction')
+      lockMouseStyle(this.direction)
       this.mousePoint.x = e.x
       this.mousePoint.y = e.y
       const key = el.getAttribute('data-key')
@@ -73,7 +57,8 @@ export class ResizeCard extends BaseBehavior {
       node.height = Math.round(node.height)
       node.x = Math.round(node.x)
       node.y = Math.round(node.y)
-      this.mouse.unlock()
+      unlockMouseStyle()
+      this.onmouseover(e)
     }
   }
 
@@ -157,32 +142,4 @@ export class ResizeCard extends BaseBehavior {
         changeMouseStyle('default')
     }
   }
-
-  // setMouseStyle(stats: string = 'none') {
-  //   switch (stats) {
-  //     case 'l':
-  //     case 'r':
-  //       document.body.style.cursor = 'w-resize'
-  //       break
-  //     case 't':
-  //     case 'b':
-  //       document.body.style.cursor = 's-resize'
-  //       break
-  //     case 'lt':
-  //     case 'rb': {
-  //       document.body.style.cursor = 'nw-resize'
-  //       break
-  //     }
-  //     case 'rt':
-  //     case 'lb':
-  //       document.body.style.cursor = 'ne-resize'
-  //       break
-  //     case 'none':
-  //       document.body.style.cursor = 'default'
-  //       break
-  //     default:
-  //       document.body.style.cursor = 'default'
-  //   }
-  // }
-
 }

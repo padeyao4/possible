@@ -1,7 +1,8 @@
 import { BaseBehavior } from '@/lib/base'
 import { currentProject } from '@/stores/service/project-service'
-import type { Point, Project, Node } from '@/stores/state'
+import type { Node, Point, Project } from '@/stores/state'
 import { useSettings } from '@/stores/settings'
+import { changeMouseStyle, lockMouseStyle, unlockMouseStyle } from '@/stores/mouse'
 
 export class DragCard extends BaseBehavior {
   isDown = false
@@ -28,6 +29,7 @@ export class DragCard extends BaseBehavior {
     const node = this.project.nodeMap.get(this.oldNode.id)
     node.x = this.oldNode.x + dx / this.settings.unitWidth
     node.y = this.oldNode.y + dy / this.settings.unitHeight
+    lockMouseStyle('move')
   }
 
   onmousedown(e: MouseEvent) {
@@ -47,6 +49,15 @@ export class DragCard extends BaseBehavior {
       const node = this.project.nodeMap.get(this.oldNode.id)
       node.x = Math.round(node.x)
       node.y = Math.round(node.y)
+      unlockMouseStyle()
+      this.onmouseover(e)
+    }
+  }
+
+  onmouseover(e: MouseEvent) {
+    const el = e.target as Element
+    if (el.getAttribute('data-type') === 'node' && !el.hasAttribute('data-direction')) {
+      changeMouseStyle('pointer')
     }
   }
 }
