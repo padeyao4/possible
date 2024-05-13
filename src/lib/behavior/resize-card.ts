@@ -3,28 +3,41 @@ import { currentProject } from '@/stores/service/project-service'
 import { useSettings } from '@/stores/settings'
 import { type Node } from '@/stores/state'
 import { campMin } from '@/lib/math'
+import { changeMouseStyle, useMouseState } from '@/stores/mouse'
 
 export class ResizeCard extends BaseBehavior {
   settings = useSettings()
   project = currentProject()
+  mouse = useMouseState()
   isPressed = false
   mousePoint = { x: 0, y: 0 }
   oldNode = {} as any
-  direction = ''
+
+  // onmouseover(e: MouseEvent) {
+  //   if (this.isPressed) return
+  //   this.changeCursorStyle(e)
+  // }
+
+  // private changeCursorStyle(e: MouseEvent) {
+  //   const el = e.target as Element
+  //   if (el.hasAttribute('data-direction')) {
+  //     const direction = el.getAttribute('data-direction')
+  //     this.setMouseStyle(direction)
+  //   } else {
+  //     this.setMouseStyle('none')
+  //   }
+  // }
 
   onmouseover(e: MouseEvent) {
-    if (this.isPressed) return
-    this.changeCursorStyle(e)
-  }
-
-  private changeCursorStyle(e: MouseEvent) {
     const el = e.target as Element
-    if (el.hasAttribute('data-direction')) {
+    if (el?.hasAttribute('data-direction')) {
       const direction = el.getAttribute('data-direction')
       this.setMouseStyle(direction)
-    } else {
-      this.setMouseStyle('none')
     }
+  }
+
+  onmouseout(e: MouseEvent) {
+    changeMouseStyle('default')
   }
 
   onmousedown(e: MouseEvent) {
@@ -32,7 +45,9 @@ export class ResizeCard extends BaseBehavior {
     const el = e.target as Element
     if (el.hasAttribute('data-direction')) {
       this.isPressed = true
-      this.direction = el.getAttribute('data-direction')
+      const direction = el.getAttribute('data-direction')
+      this.setMouseStyle(direction)
+      this.mouse.lock()
       this.mousePoint.x = e.x
       this.mousePoint.y = e.y
       const key = el.getAttribute('data-key')
@@ -58,11 +73,11 @@ export class ResizeCard extends BaseBehavior {
       node.height = Math.round(node.height)
       node.x = Math.round(node.x)
       node.y = Math.round(node.y)
-      this.changeCursorStyle(e)
+      this.mouse.unlock()
     }
   }
 
-  changeSize(dx: number, dy: number, node: Node) {
+  private changeSize(dx: number, dy: number, node: Node) {
     const deltaWidth = dx / this.settings.unitWidth
     const deltaHeight = dy / this.settings.unitHeight
     const rw = campMin(this.oldNode.width + deltaWidth, 1)
@@ -112,31 +127,62 @@ export class ResizeCard extends BaseBehavior {
     }
   }
 
-  setMouseStyle(stats: string = 'none') {
+  private setMouseStyle(stats: string = 'none') {
     switch (stats) {
       case 'l':
       case 'r':
-        document.body.style.cursor = 'w-resize'
+        changeMouseStyle('w-resize')
         break
       case 't':
       case 'b':
-        document.body.style.cursor = 's-resize'
+        changeMouseStyle('s-resize')
         break
       case 'lt':
       case 'rb': {
-        document.body.style.cursor = 'nw-resize'
+        // document.body.style.cursor = 'nw-resize'
+        changeMouseStyle('nw-resize')
         break
       }
       case 'rt':
       case 'lb':
-        document.body.style.cursor = 'ne-resize'
+        // document.body.style.cursor = 'ne-resize'
+        changeMouseStyle('ne-resize')
         break
       case 'none':
-        document.body.style.cursor = 'default'
+        // document.body.style.cursor = 'default'
+        changeMouseStyle('default')
         break
       default:
-        document.body.style.cursor = 'default'
+        // document.body.style.cursor = 'default'
+        changeMouseStyle('default')
     }
   }
+
+  // setMouseStyle(stats: string = 'none') {
+  //   switch (stats) {
+  //     case 'l':
+  //     case 'r':
+  //       document.body.style.cursor = 'w-resize'
+  //       break
+  //     case 't':
+  //     case 'b':
+  //       document.body.style.cursor = 's-resize'
+  //       break
+  //     case 'lt':
+  //     case 'rb': {
+  //       document.body.style.cursor = 'nw-resize'
+  //       break
+  //     }
+  //     case 'rt':
+  //     case 'lb':
+  //       document.body.style.cursor = 'ne-resize'
+  //       break
+  //     case 'none':
+  //       document.body.style.cursor = 'default'
+  //       break
+  //     default:
+  //       document.body.style.cursor = 'default'
+  //   }
+  // }
 
 }
