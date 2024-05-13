@@ -26,13 +26,13 @@ export function createProjectTemplate(): Project {
 export function createNodeTemplate(): Node {
   return {
     id: v4(),
-    name: faker.string.sample({ min: 20, max: 30 }),
+    name: faker.lorem.words({ min: 5, max: 20 }),
     x: faker.number.int({ min: 0, max: 10 }),
     y: faker.number.int({ min: 0, max: 5 }),
     height: faker.number.int({ min: 1, max: 3 }),
     width: faker.number.int({ min: 1, max: 5 }),
-    detail: faker.string.sample({ min: 2, max: 20 }),
-    record: faker.string.sample({ min: 2, max: 20 }),
+    detail: faker.lorem.paragraphs(2),
+    record: faker.lorem.paragraphs(3),
     completed: false,
     sortedIndex: -1,
     projectId: -1

@@ -25,6 +25,9 @@ export abstract class BaseBehavior {
 
   onmouseleave(e: MouseEvent) {
   }
+
+  ondblclick(e: MouseEvent) {
+  }
 }
 
 export class Register {
@@ -74,5 +77,9 @@ export class Register {
 
   onclick(e: MouseEvent) {
     this.behaviors.forEach(b => b.onclick(e))
+  }
+
+  ondblclick(e: MouseEvent) {
+    this.behaviors.forEach(b => b.ondblclick(e))
   }
 }

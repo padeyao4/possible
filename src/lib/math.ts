@@ -24,3 +24,19 @@ export function campMin(n: number, min: number) {
 export function campMax(n, max: number) {
   return n <= max ? n : max
 }
+
+function swapNumbersInPlace(num1: number, num2: number) {
+  [num1, num2] = [num2, num1]
+}
+
+export function camp(n: number, min: number, max: number) {
+  if (min == max) return min
+  if (min > max) {
+    let temp = min
+    min = max
+    max = temp
+  }
+  if (n <= min) return min
+  if (n >= max) return max
+  return n
+}

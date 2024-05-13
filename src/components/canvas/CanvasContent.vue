@@ -10,6 +10,7 @@ import { useEventListener } from '@vueuse/core'
 import { DragCard } from '@/lib/behavior/drag-card'
 import { ResizeCard } from '@/lib/behavior/resize-card'
 import { useSettings } from '@/stores/settings'
+import { DoubleClickCard } from '@/lib/behavior/double-click-card'
 
 const project = currentProject()
 const settings = useSettings()
@@ -17,7 +18,7 @@ const settings = useSettings()
 const register = new Register()
 
 onMounted(() => {
-  register.addBehaviors(DragCanvas, DragCard, ResizeCard)
+  register.addBehaviors(DragCanvas, DragCard, ResizeCard, DoubleClickCard)
   useEventListener(document, 'mouseup', (e: MouseEvent) => {
     register.onmouseup(e)
   })
@@ -42,10 +43,11 @@ const translateY = computed(() => {
        @mouseover="register.onmouseover($event)"
        @wheel="register.onwheel($event)"
        @click="register.onclick($event)"
+       @dblclick="register.ondblclick($event)"
        @mousemove="register.onmousemove($event)"
        data-type="canvas"
   >
-    <g id="group" :transform="`translate(${translateX},${translateY})`">
+    <g :transform="`translate(${translateX},${translateY})`">
       <canvas-paths />
       <canvas-cards />
     </g>
