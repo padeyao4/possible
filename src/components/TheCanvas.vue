@@ -20,9 +20,8 @@ const projectContextmenuRef = ref()
     <canvas-header />
     <canvas-ruler />
     <div id="block" class="canvas-background-color"></div>
-    <teleport to="body">
-      <project-contextmenu ref="projectContextmenuRef" />
-    </teleport>
+    <project-contextmenu ref="projectContextmenuRef" />
+
   </div>
 </template>
 

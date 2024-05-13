@@ -7,19 +7,19 @@ const props = defineProps<{ node: Node }>()
 const settings = useSettings()
 
 const translateX = computed(() => {
-  return props.node.x * settings.unitWidth
+  return props.node.x * settings.unitWidth + settings.offsetCardX
 })
 
 const translateY = computed(() => {
-  return props.node.y * settings.unitHeight
+  return props.node.y * settings.unitHeight + settings.offsetCardY
 })
 
 const width = computed(() => {
-  return props.node.width * settings.unitWidth
+  return props.node.width * settings.unitWidth - settings.offsetCardX * 2
 })
 
 const height = computed(() => {
-  return props.node.height * settings.unitHeight
+  return props.node.height * settings.unitHeight - settings.offsetCardY * 2
 })
 </script>
 
@@ -36,7 +36,7 @@ const height = computed(() => {
     <foreignObject :width="width" :height="height">
       <div id="text">
         <p id="content">
-         {{ node.name}}
+          {{ node.name }}
         </p>
       </div>
     </foreignObject>

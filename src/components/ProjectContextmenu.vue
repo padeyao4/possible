@@ -53,12 +53,14 @@ defineExpose({ oncontextmenu })
 </script>
 
 <template>
-  <div id="contextmenu-mode" ref="modeRef" @click="handleCancelMenu" @contextmenu.prevent="handleCancelMenu">
-    <div id="project-contextmenu" ref="contextmenuRef">
-      <canvas-contextmenu v-if="contextmenuType==='canvas'" />
-      <node-contextmenu v-if="contextmenuType==='node'" />
+  <teleport to="body">
+    <div id="contextmenu-mode" ref="modeRef" @click="handleCancelMenu" @contextmenu.prevent="handleCancelMenu">
+      <div id="project-contextmenu" ref="contextmenuRef">
+        <canvas-contextmenu v-if="contextmenuType==='canvas'" />
+        <node-contextmenu v-if="contextmenuType==='node'" />
+      </div>
     </div>
-  </div>
+  </teleport>
 </template>
 
 <style scoped>

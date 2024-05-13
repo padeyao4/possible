@@ -13,11 +13,11 @@ const edges = computed<{ id: string, from: Point, to: Point }[]>(() => {
   const { unitWidth, unitHeight } = setting
   for (let edge of edgeMap.values()) {
     const sourceNode = nodeMap.get(edge.source)
-    const sx = (sourceNode.x + sourceNode.width) * unitWidth
+    const sx = (sourceNode.x + sourceNode.width) * unitWidth - setting.offsetCardX
     const sy = (sourceNode.y + sourceNode.height / 2) * unitHeight
 
     const targetNode = nodeMap.get(edge.target)
-    const tx = (targetNode.x) * unitWidth
+    const tx = (targetNode.x) * unitWidth + setting.offsetCardX
     const ty = (targetNode.y + targetNode.height / 2) * unitHeight
 
     ans.push({
