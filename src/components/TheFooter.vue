@@ -5,7 +5,7 @@ import { useSettings } from '@/stores/settings'
 
 const setting = useSettings()
 const project = currentProject()
-const { timestamp } = useTimer()
+const timer = useTimer()
 
 function handleBackHome() {
   project.offset.x = 0
@@ -13,7 +13,7 @@ function handleBackHome() {
 }
 
 function handleToday() {
-  project.offset.x = calculateDaysBetweenDates(project.createTime, timestamp) * setting.unitWidth
+  project.offset.x = calculateDaysBetweenDates(project.createTime, timer.timestamp) * setting.unitWidth
 }
 
 </script>

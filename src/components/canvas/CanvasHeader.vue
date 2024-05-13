@@ -4,10 +4,12 @@ import { useWindowSize } from '@vueuse/core'
 import { useSettings } from '@/stores/settings'
 import { currentProject } from '@/stores/service/project-service'
 import CanvasHeaderItem from '@/components/canvas/CanvasHeaderItem.vue'
+import { calculateDaysBetweenDates, days, useTimer } from '@/stores/timer'
 
 const settings = useSettings()
 const indexes = ref<number[]>([])
 const project = currentProject()
+const timer = useTimer()
 
 const { width } = useWindowSize()
 
@@ -23,13 +25,18 @@ const x = computed(() => {
 const translateX = computed(() => {
   return project.offset.x % settings.unitWidth + settings.offsetX - settings.unitWidth
 })
+
+const todayIndex = computed(() => {
+  return calculateDaysBetweenDates(timer.timestamp, project.createTime)
+})
+
 </script>
 
 <template>
   <div id="canvas-header" class="canvas-background-color border-bottom-shadow">
     <div id="group" :style="{'transform': `translateX(${translateX}px)`}">
       <div v-for="idx in indexes" class="item" :key="idx" :style="{'width':`${settings.unitWidth}px`}">
-        <canvas-header-item :idx="idx + x " />
+        <canvas-header-item :idx="idx + x " :isToday=" todayIndex === idx+x" />
       </div>
     </div>
   </div>

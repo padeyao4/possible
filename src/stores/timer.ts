@@ -9,16 +9,16 @@ export function showWeek(date: Date | number): string {
 
 export const timeFormat = new Intl.DateTimeFormat('zh-Hans')
 
+const ONE_DAY_MS = 24 * 60 * 60 * 1000
+const ONE_MINUTE_MS = 60_000
+
+export function days(date: Date) {
+  const d = new Date(date)
+  return Math.ceil((d.getTime() - d.getTimezoneOffset() * ONE_MINUTE_MS) / ONE_DAY_MS)
+}
+
 export function calculateDaysBetweenDates(startDate: Date | number, endDate: Date | number): number {
-  const oneDay = 24 * 60 * 60 * 1000 // 一天的毫秒数
-  const oneMin = 60_000
-
-  const start = new Date(startDate)
-  const end = new Date(endDate)
-
-  const startDays = Math.ceil((start.getTime() - start.getTimezoneOffset() * oneMin) / oneDay)
-  const endDays = Math.ceil((end.getTime() - end.getTimezoneOffset() * oneMin) / oneDay)
-  return startDays - endDays
+  return days(startDate) - days(endDate)
 }
 
 export const useTimer = defineStore('timestamp', () => {
