@@ -3,16 +3,17 @@ import { computed, ref, watchEffect } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import { useSettings } from '@/stores/settings'
 import { currentProject } from '@/stores/service/project-service'
+import CanvasHeaderItem from '@/components/canvas/CanvasHeaderItem.vue'
 
 const settings = useSettings()
-const timers = ref<number[]>([])
+const indexes = ref<number[]>([])
 const project = currentProject()
 
 const { width } = useWindowSize()
 
 watchEffect(() => {
   const size = Math.ceil(width.value / settings.unitWidth)
-  timers.value = Array.from({ length: size }, (_, i) => i + 1)
+  indexes.value = Array.from({ length: size }, (_, i) => i + 1)
 })
 
 const x = computed(() => {
@@ -27,7 +28,8 @@ const translateX = computed(() => {
 <template>
   <div id="canvas-header" class="canvas-background-color border-bottom-shadow">
     <div id="group" :style="{'transform': `translateX(${translateX}px)`}">
-      <div v-for="item in timers" class="item" :key="item" :style="{'width':`${settings.unitWidth}px`}">{{ item + x }}
+      <div v-for="idx in indexes" class="item" :key="idx" :style="{'width':`${settings.unitWidth}px`}">
+        <canvas-header-item :idx="idx + x " />
       </div>
     </div>
   </div>
@@ -52,8 +54,6 @@ const translateX = computed(() => {
 }
 
 .item {
-  display: flex;
-  align-items: center;
   flex-shrink: 0;
 }
 </style>

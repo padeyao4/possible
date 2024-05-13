@@ -6,7 +6,6 @@ import { useSettings } from '@/stores/settings'
 import { isCross } from '@/lib/math'
 
 export function createProjectTemplate(): Project {
-  const projectCreateTime = faker.date.between({ from: '1900/1/1', to: '2024/3/20' }).valueOf()
   const { projectMap } = useState()
   return {
     id: v4(),
@@ -18,7 +17,7 @@ export function createProjectTemplate(): Project {
     completed: false,
     sortIndex: Array.from(projectMap.values()).length + 1,
     editable: false,
-    createTime: projectCreateTime,
+    createTime: faker.date.between({ from: '1900/1/1', to: new Date() }).valueOf(),
     offset: { x: 0, y: 0 }
   }
 }
