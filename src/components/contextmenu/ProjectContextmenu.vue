@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject, provide, type Ref, ref } from 'vue'
-import CanvasContextmenu from '@/components/CanvasContextmenu.vue'
-import NodeContextmenu from '@/components/NodeContextmenu.vue'
+import CanvasContextmenu from '@/components/contextmenu/CanvasContextmenu.vue'
+import NodeContextmenu from '@/components/contextmenu/NodeContextmenu.vue'
 
 const modeRef = ref<HTMLElement>()
 const contextmenuRef = ref<HTMLElement>()

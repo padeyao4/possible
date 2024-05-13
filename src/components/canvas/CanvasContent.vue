@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ThePath from '@/components/ThePath.vue'
-import CanvasCard from '@/components/CanvasCard.vue'
+import CanvasPaths from '@/components/canvas/CanvasPaths.vue'
+import CanvasCards from '@/components/canvas/CanvasCards.vue'
 
 import { currentProject } from '@/stores/service/project-service'
 import { computed, onMounted } from 'vue'
@@ -46,8 +46,8 @@ const translateY = computed(() => {
        data-type="canvas"
   >
     <g id="group" :transform="`translate(${translateX},${translateY})`">
-      <the-path />
-      <canvas-card v-for="node in project.nodeMap.values()" :node="node" :key="node.id" />
+      <canvas-paths />
+      <canvas-cards />
     </g>
   </svg>
 </template>

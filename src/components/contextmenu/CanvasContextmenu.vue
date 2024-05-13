@@ -19,8 +19,8 @@ function handleNewNode() {
   const y = contextmenuRef.value.getAttribute('data-y')
   const { x: cx, y: cy } = getCanvasPointByClientPoint(x, y)
   const node = createNodeTemplate()
-  node.x = Math.round(cx / settings.unitWidth)
-  node.y = Math.round(cy / settings.unitHeight)
+  node.x = Math.floor(cx / settings.unitWidth)
+  node.y = Math.floor(cy / settings.unitHeight)
   addNode(project, node)
 }
 

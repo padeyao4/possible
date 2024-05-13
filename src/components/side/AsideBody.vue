@@ -4,7 +4,7 @@ import Draggable from 'vuedraggable/src/vuedraggable'
 import { useState } from '@/stores/state'
 import { linkTo } from '@/stores/service/route-service'
 import { useSettings } from '@/stores/settings'
-import AsideBodyItem from '@/components/AsideBodyItem.vue'
+import AsideBodyItem from '@/components/side/AsideBodyItem.vue'
 
 const { projectMap } = useState()
 const settings = useSettings()

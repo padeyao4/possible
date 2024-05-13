@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import CanvasHeader from '@/components/CanvasHeader.vue'
-import CanvasRuler from '@/components/CanvasRuler.vue'
-import CanvasGrid from '@/components/CanvasGrid.vue'
-import CanvasContent from '@/components/CanvasContent.vue'
-import ProjectContextmenu from '@/components/ProjectContextmenu.vue'
+import CanvasHeader from '@/components/canvas/CanvasHeader.vue'
+import CanvasRuler from '@/components/canvas/CanvasRuler.vue'
+import CanvasGrid from '@/components/canvas/CanvasGrid.vue'
+import CanvasContent from '@/components/canvas/CanvasContent.vue'
+import ProjectContextmenu from '@/components/contextmenu/ProjectContextmenu.vue'
 import { provide, ref } from 'vue'
+import NodeEditor from '@/components/canvas/CanvasEditor.vue'
 
 const theCanvasRef = ref<HTMLElement>()
+const nodeEditorRef = ref<HTMLElement>()
 
 provide('canvas', theCanvasRef)
+provide('editor', nodeEditorRef)
 
 const projectContextmenuRef = ref()
 </script>
@@ -20,8 +23,8 @@ const projectContextmenuRef = ref()
     <canvas-header />
     <canvas-ruler />
     <div id="block" class="canvas-background-color"></div>
+    <node-editor ref="nodeEditorRef" />
     <project-contextmenu ref="projectContextmenuRef" />
-
   </div>
 </template>
 
