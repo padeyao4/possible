@@ -36,11 +36,10 @@ const translateX = computed(() => {
   height: 100%;
   background-image: linear-gradient(
     90deg,
-    black 0px,
-    black 1px,
-    transparent 1px,
-    transparent 120px
+    transparent 0px,
+    transparent 119px,
+    rgba(27, 31, 35, 0.06) 119px,
+    rgba(27, 31, 35, 0.06) 120px
   );
-  opacity: 0.1;
 }
 </style>
