@@ -2,12 +2,13 @@
 import { currentProject } from '@/stores/service/project-service'
 import { computed } from 'vue'
 import { useSettings } from '@/stores/settings'
-import type { Point } from '@/stores/projects'
+import type { Path } from '@/stores/projects'
+import CanvasThePath from '@/components/canvas/CanvasThePath.vue'
 
 const project = currentProject()
 const setting = useSettings()
 
-const edges = computed<{ id: string, from: Point, to: Point }[]>(() => {
+const edges = computed<Path[]>(() => {
   const { nodeMap, edgeMap } = project
   const ans = []
   const { unitWidth, unitHeight } = setting
@@ -32,13 +33,14 @@ const edges = computed<{ id: string, from: Point, to: Point }[]>(() => {
 </script>
 
 <template>
-  <path v-for="edge in edges"
-        :d="`M ${edge.from.x},${edge.from.y} L ${edge.to.x},${edge.to.y}`"
-        stroke="#000"
-        :data-key="edge.id"
-        data-type="edge"
-        stroke-opacity="0.7"
-        stroke-width="" />
+<!--  <path v-for="edge in edges"-->
+  <!--        :d="`M ${edge.from.x},${edge.from.y} L ${edge.to.x},${edge.to.y}`"-->
+  <!--        stroke="#000"-->
+  <!--        :data-key="edge.id"-->
+  <!--        data-type="edge"-->
+  <!--        stroke-opacity="0.7"-->
+  <!--        stroke-width="" />-->
+  <canvas-the-path v-for="edge in edges" :edge="edge"/>
 </template>
 
 <style scoped>

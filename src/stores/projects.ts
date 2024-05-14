@@ -42,6 +42,7 @@ export interface Project {
   offset: Point
 }
 
+export type Path = { id: string, from: Point, to: Point, [key: string]: any }
 
 export const useProjects = defineStore('projects', () => {
   const projectMap = ref<Map<ID, Project>>(new Map<ID, Project>())

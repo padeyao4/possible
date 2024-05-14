@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { useSettings } from '@/stores/settings'
 import type { Point } from '@/stores/projects'
 import { useCanvasPaths } from '@/stores/canvas-path'
+import CanvasTheTempPath from '@/components/canvas/CanvasTheTempPath.vue'
 
 const project = currentProject()
 const setting = useSettings()
@@ -42,15 +43,15 @@ const edges = computed<{ id: string, from: Point, to: Point, opacity: number }[]
 </script>
 
 <template>
-  <path v-for="edge in edges"
-        :d="`M ${edge.from.x},${edge.from.y} L ${edge.to.x},${edge.to.y}`"
-        stroke="#000"
-        :opacity="edge.opacity"
-        :data-key="edge.id"
-        data-type="path"
-        pointer-events="none"
-        stroke-opacity="0.7"
-        stroke-width="" />
+<!--  <path v-for="edge in edges"-->
+<!--        :d="`M ${edge.from.x},${edge.from.y} L ${edge.to.x},${edge.to.y}`"-->
+<!--        stroke="#000"-->
+<!--        :opacity="edge.opacity"-->
+<!--        :data-key="edge.id"-->
+<!--        data-type="path"-->
+<!--        pointer-events="none"-->
+<!--        stroke-opacity="0.7" />-->
+  <canvas-the-temp-path v-for="edge in edges" :edge="edge"/>
 </template>
 
 <style scoped>
