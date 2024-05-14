@@ -58,6 +58,7 @@ const todayIndex = computed(() => calculateDaysBetweenDates(timer.timestamp, pro
   flex-direction: row;
   transform: translateX(v-bind(translateX));
   margin-left: 40px;
+  width: calc(100% - 40px);
 }
 
 .item {

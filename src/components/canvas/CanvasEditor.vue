@@ -3,22 +3,26 @@ import { useEditor } from '@/stores/canvas-editor'
 import { computed, inject, type Ref, ref } from 'vue'
 import { currentProject } from '@/stores/service/project-service'
 import { useEventListener } from '@vueuse/core'
-import { camp } from '@/lib/math'
+import { clamp } from '@/lib/math'
 import { useSettings } from '@/stores/settings'
+import { useCanvas } from '@/stores/canvas'
 
 const editor = useEditor()
-const editorRef = ref<HTMLElement>()
 const project = currentProject()
-const canvasRef = inject<Ref<HTMLElement>>('canvas')
-const settings = useSettings()
+// const canvasRef = inject<Ref<HTMLElement>>('canvas')
+const canvas = useCanvas()
+// const settings = useSettings()
 
 const style = computed(() => {
-    if (!canvasRef.value) {
-      return {}
-    }
-    const canvasRect = canvasRef.value.getBoundingClientRect()
-    const x = camp(editor.x, canvasRect.left + settings.offsetX, canvasRect.right - editor.width)
-    const y = camp(editor.y, canvasRect.top + settings.offsetY, canvasRect.bottom - editor.height)
+    // if (!canvasRef.value) {
+    //   return {}
+    // }
+    // const canvasRect = canvasRef.value.getBoundingClientRect()
+    const canvasRect = canvas.svg?.getBoundingClientRect() ?? { left: 0, right: 0, top: 0, bottom: 0 }
+    // const x = clamp(editor.x, canvasRect.left + settings.offsetX, canvasRect.right - editor.width)
+    const x = clamp(editor.x, canvasRect.left, canvasRect.right - editor.width)
+    // const y = clamp(editor.y, canvasRect.top + settings.offsetY, canvasRect.bottom - editor.height)
+    const y = clamp(editor.y, canvasRect.top, canvasRect.bottom - editor.height)
     return {
       top: y + 'px',
       left: x + 'px',
@@ -49,7 +53,7 @@ function handleCancel(e: MouseEvent) {
 
 <template>
   <div id="node-editor-mode" :style="{'display':`${editor.visible ? 'flex' : 'none'}`}" data-flag @click="handleCancel">
-    <div id="node-editor" :style="style" ref="editorRef">
+    <div id="node-editor" :style="style">
       <div class="editor-body">
         <div>{{ node?.name }}</div>
         <div>{{ node?.detail }}</div>

@@ -29,7 +29,7 @@ function swapNumbersInPlace(num1: number, num2: number) {
   [num1, num2] = [num2, num1]
 }
 
-export function camp(n: number, min: number, max: number) {
+export function clamp(n: number, min: number, max: number) {
   if (min == max) return min
   if (min > max) {
     let temp = min

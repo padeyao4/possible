@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export const useEditor = defineStore('canvas-editor', () => {
   const visible = ref(false)
@@ -9,8 +9,17 @@ export const useEditor = defineStore('canvas-editor', () => {
   const y = ref(0)
   const nodeId = ref('')
 
+  const left = computed(() => x.value)
+  const right = computed(() => x.value + width.value)
+  const top = computed(() => y.value)
+  const bottom = computed(() => y.value + height.value)
+
   return {
     visible,
+    left,
+    right,
+    top,
+    bottom,
     width,
     height,
     x,

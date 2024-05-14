@@ -53,5 +53,6 @@ const translateY = computed(() => project.offset.y % settings.unitHeight - setti
 .container {
   margin-top: 40px;
   transform: translateY(v-bind(translateY));
+  height: calc(100% - 40px);
 }
 </style>

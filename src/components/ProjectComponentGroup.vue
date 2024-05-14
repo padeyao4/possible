@@ -8,12 +8,10 @@ import { provide, ref } from 'vue'
 import NodeEditor from '@/components/canvas/CanvasEditor.vue'
 
 const theCanvasRef = ref<HTMLElement>()
-const nodeEditorRef = ref<HTMLElement>()
-
 provide('canvas', theCanvasRef)
-provide('editor', nodeEditorRef)
 
 const projectContextmenuRef = ref()
+
 </script>
 
 <template>
@@ -22,7 +20,7 @@ const projectContextmenuRef = ref()
     <the-canvas />
     <canvas-header />
     <canvas-ruler />
-    <node-editor ref="nodeEditorRef" />
+    <node-editor />
     <project-contextmenu ref="projectContextmenuRef" />
   </div>
 </template>
