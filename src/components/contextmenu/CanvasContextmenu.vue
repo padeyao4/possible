@@ -2,16 +2,17 @@
 import { addNode, createNodeTemplate, currentProject } from '@/stores/service/project-service'
 import { inject, type Ref } from 'vue'
 import { useSettings } from '@/stores/settings'
+import { useCanvas } from '@/stores/canvas'
 
 const contextmenuRef = inject<Ref<HTMLElement>>('contextmenu')
-const canvasRef = inject<Ref<HTMLElement>>('canvas')
+const canvas = useCanvas()
 
 const settings = useSettings()
 const project = currentProject()
 
 function getCanvasPointByClientPoint(x: number, y: number) {
-  const { x: cx, y: cy } = canvasRef.value.getBoundingClientRect()
-  return { x: x - cx - settings.offsetX - project.offset.x, y: y - cy - settings.offsetY - project.offset.y }
+  const { x: cx, y: cy } = canvas.getBoundingClientRect()
+  return { x: x - cx - project.offset.x, y: y - cy - project.offset.y }
 }
 
 function handleNewNode() {

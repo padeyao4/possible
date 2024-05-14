@@ -8,8 +8,13 @@ export const useCanvas = defineStore('canvas', () => {
     svg.value = el
   }
 
+  function getBoundingClientRect() {
+    return svg.value?.getBoundingClientRect() ?? { x: 0, y: 0 }
+  }
+
   return {
     svg,
-    set
+    set,
+    getBoundingClientRect
   }
 })

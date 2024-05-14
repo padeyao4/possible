@@ -14,7 +14,7 @@ export type TempPath = {
   opacity: number
 }
 
-export const useCanvasPaths = defineStore('canvas-paths', () => {
+export const useTempPaths = defineStore('canvas-paths', () => {
   const paths = ref<Map<ID, TempPath>>(new Map())
 
   function createTempPath(nodeId: ID, location: Point, dummy: 'source' | 'target') {

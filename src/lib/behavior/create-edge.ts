@@ -1,5 +1,5 @@
 import { BaseBehavior } from '@/lib/base'
-import { type TempPath, useCanvasPaths } from '@/stores/canvas-path'
+import { type TempPath, useTempPaths } from '@/stores/temp-path'
 import type { ID } from '@/stores/projects'
 import { getCanvasPointByOffsetPoint } from '@/lib/util'
 import { addEdge, currentProject } from '@/stores/service/project-service'
@@ -11,7 +11,7 @@ export class CreateEdge extends BaseBehavior {
   group: Element
   source: string
   target: string
-  tempPaths = useCanvasPaths()
+  tempPaths = useTempPaths()
   pathId: ID
   project = currentProject()
 
