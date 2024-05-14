@@ -5,47 +5,60 @@ import { useSettings } from '@/stores/settings'
 import TheSeparation from '@/components/TheSeparation.vue'
 import { testProjects } from '@/stores/service/project-service'
 import WindowTitlebar from '@/components/WindowTitlebar.vue'
+import { computed, ref } from 'vue'
 
 const route = useRoute()
 const settings = useSettings()
 
 testProjects()
+
+const sideWidth = computed(() => {
+  return settings.sideWidth + 'px'
+})
 </script>
 
 <template>
   <window-titlebar />
-  <div id="main">
-    <div id="aside" :style="{'width':`${settings.sideWidth}px`}">
+  <div class="container">
+    <aside>
       <the-aside />
-    </div>
-    <div id="container" :style="{'width': `calc(100vw - ${settings.sideWidth}px)`}">
-      <router-view :key="route.fullPath" style="height: 100%" />
-    </div>
-    <the-separation :style="{'left':`${settings.sideWidth}px`}" />
+    </aside>
+    <main>
+      <router-view :key="route.fullPath" />
+    </main>
+    <the-separation class="separation-line" />
   </div>
 </template>
 
 <style scoped>
 
-#main {
-  position: relative;
+.container {
   display: flex;
-  flex-direction: row;
+  position: relative;
   width: 100vw;
   height: 100vh;
   background-color: #f7f7f9;
+  flex-direction: row;
 }
 
-#aside {
-  flex-shrink: 0;
+aside {
+  width: v-bind(sideWidth);
 }
 
-#container {
-  width: 100%;
+main {
+  width: calc(100vw - v-bind(sideWidth));
   height: 100%;
   border-radius: 8px 0 0 0;
-  background-color: #fdfdfd;
   box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
+  background-color: #fdfdfd;
   overflow: hidden;
+}
+
+.separation-line {
+  position: absolute;
+  left: v-bind(sideWidth);
+  top: 0;
+  bottom: 0;
+  width: 5px;
 }
 </style>

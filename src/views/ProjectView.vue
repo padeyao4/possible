@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { currentProject } from '@/stores/service/project-service'
-import TheCanvas from '@/components/TheCanvas.vue'
-import TheFooter from '@/components/TheFooter.vue'
+import ProjectBody from '@/components/TheCanvas.vue'
+import ProjectFooter from '@/components/TheFooter.vue'
 
 const project = currentProject()
 
@@ -13,16 +13,18 @@ const project = currentProject()
       <div id="title">{{ project?.name }}</div>
     </div>
     <div id="body" class="border-top-shadow canvas-background-color">
-      <the-canvas />
+      <project-body />
     </div>
     <div id="footer">
-      <the-footer />
+      <project-footer />
     </div>
   </div>
 </template>
 
 <style scoped>
 .project-view {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
 }

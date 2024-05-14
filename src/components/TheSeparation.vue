@@ -51,12 +51,6 @@ useEventListener(window, 'mouseup', onmouseup)
 
 <style scoped>
 #drag-bar {
-  position: absolute;
-  left: 240px;
-  top: 0;
-  bottom: 0;
-  width: 5px;
-
   &:hover {
     cursor: e-resize;
   }

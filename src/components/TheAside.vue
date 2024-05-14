@@ -3,11 +3,6 @@
 import AsideHeader from '@/components/side/AsideHeader.vue'
 import AsideBody from '@/components/side/AsideBody.vue'
 import AsideFooter from '@/components/side/AsideFooter.vue'
-import { onMounted, watchEffect } from 'vue'
-import { useSettings } from '@/stores/settings'
-
-const settings = useSettings()
-
 </script>
 
 <template>
