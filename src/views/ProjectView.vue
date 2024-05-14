@@ -9,15 +9,15 @@ const project = currentProject()
 
 <template>
   <div class="project-view">
-    <div id="header">
-      <div id="title">{{ project?.name }}</div>
-    </div>
-    <div id="body" class="border-top-shadow canvas-background-color">
+    <header>
+      <div class="title">{{ project?.name }}</div>
+    </header>
+    <main class="border-top-shadow canvas-background-color" style="flex-grow: 1">
       <project-body />
-    </div>
-    <div id="footer">
+    </main>
+    <footer>
       <project-footer />
-    </div>
+    </footer>
   </div>
 </template>
 
@@ -29,27 +29,23 @@ const project = currentProject()
   flex-direction: column;
 }
 
-#header {
+header {
   display: flex;
   align-items: center;
   width: 100%;
   margin-top: 24px;
   margin-bottom: 12px;
   font-size: 20px;
+
+  .title {
+    height: 40px;
+    margin-left: 16px;
+    display: flex;
+    align-items: center;
+  }
 }
 
-#title {
-  height: 40px;
-  margin-left: 16px;
-  display: flex;
-  align-items: center;
-}
-
-#body {
-  flex-grow: 1;
-}
-
-#footer {
+footer {
   height: 48px;
   flex-shrink: 0;
   background: transparent !important;

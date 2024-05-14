@@ -9,6 +9,8 @@
 
 <style scoped>
 .list-view {
+  width: 100%;
+  height: 100%;
   background-color: #8cb6c5
 }
 </style>

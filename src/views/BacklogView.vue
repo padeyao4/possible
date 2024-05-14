@@ -9,6 +9,8 @@
 
 <style scoped>
 .backlog {
+  width: 100%;
+  height: 100%;
   background-color: #82bbb5
 }
 </style>
