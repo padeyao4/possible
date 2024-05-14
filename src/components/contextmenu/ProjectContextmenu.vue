@@ -2,6 +2,8 @@
 import { inject, provide, type Ref, ref } from 'vue'
 import CanvasContextmenu from '@/components/contextmenu/CanvasContextmenu.vue'
 import NodeContextmenu from '@/components/contextmenu/NodeContextmenu.vue'
+import { changeMouseStyle } from '@/stores/mouse'
+import EdgeContextmenu from '@/components/contextmenu/EdgeContextmenu.vue'
 
 const modeRef = ref<HTMLElement>()
 const contextmenuRef = ref<HTMLElement>()
@@ -43,7 +45,7 @@ function oncontextmenu(e: PointerEvent) {
       contextmenu.style.top = (canvasRect.bottom - menuRect.height) + 'px'
     }
     contextmenu.style.opacity = String(1)
-    document.body.style.cursor = 'default'
+    changeMouseStyle('default')
   })
   modeRef.value.toggleAttribute('data-pointer-event', true)
 }
@@ -58,6 +60,7 @@ defineExpose({ oncontextmenu })
       <div id="project-contextmenu" ref="contextmenuRef">
         <canvas-contextmenu v-if="contextmenuType==='canvas'" />
         <node-contextmenu v-if="contextmenuType==='node'" />
+        <edge-contextmenu v-if="contextmenuType==='edge'" />
       </div>
     </div>
   </teleport>

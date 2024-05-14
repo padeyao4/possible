@@ -32,8 +32,18 @@ const ctl2 = computed(() => {
         data-type="edge"
         stroke-opacity="0.7"
         stroke-width="1" />
+  <path :d="`M ${edge.from.x},${edge.from.y} C ${ctl1.x},${ctl1.y} ${ctl2.x},${ctl2.y} ${edge.to.x},${edge.to.y}`"
+        stroke="#00000050"
+        fill="#ffffff00"
+        :data-key="edge.id"
+        opacity="0"
+        data-type="edge"
+        stroke-opacity="0.7"
+        stroke-width="9" />
 </template>
 
 <style scoped>
-
+path:hover {
+  opacity: 1;
+}
 </style>
