@@ -2,7 +2,7 @@
 import { currentProject } from '@/stores/service/project-service'
 import { computed } from 'vue'
 import { useSettings } from '@/stores/settings'
-import type { Edge, Point } from '@/stores/state'
+import type { Point } from '@/stores/projects'
 
 const project = currentProject()
 const setting = useSettings()

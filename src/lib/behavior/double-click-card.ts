@@ -1,5 +1,5 @@
 import { BaseBehavior } from '@/lib/base'
-import { useEditor } from '@/stores/editor'
+import { useEditor } from '@/stores/canvas-editor'
 
 export class DoubleClickCard extends BaseBehavior {
   ondblclick(e: MouseEvent) {

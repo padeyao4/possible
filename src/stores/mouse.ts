@@ -2,25 +2,25 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export function changeMouseStyle(style: string) {
-  const mouseState = useMouseState()
+  const mouseState = useMouseStyle()
   if (!mouseState.isLock) {
     document.body.style.cursor = style
   }
 }
 
 export function unlockMouseStyle() {
-  useMouseState().unlock()
+  useMouseStyle().unlock()
 }
 
 export function lockMouseStyle(style: string) {
-  const mouseState = useMouseState()
+  const mouseState = useMouseStyle()
   if (!mouseState.isLock) {
     mouseState.lock()
     document.body.style.cursor = style
   }
 }
 
-export const useMouseState = defineStore('mouseState', () => {
+export const useMouseStyle = defineStore('mouseStyle', () => {
   const isLock = ref(false)
 
   const unlock = () => {

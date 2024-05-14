@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Project } from '@/stores/state'
+import type { ID, Project } from '@/stores/projects'
 import { linkTo } from '@/stores/service/route-service'
 import { Drag, Write } from '@icon-park/vue-next'
 import { useSettings } from '@/stores/settings'
@@ -7,13 +7,13 @@ import { useSettings } from '@/stores/settings'
 const settings = useSettings()
 const props = defineProps<{ project: Project }>()
 
-function onclick(projectId: string) {
+function onclick(projectId: ID) {
   setTimeout(() => {
     linkTo('/project/' + projectId)
   })
 }
 
-function onmouseover(projectId: string) {
+function onmouseover(projectId: ID) {
   const els = document.getElementsByClassName('operation')
   for (let el of els) {
     const elId = el.getAttribute('data-project-id')
@@ -21,7 +21,7 @@ function onmouseover(projectId: string) {
   }
 }
 
-function onmouseleave(projectId: string) {
+function onmouseleave(projectId: ID) {
   const els = document.getElementsByClassName('operation')
   for (let el of els) {
     const elId = el.getAttribute('data-project-id')

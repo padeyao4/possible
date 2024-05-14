@@ -1,6 +1,6 @@
 import { BaseBehavior } from '@/lib/base'
 import { currentProject } from '@/stores/service/project-service'
-import type { Node, Point, Project } from '@/stores/state'
+import type { Node, Point, Project } from '@/stores/projects'
 import { useSettings } from '@/stores/settings'
 import { changeMouseStyle, lockMouseStyle, unlockMouseStyle } from '@/stores/mouse'
 

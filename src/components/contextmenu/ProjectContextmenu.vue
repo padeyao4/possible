@@ -5,7 +5,7 @@ import NodeContextmenu from '@/components/contextmenu/NodeContextmenu.vue'
 
 const modeRef = ref<HTMLElement>()
 const contextmenuRef = ref<HTMLElement>()
-const contextmenuType = ref<'canvas' | 'node' | 'edge'>('')
+const contextmenuType = ref('')
 const theCanvasRef = inject<Ref<HTMLElement>>('canvas')
 
 provide('contextmenu', contextmenuRef)
@@ -27,9 +27,9 @@ function oncontextmenu(e: PointerEvent) {
 
   contextmenu.style.top = e.y + 'px'
   contextmenu.style.left = e.x + 'px'
-  contextmenu.style.opacity = 0
-  contextmenu.setAttribute('data-x', e.x)
-  contextmenu.setAttribute('data-y', e.y)
+  contextmenu.style.opacity = String(0)
+  contextmenu.setAttribute('data-x', String(e.x))
+  contextmenu.setAttribute('data-y', String(e.y))
   contextmenu.toggleAttribute('data-show', true)
   const targetId = target.getAttribute('data-key') ?? ''
   contextmenu.setAttribute('data-target-id', targetId)
@@ -42,7 +42,7 @@ function oncontextmenu(e: PointerEvent) {
     if (menuRect.bottom > canvasRect.bottom) {
       contextmenu.style.top = (canvasRect.bottom - menuRect.height) + 'px'
     }
-    contextmenu.style.opacity = 1
+    contextmenu.style.opacity = String(1)
     document.body.style.cursor = 'default'
   })
   modeRef.value.toggleAttribute('data-pointer-event', true)

@@ -17,7 +17,7 @@ function getCanvasPointByClientPoint(x: number, y: number) {
 function handleNewNode() {
   const x = contextmenuRef.value.getAttribute('data-x')
   const y = contextmenuRef.value.getAttribute('data-y')
-  const { x: cx, y: cy } = getCanvasPointByClientPoint(x, y)
+  const { x: cx, y: cy } = getCanvasPointByClientPoint(Number(x), Number(y))
   const node = createNodeTemplate()
   node.x = Math.floor(cx / settings.unitWidth)
   node.y = Math.floor(cy / settings.unitHeight)

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import Draggable from 'vuedraggable/src/vuedraggable'
-import { useState } from '@/stores/state'
+import { useProjects } from '@/stores/projects'
 import { linkTo } from '@/stores/service/route-service'
 import { useSettings } from '@/stores/settings'
 import AsideBodyItem from '@/components/side/AsideBodyItem.vue'
 
-const { projectMap } = useState()
+const { projectMap } = useProjects()
 const settings = useSettings()
 const sideBodyRef = ref()
 

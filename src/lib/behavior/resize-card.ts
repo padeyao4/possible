@@ -1,9 +1,9 @@
 import { BaseBehavior } from '@/lib/base'
 import { currentProject } from '@/stores/service/project-service'
 import { useSettings } from '@/stores/settings'
-import { type Node } from '@/stores/state'
+import { type Node } from '@/stores/projects'
 import { campMin } from '@/lib/math'
-import { changeMouseStyle, lockMouseStyle, unlockMouseStyle, useMouseState } from '@/stores/mouse'
+import { changeMouseStyle, lockMouseStyle, unlockMouseStyle, useMouseStyle } from '@/stores/mouse'
 
 export class ResizeCard extends BaseBehavior {
   settings = useSettings()
@@ -12,17 +12,22 @@ export class ResizeCard extends BaseBehavior {
   mousePoint = { x: 0, y: 0 }
   oldNode = {} as any
   direction = ''
+  isOver = false
 
   onmouseover(e: MouseEvent) {
     const el = e.target as Element
     if (el?.hasAttribute('data-direction')) {
-      const direction = el.getAttribute('data-direction')
-      this.setMouseStyle(direction)
+      this.isOver = true
+      const type = el.getAttribute('data-mouse-type')
+      changeMouseStyle(type)
     }
   }
 
   onmouseout(e: MouseEvent) {
-    changeMouseStyle('default')
+    if (this.isOver) {
+      this.toggleMouseOver(e)
+      this.isOver = false
+    }
   }
 
   onmousedown(e: MouseEvent) {
@@ -31,7 +36,8 @@ export class ResizeCard extends BaseBehavior {
     if (el.hasAttribute('data-direction')) {
       this.isPressed = true
       this.direction = el.getAttribute('data-direction')
-      lockMouseStyle(this.direction)
+      const type = el.getAttribute('data-mouse-type')
+      lockMouseStyle(type)
       this.mousePoint.x = e.x
       this.mousePoint.y = e.y
       const key = el.getAttribute('data-key')
@@ -109,37 +115,6 @@ export class ResizeCard extends BaseBehavior {
         break
       default:
         break
-    }
-  }
-
-  private setMouseStyle(stats: string = 'none') {
-    switch (stats) {
-      case 'l':
-      case 'r':
-        changeMouseStyle('w-resize')
-        break
-      case 't':
-      case 'b':
-        changeMouseStyle('s-resize')
-        break
-      case 'lt':
-      case 'rb': {
-        // document.body.style.cursor = 'nw-resize'
-        changeMouseStyle('nw-resize')
-        break
-      }
-      case 'rt':
-      case 'lb':
-        // document.body.style.cursor = 'ne-resize'
-        changeMouseStyle('ne-resize')
-        break
-      case 'none':
-        // document.body.style.cursor = 'default'
-        changeMouseStyle('default')
-        break
-      default:
-        // document.body.style.cursor = 'default'
-        changeMouseStyle('default')
     }
   }
 }

@@ -11,6 +11,8 @@ import { DragCard } from '@/lib/behavior/drag-card'
 import { ResizeCard } from '@/lib/behavior/resize-card'
 import { useSettings } from '@/stores/settings'
 import { DoubleClickCard } from '@/lib/behavior/double-click-card'
+import { CreateEdge } from '@/lib/behavior/create-edge'
+import CanvasTempPaths from '@/components/canvas/CanvasTempPaths.vue'
 
 const project = currentProject()
 const settings = useSettings()
@@ -18,7 +20,7 @@ const settings = useSettings()
 const register = new Register()
 
 onMounted(() => {
-  register.addBehaviors(DragCanvas, DragCard, ResizeCard, DoubleClickCard)
+  register.addBehaviors(DragCanvas, DragCard, ResizeCard, DoubleClickCard, CreateEdge)
   useEventListener(document, 'mouseup', (e: MouseEvent) => {
     register.onmouseup(e)
   })
@@ -50,6 +52,7 @@ const translateY = computed(() => {
     <g :transform="`translate(${translateX},${translateY})`">
       <canvas-paths />
       <canvas-cards />
+      <canvas-temp-paths />
     </g>
   </svg>
 </template>

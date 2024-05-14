@@ -1,3 +1,5 @@
+import { changeMouseStyle } from '@/stores/mouse'
+
 export abstract class BaseBehavior {
   onmouseup(e: MouseEvent) {
   }
@@ -27,6 +29,12 @@ export abstract class BaseBehavior {
   }
 
   ondblclick(e: MouseEvent) {
+  }
+
+  toggleMouseOver(e: MouseEvent) {
+    const el = e.target as Element
+    const type = el.getAttribute('data-mouse-type')
+    changeMouseStyle(type !== null ? type : 'default')
   }
 }
 

@@ -43,7 +43,7 @@ export interface Project {
 }
 
 
-export const useState = defineStore('state', () => {
+export const useProjects = defineStore('projects', () => {
   const projectMap = ref<Map<ID, Project>>(new Map<ID, Project>())
   return {
     projectMap

@@ -16,12 +16,17 @@ function handleToday() {
   project.offset.x = calculateDaysBetweenDates(project.createTime, timer.timestamp) * setting.unitWidth
 }
 
+function handleTest() {
+  console.log(project.offset)
+}
+
 </script>
 
 <template>
   <div id="the-footer">
     <Icon icon="solar:home-2-broken" @click="handleBackHome" />
     <Icon icon="solar:map-point-broken" @click="handleToday" />
+    <Icon icon="solar:test-tube-broken" @click="handleTest" />
   </div>
 </template>
 

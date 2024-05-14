@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Node } from '@/stores/state'
+import { type Node } from '@/stores/projects'
 import { computed } from 'vue'
 import { useSettings } from '@/stores/settings'
 
@@ -47,28 +47,50 @@ const height = computed(() => {
       :data-key="node.id"
       data-type="node"
       data-main
+      data-mouse-type="pointer"
       rx="8" />
     <g opacity="0">
-      <rect :data-key="node.id" data-type="node" data-direction="lt" x="-2.5" y="-2.5" fill="red" width="5"
+      <rect :data-key="node.id"
+            data-mouse-type="nw-resize"
+            data-type="node"
+            data-direction="lt"
+            x="-2.5" y="-2.5" fill="red"
+            width="5"
             height="5" />
-      <rect :data-key="node.id" data-type="node" data-direction="rt" :x="width-2.5" y="-2.5" fill="red" width="5"
+      <rect :data-key="node.id"
+            data-mouse-type="ne-resize"
+            data-type="node" data-direction="rt" :x="width-2.5" y="-2.5" fill="red" width="5"
             height="5" />
-      <rect :data-key="node.id" data-type="node" data-direction="t" x="2.5" y="-2.5" :width="width-5" height="5" />
-      <rect :data-key="node.id" data-type="node" data-direction="b" x="2.5" :y="height-2.5" :width="width-5"
+      <rect :data-key="node.id"
+            data-mouse-type="n-resize"
+            data-type="node" data-direction="t" x="2.5" y="-2.5" :width="width-5" height="5" />
+      <rect :data-key="node.id"
+            data-mouse-type="n-resize"
+            data-type="node" data-direction="b" x="2.5" :y="height-2.5" :width="width-5"
             height="5" />
-      <rect :data-key="node.id" data-type="node" data-direction="l" x="-2.5" y="2.5" :width="5" :height="height-5" />
-      <rect :data-key="node.id" data-type="node" data-direction="r" :x="width-2.5" y="2.5" :width="5"
+      <rect :data-key="node.id"
+            data-mouse-type="w-resize"
+            data-type="node" data-direction="l" x="-2.5" y="2.5" :width="5" :height="height-5" />
+      <rect :data-key="node.id"
+            data-mouse-type="e-resize"
+            data-type="node" data-direction="r" :x="width-2.5" y="2.5" :width="5"
             :height="height-5" />
-      <rect :data-key="node.id" data-type="node" data-direction="lb" x="-2.5" :y="height-2.5" fill="red" width="5"
+      <rect :data-key="node.id"
+            data-mouse-type="ne-resize"
+            data-type="node" data-direction="lb" x="-2.5" :y="height-2.5" fill="red" width="5"
             height="5" />
-      <rect :data-key="node.id" data-type="node" data-direction="rb" :x="width-2.5" :y="height-2.5" fill="red" width="5"
+      <rect :data-key="node.id"
+            data-mouse-type="nw-resize"
+            data-type="node" data-direction="rb" :x="width-2.5" :y="height-2.5" fill="red" width="5"
             height="5" />
     </g>
-    <g>
-      <circle :cy="height/2" r="5" stroke="#000" fill="#f0f2f5" stroke-width="0.8" data-type="anchor"
-              :data-key="node.id" data-location="left" />
-      <circle :cx="width" :cy="height/2" r="5" stroke="#000" fill="#f0f2f5" stroke-width="0.8" data-type="anchor"
-              :data-key="node.id" data-location="right" />
+    <g opacity="0" :id="`anchor-${node.id}`">
+      <circle :cy="height/2" r="5" stroke="#000" fill="#f0f2f5" stroke-width="0.8" data-type="node"
+              data-mouse-type="pointer"
+              :data-key="node.id" data-anchor="left" />
+      <circle :cx="width" :cy="height/2" r="5" stroke="#000" fill="#f0f2f5" stroke-width="0.8" data-type="node"
+              data-mouse-type="pointer"
+              :data-key="node.id" data-anchor="right" />
     </g>
   </g>
 </template>

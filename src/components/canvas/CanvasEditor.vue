@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useEditor } from '@/stores/editor'
+import { useEditor } from '@/stores/canvas-editor'
 import { computed, inject, type Ref, ref } from 'vue'
 import { currentProject } from '@/stores/service/project-service'
 import { useEventListener } from '@vueuse/core'

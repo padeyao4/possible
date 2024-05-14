@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export const useEditor = defineStore('editor', () => {
+export const useEditor = defineStore('canvas-editor', () => {
   const visible = ref(false)
   const width = ref(360)
   const height = ref(240)

@@ -1,4 +1,4 @@
-import { type Edge, type Node, type Project, useState } from '@/stores/state'
+import { type Edge, type Node, type Project, useProjects } from '@/stores/projects'
 import { v4 } from 'uuid'
 import type { ID } from '@antv/g6'
 import { faker } from '@faker-js/faker'
@@ -6,7 +6,7 @@ import { useSettings } from '@/stores/settings'
 import { isCross } from '@/lib/math'
 
 export function createProjectTemplate(): Project {
-  const { projectMap } = useState()
+  const { projectMap } = useProjects()
   return {
     id: v4(),
     name: faker.person.fullName(),
@@ -39,7 +39,7 @@ export function createNodeTemplate(): Node {
 }
 
 export function addProject(project: Project) {
-  const { projectMap } = useState()
+  const { projectMap } = useProjects()
   projectMap.set(project.id, project)
 }
 
@@ -71,7 +71,7 @@ export function deleteNodeById(project: Project, nodeId: ID) {
   nodeMap.delete(nodeId)
 }
 
-export function addEdge(project: Project, node1: Node, node2: Node) {
+export function addEdge(project: Project, node1: Partial<Node>, node2: Partial<Node>) {
   const { edgeMap, inMap, outMap } = project
   const edge = {
     id: v4(),
@@ -85,7 +85,7 @@ export function addEdge(project: Project, node1: Node, node2: Node) {
 
 export function currentProject(): Project {
   const settings = useSettings()
-  const { projectMap } = useState()
+  const { projectMap } = useProjects()
   return projectMap.get(settings.active) ?? createProjectTemplate()
 }
 
