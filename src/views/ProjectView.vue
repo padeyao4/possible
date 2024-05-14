@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { currentProject } from '@/stores/service/project-service'
-import ProjectBody from '@/components/TheCanvas.vue'
+import ProjectComponentGroup from '@/components/ProjectComponentGroup.vue'
 import ProjectFooter from '@/components/TheFooter.vue'
 
 const project = currentProject()
@@ -12,8 +12,8 @@ const project = currentProject()
     <header>
       <div class="title">{{ project?.name }}</div>
     </header>
-    <main class="border-top-shadow canvas-background-color" style="flex-grow: 1">
-      <project-body />
+    <main class="border-top-shadow canvas-background-color">
+      <project-component-group />
     </main>
     <footer>
       <project-footer />
@@ -43,6 +43,10 @@ header {
     display: flex;
     align-items: center;
   }
+}
+
+main {
+  flex-grow: 1
 }
 
 footer {

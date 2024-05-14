@@ -18,24 +18,20 @@ watchEffect(() => {
   indexes.value = Array.from({ length: size }, (_, i) => i + 1)
 })
 
-const x = computed(() => {
-  return Math.floor(-project.offset.x / settings.unitWidth) - 2
-})
+const x = computed(() => Math.floor(-project.offset.x / settings.unitWidth) - 2)
 
-const translateX = computed(() => {
-  return project.offset.x % settings.unitWidth + settings.offsetX - settings.unitWidth
-})
+const translateX = computed(() => project.offset.x % settings.unitWidth - settings.unitWidth + 'px')
 
-const todayIndex = computed(() => {
-  return calculateDaysBetweenDates(timer.timestamp, project.createTime)
-})
+const unitWidth = computed(() => (settings.unitWidth + 'px'))
+
+const todayIndex = computed(() => calculateDaysBetweenDates(timer.timestamp, project.createTime))
 
 </script>
 
 <template>
-  <div id="canvas-header" class="canvas-background-color border-bottom-shadow">
-    <div id="group" :style="{'transform': `translateX(${translateX}px)`}">
-      <div v-for="idx in indexes" class="item" :key="idx" :style="{'width':`${settings.unitWidth}px`}">
+  <div class="canvas-header border-bottom-shadow">
+    <div class="container">
+      <div v-for="idx in indexes" class="item" :key="idx">
         <canvas-header-item :idx="idx + x " :isToday=" todayIndex === idx+x" />
       </div>
     </div>
@@ -43,7 +39,7 @@ const todayIndex = computed(() => {
 </template>
 
 <style scoped>
-#canvas-header {
+.canvas-header {
   position: absolute;
   display: flex;
   flex-direction: row;
@@ -52,15 +48,19 @@ const todayIndex = computed(() => {
   right: 0;
   height: 39px;
   overflow-x: hidden;
+  background-color: transparent;
   pointer-events: none;
 }
 
-#group {
+.container {
   display: flex;
   flex-direction: row;
+  transform: translateX(v-bind(translateX));
+  margin-left: 40px;
 }
 
 .item {
   flex-shrink: 0;
+  width: v-bind(unitWidth);
 }
 </style>

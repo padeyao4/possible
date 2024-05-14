@@ -21,14 +21,12 @@ const y = computed(() => {
   return Math.floor(absY / settings.unitHeight) - 2
 })
 
-const translateY = computed(() => {
-  return project.offset.y % settings.unitHeight + settings.offsetY - settings.unitHeight
-})
+const translateY = computed(() => project.offset.y % settings.unitHeight - settings.unitHeight + 'px')
 </script>
 
 <template>
-  <div id="canvas-ruler" class="canvas-background-color">
-    <div :style="{'transform':`translateY(${translateY}px)`}">
+  <div class="canvas-ruler">
+    <div class="container">
       <div v-for="item in rulers"
            :key="item"
            :style="{'height':`${settings.unitHeight}px`}">{{ item + y }}
@@ -38,7 +36,7 @@ const translateY = computed(() => {
 </template>
 
 <style scoped>
-#canvas-ruler {
+.canvas-ruler {
   position: absolute;
   top: 0;
   left: 0;
@@ -48,5 +46,11 @@ const translateY = computed(() => {
   pointer-events: none;
   padding-left: 16px;
   border-right: 1px solid rgba(27, 31, 35, 0.06);
+  background-color: transparent;
+}
+
+.container {
+  margin-top: 40px;
+  transform: translateY(v-bind(translateY));
 }
 </style>

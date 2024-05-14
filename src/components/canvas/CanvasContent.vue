@@ -9,13 +9,11 @@ import { DragCanvas } from '@/lib/behavior/drag-canvas'
 import { useEventListener } from '@vueuse/core'
 import { DragCard } from '@/lib/behavior/drag-card'
 import { ResizeCard } from '@/lib/behavior/resize-card'
-import { useSettings } from '@/stores/settings'
 import { DoubleClickCard } from '@/lib/behavior/double-click-card'
 import { CreateEdge } from '@/lib/behavior/create-edge'
 import CanvasTempPaths from '@/components/canvas/CanvasTempPaths.vue'
 
 const project = currentProject()
-const settings = useSettings()
 
 const register = new Register()
 
@@ -26,28 +24,24 @@ onMounted(() => {
   })
 })
 
-const translateX = computed(() => {
-  return project?.offset.x + settings.offsetX
-})
+const translateX = computed(() => project?.offset.x)
 
-const translateY = computed(() => {
-  return project?.offset.y + settings.offsetY
-})
+const translateY = computed(() => project?.offset.y)
 </script>
 
 <template>
-  <svg id="svg"
-       @mousedown="register.onmousedown($event)"
-       @mouseup="register.onmouseup($event)"
-       @mouseout="register.onmouseout($event)"
-       @mouseenter="register.onmouseenter($event)"
-       @mouseleave="register.onmouseleave($event)"
-       @mouseover="register.onmouseover($event)"
-       @wheel="register.onwheel($event)"
-       @click="register.onclick($event)"
-       @dblclick="register.ondblclick($event)"
-       @mousemove="register.onmousemove($event)"
-       data-type="canvas"
+  <svg
+    @mousedown="register.onmousedown($event)"
+    @mouseup="register.onmouseup($event)"
+    @mouseout="register.onmouseout($event)"
+    @mouseenter="register.onmouseenter($event)"
+    @mouseleave="register.onmouseleave($event)"
+    @mouseover="register.onmouseover($event)"
+    @wheel="register.onwheel($event)"
+    @click="register.onclick($event)"
+    @dblclick="register.ondblclick($event)"
+    @mousemove="register.onmousemove($event)"
+    data-type="canvas"
   >
     <g :transform="`translate(${translateX},${translateY})`">
       <canvas-paths />
@@ -58,8 +52,10 @@ const translateY = computed(() => {
 </template>
 
 <style scoped>
-#svg {
+svg {
   width: 100%;
   height: 100%;
+  margin-left: 40px;
+  margin-top: 40px;
 }
 </style>
