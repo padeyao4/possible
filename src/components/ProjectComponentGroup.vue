@@ -22,7 +22,6 @@ const projectContextmenuRef = ref()
     <the-canvas />
     <canvas-header />
     <canvas-ruler />
-    <div id="block" class="canvas-background-color"></div>
     <node-editor ref="nodeEditorRef" />
     <project-contextmenu ref="projectContextmenuRef" />
   </div>
@@ -33,13 +32,5 @@ const projectContextmenuRef = ref()
   position: relative;
   width: 100%;
   height: 100%;
-}
-
-#block {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 40px;
-  height: 40px;
 }
 </style>

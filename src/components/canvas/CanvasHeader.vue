@@ -50,6 +50,7 @@ const todayIndex = computed(() => calculateDaysBetweenDates(timer.timestamp, pro
   overflow-x: hidden;
   background-color: transparent;
   pointer-events: none;
+  clip-path: polygon(40px 0, 100% 0, 100% 40px, 40px 40px);
 }
 
 .container {

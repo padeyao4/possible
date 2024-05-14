@@ -47,6 +47,7 @@ const translateY = computed(() => project.offset.y % settings.unitHeight - setti
   padding-left: 16px;
   border-right: 1px solid rgba(27, 31, 35, 0.06);
   background-color: transparent;
+  clip-path: polygon(0 40px, 40px 40px, 40px 100%, 0 100%);
 }
 
 .container {
