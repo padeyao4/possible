@@ -1,9 +1,17 @@
 <script setup lang="ts">
 
-defineProps<{
+import { useEventListener } from '@vueuse/core'
+
+const props = defineProps<{
   ok?: () => void,
   cancel?: () => void
 }>()
+
+useEventListener(document, 'keydown', (e) => {
+  if (e.code === 'Escape') {
+    props.cancel?.()
+  }
+})
 </script>
 
 <template>
@@ -14,8 +22,8 @@ defineProps<{
           <slot />
         </main>
         <footer>
-          <div @click="ok">ok</div>
-          <div @click="cancel">cancel</div>
+          <div @click="ok">确定</div>
+          <div @click="cancel">取消</div>
         </footer>
       </div>
     </div>
@@ -72,6 +80,7 @@ footer {
     padding: 4px;
     border: #00000040 solid 1px;
     border-radius: 4px;
+    font-weight: lighter;
   }
 }
 </style>

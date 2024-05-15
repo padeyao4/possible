@@ -28,6 +28,7 @@ const translateY = computed(() => project.offset.y % settings.unitHeight - setti
   <div class="canvas-ruler">
     <div class="container">
       <div v-for="item in rulers"
+           class="ruler-unit"
            :key="item"
            :style="{'height':`${settings.unitHeight}px`}">{{ item + y }}
       </div>
@@ -54,5 +55,14 @@ const translateY = computed(() => project.offset.y % settings.unitHeight - setti
   margin-top: 40px;
   transform: translateY(v-bind(translateY));
   height: calc(100% - 40px);
+}
+
+.ruler-unit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-bottom: #00000010 solid 1px;
+  font-weight: lighter;
 }
 </style>
