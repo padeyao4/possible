@@ -2,9 +2,13 @@
 import type { ID, Project } from '@/stores/projects'
 import { linkTo } from '@/stores/service/route-service'
 import { useSettings } from '@/stores/settings'
+import { deleteProject } from '@/stores/service/project-service'
+import ModeDialog from '@/components/other/ModeDialog.vue'
+import { ref } from 'vue'
 
 const settings = useSettings()
 const props = defineProps<{ project: Project }>()
+const visible = ref(false)
 
 function onclick(projectId: ID) {
   setTimeout(() => {
@@ -28,6 +32,15 @@ function onsubmit() {
 function handleEdit() {
   props.project.editable = true
 }
+
+function handleDelete() {
+  visible.value = true
+}
+
+function okCallback() {
+  deleteProject(props.project.id)
+  visible.value = false
+}
 </script>
 
 <template>
@@ -47,9 +60,13 @@ function handleEdit() {
       <div class="info"> {{ project.name }}</div>
       <div class="operation" :data-project-id="project.id">
         <Icon icon="iconoir:edit-pencil" @click="handleEdit" />
+        <Icon icon="iconoir:trash" @click="handleDelete" />
         <Icon icon="iconoir:menu" class="move" />
       </div>
     </div>
+    <mode-dialog v-if="visible" :ok="okCallback" :cancel="()=>{visible=false}">
+      删除 <b><i style="color: red">{{ project.name }}</i></b> 项目吗?
+    </mode-dialog>
   </div>
 </template>
 

@@ -34,10 +34,17 @@ export const useMouseStyle = defineStore('mouseStyle', () => {
     }
   }
 
+  function toggleMouseStyle(event: MouseEvent) {
+    const el = event.target as Element
+    const style = el.getAttribute('data-mouse-style') ?? 'default'
+    setStyleWithUnlock(style)
+  }
+
   return {
     isLock,
     unlock,
     lock,
+    toggleMouseStyle,
     lockStyle,
     setStyleWithUnlock
   }

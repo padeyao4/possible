@@ -1,6 +1,7 @@
 import type { Project } from '@/stores/projects'
 import { type MouseStyleType, useMouseStyle } from '@/stores/mouse'
 import { type SettingsType, useSettings } from '@/stores/settings'
+import { useEventListener } from '@vueuse/core'
 
 const eventTypes = ['mouseover', 'mouseout', 'mousedown', 'mouseup', 'mousemove', 'click', 'dblclick', 'contextmenu']
 
@@ -47,6 +48,7 @@ export class Register {
   project: Project
   mouseStyle: MouseStyleType
   settings: SettingsType
+  globalListenerCleanup: any
 
   constructor(container: Element, project: Project) {
     this.behaviors = []
@@ -66,12 +68,14 @@ export class Register {
     eventTypes.forEach(mouseType => {
       this.container.addEventListener(mouseType, this.processEvent.bind(this))
     })
+    this.globalListenerCleanup = useEventListener(document, 'mouseup', this.processEvent.bind(this))
   }
 
   public removeListen() {
     eventTypes.forEach(mouseType => {
       this.container.removeEventListener(mouseType, this.processEvent)
     })
+    this.globalListenerCleanup()
   }
 
   private processEvent(e: Event) {

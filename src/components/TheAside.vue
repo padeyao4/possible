@@ -3,10 +3,17 @@
 import AsideHeader from '@/components/side/AsideHeader.vue'
 import AsideBody from '@/components/side/AsideBody.vue'
 import AsideFooter from '@/components/side/AsideFooter.vue'
+import { useMouseStyle } from '@/stores/mouse'
+
+const mouseStyle = useMouseStyle()
+
+function onmouseover(event: MouseEvent) {
+  mouseStyle.toggleMouseStyle(event)
+}
 </script>
 
 <template>
-  <div id="po-aside">
+  <div id="po-aside" @mouseover="onmouseover">
     <aside-header id="aside-header" />
     <aside-body id="aside-body" />
     <aside-footer id="aside-footer" />

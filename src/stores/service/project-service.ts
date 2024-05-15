@@ -99,6 +99,11 @@ export function currentProject(): Project {
   return projectMap.get(settings.active) ?? createProjectTemplate()
 }
 
+export function deleteProject(projectId: ID) {
+  const { projectMap } = useProjects()
+  projectMap.delete(projectId)
+}
+
 export function testProjects() {
   for (let i = 0; i < 10; i++) {
     const project = createProjectTemplate()

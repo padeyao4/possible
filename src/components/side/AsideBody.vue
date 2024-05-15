@@ -6,13 +6,14 @@ import AsideBodyItem from '@/components/side/AsideBodyItem.vue'
 import { useMouseStyle } from '@/stores/mouse'
 
 const { projectMap } = useProjects()
-const sideBodyRef = ref()
+const draggableRef = ref<{ targetDomElement: Element }>()
 
 const list = computed(() => {
   return Array.from(projectMap.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex)
 })
 
 function onstart() {
+  draggableRef.value.targetDomElement.toggleAttribute('data-show', true)
   const mouseStyle = useMouseStyle()
   mouseStyle.lockStyle('move')
   const els = document.getElementsByClassName('side-list-item')
@@ -21,14 +22,15 @@ function onstart() {
   }
 }
 
-function onend() {
+function onend(e: any) {
+  draggableRef.value.targetDomElement.toggleAttribute('data-show', false)
   const mouseStyle = useMouseStyle()
   mouseStyle.unlock()
   const els = document.getElementsByClassName('side-list-item')
   for (let el of els) {
     el.toggleAttribute('data-hover', true)
   }
-  mouseStyle.setStyleWithUnlock('default')
+  mouseStyle.toggleMouseStyle(e.originalEvent)
 }
 
 function onupdate() {
@@ -41,7 +43,7 @@ function onupdate() {
 <template>
   <draggable :list="list"
              class="aside-body"
-             ref="sideBodyRef"
+             ref="draggableRef"
              item-key="id"
              chosenClass="chosen-class"
              dragClass="drag-class"
@@ -71,7 +73,8 @@ function onupdate() {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 1;
+    z-index: 2;
+    background-color: #b88230;
     opacity: 0;
   }
 }
