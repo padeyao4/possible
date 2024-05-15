@@ -15,21 +15,21 @@ function onclick(path: string) {
 
 <template>
   <div id="aside-header">
-    <div class="side-list-item" :data-active="settings.active==='today'" @click="onclick('/today')">
+    <div class="side-list-item" :data-active="settings.active==='today'" data-hover @click="onclick('/today')">
       <sun theme="multi-color" size="20" :fill="['#333' ,'#2F88FF' ,'#FFF' ,'#43CCF8']" :strokeWidth="3"
            strokeLinecap="butt" class="side-icon" />
       <div class="side-item-text">
         我的一天
       </div>
     </div>
-    <div class="side-list-item" :data-active="settings.active==='backlog'"
+    <div class="side-list-item" :data-active="settings.active==='backlog'" data-hover
          @click="onclick('/backlog')">
       <bookmark theme="outline" size="20" fill="#333" :strokeWidth="3" strokeLinecap="butt" class="side-icon" />
       <div class="side-item-text">
         备忘录
       </div>
     </div>
-    <div class="side-list-item" :data-active="settings.active==='manage'"
+    <div class="side-list-item" :data-active="settings.active==='manage'" data-hover
          @click="onclick('/manage')">
       <all-application theme="outline" size="20" fill="#333" :strokeWidth="3" strokeLinecap="butt" class="side-icon" />
       <div class="side-item-text">

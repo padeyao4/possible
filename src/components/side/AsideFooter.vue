@@ -6,8 +6,8 @@ import { linkTo } from '@/stores/service/route-service'
 function onclick() {
   const project = createProjectTemplate()
   addProject(project)
-  setTimeout(()=>{
-    linkTo('/project/'+project.id)
+  setTimeout(() => {
+    linkTo('/project/' + project.id)
     project.editable = true
   })
 }
@@ -15,7 +15,7 @@ function onclick() {
 
 <template>
   <div id="aside-footer">
-    <div class="side-list-item" @click="onclick">
+    <div class="side-list-item" data-hover @click="onclick">
       <plus theme="outline" size="20" fill="#333" :strokeWidth="3" strokeLinecap="butt" class="side-icon" />
       <div class="side-item-text">
         创建项目

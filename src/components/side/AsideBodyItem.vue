@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { ID, Project } from '@/stores/projects'
 import { linkTo } from '@/stores/service/route-service'
-import { Drag, Write } from '@icon-park/vue-next'
 import { useSettings } from '@/stores/settings'
 
 const settings = useSettings()
@@ -11,24 +10,6 @@ function onclick(projectId: ID) {
   setTimeout(() => {
     linkTo('/project/' + projectId)
   })
-}
-
-function onmouseover(projectId: ID) {
-  const els = document.getElementsByClassName('operation')
-  for (let el of els) {
-    const elId = el.getAttribute('data-project-id')
-    el.toggleAttribute('data-show', elId === projectId)
-  }
-}
-
-function onmouseleave(projectId: ID) {
-  const els = document.getElementsByClassName('operation')
-  for (let el of els) {
-    const elId = el.getAttribute('data-project-id')
-    if (elId === projectId) {
-      el.toggleAttribute('data-show', false)
-    }
-  }
 }
 
 function handleInputRef(e: HTMLElement) {
@@ -60,13 +41,13 @@ function handleEdit() {
            :ref="handleInputRef" />
     <div v-else @click="onclick(project.id)"
          class="side-list-item project-item"
+         data-hover
          :data-active="settings.active===project.id"
-         @mouseleave="onmouseleave(project.id)"
-         @mouseover="onmouseover(project.id)">
+    >
       <div class="info"> {{ project.name }}</div>
       <div class="operation" :data-project-id="project.id">
-        <write theme="outline" size="15" fill="#333" :strokeWidth="1" @click="handleEdit" />
-        <drag theme="outline" size="15" fill="#b9b9b9" :strokeWidth="1" class="move" />
+        <Icon icon="iconoir:edit-pencil" @click="handleEdit" />
+        <Icon icon="iconoir:menu" class="move" />
       </div>
     </div>
   </div>
@@ -112,31 +93,11 @@ input {
   text-overflow: ellipsis;
 }
 
-.hide {
-  display: none;
-}
-
 .operation {
   display: none;
   align-items: center;
   justify-content: end;
   width: 68px;
   flex-shrink: 0;
-
-  &[data-show] {
-    display: flex;
-  }
-
-  & > * {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 2px;
-
-    &:hover {
-      border-radius: 3px;
-      background: rgba(0, 0, 0, 0.06);
-    }
-  }
 }
 </style>

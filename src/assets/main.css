@@ -68,9 +68,30 @@ body {
 /*--------------------------------------------------------*/
 
 .side-list-item {
-    &:hover {
+    &[data-hover]:hover {
         background: #e5ebef;
         border-radius: 4px;
+
+        .operation {
+            display: flex;
+            align-items: center;
+            padding: 2px;
+
+            & > * {
+                display: flex;
+                justify-content: center;
+                align-content: center;
+                width: 20px;
+                height: 20px;
+                padding: 2px;
+                color: #00000050;
+
+                &:hover {
+                    border-radius: 3px;
+                    background: rgba(0, 0, 0, 0.06);
+                }
+            }
+        }
     }
 
     &[data-active='true'] {

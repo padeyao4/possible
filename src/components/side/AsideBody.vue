@@ -2,12 +2,10 @@
 import { computed, ref } from 'vue'
 import Draggable from 'vuedraggable/src/vuedraggable'
 import { useProjects } from '@/stores/projects'
-import { linkTo } from '@/stores/service/route-service'
-import { useSettings } from '@/stores/settings'
 import AsideBodyItem from '@/components/side/AsideBodyItem.vue'
+import { useMouseStyle } from '@/stores/mouse'
 
 const { projectMap } = useProjects()
-const settings = useSettings()
 const sideBodyRef = ref()
 
 const list = computed(() => {
@@ -15,27 +13,22 @@ const list = computed(() => {
 })
 
 function onstart() {
-  document.body.style.cursor = 'move'
-  const el = sideBodyRef.value.targetDomElement as HTMLElement
-  el.toggleAttribute('data-show', true)
-  const els = document.getElementsByClassName('project-item')
-  for (let el1 of els) {
-    el1.classList.remove('side-list-item')
-    el1.children[1].classList.remove('operation')
-    el1.children[1].classList.add('hide')
+  const mouseStyle = useMouseStyle()
+  mouseStyle.lockStyle('move')
+  const els = document.getElementsByClassName('side-list-item')
+  for (let el of els) {
+    el.toggleAttribute('data-hover', false)
   }
 }
 
 function onend() {
-  const el = sideBodyRef.value.targetDomElement as HTMLElement
-  el.toggleAttribute('data-show', false)
-  const els = document.getElementsByClassName('project-item')
-  for (let el1 of els) {
-    el1.classList.add('side-list-item')
-    el1.children[1].classList.add('operation')
-    el1.children[1].classList.remove('hide')
+  const mouseStyle = useMouseStyle()
+  mouseStyle.unlock()
+  const els = document.getElementsByClassName('side-list-item')
+  for (let el of els) {
+    el.toggleAttribute('data-hover', true)
   }
-  document.body.style.cursor = 'default'
+  mouseStyle.setStyleWithUnlock('default')
 }
 
 function onupdate() {
@@ -44,16 +37,10 @@ function onupdate() {
   })
 }
 
-function onclick(projectId: string) {
-  setTimeout(() => {
-    linkTo('/project/' + projectId)
-  })
-}
-
 </script>
 <template>
   <draggable :list="list"
-             id="aside-body"
+             class="aside-body"
              ref="sideBodyRef"
              item-key="id"
              chosenClass="chosen-class"
@@ -72,7 +59,7 @@ function onclick(projectId: string) {
 </template>
 
 <style scoped>
-#aside-body {
+.aside-body {
   flex-direction: column;
   overflow-y: auto;
   width: 100%;
