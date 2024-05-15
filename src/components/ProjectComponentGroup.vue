@@ -4,7 +4,7 @@ import CanvasRuler from '@/components/canvas/CanvasRuler.vue'
 import CanvasGrid from '@/components/canvas/CanvasGrid.vue'
 import TheCanvas from '@/components/canvas/TheCanvas.vue'
 import NodeEditor from '@/components/canvas/CanvasEditor.vue'
-import ProjectContextmenu from '@/components/contextmenu/ProjectContextmenu.vue'
+import CanvasContextmenu from '@/components/contextmenu/CanvasContextmenu.vue'
 
 </script>
 
@@ -15,7 +15,7 @@ import ProjectContextmenu from '@/components/contextmenu/ProjectContextmenu.vue'
     <canvas-header />
     <canvas-ruler />
     <node-editor />
-    <project-contextmenu />
+    <canvas-contextmenu />
   </div>
 </template>
 

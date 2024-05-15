@@ -33,13 +33,6 @@ const edges = computed<Path[]>(() => {
 </script>
 
 <template>
-<!--  <path v-for="edge in edges"-->
-  <!--        :d="`M ${edge.from.x},${edge.from.y} L ${edge.to.x},${edge.to.y}`"-->
-  <!--        stroke="#000"-->
-  <!--        :data-key="edge.id"-->
-  <!--        data-type="edge"-->
-  <!--        stroke-opacity="0.7"-->
-  <!--        stroke-width="" />-->
   <canvas-the-path v-for="edge in edges" :edge="edge"/>
 </template>
 

@@ -1,38 +1,76 @@
 <script setup lang="ts">
-import { addNode, createNodeTemplate, currentProject } from '@/stores/service/project-service'
-import { inject, type Ref } from 'vue'
-import { useSettings } from '@/stores/settings'
-import { useCanvas } from '@/stores/canvas'
+import { useCanvasContextMenu } from '@/stores/canvas-contextmenu'
+import { computed, onMounted, ref } from 'vue'
 
-const contextmenuRef = inject<Ref<HTMLElement>>('contextmenu')
-const canvas = useCanvas()
+const contextmenuRef = ref()
+const contextmenu = useCanvasContextMenu()
 
-const settings = useSettings()
-const project = currentProject()
+const visible = computed(() => contextmenu.visible ? 'flex' : 'none')
 
-function getCanvasPointByClientPoint(x: number, y: number) {
-  const { x: cx, y: cy } = canvas.getBoundingClientRect()
-  return { x: x - cx - project.offset.x, y: y - cy - project.offset.y }
-}
+const top = computed(() => {
+  return contextmenu.clientY + 'px'
+})
 
-function handleNewNode() {
-  const x = contextmenuRef.value.getAttribute('data-x')
-  const y = contextmenuRef.value.getAttribute('data-y')
-  const { x: cx, y: cy } = getCanvasPointByClientPoint(Number(x), Number(y))
-  const node = createNodeTemplate()
-  node.x = Math.floor(cx / settings.unitWidth)
-  node.y = Math.floor(cy / settings.unitHeight)
-  addNode(project, node)
-}
+const width = computed(() => {
+  return contextmenu.width + 'px'
+})
+
+const left = computed(() => {
+  return contextmenu.clientX + 'px'
+})
+
+onMounted(() => {
+  contextmenu.setElement(contextmenuRef.value)
+  contextmenuRef.value?.force?.()
+})
 
 </script>
 
 <template>
-  <div class="canvas-contextmenu-list">
-    <div @click="handleNewNode">新建</div>
-  </div>
+  <teleport to="body">
+    <div ref="contextmenuRef" class="contextmenu" @contextmenu.prevent tabindex="0" @click="contextmenu.visible=false">
+      <div v-for="(value,key) in contextmenu.list" @click="value">
+        {{ key }}
+      </div>
+    </div>
+  </teleport>
 </template>
 
 <style scoped>
 
+.contextmenu {
+  position: fixed;
+  display: v-bind(visible);
+  left: v-bind(left);
+  top: v-bind(top);
+  width: v-bind(width);
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+  border-radius: 8px;
+  z-index: 3;
+
+  &::before {
+    content: '';
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+  }
+
+  & > * {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin: 8px;
+    padding: 4px;
+    width: 100%;
+    border-radius: 4px;
+
+    &:hover {
+      background-color: #95d47550;
+    }
+  }
+}
 </style>

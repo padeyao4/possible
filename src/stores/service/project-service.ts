@@ -71,6 +71,16 @@ export function deleteNodeById(project: Project, nodeId: ID) {
   nodeMap.delete(nodeId)
 }
 
+export function deleteEdgeById(project: Project, edgeId: ID) {
+  const { edgeMap, inMap, outMap } = project
+  const edge = edgeMap.get(edgeId)
+  const sourceNodeId = edge.source
+  const targetNodeId = edge.target
+  inMap.get(targetNodeId).delete(edge)
+  outMap.get(sourceNodeId).delete(edge)
+  edgeMap.delete(edgeId)
+}
+
 export function addEdge(project: Project, node1: Partial<Node>, node2: Partial<Node>) {
   const { edgeMap, inMap, outMap } = project
   const edge = {

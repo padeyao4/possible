@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia'
 import { computed, ref, shallowRef } from 'vue'
-import { addNode, createNodeTemplate, currentProject, deleteNodeById } from '@/stores/service/project-service'
+import {
+  addNode,
+  createNodeTemplate,
+  currentProject,
+  deleteEdgeById,
+  deleteNodeById
+} from '@/stores/service/project-service'
 import { useSettings } from '@/stores/settings'
 
 
@@ -28,7 +34,12 @@ const items = ref({
     }
   },
   edge: {
-    '...': () => {
+    '删除': () => {
+      const contextmenu = useCanvasContextMenu()
+      const project = currentProject()
+      const el = contextmenu.mouseEvent.target as Element
+      const key = el.getAttribute('data-key')
+      deleteEdgeById(project, key)
     }
   }
 })
