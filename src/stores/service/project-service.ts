@@ -1,6 +1,5 @@
-import { type Edge, type Node, type Project, useProjects } from '@/stores/projects'
+import { type Edge, type Node, type Project, useProjects, type ID } from '@/stores/projects'
 import { v4 } from 'uuid'
-import type { ID } from '@antv/g6'
 import { faker } from '@faker-js/faker'
 import { useSettings } from '@/stores/settings'
 import { isCross } from '@/lib/math'

@@ -32,7 +32,8 @@ const height = computed(() => {
       stroke-width="1"
       stroke="#000"
       fill="#fff"
-      rx="8" />
+      rx="8"
+    />
     <foreignObject :width="width" :height="height" opacity="1">
       <div id="text">
         <p id="content">
@@ -48,65 +49,133 @@ const height = computed(() => {
       data-el-type="node"
       data-mouse-style="pointer"
       class="key-shape"
-      rx="8" />
+      rx="8"
+    />
     <g opacity="0">
-      <rect :data-key="node.id"
-            data-mouse-style="nw-resize"
-            data-type="node"
-            data-el-type="resize"
-            data-direction="lt"
-            x="-2.5" y="-2.5" fill="red"
-            width="5"
-            height="5" />
-      <rect :data-key="node.id"
-            data-mouse-style="ne-resize"
-            data-el-type="resize"
-            data-type="node" data-direction="rt" :x="width-2.5" y="-2.5" fill="red" width="5"
-            height="5" />
-      <rect :data-key="node.id"
-            data-mouse-style="n-resize"
-            data-el-type="resize"
-            data-type="node" data-direction="t" x="2.5" y="-2.5" :width="width-5" height="5" />
-      <rect :data-key="node.id"
-            data-el-type="resize"
-            data-mouse-style="n-resize"
-            data-type="node" data-direction="b" x="2.5" :y="height-2.5" :width="width-5"
-            height="5" />
-      <rect :data-key="node.id"
-            data-el-type="resize"
-            data-mouse-style="w-resize"
-            data-type="node" data-direction="l" x="-2.5" y="2.5" :width="5" :height="height-5" />
-      <rect :data-key="node.id"
-            data-el-type="resize"
-            data-mouse-style="e-resize"
-            data-type="node" data-direction="r" :x="width-2.5" y="2.5" :width="5"
-            :height="height-5" />
-      <rect :data-key="node.id"
-            data-el-type="resize"
-            data-mouse-style="ne-resize"
-            data-type="node" data-direction="lb" x="-2.5" :y="height-2.5" fill="red" width="5"
-            height="5" />
-      <rect :data-key="node.id"
-            data-el-type="resize"
-            data-mouse-style="nw-resize"
-            data-type="node" data-direction="rb" :x="width-2.5" :y="height-2.5" fill="red" width="5"
-            height="5" />
+      <rect
+        :data-key="node.id"
+        data-mouse-style="nw-resize"
+        data-type="node"
+        data-el-type="resize"
+        data-direction="lt"
+        x="-2.5"
+        y="-2.5"
+        fill="red"
+        width="5"
+        height="5"
+      />
+      <rect
+        :data-key="node.id"
+        data-mouse-style="ne-resize"
+        data-el-type="resize"
+        data-type="node"
+        data-direction="rt"
+        :x="width - 2.5"
+        y="-2.5"
+        fill="red"
+        width="5"
+        height="5"
+      />
+      <rect
+        :data-key="node.id"
+        data-mouse-style="n-resize"
+        data-el-type="resize"
+        data-type="node"
+        data-direction="t"
+        x="2.5"
+        y="-2.5"
+        :width="width - 5"
+        height="5"
+      />
+      <rect
+        :data-key="node.id"
+        data-el-type="resize"
+        data-mouse-style="n-resize"
+        data-type="node"
+        data-direction="b"
+        x="2.5"
+        :y="height - 2.5"
+        :width="width - 5"
+        height="5"
+      />
+      <rect
+        :data-key="node.id"
+        data-el-type="resize"
+        data-mouse-style="w-resize"
+        data-type="node"
+        data-direction="l"
+        x="-2.5"
+        y="2.5"
+        :width="5"
+        :height="height - 5"
+      />
+      <rect
+        :data-key="node.id"
+        data-el-type="resize"
+        data-mouse-style="e-resize"
+        data-type="node"
+        data-direction="r"
+        :x="width - 2.5"
+        y="2.5"
+        :width="5"
+        :height="height - 5"
+      />
+      <rect
+        :data-key="node.id"
+        data-el-type="resize"
+        data-mouse-style="ne-resize"
+        data-type="node"
+        data-direction="lb"
+        x="-2.5"
+        :y="height - 2.5"
+        fill="red"
+        width="5"
+        height="5"
+      />
+      <rect
+        :data-key="node.id"
+        data-el-type="resize"
+        data-mouse-style="nw-resize"
+        data-type="node"
+        data-direction="rb"
+        :x="width - 2.5"
+        :y="height - 2.5"
+        fill="red"
+        width="5"
+        height="5"
+      />
     </g>
     <g class="anchor">
-      <circle :cy="height/2" r="5" stroke="#000" fill="#f0f2f5" stroke-width="0.8" data-type="node"
-              data-mouse-style="pointer"
-              data-el-type="anchor"
-              :data-key="node.id" data-anchor="left" />
-      <circle :cx="width" :cy="height/2" r="5" stroke="#000" fill="#f0f2f5" stroke-width="0.8" data-type="node"
-              data-mouse-style="pointer"
-              data-el-type="anchor"
-              :data-key="node.id" data-anchor="right" />
+      <circle
+        :cy="height / 2"
+        r="5"
+        stroke="#000"
+        fill="#f0f2f5"
+        stroke-width="0.8"
+        data-type="node"
+        data-mouse-style="pointer"
+        data-el-type="anchor"
+        :data-key="node.id"
+        data-anchor="left"
+      />
+      <circle
+        :cx="width"
+        :cy="height / 2"
+        r="5"
+        stroke="#000"
+        fill="#f0f2f5"
+        stroke-width="0.8"
+        data-type="node"
+        data-mouse-style="pointer"
+        data-el-type="anchor"
+        :data-key="node.id"
+        data-anchor="right"
+      />
     </g>
   </g>
 </template>
 
 <style scoped>
-
 .anchor {
   opacity: 0;
 

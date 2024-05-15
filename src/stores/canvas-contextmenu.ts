@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed, ref, shallowRef } from 'vue'
+import { computed, reactive, ref, shallowRef } from 'vue'
 import {
   addNode,
   createNodeTemplate,
@@ -10,7 +10,7 @@ import {
 import { useSettings } from '@/stores/settings'
 
 
-const items = ref({
+const items = reactive({
   canvas: {
     '添加': () => {
       const settings = useSettings()
@@ -54,7 +54,7 @@ export const useCanvasContextMenu = defineStore('canvasContextMenu', () => {
   const mouseEvent = shallowRef<MouseEvent>()
 
   const list = computed(() => {
-    return items.value[active.value]
+    return items[active.value]
   })
 
   function setElement(el: Element) {

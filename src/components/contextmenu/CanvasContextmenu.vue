@@ -5,30 +5,28 @@ import { computed, onMounted, ref } from 'vue'
 const contextmenuRef = ref()
 const contextmenu = useCanvasContextMenu()
 
-const visible = computed(() => contextmenu.visible ? 'flex' : 'none')
+const visible = computed(() => (contextmenu.visible ? 'flex' : 'none'))
 
-const top = computed(() => {
-  return contextmenu.clientY + 'px'
-})
+const top = computed(() => contextmenu.clientY + 'px')
 
-const width = computed(() => {
-  return contextmenu.width + 'px'
-})
+const width = computed(() => contextmenu.width + 'px')
 
-const left = computed(() => {
-  return contextmenu.clientX + 'px'
-})
+const left = computed(() => contextmenu.clientX + 'px')
 
 onMounted(() => {
   contextmenu.setElement(contextmenuRef.value)
   contextmenuRef.value?.force?.()
 })
-
 </script>
 
 <template>
   <teleport to="body">
-    <div ref="contextmenuRef" class="contextmenu"  @contextmenu.prevent @click="contextmenu.visible = false">
+    <div
+      ref="contextmenuRef"
+      class="contextmenu"
+      @contextmenu.prevent
+      @click="contextmenu.visible = false"
+    >
       <div v-for="(value, key) in contextmenu.list" @click="value" :key="key">
         {{ key }}
       </div>
@@ -40,11 +38,12 @@ onMounted(() => {
 .contextmenu {
   position: fixed;
   display: v-bind(visible);
+  flex-direction: column;
   left: v-bind(left);
   top: v-bind(top);
   width: v-bind(width);
-  background-color: rgb(199, 197, 195);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+  background-color: rgb(59, 53, 47);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   border-radius: 8px;
   z-index: 3;
 
@@ -58,17 +57,17 @@ onMounted(() => {
     z-index: -1;
   }
 
-  &>* {
+  & > * {
     display: flex;
     justify-content: center;
-    text-align: center;
+    align-items: center;
     margin: 8px;
     padding: 4px;
     width: 100%;
     border-radius: 4px;
 
     &:hover {
-      background-color: #848b8060;
+      background-color: #ffffff60;
     }
   }
 }
