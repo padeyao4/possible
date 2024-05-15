@@ -26,20 +26,10 @@ const ctl2 = computed(() => {
 
 <template>
   <path :d="`M ${edge.from.x},${edge.from.y} C ${ctl1.x},${ctl1.y} ${ctl2.x},${ctl2.y} ${edge.to.x},${edge.to.y}`"
-        stroke="#000000"
-        fill="#ffffff00"
-        :data-key="edge.id"
-        data-el-type="edge"
-        stroke-opacity="0.7"
-        stroke-width="1" />
+    stroke="#000000" fill="#ffffff00" :data-key="edge.id" data-el-type="edge" stroke-opacity="0.7" stroke-width="1" />
   <path :d="`M ${edge.from.x},${edge.from.y} C ${ctl1.x},${ctl1.y} ${ctl2.x},${ctl2.y} ${edge.to.x},${edge.to.y}`"
-        stroke="#00000050"
-        fill="#ffffff00"
-        :data-key="edge.id"
-        opacity="0"
-        data-el-type="edge"
-        stroke-opacity="0.7"
-        stroke-width="9" />
+    stroke="#00000050" fill="#ffffff00" :data-key="edge.id" opacity="0" data-mouse-style="pointer" data-el-type="edge"
+    stroke-opacity="0.7" stroke-width="9" />
 </template>
 
 <style scoped>

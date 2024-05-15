@@ -28,8 +28,8 @@ onMounted(() => {
 
 <template>
   <teleport to="body">
-    <div ref="contextmenuRef" class="contextmenu" @contextmenu.prevent tabindex="0" @click="contextmenu.visible=false">
-      <div v-for="(value,key) in contextmenu.list" @click="value">
+    <div ref="contextmenuRef" class="contextmenu"  @contextmenu.prevent @click="contextmenu.visible = false">
+      <div v-for="(value, key) in contextmenu.list" @click="value" :key="key">
         {{ key }}
       </div>
     </div>
@@ -37,14 +37,13 @@ onMounted(() => {
 </template>
 
 <style scoped>
-
 .contextmenu {
   position: fixed;
   display: v-bind(visible);
   left: v-bind(left);
   top: v-bind(top);
   width: v-bind(width);
-
+  background-color: rgb(199, 197, 195);
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
   border-radius: 8px;
   z-index: 3;
@@ -59,7 +58,7 @@ onMounted(() => {
     z-index: -1;
   }
 
-  & > * {
+  &>* {
     display: flex;
     justify-content: center;
     text-align: center;
@@ -69,7 +68,7 @@ onMounted(() => {
     border-radius: 4px;
 
     &:hover {
-      background-color: #95d47550;
+      background-color: #848b8060;
     }
   }
 }

@@ -33,9 +33,7 @@ const edges = computed<Path[]>(() => {
 </script>
 
 <template>
-  <canvas-the-path v-for="edge in edges" :edge="edge"/>
+  <canvas-the-path v-for="edge in edges" :edge="edge" :key="edge.id" />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

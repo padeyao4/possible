@@ -1,27 +1,20 @@
 <script setup lang="ts">
 import TheAside from '@/components/TheAside.vue'
-import { useRoute } from 'vue-router'
-import { useSettings } from '@/stores/settings'
 import TheSeparation from '@/components/TheSeparation.vue'
-import { testProjects } from '@/stores/service/project-service'
 import WindowTitlebar from '@/components/WindowTitlebar.vue'
-import { computed, ref } from 'vue'
-import { useEventListener } from '@vueuse/core'
-import { useMouseStyle } from '@/stores/mouse'
+import { testProjects } from '@/stores/service/project-service'
+import { useSettings } from '@/stores/settings'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const settings = useSettings()
-// const mouseStyle = useMouseStyle()
 
 testProjects()
 
 const sideWidth = computed(() => {
   return settings.sideWidth + 'px'
 })
-
-// useEventListener(document, 'mouseover', () => {
-//   mouseStyle.setStyleWithUnlock('default')
-// })
 </script>
 
 <template>
@@ -38,7 +31,6 @@ const sideWidth = computed(() => {
 </template>
 
 <style scoped>
-
 .container {
   display: flex;
   position: relative;

@@ -1,6 +1,7 @@
 import { BaseBehavior, type EventDispatch } from '@/lib/base'
 import { useCanvasContextMenu } from '@/stores/canvas-contextmenu'
 import { useCanvas } from '@/stores/canvas'
+import { useMouseStyle } from '@/stores/mouse'
 
 export class HandleContextmenu extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -44,5 +45,9 @@ export class HandleContextmenu extends BaseBehavior {
     } else {
       contextmenu.clientY = e.y
     }
+    setTimeout(() => {
+      const mouseStyle = useMouseStyle()
+      mouseStyle.setStyleWithUnlock('default')
+    })
   }
 }
