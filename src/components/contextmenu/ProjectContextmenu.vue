@@ -1,97 +1,76 @@
 <script setup lang="ts">
-import { inject, provide, type Ref, ref } from 'vue'
-import CanvasContextmenu from '@/components/contextmenu/CanvasContextmenu.vue'
-import NodeContextmenu from '@/components/contextmenu/NodeContextmenu.vue'
-import { changeMouseStyle } from '@/stores/mouse'
-import EdgeContextmenu from '@/components/contextmenu/EdgeContextmenu.vue'
+import { useCanvasContextMenu } from '@/stores/canvas-contextmenu'
+import { computed, onMounted, ref } from 'vue'
 
-const modeRef = ref<HTMLElement>()
-const contextmenuRef = ref<HTMLElement>()
-const contextmenuType = ref('')
-const theCanvasRef = inject<Ref<HTMLElement>>('canvas')
+const contextmenuRef = ref()
+const contextmenu = useCanvasContextMenu()
 
-provide('contextmenu', contextmenuRef)
+const visible = computed(() => contextmenu.visible ? 'flex' : 'none')
 
-function handleCancelMenu() {
-  modeRef.value.toggleAttribute('data-pointer-event', false)
-  contextmenuRef.value.toggleAttribute('data-show', false)
-}
+const top = computed(() => {
+  return contextmenu.clientY + 'px'
+})
 
-function oncontextmenu(e: PointerEvent) {
-  e.stopPropagation()
-  e.preventDefault()
-  const target = e.target as Element
-  if (!target.hasAttribute('data-type')) return
+const width = computed(() => {
+  return contextmenu.width + 'px'
+})
 
-  const elementType = target.getAttribute('data-type')
-  const contextmenu = contextmenuRef.value
-  contextmenuType.value = elementType
+const left = computed(() => {
+  return contextmenu.clientX + 'px'
+})
 
-  contextmenu.style.top = e.y + 'px'
-  contextmenu.style.left = e.x + 'px'
-  contextmenu.style.opacity = String(0)
-  contextmenu.setAttribute('data-x', String(e.x))
-  contextmenu.setAttribute('data-y', String(e.y))
-  contextmenu.toggleAttribute('data-show', true)
-  const targetId = target.getAttribute('data-key') ?? ''
-  contextmenu.setAttribute('data-target-id', targetId)
-  setTimeout(() => {
-    const menuRect = contextmenu.getBoundingClientRect()
-    const canvasRect = theCanvasRef.value.getBoundingClientRect()
-    if (menuRect.right > canvasRect.right) {
-      contextmenu.style.left = (e.x - menuRect.width) + 'px'
-    }
-    if (menuRect.bottom > canvasRect.bottom) {
-      contextmenu.style.top = (canvasRect.bottom - menuRect.height) + 'px'
-    }
-    contextmenu.style.opacity = String(1)
-    changeMouseStyle('default')
-  })
-  modeRef.value.toggleAttribute('data-pointer-event', true)
-}
-
-defineExpose({ oncontextmenu })
+onMounted(() => {
+  contextmenu.setElement(contextmenuRef.value)
+  contextmenuRef.value?.force?.()
+})
 
 </script>
 
 <template>
   <teleport to="body">
-    <div id="contextmenu-mode" ref="modeRef" @click="handleCancelMenu" @contextmenu.prevent="handleCancelMenu">
-      <div id="project-contextmenu" ref="contextmenuRef">
-        <canvas-contextmenu v-if="contextmenuType==='canvas'" />
-        <node-contextmenu v-if="contextmenuType==='node'" />
-        <edge-contextmenu v-if="contextmenuType==='edge'" />
+    <div ref="contextmenuRef" class="contextmenu" @contextmenu.prevent tabindex="0" @click="contextmenu.visible=false">
+      <div v-for="(value,key) in contextmenu.list" @click="value">
+        {{ key }}
       </div>
     </div>
   </teleport>
 </template>
 
 <style scoped>
-#contextmenu-mode {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  pointer-events: none;
-  background-color: rgba(0, 0, 0, 0);
 
-  &[data-pointer-event] {
-    pointer-events: auto;
-  }
-}
+.contextmenu {
+  position: fixed;
+  display: v-bind(visible);
+  left: v-bind(left);
+  top: v-bind(top);
+  width: v-bind(width);
 
-#project-contextmenu {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: #606266;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
   border-radius: 8px;
+  z-index: 3;
 
-  &[data-show] {
+  &::before {
+    content: '';
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+  }
+
+  & > * {
     display: flex;
+    justify-content: center;
+    text-align: center;
+    margin: 8px;
+    padding: 4px;
+    width: 100%;
+    border-radius: 4px;
+
+    &:hover {
+      background-color: #95d47550;
+    }
   }
 }
 </style>

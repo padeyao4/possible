@@ -1,49 +1,33 @@
-import { BaseBehavior } from '@/lib/base'
-import { currentProject } from '@/stores/service/project-service'
-import { useSettings } from '@/stores/settings'
+import { BaseBehavior, type EventDispatch } from '@/lib/base'
 import { type Node } from '@/stores/projects'
-import { campMin } from '@/lib/math'
-import { changeMouseStyle, lockMouseStyle, unlockMouseStyle, useMouseStyle } from '@/stores/mouse'
+import { clampMin } from '@/lib/math'
 
 export class ResizeCard extends BaseBehavior {
-  settings = useSettings()
-  project = currentProject()
+  getEventDispatch(): EventDispatch {
+    return {
+      'resize:mousedown': this.onmousedown.bind(this),
+      ':mousemove': this.onmousemove.bind(this),
+      ':mouseup': this.onmouseup.bind(this)
+    }
+  }
+
   isPressed = false
   mousePoint = { x: 0, y: 0 }
   oldNode = {} as any
   direction = ''
-  isOver = false
 
-  onmouseover(e: MouseEvent) {
-    const el = e.target as Element
-    if (el?.hasAttribute('data-direction')) {
-      this.isOver = true
-      const type = el.getAttribute('data-mouse-type')
-      changeMouseStyle(type)
-    }
-  }
-
-  onmouseout(e: MouseEvent) {
-    if (this.isOver) {
-      this.toggleMouseOver(e)
-      this.isOver = false
-    }
-  }
-
-  onmousedown(e: MouseEvent) {
+  onmousedown(e: MouseEvent, el: Element) {
     if (this.isPressed || e.button !== 0) return
-    const el = e.target as Element
-    if (el.hasAttribute('data-direction')) {
-      this.isPressed = true
-      this.direction = el.getAttribute('data-direction')
-      const type = el.getAttribute('data-mouse-type')
-      lockMouseStyle(type)
-      this.mousePoint.x = e.x
-      this.mousePoint.y = e.y
-      const key = el.getAttribute('data-key')
-      const node = this.project.nodeMap.get(key)
-      Object.assign(this.oldNode, node)
-    }
+
+    this.isPressed = true
+    this.direction = el.getAttribute('data-direction')
+    const style = el.getAttribute('data-mouse-style')
+    this.mouseStyle.lockStyle(style)
+    this.mousePoint.x = e.x
+    this.mousePoint.y = e.y
+    const key = el.getAttribute('data-key')
+    const node = this.project.nodeMap.get(key)
+    Object.assign(this.oldNode, node)
   }
 
   onmousemove(e: MouseEvent) {
@@ -63,18 +47,18 @@ export class ResizeCard extends BaseBehavior {
       node.height = Math.round(node.height)
       node.x = Math.round(node.x)
       node.y = Math.round(node.y)
-      unlockMouseStyle()
-      this.onmouseover(e)
+      this.mouseStyle.unlock()
+      this.toggleMouseOver(e)
     }
   }
 
   private changeSize(dx: number, dy: number, node: Node) {
     const deltaWidth = dx / this.settings.unitWidth
     const deltaHeight = dy / this.settings.unitHeight
-    const rw = campMin(this.oldNode.width + deltaWidth, 1)
-    const lw = campMin(this.oldNode.width - deltaWidth, 1)
-    const bh = campMin(this.oldNode.height + deltaHeight, 1)
-    const th = campMin(this.oldNode.height - deltaHeight, 1)
+    const rw = clampMin(this.oldNode.width + deltaWidth, 1)
+    const lw = clampMin(this.oldNode.width - deltaWidth, 1)
+    const bh = clampMin(this.oldNode.height + deltaHeight, 1)
+    const th = clampMin(this.oldNode.height - deltaHeight, 1)
     const x = this.oldNode.x + (lw === 1 ? (this.oldNode.width - 1) : deltaWidth)
     const y = this.oldNode.y + (th === 1 ? (this.oldNode.height - 1) : deltaHeight)
 

@@ -2,26 +2,20 @@
 import CanvasHeader from '@/components/canvas/CanvasHeader.vue'
 import CanvasRuler from '@/components/canvas/CanvasRuler.vue'
 import CanvasGrid from '@/components/canvas/CanvasGrid.vue'
-import TheCanvas from '@/components/canvas/CanvasContent.vue'
-import ProjectContextmenu from '@/components/contextmenu/ProjectContextmenu.vue'
-import { provide, ref } from 'vue'
+import TheCanvas from '@/components/canvas/TheCanvas.vue'
 import NodeEditor from '@/components/canvas/CanvasEditor.vue'
-
-const theCanvasRef = ref<HTMLElement>()
-provide('canvas', theCanvasRef)
-
-const projectContextmenuRef = ref()
+import ProjectContextmenu from '@/components/contextmenu/ProjectContextmenu.vue'
 
 </script>
 
 <template>
-  <div class="the-group" @contextmenu.capture="projectContextmenuRef.oncontextmenu" ref="theCanvasRef">
+  <div class="the-group">
     <canvas-grid />
     <the-canvas />
     <canvas-header />
     <canvas-ruler />
     <node-editor />
-    <project-contextmenu ref="projectContextmenuRef" />
+    <project-contextmenu />
   </div>
 </template>
 

@@ -17,16 +17,12 @@ export function isCross(rect1: RectLike, rect2: RectLike): boolean {
   )
 }
 
-export function campMin(n: number, min: number) {
+export function clampMin(n: number, min: number) {
   return n >= min ? n : min
 }
 
-export function campMax(n, max: number) {
+export function clampMax(n:number, max: number) {
   return n <= max ? n : max
-}
-
-function swapNumbersInPlace(num1: number, num2: number) {
-  [num1, num2] = [num2, num1]
 }
 
 export function clamp(n: number, min: number, max: number) {

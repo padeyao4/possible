@@ -1,56 +1,45 @@
-import { BaseBehavior } from '@/lib/base'
-import { currentProject } from '@/stores/service/project-service'
-import { campMax, campMin } from '@/lib/math'
-import { changeMouseStyle, lockMouseStyle, unlockMouseStyle } from '@/stores/mouse'
+import { clampMax } from '@/lib/math'
+import { BaseBehavior, type EventDispatch } from '@/lib/base'
 
-export class DragCanvas extends BaseBehavior {
+export default class DragCanvas extends BaseBehavior {
+  getEventDispatch(): EventDispatch {
+    return {
+      'canvas:mousedown': this.onmousedown.bind(this),
+      ':mousemove': this.onmousemove.bind(this),
+      ':mouseup': this.onmouseup.bind(this)
+    }
+  }
+
   isDown = false
 
   position = { x: 0, y: 0 }
 
   offset = { x: 0, y: 0 }
 
-  project = currentProject()
-
-  onmouseover(e: MouseEvent) {
-    const el = e.target as Element
-    if (el.getAttribute('data-type') === 'canvas') {
-      changeMouseStyle('default')
-    }
-  }
-
-  onmousemove(e: MouseEvent) {
-    if (!this.isDown) return
-    const dx = e.x - this.position.x
-    const dy = e.y - this.position.y
-    this.project.offset.x = campMax(this.offset.x + dx, 0)
-    this.project.offset.y = campMax(this.offset.y + dy, 0)
-  }
-
   onmousedown(e: MouseEvent) {
-    const el = e.target as Element
-    if (this.isDown || el.tagName !== 'svg' || e.button !== 0) return
+    if (this.isDown || e.button !== 0) return
     this.isDown = true
     this.position.x = e.x
     this.position.y = e.y
     const { x, y } = this.project.offset
     this.offset.x = x
     this.offset.y = y
-    lockMouseStyle('grabbing')
+    this.mouseStyle.lockStyle('grabbing')
   }
 
-  onmouseout(e: MouseEvent) {
-    const el = e.target as Element
-    if (el.getAttribute('data-type') === 'canvas') {
-      changeMouseStyle('default')
-    }
+  onmousemove(e: MouseEvent) {
+    if (!this.isDown) return
+    const dx = e.x - this.position.x
+    const dy = e.y - this.position.y
+    this.project.offset.x = clampMax(this.offset.x + dx, 0)
+    this.project.offset.y = clampMax(this.offset.y + dy, 0)
   }
 
-  onmouseup(e: MouseEvent): void {
+  onmouseup(e: MouseEvent) {
     if (this.isDown) {
       this.isDown = false
-      unlockMouseStyle()
-      this.onmouseover(e)
+      this.mouseStyle.unlock()
+      this.toggleMouseOver(e)
     }
   }
 }

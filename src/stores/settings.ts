@@ -1,6 +1,17 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+export interface SettingsType {
+  active: string
+  sideWidth: number
+  unitHeight: number
+  unitWidth: number
+  offsetX: number
+  offsetY: number
+  offsetCardX: number
+  offsetCardY: number
+}
+
 export const useSettings = defineStore('settings', () => {
   /**
    * 左侧边栏,激活项

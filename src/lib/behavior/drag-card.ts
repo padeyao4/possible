@@ -1,25 +1,29 @@
-import { BaseBehavior } from '@/lib/base'
-import { currentProject } from '@/stores/service/project-service'
-import type { Node, Point, Project } from '@/stores/projects'
-import { useSettings } from '@/stores/settings'
-import { changeMouseStyle, lockMouseStyle, unlockMouseStyle } from '@/stores/mouse'
+import { BaseBehavior, type EventDispatch } from '@/lib/base'
+import type { Node, Point } from '@/stores/projects'
 
 export class DragCard extends BaseBehavior {
+  getEventDispatch(): EventDispatch {
+    return {
+      'node:mousedown': this.onmousedown.bind(this),
+      ':mouseup': this.onmouseup.bind(this),
+      ':mousemove': this.onmousemove.bind(this)
+    }
+  }
+
   isDown = false
 
-  mousePosition: Point
+  mousePosition: Point = { x: 0, y: 0 }
 
-  oldNode: Node
+  oldNode = {} as Node
 
-  project: Project
-
-  settings = useSettings()
-
-  constructor() {
-    super()
-    this.project = currentProject()
-    this.oldNode = {} as Node
-    this.mousePosition = { x: 0, y: 0 }
+  onmousedown(e: MouseEvent, el: Element) {
+    if (this.isDown || e.button !== 0) return
+    const nodeId = el.getAttribute('data-key')
+    const node = this.project.nodeMap.get(nodeId)
+    Object.assign(this.oldNode, node)
+    this.isDown = true
+    this.mousePosition.x = e.x
+    this.mousePosition.y = e.y
   }
 
   onmousemove(e: MouseEvent) {
@@ -29,35 +33,17 @@ export class DragCard extends BaseBehavior {
     const node = this.project.nodeMap.get(this.oldNode.id)
     node.x = this.oldNode.x + dx / this.settings.unitWidth
     node.y = this.oldNode.y + dy / this.settings.unitHeight
-    lockMouseStyle('move')
+    this.mouseStyle.lockStyle('move')
   }
 
-  onmousedown(e: MouseEvent) {
-    const el = e.target as Element
-    if (this.isDown || !el.hasAttribute('data-main') || e.button !== 0) return
-    const nodeId = el.getAttribute('data-key')
-    const node = this.project.nodeMap.get(nodeId)
-    Object.assign(this.oldNode, node)
-    this.isDown = true
-    this.mousePosition.x = e.x
-    this.mousePosition.y = e.y
-  }
-
-  onmouseup(e: MouseEvent): void {
+  onmouseup(e: MouseEvent) {
     if (this.isDown) {
       this.isDown = false
       const node = this.project.nodeMap.get(this.oldNode.id)
       node.x = Math.round(node.x)
       node.y = Math.round(node.y)
-      unlockMouseStyle()
-      this.onmouseover(e)
-    }
-  }
-
-  onmouseover(e: MouseEvent) {
-    const el = e.target as Element
-    if (el.getAttribute('data-type') === 'node' && !el.hasAttribute('data-direction')) {
-      changeMouseStyle('pointer')
+      this.mouseStyle.unlock()
+      this.toggleMouseOver(e)
     }
   }
 }

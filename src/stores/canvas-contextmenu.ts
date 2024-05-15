@@ -1,0 +1,68 @@
+import { defineStore } from 'pinia'
+import { computed, ref, shallowRef } from 'vue'
+import { addNode, createNodeTemplate, currentProject, deleteNodeById } from '@/stores/service/project-service'
+import { useSettings } from '@/stores/settings'
+
+
+const items = ref({
+  canvas: {
+    '添加': () => {
+      const settings = useSettings()
+      const project = currentProject()
+      const contextmenu = useCanvasContextMenu()
+      const x = contextmenu.mouseEvent.offsetX - project.offset.x
+      const y = contextmenu.mouseEvent.offsetY - project.offset.y
+      const node = createNodeTemplate()
+      node.x = Math.floor(x / settings.unitWidth)
+      node.y = Math.floor(y / settings.unitHeight)
+      addNode(project, node)
+    }
+  },
+  node: {
+    '删除': () => {
+      const contextmenu = useCanvasContextMenu()
+      const project = currentProject()
+      const el = contextmenu.mouseEvent.target as Element
+      const key = el.getAttribute('data-key')
+      deleteNodeById(project, key)
+    }
+  },
+  edge: {
+    '...': () => {
+    }
+  }
+})
+
+export const useCanvasContextMenu = defineStore('canvasContextMenu', () => {
+  const element = shallowRef<Element>()
+  const active = ref<'canvas' | 'node' | 'edge'>('canvas')
+  const visible = ref(false)
+  const clientX = ref(0)
+  const clientY = ref(0)
+  const width = ref(100)
+  const mouseEvent = shallowRef<MouseEvent>()
+
+  const list = computed(() => {
+    return items.value[active.value]
+  })
+
+  function setElement(el: Element) {
+    element.value = el
+  }
+
+  function setActive(a: 'canvas' | 'node' | 'edge') {
+    active.value = a
+  }
+
+  return {
+    visible,
+    element,
+    list,
+    clientX,
+    clientY,
+    width,
+    setElement,
+    setActive,
+    mouseEvent
+  }
+})

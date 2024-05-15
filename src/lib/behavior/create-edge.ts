@@ -1,40 +1,26 @@
-import { BaseBehavior } from '@/lib/base'
+import { BaseBehavior, type EventDispatch } from '@/lib/base'
 import { type TempPath, useTempPaths } from '@/stores/temp-path'
 import type { ID } from '@/stores/projects'
 import { getCanvasPointByOffsetPoint } from '@/lib/util'
-import { addEdge, currentProject } from '@/stores/service/project-service'
-import { lockMouseStyle, unlockMouseStyle } from '@/stores/mouse'
+import { addEdge } from '@/stores/service/project-service'
 
 export class CreateEdge extends BaseBehavior {
-  isOver = false
   isDown = false
-  group: Element
   source: string
   target: string
   tempPaths = useTempPaths()
   pathId: ID
-  project = currentProject()
 
-  onmouseover(e: MouseEvent) {
-    const el = e.target as Element
-    if (el.getAttribute('data-type') === 'node') {
-      this.isOver = true
-      const id = el.getAttribute('data-key')
-      const group = document.getElementById('anchor-' + id)
-      group?.setAttribute('opacity', '1')
-      this.group = group
+  getEventDispatch(): EventDispatch {
+    return {
+      'anchor:mousedown': this.onmousedown.bind(this),
+      ':mousemove': this.onmousemove.bind(this),
+      ':mouseup': this.onmouseup.bind(this)
     }
   }
 
-  onmouseout(e: MouseEvent) {
-    if (this.isOver) {
-      this.isOver = false
-      this.group?.setAttribute('opacity', '0')
-    }
-  }
-
-  onmousedown(e: MouseEvent) {
-    const el = e.target as Element
+  onmousedown(e: MouseEvent, el: Element) {
+    if (e.button !== 0) return
     if (el.hasAttribute('data-anchor')) {
       this.isDown = true
       const key = el.getAttribute('data-key')
@@ -46,7 +32,7 @@ export class CreateEdge extends BaseBehavior {
         direction === 'left' ? 'target' : 'source'
       )
       this.pathId = path.id
-      lockMouseStyle('crosshair')
+      this.mouseStyle.lockStyle('crosshair')
     }
   }
 
@@ -63,23 +49,22 @@ export class CreateEdge extends BaseBehavior {
     path.location.y = point.y
   }
 
-  onmouseup(e: MouseEvent) {
+  onmouseup(e: MouseEvent, el: Element, __, elType: string) {
     if (this.isDown) {
       const point = getCanvasPointByOffsetPoint({ x: e.offsetX, y: e.offsetY }, this.project)
       const path = this.tempPaths.getPath(this.pathId)
       path.location.x = point.x
       path.location.y = point.y
       this.isDown = false
-      unlockMouseStyle()
+      this.mouseStyle.unlock()
       this.toggleMouseOver(e)
-      this.createEdge(e, path)
+      this.createEdge(el, elType, path)
       this.tempPaths.deletePath(this.pathId)
     }
   }
 
-  private createEdge(e: MouseEvent, path: TempPath) {
-    const el = e.target as Element
-    if (el.getAttribute('data-type') === 'node') {
+  private createEdge(el: Element, elType: string, path: TempPath) {
+    if (elType === 'node' || elType === 'anchor') {
       const key = el.getAttribute('data-key')
       if (key == path.nodeId) return
       path.opacity = 0

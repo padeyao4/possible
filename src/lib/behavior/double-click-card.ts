@@ -1,10 +1,15 @@
-import { BaseBehavior } from '@/lib/base'
+import { BaseBehavior, type EventDispatch } from '@/lib/base'
 import { useEditor } from '@/stores/canvas-editor'
 
 export class DoubleClickCard extends BaseBehavior {
-  ondblclick(e: MouseEvent) {
-    const el = e.target as Element
-    if (e.button !== 0 || el.getAttribute('data-type') !== 'node') return
+  getEventDispatch(): EventDispatch {
+    return {
+      'node:dblclick': this.onclick.bind(this)
+    }
+  }
+
+  onclick(e: MouseEvent, el: Element) {
+    if (e.button !== 0) return
     const editor = useEditor()
     editor.x = e.x
     editor.y = e.y
