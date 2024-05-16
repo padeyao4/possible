@@ -35,8 +35,8 @@ const height = computed(() => {
       rx="8"
     />
     <foreignObject :width="width" :height="height" opacity="1">
-      <div id="text">
-        <p id="content">
+      <div class="text">
+        <p>
           {{ node.name }}
         </p>
       </div>
@@ -188,24 +188,22 @@ const height = computed(() => {
   opacity: 1;
 }
 
-#text {
+.text {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 100%;
   padding: 10px;
-  overflow: hidden;
-}
-
-#content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 100;
-  font-size: 13px;
-  width: 100%;
-  height: 100%;
-  text-align: center;
+  p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 100;
+    font-size: 13px;
+    text-align: center;
+    word-wrap: break-word;
+    word-break: break-all;
+  }
 }
 </style>

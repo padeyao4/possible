@@ -63,9 +63,9 @@ const projectName = computed(() => {
     >
       <div class="info">{{ projectName }}</div>
       <div class="operation" :data-project-id="project.id">
-        <Icon icon="iconoir:edit-pencil" @click="handleEdit" />
-        <Icon icon="iconoir:trash" @click="handleDelete" />
-        <Icon icon="iconoir:menu" class="move" />
+        <my-icon icon="iconoir:edit-pencil" @click="handleEdit" />
+        <my-icon icon="iconoir:trash" @click="handleDelete" />
+        <my-icon icon="iconoir:menu" class="move" />
       </div>
     </div>
     <mode-dialog

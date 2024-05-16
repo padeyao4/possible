@@ -12,9 +12,7 @@ const settings = useSettings()
 
 testProjects()
 
-const sideWidth = computed(() => {
-  return settings.sideWidth + 'px'
-})
+const sideWidth = computed(() => settings.sideWidth + 'px')
 </script>
 
 <template>

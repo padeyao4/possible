@@ -24,9 +24,9 @@ function handleTest() {
 
 <template>
   <div id="the-footer">
-    <Icon icon="solar:home-2-broken" @click="handleBackHome" />
-    <Icon icon="solar:map-point-broken" @click="handleToday" />
-    <Icon icon="solar:test-tube-broken" @click="handleTest" />
+    <my-icon icon="solar:home-2-broken" @click="handleBackHome" />
+    <my-icon icon="solar:map-point-broken" @click="handleToday" />
+    <my-icon icon="solar:test-tube-broken" @click="handleTest" />
   </div>
 </template>
 
