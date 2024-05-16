@@ -2,9 +2,11 @@
 import { useEditor } from '@/stores/canvas-editor'
 import { computed, ref } from 'vue'
 import { currentProject } from '@/stores/service/project.service'
-import { useEventListener } from '@vueuse/core'
+import { useEventListener, useTextareaAutosize } from '@vueuse/core'
 import { clamp } from '@/lib/math'
 import { useCanvas } from '@/stores/canvas'
+
+const { textarea, triggerResize } = useTextareaAutosize({ styleProp: 'minHeight' })
 
 const editor = useEditor()
 const project = currentProject()
@@ -40,13 +42,27 @@ function handleCancel(e: MouseEvent) {
 }
 
 const titleEditenable = ref(false)
-function handleTitleRef(e: HTMLElement | null) {
+function handleTitleEdit() {
+  titleEditenable.value = true
   setTimeout(() => {
-    e?.focus()
+    textarea.value?.focus()
   })
 }
-// const recordEditenable = ref(false)
-// const detailEditenable = ref(false)
+const detailEditenable = ref(false)
+function handleDetailEdit() {
+  detailEditenable.value = true
+  setTimeout(() => {
+    textarea.value?.focus()
+  })
+}
+
+const recordEditenable = ref(false)
+function handleRecordEdit() {
+  recordEditenable.value = true
+  setTimeout(() => {
+    textarea.value?.focus()
+  })
+}
 </script>
 
 <template>
@@ -59,24 +75,47 @@ function handleTitleRef(e: HTMLElement | null) {
   >
     <div class="node-editor" :style="style">
       <div class="editor-body">
-        <input
+        <textarea
+          ref="textarea"
           v-if="titleEditenable"
           v-model="node.name"
-          :ref="handleTitleRef"
-          class="title"
+          class="text-zone"
+          @input="triggerResize"
           @blur="titleEditenable = false"
           @keydown.enter="titleEditenable = false"
           placeholder="标题"
-        />
-        <div v-else class="title">
+        ></textarea>
+        <div v-else class="text-zone">
           {{ node?.name
-          }}<Icon icon="iconoir:edit-pencil" class="edit-icon" @click="titleEditenable = true" />
+          }}<my-icon icon="iconoir:edit-pencil" class="edit-icon" @click="handleTitleEdit" />
         </div>
-        <div class="detail">
-          {{ node?.detail }} <Icon icon="iconoir:edit-pencil" class="edit-icon" />
+        <textarea
+          ref="textarea"
+          v-if="detailEditenable"
+          v-model="node.detail"
+          class="text-zone"
+          @input="triggerResize"
+          @blur="detailEditenable = false"
+          @keydown.enter="detailEditenable = false"
+          placeholder="详情"
+        ></textarea>
+        <div v-else class="text-zone">
+          {{ node?.detail }}
+          <my-icon icon="iconoir:edit-pencil" class="edit-icon" @click="handleDetailEdit" />
         </div>
-        <div class="record">
-          {{ node?.record }} <Icon icon="iconoir:edit-pencil" class="edit-icon" />
+        <textarea
+          ref="textarea"
+          v-if="recordEditenable"
+          v-model="node.record"
+          class="text-zone"
+          @input="triggerResize"
+          @blur="recordEditenable = false"
+          @keydown.enter="recordEditenable = false"
+          placeholder="记录"
+        ></textarea>
+        <div v-else class="text-zone">
+          {{ node?.record }}
+          <my-icon icon="iconoir:edit-pencil" class="edit-icon" @click="handleRecordEdit" />
         </div>
       </div>
       <div class="editor-footer">
@@ -105,31 +144,30 @@ function handleTitleRef(e: HTMLElement | null) {
   }
 }
 
-.title {
-  border-bottom: 1px solid #00000020;
-  margin: 8px 0;
-  font-size: 15px;
-  font-weight: lighter;
-}
-
-input {
+textarea {
   border-style: none;
-  border: 0;
   font-size: 15px;
   font-weight: lighter;
   outline-style: none;
+  resize: none;
   background-color: antiquewhite;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  word-break: break-all;
+  flex-grow: 2 !important;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
-.detail {
+.text-zone {
   border-bottom: 1px solid #00000020;
+  padding: 8px 0;
   font-size: 15px;
   font-weight: lighter;
-}
-
-.record {
-  font-size: 15px;
-  font-weight: lighter;
+  word-wrap: break-word;
+  word-break: break-all;
 }
 
 .node-editor-mode {
@@ -158,7 +196,8 @@ input {
   position: relative;
   display: flex;
   flex-direction: column;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   flex-grow: 1;
   padding: 0 8px;
   user-select: text;
