@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { currentProject } from '@/stores/service/project-service'
+import { currentProject } from '@/stores/service/project.service'
 import { computed } from 'vue'
 import { showWeek, timeFormat } from '@/stores/timer'
 

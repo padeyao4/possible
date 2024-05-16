@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useEditor } from '@/stores/canvas-editor'
 import { computed } from 'vue'
-import { currentProject } from '@/stores/service/project-service'
+import { currentProject } from '@/stores/service/project.service'
 import { useEventListener } from '@vueuse/core'
 import { clamp } from '@/lib/math'
 import { useCanvas } from '@/stores/canvas'

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useSettings } from '@/stores/settings'
-import { linkTo } from '@/stores/service/route-service'
-import { Config, DeleteFour, Drag, ListSuccess, Plus, Sun, Bookmark, Write, AllApplication } from '@icon-park/vue-next'
+import { linkTo } from '@/stores/service/route.service';
+import { useSettings } from '@/stores/settings';
+import { AllApplication, Bookmark, Sun } from '@icon-park/vue-next';
 
 const settings = useSettings()
 

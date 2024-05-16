@@ -2,9 +2,9 @@
 import { computed, ref, watchEffect } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import { useSettings } from '@/stores/settings'
-import { currentProject } from '@/stores/service/project-service'
+import { currentProject } from '@/stores/service/project.service'
 import CanvasHeaderItem from '@/components/canvas/CanvasHeaderItem.vue'
-import { calculateDaysBetweenDates, days, useTimer } from '@/stores/timer'
+import { calculateDaysBetweenDates, useTimer } from '@/stores/timer'
 
 const settings = useSettings()
 const indexes = ref<number[]>([])
@@ -20,19 +20,20 @@ watchEffect(() => {
 
 const x = computed(() => Math.floor(-project.offset.x / settings.unitWidth) - 2)
 
-const translateX = computed(() => project.offset.x % settings.unitWidth - settings.unitWidth + 'px')
+const translateX = computed(
+  () => (project.offset.x % settings.unitWidth) - settings.unitWidth + 'px'
+)
 
-const unitWidth = computed(() => (settings.unitWidth + 'px'))
+const unitWidth = computed(() => settings.unitWidth + 'px')
 
 const todayIndex = computed(() => calculateDaysBetweenDates(timer.timestamp, project.createTime))
-
 </script>
 
 <template>
   <div class="canvas-header border-bottom-shadow">
     <div class="container">
       <div v-for="idx in indexes" class="item" :key="idx">
-        <canvas-header-item :idx="idx + x " :isToday=" todayIndex === idx+x" />
+        <canvas-header-item :idx="idx + x" :isToday="todayIndex === idx + x" />
       </div>
     </div>
   </div>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { ID, Project } from '@/stores/projects'
-import { linkTo } from '@/stores/service/route-service'
+import { linkTo } from '@/stores/service/route.service'
 import { useSettings } from '@/stores/settings'
-import { deleteProject } from '@/stores/service/project-service'
+import { deleteProject } from '@/stores/service/project.service'
 import ModeDialog from '@/components/other/ModeDialog.vue'
 import { ref } from 'vue'
 

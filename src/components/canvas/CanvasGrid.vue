@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useSettings } from '@/stores/settings'
-import { currentProject } from '@/stores/service/project-service'
+import { currentProject } from '@/stores/service/project.service'
 import { computed } from 'vue'
 
 const settings = useSettings()

@@ -1,7 +1,8 @@
 import { BaseBehavior, type EventDispatch } from '@/lib/base'
-import { useCanvasContextMenu } from '@/stores/canvas-contextmenu'
 import { useCanvas } from '@/stores/canvas'
+import { useCanvasContextMenu } from '@/stores/contextmenu-store'
 import { useMouseStyle } from '@/stores/mouse'
+import { clampMax } from '../math'
 
 export class HandleContextmenu extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -32,20 +33,10 @@ export class HandleContextmenu extends BaseBehavior {
     contextmenu.mouseEvent = e
     contextmenu.visible = true
 
-    const rect1 = contextmenu.element.getBoundingClientRect()
-    const rect2 = canvas.svg.getBoundingClientRect()
-
-    if (e.x + rect1.width > rect2.right) {
-      contextmenu.clientX = (e.x - rect1.width)
-    } else {
-      contextmenu.clientX = e.x
-    }
-    if (e.y + rect1.height > rect2.bottom) {
-      contextmenu.clientY = rect2.bottom - rect1.height
-    } else {
-      contextmenu.clientY = e.y
-    }
     setTimeout(() => {
+      const svg = canvas.svg.getBoundingClientRect()
+      contextmenu.clientX = clampMax(e.x, svg.right - contextmenu.bounding.width)
+      contextmenu.clientY = clampMax(e.y, svg.bottom - contextmenu.bounding.height)
       const mouseStyle = useMouseStyle()
       mouseStyle.setStyleWithUnlock('default')
     })

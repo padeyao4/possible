@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCanvasContextMenu } from '@/stores/canvas-contextmenu'
+import { useCanvasContextMenu } from '@/stores/contextmenu-store'
 import { computed, onMounted, ref } from 'vue'
 
 const contextmenuRef = ref()
@@ -8,8 +8,6 @@ const contextmenu = useCanvasContextMenu()
 const visible = computed(() => (contextmenu.visible ? 'flex' : 'none'))
 
 const top = computed(() => contextmenu.clientY + 'px')
-
-const width = computed(() => contextmenu.width + 'px')
 
 const left = computed(() => contextmenu.clientX + 'px')
 
@@ -41,10 +39,11 @@ onMounted(() => {
   flex-direction: column;
   left: v-bind(left);
   top: v-bind(top);
-  width: v-bind(width);
-  background-color: rgb(59, 53, 47);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  width: 200px;
+  padding: 4px;
   border-radius: 8px;
+  border: 1px solid rgb(0, 0, 0);
+  background-color: #262626;
   z-index: 3;
 
   &::before {
@@ -61,11 +60,10 @@ onMounted(() => {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 8px;
+    height: 25px;
     padding: 4px;
-    width: 100%;
     border-radius: 4px;
-
+    color: #ffffff90;
     &:hover {
       background-color: #ffffff60;
     }

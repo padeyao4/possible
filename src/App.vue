@@ -2,7 +2,7 @@
 import TheAside from '@/components/TheAside.vue'
 import TheSeparation from '@/components/TheSeparation.vue'
 import WindowTitlebar from '@/components/WindowTitlebar.vue'
-import { testProjects } from '@/stores/service/project-service'
+import { testProjects } from '@/stores/service/project.service'
 import { useSettings } from '@/stores/settings'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Plus } from '@icon-park/vue-next'
-import { addProject, createProjectTemplate } from '@/stores/service/project-service'
-import { linkTo } from '@/stores/service/route-service'
+import { addProject, createProjectTemplate } from '@/stores/service/project.service'
+import { linkTo } from '@/stores/service/route.service'
 
 function onclick() {
   const project = createProjectTemplate()

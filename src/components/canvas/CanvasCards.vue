@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import CanvasCardItem from '@/components/canvas/CanvasCardItem.vue'
-import { currentProject } from '@/stores/service/project-service'
+import { currentProject } from '@/stores/service/project.service'
 
 const project = currentProject()
 </script>

@@ -6,7 +6,7 @@ import {
   currentProject,
   deleteEdgeById,
   deleteNodeById
-} from '@/stores/service/project-service'
+} from '@/stores/service/project.service'
 import { useSettings } from '@/stores/settings'
 
 
@@ -50,8 +50,11 @@ export const useCanvasContextMenu = defineStore('canvasContextMenu', () => {
   const visible = ref(false)
   const clientX = ref(0)
   const clientY = ref(0)
-  const width = ref(100)
   const mouseEvent = shallowRef<MouseEvent>()
+
+  const bounding = computed(() => {
+    return element.value?.getBoundingClientRect()
+  })
 
   const list = computed(() => {
     return items[active.value]
@@ -67,11 +70,10 @@ export const useCanvasContextMenu = defineStore('canvasContextMenu', () => {
 
   return {
     visible,
-    element,
     list,
     clientX,
     clientY,
-    width,
+    bounding,
     setElement,
     setActive,
     mouseEvent

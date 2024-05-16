@@ -1,165 +1,186 @@
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-weight: normal;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
 }
 
 * {
-    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
-    Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
 }
 
 body {
-    min-height: 100vh;
-    transition: color 0.5s, background-color 0.5s;
-    font-size: 15px;
-    text-rendering: optimizeLegibility;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    background: rgba(255, 255, 255, 0);
+  min-height: 100vh;
+  transition:
+    color 0.5s,
+    background-color 0.5s;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  background: rgba(255, 255, 255, 0);
 }
 
 #app {
-    font-weight: normal;
+  font-weight: normal;
 }
 
 /*---------------------------------------*/
 
 /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 16px;
-    /*background-color: rgb(68, 69, 71);*/
+  width: 8px;
+  height: 16px;
+  /*background-color: rgb(68, 69, 71);*/
 }
 
 /*定义滚动条轨道 内阴影+圆角*/
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
-    border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+  border-radius: 10px;
 }
 
 /*定义滑块 内阴影+圆角*/
 ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);*/
-    background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);*/
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 /*--------------------------------------------------------*/
 
 .ghost-class {
-    opacity: 0;
+  opacity: 0;
 }
 
 .drag-class {
-    box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
-    border-radius: 4px;
-    background: #e5ebef;
+  box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+  border-radius: 4px;
+  background: #e5ebef;
 }
 
 .grabbing * {
-    cursor: grabbing !important;
+  cursor: grabbing !important;
 }
 
 /*--------------------------------------------------------*/
 
 .side-list-item {
-    &[data-hover]:hover {
-        background: #e5ebef;
-        border-radius: 4px;
+  &[data-hover]:hover {
+    background: #e5ebef;
+    border-radius: 4px;
 
-        .operation {
-            display: flex;
-            align-items: center;
-            padding: 2px;
+    .operation {
+      display: flex;
+      align-items: center;
+      padding: 2px;
 
-            & > * {
-                display: flex;
-                justify-content: center;
-                align-content: center;
-                width: 20px;
-                height: 20px;
-                padding: 2px;
-                color: #00000050;
+      & > * {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        width: 20px;
+        height: 20px;
+        padding: 2px;
+        color: #00000050;
 
-                &:hover {
-                    border-radius: 3px;
-                    background: rgba(0, 0, 0, 0.06);
-                }
-            }
+        &:hover {
+          border-radius: 3px;
+          background: rgba(0, 0, 0, 0.06);
         }
+      }
     }
+  }
 
-    &[data-active='true'] {
-        background: #e5ebef;
-        border-radius: 4px;
-    }
+  &[data-active='true'] {
+    background: #e5ebef;
+    border-radius: 4px;
+  }
 }
 
 .side-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 4px 4px 4px 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 4px 4px 4px 4px;
 }
 
 .side-item-text {
-    margin: 0 4px;
+  margin: 0 4px;
 }
 
 /*-------------canvas contextmenu-----------*/
 .canvas-contextmenu-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  padding: 8px;
+  color: white;
+
+  & > * {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 150px;
-    padding: 8px;
-    color: white;
+    width: 100%;
+    height: 32px;
 
-    & > * {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 32px;
-
-        &:hover {
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.3);
-        }
+    &:hover {
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.3);
     }
+  }
 }
 
 /*----------美化样式---------------*/
 
 .drop-blur {
-    backdrop-filter: blur(5px);
-    box-shadow: inset 0 0 0 3000px rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(5px);
+  box-shadow: inset 0 0 0 3000px rgba(255, 255, 255, 0.3);
+}
+
+.border-shadow {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
 }
 
 .border-top-shadow {
-    box-shadow: rgba(27, 31, 35, 0.06) 0 -1px 0,
+  box-shadow:
+    rgba(27, 31, 35, 0.06) 0 -1px 0,
     rgba(255, 255, 255, 0.25) 0 -1px 0 inset;
 }
 
 .border-bottom-shadow {
-    box-shadow: rgba(27, 31, 35, 0.06) 0 1px 0,
+  box-shadow:
+    rgba(27, 31, 35, 0.06) 0 1px 0,
     rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
 
 .border-right-shadow {
-    box-shadow: rgba(27, 31, 35, 0.06) 1px 0 0 0,
+  box-shadow:
+    rgba(27, 31, 35, 0.06) 1px 0 0 0,
     rgba(255, 255, 255, 0.25) 0 1px 0 inset;
 }
 
 .border-left-shadow {
-    box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
+  box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
 }
 
 .canvas-background-color {
-    background-color: #f2f4f7;
+  background-color: #f2f4f7;
 }
