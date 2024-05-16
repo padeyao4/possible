@@ -1,8 +1,7 @@
 import { BaseBehavior, type EventDispatch } from '@/lib/base'
-import { type TempPath, useTempPaths } from '@/stores/temp-path'
-import type { ID } from '@/stores/projects'
 import { getCanvasPointByOffsetPoint } from '@/lib/util'
-import { addEdge } from '@/stores/service/project.service'
+import { useProjects, type ID } from '@/stores/projects'
+import { useTempPaths, type TempPath } from '@/stores/temp-path'
 
 export class CreateEdge extends BaseBehavior {
   isDown = false
@@ -69,9 +68,9 @@ export class CreateEdge extends BaseBehavior {
       if (key == path.nodeId) return
       path.opacity = 0
       if (path.dummy === 'source') {
-        addEdge(this.project, { id: path.nodeId }, { id: key })
+        useProjects().addEdge(this.project, { id: path.nodeId }, { id: key })
       } else {
-        addEdge(this.project, { id: key }, { id: path.nodeId })
+        useProjects().addEdge(this.project, { id: key }, { id: path.nodeId })
       }
     }
   }

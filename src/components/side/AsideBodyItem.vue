@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import ModeDialog from '@/components/other/ModeDialog.vue'
-import type { ID, Project } from '@/stores/projects'
-import { deleteProject } from '@/stores/service/project.service'
+import { useProjects, type ID, type Project } from '@/stores/projects'
 import { linkTo } from '@/stores/service/route.service'
 import { useSettings } from '@/stores/settings'
-import { compile, computed, ref } from 'vue'
+import { computed, ref } from 'vue'
 
 const settings = useSettings()
 const props = defineProps<{ project: Project }>()
@@ -34,7 +33,7 @@ function handleDelete() {
 }
 
 function okCallback() {
-  deleteProject(props.project.id)
+  useProjects().removeProject(project.id)
   visible.value = false
 }
 

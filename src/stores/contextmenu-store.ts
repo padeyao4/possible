@@ -1,13 +1,11 @@
 import {
-  addNode,
   createNodeTemplate,
-  currentProject,
-  deleteEdgeById,
-  deleteNodeById
+  currentProject
 } from '@/stores/service/project.service'
 import { useSettings } from '@/stores/settings'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref, shallowRef } from 'vue'
+import { useProjects } from './projects'
 import { showAllCards, showLefCards, showRightCards } from './service/contextmenu.service'
 
 
@@ -22,7 +20,7 @@ const items = reactive({
       const node = createNodeTemplate()
       node.x = Math.floor(x / settings.unitWidth)
       node.y = Math.floor(y / settings.unitHeight)
-      addNode(project, node)
+      useProjects().addNode(project, node)
     }
   },
   node: {
@@ -35,7 +33,7 @@ const items = reactive({
       const project = currentProject()
       const el = contextmenu.mouseEvent.target as Element
       const key = el.getAttribute('data-key')
-      deleteNodeById(project, key)
+      useProjects().removeNode(project, key)
     }
   },
   edge: {
@@ -44,7 +42,7 @@ const items = reactive({
       const project = currentProject()
       const el = contextmenu.mouseEvent.target as Element
       const key = el.getAttribute('data-key')
-      deleteEdgeById(project, key)
+      useProjects().removeEdge(project, key)
     }
   }
 })

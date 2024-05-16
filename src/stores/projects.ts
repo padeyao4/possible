@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { v4 } from 'uuid'
 import { ref } from 'vue'
 
 export type ID = string | number
@@ -95,10 +96,73 @@ export const useProjects = defineStore('projects', () => {
     }
   }
 
+  function addProject(project: Project): void {
+    projectMap.value.set(project.id, project)
+  }
+
+  function removeProject(projectId: ID): void {
+    projectMap.value.delete(projectId)
+  }
+
+  function addNode(project: Project, node: Node): void {
+    const { nodeMap, inMap, outMap } = project
+    node.projectId = project.id
+    nodeMap.set(node.id, node)
+    inMap.set(node.id, new Set<Edge>())
+    outMap.set(node.id, new Set<Edge>())
+  }
+
+  function removeNode(project: Project, nodeId: ID): void {
+    const { edgeMap, inMap, outMap, nodeMap } = project
+
+    outMap.get(nodeId)?.forEach((edge) => {
+      inMap.get(edge.target)?.delete(edge)
+      edgeMap.delete(edge.id)
+    })
+
+    inMap.get(nodeId)?.forEach((edge) => {
+      outMap.get(edge.source)?.delete(edge)
+      edgeMap.delete(edge.id)
+    })
+
+    outMap.delete(nodeId)
+    inMap.delete(nodeId)
+
+    nodeMap.delete(nodeId)
+  }
+
+  function addEdge(project: Project, node1: Partial<Node>, node2: Partial<Node>): void {
+    const { edgeMap, inMap, outMap } = project
+    const edge = {
+      id: v4(),
+      source: node1.id,
+      target: node2.id
+    }
+    edgeMap.set(edge.id, edge)
+    inMap.get(edge.target).add(edge)
+    outMap.get(edge.source).add(edge)
+  }
+
+  function removeEdge(project: Project, edgeId: ID): void {
+    const { edgeMap, inMap, outMap } = project
+    const edge = edgeMap.get(edgeId)
+    const sourceNodeId = edge.source
+    const targetNodeId = edge.target
+    inMap.get(targetNodeId).delete(edge)
+    outMap.get(sourceNodeId).delete(edge)
+    edgeMap.delete(edgeId)
+  }
+
   return {
     projectMap,
     bfsTraverseOutEdge,
     bfsTraverseInEdge,
-    bfsTraverseNode
+    bfsTraverseNode,
+    addProject,
+    removeProject,
+    addNode,
+    removeNode,
+    addEdge,
+    removeEdge
   }
 })

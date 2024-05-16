@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { Plus } from '@icon-park/vue-next'
-import { addProject, createProjectTemplate } from '@/stores/service/project.service'
-import { linkTo } from '@/stores/service/route.service'
+import { useProjects } from '@/stores/projects';
+import { createProjectTemplate } from '@/stores/service/project.service';
+import { linkTo } from '@/stores/service/route.service';
+import { Plus } from '@icon-park/vue-next';
 
 function onclick() {
   const project = createProjectTemplate()
-  addProject(project)
+  useProjects().addProject(project)
   setTimeout(() => {
     linkTo('/project/' + project.id)
     project.editable = true
