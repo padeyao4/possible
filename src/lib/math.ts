@@ -21,14 +21,14 @@ export function clampMin(n: number, min: number) {
   return n >= min ? n : min
 }
 
-export function clampMax(n:number, max: number) {
+export function clampMax(n: number, max: number) {
   return n <= max ? n : max
 }
 
 export function clamp(n: number, min: number, max: number) {
   if (min == max) return min
   if (min > max) {
-    let temp = min
+    const temp = min
     min = max
     max = temp
   }

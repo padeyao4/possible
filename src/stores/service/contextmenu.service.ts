@@ -1,6 +1,6 @@
 import { useCanvasContextMenu } from "../contextmenu-store"
 import { useProjects } from "../projects"
-import { currentProject } from "./project.service"
+import { currentProject, tryMoveDown, tryMoveUp } from "./project.service"
 
 /**
  * Shows the right-click context menu for a node in the canvas.
@@ -39,4 +39,20 @@ export function showAllCards() {
     projects.bfsTraverseNode(project, nodeId, (node) => {
         console.log('Node:', node.name)
     })
+}
+
+export function tryMoveDownNode() {
+    const contextmenu = useCanvasContextMenu()
+    const target = contextmenu.mouseEvent.target as Element
+    const nodeId = target.getAttribute('data-key')
+    const project = currentProject()
+    tryMoveDown(project, project.nodeMap.get(nodeId))
+}
+
+export function tryMoveUpNode() {
+    const contextmenu = useCanvasContextMenu()
+    const target = contextmenu.mouseEvent.target as Element
+    const nodeId = target.getAttribute('data-key')
+    const project = currentProject()
+    tryMoveUp(project, project.nodeMap.get(nodeId))
 }

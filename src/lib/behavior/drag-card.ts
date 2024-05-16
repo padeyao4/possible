@@ -1,5 +1,7 @@
 import { BaseBehavior, type EventDispatch } from '@/lib/base'
 import type { Node, Point } from '@/stores/projects'
+import { collideNodes } from '@/stores/service/project.service'
+import { clampMin } from '../math'
 
 export class DragCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -40,8 +42,12 @@ export class DragCard extends BaseBehavior {
     if (this.isDown) {
       this.isDown = false
       const node = this.project.nodeMap.get(this.oldNode.id)
-      node.x = Math.round(node.x)
-      node.y = Math.round(node.y)
+      node.x = clampMin(Math.round(node.x), 0)
+      node.y = clampMin(Math.round(node.y), 0)
+      if (collideNodes(this.project, node)) {
+        node.x = this.oldNode.x
+        node.y = this.oldNode.y
+      }
       this.mouseStyle.unlock()
       this.toggleMouseOver(e)
     }

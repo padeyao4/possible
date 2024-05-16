@@ -3,6 +3,7 @@ import { v4 } from 'uuid'
 import { faker } from '@faker-js/faker'
 import { useSettings } from '@/stores/settings'
 import { isCross } from '@/lib/math'
+import exp from 'constants'
 
 export function createProjectTemplate(): Project {
   const { projectMap } = useProjects()
@@ -56,4 +57,51 @@ export function testProjects() {
       projects.addEdge(project, node1, node2)
     }
   }
+}
+
+/**
+ * 判断节点是否和其他节点相交
+ * @param project project
+ * @param node node
+ * @returns boolean
+ */
+export function collideNodes(project: Project, node: Node) {
+  const { nodeMap } = project
+  const nodes = Array.from(nodeMap.values())
+  for (let i = 0; i < nodes.length; i++) {
+    if (nodes[i].id === node.id) continue
+    if (isCross(node, nodes[i])) {
+      return true
+    }
+  }
+  return false
+}
+
+export function tryMoveDown(project: Project, node: Node, deep = 0) {
+  if (deep >= 50) {
+    return false
+  }
+  node.y += 1
+  if (!collideNodes(project, node)) {
+    return true
+  } else {
+    return tryMoveDown(project, node)
+  }
+}
+
+export function tryMoveUp(project: Project, node: Node, deep = 0) {
+  if (deep >= 50 || node.y == 0) {
+    return false
+  }
+  node.y -= 1
+  if (!collideNodes(project, node)) {
+    return true
+  } else {
+    return tryMoveUp(project, node)
+  }
+}
+
+// relation nodes move right
+export function moveRight(project: Project, node: Partial<Node>) {
+  // todo
 }
