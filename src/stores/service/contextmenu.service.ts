@@ -1,6 +1,6 @@
 import { useCanvasContextMenu } from "../contextmenu-store"
 import { useProjects } from "../projects"
-import { currentProject, tryMoveDown, tryMoveUp } from "./project.service"
+import { currentProject, moveDown, moveRight, tryMoveUp } from "./project.service"
 
 /**
  * Shows the right-click context menu for a node in the canvas.
@@ -46,7 +46,7 @@ export function tryMoveDownNode() {
     const target = contextmenu.mouseEvent.target as Element
     const nodeId = target.getAttribute('data-key')
     const project = currentProject()
-    tryMoveDown(project, project.nodeMap.get(nodeId))
+    moveDown(project, project.nodeMap.get(nodeId))
 }
 
 export function tryMoveUpNode() {
@@ -55,4 +55,12 @@ export function tryMoveUpNode() {
     const nodeId = target.getAttribute('data-key')
     const project = currentProject()
     tryMoveUp(project, project.nodeMap.get(nodeId))
+}
+
+export function tryMoveRgitNode() {
+    const contextmenu = useCanvasContextMenu()
+    const target = contextmenu.mouseEvent.target as Element
+    const nodeId = target.getAttribute('data-key')
+    const project = currentProject()
+    moveRight(project, project.nodeMap.get(nodeId))
 }

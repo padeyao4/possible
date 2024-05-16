@@ -1,9 +1,8 @@
-import { type Edge, type Node, type Project, useProjects, type ID } from '@/stores/projects'
-import { v4 } from 'uuid'
-import { faker } from '@faker-js/faker'
-import { useSettings } from '@/stores/settings'
 import { isCross } from '@/lib/math'
-import exp from 'constants'
+import { useProjects, type Edge, type ID, type Node, type Project } from '@/stores/projects'
+import { useSettings } from '@/stores/settings'
+import { faker } from '@faker-js/faker'
+import { v4 } from 'uuid'
 
 export function createProjectTemplate(): Project {
   const { projectMap } = useProjects()
@@ -77,31 +76,54 @@ export function collideNodes(project: Project, node: Node) {
   return false
 }
 
-export function tryMoveDown(project: Project, node: Node, deep = 0) {
-  if (deep >= 50) {
-    return false
+export function getCollideNodes(project: Project, node: Node): Node[] {
+  const { nodeMap } = project
+  const nodes = Array.from(nodeMap.values())
+  const collideNodes: Node[] = []
+  for (let i = 0; i < nodes.length; i++) {
+    if (nodes[i].id === node.id) continue
+    if (isCross(node, nodes[i])) {
+      collideNodes.push(nodes[i])
+    }
   }
+  return collideNodes
+}
+
+export function isRightNode(project: Project, node: Node, node2: Node): boolean {
+  const { outMap } = project
+  const set = outMap.get(node.id)
+  const edges = Array.from(set).map((edge) => edge.target)
+  return new Set(edges).has(node2.id)
+}
+
+export function moveDown(project: Project, node: Node) {
   node.y += 1
-  if (!collideNodes(project, node)) {
-    return true
-  } else {
-    return tryMoveDown(project, node)
+  while (collideNodes(project, node)) {
+    node.y += 1
   }
 }
 
-export function tryMoveUp(project: Project, node: Node, deep = 0) {
-  if (deep >= 50 || node.y == 0) {
-    return false
+export function tryMoveUp(project: Project, node: Node) {
+  if (node.y <= 0) {
+    return
   }
   node.y -= 1
-  if (!collideNodes(project, node)) {
-    return true
-  } else {
-    return tryMoveUp(project, node)
+  while (collideNodes(project, node) && node.y > 0) {
+    node.y -= 1
   }
 }
 
-// relation nodes move right
-export function moveRight(project: Project, node: Partial<Node>) {
-  // todo
+export function moveRight(project: Project, node: Node) {
+  node.x += 1
+  getCollideNodes(project, node).forEach((collideNode) => {
+    if (isRightNode(project, node, collideNode)) {
+      while (isCross(node, collideNode)) {
+        moveRight(project, collideNode)
+      }
+    } else {
+      while (isCross(node, collideNode)) {
+        moveDown(project, collideNode)
+      }
+    }
+  })
 }
