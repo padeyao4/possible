@@ -45,6 +45,7 @@ onMounted(() => {
   border: 1px solid rgb(0, 0, 0);
   background-color: #262626;
   z-index: 3;
+  animation: fadeIn 200ms ease-in;
 
   &::before {
     content: '';
@@ -67,6 +68,16 @@ onMounted(() => {
     &:hover {
       background-color: #ffffff60;
     }
+  }
+}
+
+@keyframes fadeIn{
+  0%{
+    opacity: 0;
+  }
+
+  100%{
+    opacity: 1;
   }
 }
 </style>
