@@ -43,7 +43,7 @@ const edges = computed<{ id: string, from: Point, to: Point, opacity: number }[]
 </script>
 
 <template>
-  <canvas-the-temp-path v-for="edge in edges" :edge="edge" />
+  <canvas-the-temp-path v-for="edge in edges" :edge="edge" :key="edge.id"/>
 </template>
 
 <style scoped>

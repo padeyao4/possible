@@ -1,13 +1,16 @@
 <script setup lang="ts">
+import ModeDialog from '@/components/other/ModeDialog.vue'
 import type { ID, Project } from '@/stores/projects'
+import { deleteProject } from '@/stores/service/project.service'
 import { linkTo } from '@/stores/service/route.service'
 import { useSettings } from '@/stores/settings'
-import { deleteProject } from '@/stores/service/project.service'
-import ModeDialog from '@/components/other/ModeDialog.vue'
 import { ref } from 'vue'
 
 const settings = useSettings()
 const props = defineProps<{ project: Project }>()
+
+const { project } = props
+
 const visible = ref(false)
 
 function onclick(projectId: ID) {
@@ -24,13 +27,13 @@ function handleInputRef(e: HTMLElement) {
 
 function onsubmit() {
   if (props.project.name.trim() === '') {
-    props.project.name = '无标题列表'
+    project.name = '无标题列表'
   }
-  props.project.editable = false
+  project.editable = false
 }
 
 function handleEdit() {
-  props.project.editable = true
+  project.editable = true
 }
 
 function handleDelete() {
@@ -45,33 +48,48 @@ function okCallback() {
 
 <template>
   <div class="draggable-item">
-    <input v-if="project.editable"
-           v-model="project.name"
-           class="side-list-item project-item"
-           :data-active="settings.active===project.id"
-           @blur="onsubmit"
-           @keydown.enter="onsubmit"
-           :ref="handleInputRef" />
-    <div v-else @click="onclick(project.id)"
-         class="side-list-item project-item"
-         data-hover
-         :data-active="settings.active===project.id"
+    <input
+      v-if="project.editable"
+      v-model="project.name"
+      class="side-list-item project-item"
+      :data-active="settings.active === project.id"
+      @blur="onsubmit"
+      @keydown.enter="onsubmit"
+      :ref="handleInputRef"
+    />
+    <div
+      v-else
+      @click="onclick(project.id)"
+      class="side-list-item project-item"
+      data-hover
+      :data-active="settings.active === project.id"
     >
-      <div class="info"> {{ project.name }}</div>
+      <div class="info">{{ project.name }}</div>
       <div class="operation" :data-project-id="project.id">
         <Icon icon="iconoir:edit-pencil" @click="handleEdit" />
         <Icon icon="iconoir:trash" @click="handleDelete" />
         <Icon icon="iconoir:menu" class="move" />
       </div>
     </div>
-    <mode-dialog v-if="visible" :ok="okCallback" :cancel="()=>{visible=false}">
-      删除 <b><i style="color: red">{{ project.name }}</i></b> 项目吗?
+    <mode-dialog
+      v-if="visible"
+      :ok="okCallback"
+      :cancel="
+        () => {
+          visible = false
+        }
+      "
+    >
+      删除
+      <b
+        ><i style="color: red">{{ project.name }}</i></b
+      >
+      项目吗?
     </mode-dialog>
   </div>
 </template>
 
 <style scoped>
-
 .draggable-item {
   display: flex;
   width: 100%;
@@ -100,7 +118,6 @@ input {
   font-size: 15px;
   text-indent: 4px;
 }
-
 
 .info {
   margin: 0 4px;
