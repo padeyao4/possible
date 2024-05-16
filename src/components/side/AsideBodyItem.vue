@@ -4,7 +4,7 @@ import type { ID, Project } from '@/stores/projects'
 import { deleteProject } from '@/stores/service/project.service'
 import { linkTo } from '@/stores/service/route.service'
 import { useSettings } from '@/stores/settings'
-import { ref } from 'vue'
+import { compile, computed, ref } from 'vue'
 
 const settings = useSettings()
 const props = defineProps<{ project: Project }>()
@@ -25,13 +25,6 @@ function handleInputRef(e: HTMLElement) {
   })
 }
 
-function onsubmit() {
-  if (props.project.name.trim() === '') {
-    project.name = '无标题列表'
-  }
-  project.editable = false
-}
-
 function handleEdit() {
   project.editable = true
 }
@@ -44,6 +37,11 @@ function okCallback() {
   deleteProject(props.project.id)
   visible.value = false
 }
+
+const projectName = computed(() => {
+  const name = project.name.trim()
+  return name === '' ? '未命名项目' : name
+})
 </script>
 
 <template>
@@ -53,8 +51,8 @@ function okCallback() {
       v-model="project.name"
       class="side-list-item project-item"
       :data-active="settings.active === project.id"
-      @blur="onsubmit"
-      @keydown.enter="onsubmit"
+      @blur="project.editable = false"
+      @keydown.enter="project.editable = false"
       :ref="handleInputRef"
     />
     <div
@@ -64,7 +62,7 @@ function okCallback() {
       data-hover
       :data-active="settings.active === project.id"
     >
-      <div class="info">{{ project.name }}</div>
+      <div class="info">{{ projectName }}</div>
       <div class="operation" :data-project-id="project.id">
         <Icon icon="iconoir:edit-pencil" @click="handleEdit" />
         <Icon icon="iconoir:trash" @click="handleDelete" />

@@ -1,5 +1,3 @@
-import { defineStore } from 'pinia'
-import { computed, reactive, ref, shallowRef } from 'vue'
 import {
   addNode,
   createNodeTemplate,
@@ -8,6 +6,9 @@ import {
   deleteNodeById
 } from '@/stores/service/project.service'
 import { useSettings } from '@/stores/settings'
+import { defineStore } from 'pinia'
+import { computed, reactive, ref, shallowRef } from 'vue'
+import { showAllCards, showLefCards, showRightCards } from './service/contextmenu.service'
 
 
 const items = reactive({
@@ -25,6 +26,10 @@ const items = reactive({
     }
   },
   node: {
+    '显示右侧节点': showRightCards,
+    '显示左侧节点': showLefCards,
+    '显示相关节点': showAllCards,
+    '编辑': () => { },
     '删除': () => {
       const contextmenu = useCanvasContextMenu()
       const project = currentProject()
@@ -52,10 +57,6 @@ export const useCanvasContextMenu = defineStore('canvasContextMenu', () => {
   const clientY = ref(0)
   const mouseEvent = shallowRef<MouseEvent>()
 
-  const bounding = computed(() => {
-    return element.value?.getBoundingClientRect()
-  })
-
   const list = computed(() => {
     return items[active.value]
   })
@@ -66,6 +67,10 @@ export const useCanvasContextMenu = defineStore('canvasContextMenu', () => {
 
   function setActive(a: 'canvas' | 'node' | 'edge') {
     active.value = a
+  }
+
+  function bounding() {
+    return element.value?.getBoundingClientRect()
   }
 
   return {

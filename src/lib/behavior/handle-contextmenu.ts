@@ -35,8 +35,8 @@ export class HandleContextmenu extends BaseBehavior {
 
     setTimeout(() => {
       const svg = canvas.svg.getBoundingClientRect()
-      contextmenu.clientX = clampMax(e.x, svg.right - contextmenu.bounding.width)
-      contextmenu.clientY = clampMax(e.y, svg.bottom - contextmenu.bounding.height)
+      contextmenu.clientX = clampMax(e.x, svg.right - contextmenu.bounding().width)
+      contextmenu.clientY = clampMax(e.y, svg.bottom - contextmenu.bounding().height)
       const mouseStyle = useMouseStyle()
       mouseStyle.setStyleWithUnlock('default')
     })
