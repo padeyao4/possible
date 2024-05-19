@@ -3,6 +3,7 @@ import { useProjects, type Edge, type ID, type Node, type Project } from '@/stor
 import { useSettings } from '@/stores/settings'
 import { faker } from '@faker-js/faker'
 import { v4 } from 'uuid'
+import { calculateDaysBetweenDates, useTimer } from '../timer'
 
 export function createProjectTemplate(): Project {
   const { projectMap } = useProjects()
@@ -139,4 +140,24 @@ export function moveRight(project: Project, node: Node) {
       moveDown(project, collideNode)
     }
   })
+}
+
+function syncProjectByIndex(project: Project, index: number) {
+  const { nodeMap } = project
+  const nodes = Array.from(nodeMap.values())
+
+  let tempNodes = nodes.filter((n) => n.x + n.width <= index)
+  while (tempNodes.length > 0) {
+    tempNodes.forEach((node) => moveRight(project, node))
+    tempNodes = nodes.filter((n) => n.x + n.width <= index)
+  }
+}
+
+export function syncProjects() {
+  const projects = useProjects()
+  const timer = useTimer()
+  for (const iterator of projects.projectMap.values()) {
+    const index = calculateDaysBetweenDates(timer.timestamp, iterator.createTime)
+    syncProjectByIndex(iterator, index)
+  }
 }

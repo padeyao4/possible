@@ -13,13 +13,15 @@ function handleBackHome() {
 }
 
 function handleToday() {
-  project.offset.x = calculateDaysBetweenDates(project.createTime, timer.timestamp) * setting.unitWidth
+  project.offset.x =
+    calculateDaysBetweenDates(project.createTime, timer.timestamp) * setting.unitWidth
 }
 
 function handleTest() {
   console.log(project.offset)
 }
 
+function handleMoveRight() {}
 </script>
 
 <template>
@@ -27,6 +29,7 @@ function handleTest() {
     <my-icon icon="solar:home-2-broken" @click="handleBackHome" />
     <my-icon icon="solar:map-point-broken" @click="handleToday" />
     <my-icon icon="solar:test-tube-broken" @click="handleTest" />
+    <my-icon icon="solar:round-alt-arrow-right-broken" @click="handleMoveRight" />
   </div>
 </template>
 

@@ -2,17 +2,32 @@
 import TheAside from '@/components/TheAside.vue'
 import TheSeparation from '@/components/TheSeparation.vue'
 import WindowTitlebar from '@/components/WindowTitlebar.vue'
-import { testProjects } from '@/stores/service/project.service'
+import { syncProjects, testProjects } from '@/stores/service/project.service'
 import { useSettings } from '@/stores/settings'
-import { computed } from 'vue'
+import { tryOnBeforeMount, tryOnBeforeUnmount } from '@vueuse/core'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { scheduleMidnightTask, useTimer } from './stores/timer'
 
 const route = useRoute()
 const settings = useSettings()
-
 testProjects()
-
 const sideWidth = computed(() => settings.sideWidth + 'px')
+const clear = ref()
+const timer = useTimer()
+
+tryOnBeforeMount(() => {
+  timer.update()
+  syncProjects()
+  scheduleMidnightTask(clear, () => {
+    timer.update()
+    syncProjects()
+  })
+})
+
+tryOnBeforeUnmount(() => {
+  clearTimeout(clear.value)
+})
 </script>
 
 <template>

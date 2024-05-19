@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, type Ref } from 'vue'
 
 
 export function showWeek(date: Date | number): string {
@@ -21,9 +21,27 @@ export function calculateDaysBetweenDates(startDate: Date | number, endDate: Dat
   return days(startDate) - days(endDate)
 }
 
+export function scheduleMidnightTask(clear: Ref<any>, callback: () => void) {
+  const now: Date = new Date()
+  const midnight: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0)
+  const delay: number = midnight.getTime() - now.getTime()
+  clearTimeout(clear.value)
+  clear.value = setTimeout(() => {
+    callback()
+    // 设置下一个午夜的定时器
+    scheduleMidnightTask(clear, callback)
+  }, delay)
+}
+
 export const useTimer = defineStore('timestamp', () => {
   const timestamp = ref(new Date().valueOf())
+
+  function update() {
+    timestamp.value = new Date().valueOf()
+  }
+
   return {
-    timestamp
+    timestamp,
+    update
   }
 })
