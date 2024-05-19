@@ -2,7 +2,6 @@
 import { useProjects } from '@/stores/projects';
 import { createProjectTemplate } from '@/stores/service/project.service';
 import { linkTo } from '@/stores/service/route.service';
-import { Plus } from '@icon-park/vue-next';
 
 function onclick() {
   const project = createProjectTemplate()
@@ -17,7 +16,7 @@ function onclick() {
 <template>
   <div id="aside-footer">
     <div class="side-list-item" data-hover @click="onclick">
-      <plus theme="outline" size="20" fill="#333" :strokeWidth="3" strokeLinecap="butt" class="side-icon" />
+      <my-icon icon="solar:add-square-broken" class="side-icon" />
       <div class="side-item-text">
         创建项目
       </div>
