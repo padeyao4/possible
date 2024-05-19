@@ -89,6 +89,13 @@ export function getCollideNodes(project: Project, node: Node): Node[] {
   return collideNodes
 }
 
+/**
+ * 判断是不是右边相邻的节点
+ * @param project 
+ * @param node 
+ * @param node2 
+ * @returns 
+ */
 export function isRightNode(project: Project, node: Node, node2: Node): boolean {
   const { outMap } = project
   const set = outMap.get(node.id)
@@ -113,17 +120,23 @@ export function tryMoveUp(project: Project, node: Node) {
   }
 }
 
+export function getRightNodes(project: Project, node: Node): Node[] {
+  const { outMap, nodeMap } = project
+  const set = outMap.get(node.id)
+  return Array.from(set)
+    .map((edge) => nodeMap.get(edge.target))
+    .filter((n) => n.x - node.x === node.width)
+}
+
 export function moveRight(project: Project, node: Node) {
+  const rightNodes = getRightNodes(project, node)
+  rightNodes.forEach((rightNode) => {
+    moveRight(project, rightNode)
+  })
   node.x += 1
   getCollideNodes(project, node).forEach((collideNode) => {
-    if (isRightNode(project, node, collideNode)) {
-      while (isCross(node, collideNode)) {
-        moveRight(project, collideNode)
-      }
-    } else {
-      while (isCross(node, collideNode)) {
-        moveDown(project, collideNode)
-      }
+    while (isCross(node, collideNode)) {
+      moveDown(project, collideNode)
     }
   })
 }
