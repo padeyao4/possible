@@ -29,6 +29,7 @@ function handleMoveRight() {}
     <my-icon icon="solar:home-2-broken" @click="handleBackHome" />
     <my-icon icon="solar:map-point-broken" @click="handleToday" />
     <my-icon icon="solar:test-tube-broken" @click="handleTest" />
+    <my-icon icon="solar:calendar-search-broken" />
     <my-icon icon="solar:round-alt-arrow-right-broken" @click="handleMoveRight" />
   </div>
 </template>
