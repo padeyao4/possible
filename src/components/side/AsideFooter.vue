@@ -13,7 +13,7 @@ function onclick() {
 }
 
 function handleSettings() {
-  console.log('hello world')
+  linkTo('/settings')
 }
 </script>
 
