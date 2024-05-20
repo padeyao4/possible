@@ -7,7 +7,7 @@ function onclick() {
   const project = createProjectTemplate()
   useProjects().addProject(project)
   setTimeout(() => {
-    linkTo('/project/' + project.id)
+    linkTo('/index/project/' + project.id)
     project.editable = true
   })
 }

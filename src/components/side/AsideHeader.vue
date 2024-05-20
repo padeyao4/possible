@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { linkTo } from '@/stores/service/route.service';
-import { useSettings } from '@/stores/settings';
+import { linkTo } from '@/stores/service/route.service'
+import { useSettings } from '@/stores/settings'
 
 const settings = useSettings()
 
@@ -17,7 +17,7 @@ function onclick(path: string) {
       class="side-list-item"
       :data-active="settings.active === 'today'"
       data-hover
-      @click="onclick('/today')"
+      @click="onclick('/index/today')"
     >
       <my-icon icon="solar:sun-2-broken" class="side-icon" />
       <div class="side-item-text">我的一天</div>
@@ -26,7 +26,7 @@ function onclick(path: string) {
       class="side-list-item"
       :data-active="settings.active === 'backlog'"
       data-hover
-      @click="onclick('/backlog')"
+      @click="onclick('/index/backlog')"
     >
       <my-icon icon="solar:pallete-2-broken" class="side-icon" />
       <div class="side-item-text">备忘录</div>
@@ -35,7 +35,7 @@ function onclick(path: string) {
       class="side-list-item"
       :data-active="settings.active === 'manage'"
       data-hover
-      @click="onclick('/manage')"
+      @click="onclick('/index/manage')"
     >
       <my-icon icon="solar:checklist-minimalistic-broken" class="side-icon" />
       <div class="side-item-text">任务管理</div>

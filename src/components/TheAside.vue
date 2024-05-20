@@ -39,4 +39,7 @@ function onmouseover(event: MouseEvent) {
 #aside-footer {
   flex-shrink: 0;
 }
-</style>
+</style>import AsideBody from '@/components/side/AsideBody.vue';
+import AsideFooter from '@/components/side/AsideFooter.vue';
+import AsideHeader from '@/components/side/AsideHeader.vue';
+import { useMouseStyle } from '@/stores/mouse';

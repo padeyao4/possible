@@ -14,7 +14,7 @@ const visible = ref(false)
 
 function onclick(projectId: ID) {
   setTimeout(() => {
-    linkTo('/project/' + projectId)
+    linkTo('/index/project/' + projectId)
   })
 }
 
