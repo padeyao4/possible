@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { v4 } from 'uuid'
 import { ref } from 'vue'
+import { createProjectTemplate } from './service/project.service'
 
 export type ID = string | number
 
@@ -131,10 +132,10 @@ export const useProjects = defineStore('projects', () => {
     nodeMap.delete(nodeId)
   }
 
-  function addEdge(project: Project, node1: Partial<Node>, node2: Partial<Node>): void {
+  function addEdge(project: Project, node1: Partial<Node>, node2: Partial<Node>, id: ID = undefined): void {
     const { edgeMap, inMap, outMap } = project
     const edge = {
-      id: v4(),
+      id: id === undefined ? v4() : id,
       source: node1.id,
       target: node2.id
     }
@@ -153,6 +154,58 @@ export const useProjects = defineStore('projects', () => {
     edgeMap.delete(edgeId)
   }
 
+  function deserialize(json: string): void {
+    if (json === '' || json === null) return
+    const data = JSON.parse(json) as Project[]
+    for (let i = 0; i < data.length; i++) {
+      const project = data[i]
+      const temp = createProjectTemplate()
+
+      temp.id = project.id
+      temp.name = project.name
+      temp.completed = project.completed
+      temp.sortIndex = project.sortIndex
+      temp.editable = project.editable
+      temp.createTime = project.createTime
+      temp.offset = project.offset
+
+      project.nodeMap.forEach((node: Node) => {
+        addNode(temp, node)
+      })
+
+      project.edgeMap.forEach((edge: Edge) => {
+        addEdge(temp, { id: edge.source }, { id: edge.target }, edge.id)
+      })
+
+      addProject(temp)
+    }
+  }
+
+  function serialize(): string {
+    const data = []
+    for (const [key] of projectMap.value) {
+      const project = projectMap.value.get(key)!
+      data.push({
+        id: key,
+        name: project.name,
+        nodeMap: Array.from(project.nodeMap.values()),
+        edgeMap: Array.from(project.edgeMap.values()),
+        inMap: Array.from(project.inMap.entries()).map(([key, value]) => {
+          return [key, Array.from(value)]
+        }),
+        outMap: Array.from(project.outMap.entries()).map(([key, value]) => {
+          return [key, Array.from(value)]
+        }),
+        completed: project.completed,
+        sortIndex: project.sortIndex,
+        editable: project.editable,
+        createTime: project.createTime,
+        offset: project.offset
+      })
+    }
+    return JSON.stringify(data)
+  }
+
   return {
     projectMap,
     bfsTraverseOutEdge,
@@ -163,6 +216,8 @@ export const useProjects = defineStore('projects', () => {
     addNode,
     removeNode,
     addEdge,
-    removeEdge
+    removeEdge,
+    deserialize,
+    serialize
   }
 })

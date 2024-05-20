@@ -28,19 +28,14 @@ export const useSettings = defineStore('settings', () => {
    */
   const offsetCardX = ref(10)
   const offsetCardY = ref(10)
-  /**
-   * 相对于画布坐上角偏移
-   */
-  const offsetX = ref(40)
-  const offsetY = ref(40)
+
+  const storagePath = ref('')
 
   return {
     active,
     sideWidth,
     unitHeight,
     unitWidth,
-    offsetX,
-    offsetY,
     offsetCardX,
     offsetCardY
   }

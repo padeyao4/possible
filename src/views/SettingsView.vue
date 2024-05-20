@@ -1,5 +1,8 @@
 <script setup>
 import { linkTo } from '@/stores/service/route.service'
+import { useSettings } from '@/stores/settings'
+
+const settings = useSettings()
 
 function handleBack() {
   linkTo('/')
@@ -11,8 +14,9 @@ function handleBack() {
       <my-icon icon="solar:arrow-left-linear" class="back-button" @click="handleBack" /> 设置
     </header>
     <main>
-      <div>
-        <h3>暂无内容</h3>
+      <div class="item">
+        <div>存储设置</div>
+        <input />
       </div>
     </main>
   </div>
@@ -54,6 +58,26 @@ function handleBack() {
     display: flex;
     justify-content: center;
     width: 550px;
+    .item {
+      display: flex;
+      flex-direction: column;
+      margin: 12px 0;
+      padding: 8px 0;
+      width: 100%;
+      border-bottom: 1px solid #ffffff30;
+      & > * {
+        margin: 4px 0;
+        padding: 8px 0;
+      }
+      input {
+        outline-style: none;
+        background-color: #2a2a2a;
+        color: #d9d9d9;
+        border: 1px solid #ffffff30;
+        border-radius: 4px;
+        padding: 8px;
+      }
+    }
   }
 }
 </style>

@@ -49,7 +49,7 @@ function handleMoveRight() {}
     width: 32px;
     height: 32px;
     padding: 4px;
-    border-radius: 6px;
+    border-radius: 8px;
     opacity: 0.7;
 
     &:hover {
