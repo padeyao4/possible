@@ -7,8 +7,8 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "possible",
-    "version": "0.1.0"
+    "productName": "possibleV2",
+    "version": "0.1.3"
   },
   "tauri": {
     "allowlist": {

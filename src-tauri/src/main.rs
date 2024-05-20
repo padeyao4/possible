@@ -13,7 +13,7 @@ fn main() {
         .add_native_item(SystemTrayMenuItem::Separator)
         .add_item(CustomMenuItem::new("quit".to_string(), "退出"));
 
-    let tray = SystemTray::new().with_menu(tray_menu).with_tooltip("Possible for windows");
+    let tray = SystemTray::new().with_menu(tray_menu).with_tooltip("Possible_v2 for windows");
 
     tauri::Builder::default()
         .setup(|app| {
