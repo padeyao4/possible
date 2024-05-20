@@ -55,7 +55,7 @@ function onclick(path: string) {
     align-items: center;
     height: 40px;
     padding: 4px;
-    margin: 4px 12px;
+    margin: 4px;
     user-select: none;
   }
 

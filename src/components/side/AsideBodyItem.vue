@@ -90,11 +90,10 @@ const projectName = computed(() => {
 .draggable-item {
   display: flex;
   width: 100%;
-  padding: 2px 12px;
+  padding: 2px 4px;
 
   &:first-child {
     margin-top: 2px;
-    padding: 2px 12px;
   }
 }
 
