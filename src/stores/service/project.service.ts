@@ -9,7 +9,7 @@ export function createProjectTemplate(): Project {
   const { projectMap } = useProjects()
   return {
     id: v4(),
-    name: faker.person.fullName(),
+    name: 'New Project',
     nodeMap: new Map<ID, Node>(),
     edgeMap: new Map<ID, Edge>(),
     inMap: new Map<ID, Set<Edge>>(),
@@ -17,12 +17,28 @@ export function createProjectTemplate(): Project {
     completed: false,
     sortIndex: Array.from(projectMap.values()).length + 1,
     editable: false,
-    createTime: faker.date.between({ from: '1900/1/1', to: new Date() }).valueOf(),
+    createTime: Date.now().valueOf(),
     offset: { x: 0, y: 0 }
   }
 }
 
 export function createNodeTemplate(): Node {
+  return {
+    id: v4(),
+    name: 'New Task',
+    x: 1,
+    y: 1,
+    height: 1,
+    width: 1,
+    detail: '',
+    record: '',
+    completed: false,
+    sortedIndex: -1,
+    projectId: -1
+  }
+}
+
+export function createRandomNodeTemplate(): Node {
   return {
     id: v4(),
     name: faker.lorem.words({ min: 5, max: 20 }),

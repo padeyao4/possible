@@ -29,7 +29,7 @@ export const useSettings = defineStore('settings', () => {
   const offsetCardX = ref(10)
   const offsetCardY = ref(10)
 
-  const storagePath = ref('')
+  // const storagePath = ref('')
 
   return {
     active,

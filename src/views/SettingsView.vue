@@ -1,8 +1,6 @@
 <script setup>
-import { linkTo } from '@/stores/service/route.service'
-import { useSettings } from '@/stores/settings'
+import { linkTo } from '@/stores/service/route.service';
 
-const settings = useSettings()
 
 function handleBack() {
   linkTo('/')

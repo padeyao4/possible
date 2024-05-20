@@ -2,15 +2,23 @@
 import { currentProject } from '@/stores/service/project.service'
 import ProjectComponentGroup from '@/components/ProjectComponentGroup.vue'
 import ProjectFooter from '@/components/TheFooter.vue'
+import { computed } from 'vue'
 
 const project = currentProject()
 
+const projectName = computed(() => {
+  if (project?.name === undefined || project?.name === null || project?.name === '') {
+    return '未命名项目'
+  } else {
+    return project.name
+  }
+})
 </script>
 
 <template>
   <div class="project-view">
     <header>
-      <div class="title">{{ project?.name }}</div>
+      <div class="title">{{ projectName }}</div>
     </header>
     <main class="border-top-shadow canvas-background-color">
       <project-component-group />
@@ -46,14 +54,15 @@ header {
 }
 
 main {
-  flex-grow: 1
+  flex-grow: 1;
 }
 
 footer {
   height: 48px;
   flex-shrink: 0;
   background: transparent !important;
-  box-shadow: rgba(27, 31, 35, 0.06) 0 -1px 0,
-  rgba(255, 255, 255, 0.25) 0 -1px 0 inset;
+  box-shadow:
+    rgba(27, 31, 35, 0.06) 0 -1px 0,
+    rgba(255, 255, 255, 0.25) 0 -1px 0 inset;
 }
 </style>
