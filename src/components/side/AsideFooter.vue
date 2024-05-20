@@ -11,6 +11,10 @@ function onclick() {
     project.editable = true
   })
 }
+
+function handleSettings() {
+  console.log('hello world')
+}
 </script>
 
 <template>
@@ -20,7 +24,7 @@ function onclick() {
       <div class="side-item-text">创建项目</div>
     </div>
     <div class="splite"></div>
-    <div class="side-list-item settings">
+    <div class="side-list-item settings" @click="handleSettings">
       <my-icon icon="solar:settings-broken" />
     </div>
   </div>
@@ -43,8 +47,8 @@ function onclick() {
     margin: 4px;
   }
 
-  .splite{
-    border-left: 1px solid #00000010
+  .splite {
+    border-left: 1px solid #00000010;
   }
 
   & > *:last-child {
