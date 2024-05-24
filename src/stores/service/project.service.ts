@@ -191,7 +191,7 @@ function syncProjectByIndex(project: Project, index: number) {
   const { nodeMap } = project
   const nodes = Array.from(nodeMap.values())
 
-  let tempNodes = nodes.filter((n) => n.x + n.width <= index)
+  let tempNodes = nodes.filter((n) => n.x + n.width <= index && n.completed === false)
   while (tempNodes.length > 0) {
     tempNodes.forEach((node) => moveRight(project, node))
     tempNodes = nodes.filter((n) => n.x + n.width <= index)
@@ -221,7 +221,7 @@ export function tryMoveUpWhole(project: Project, node: Node) {
 }
 
 export function tryMoveDownWhole(project: Project, node: Node) {
-  node.y +=1
+  node.y += 1
   getCollideNodes(project, node).forEach((collideNode) => {
     tryMoveDownWhole(project, collideNode)
   })
