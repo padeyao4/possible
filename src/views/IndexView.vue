@@ -37,7 +37,7 @@ tryOnBeforeUnmount(() => {
     <main>
       <router-view :key="route.fullPath" />
     </main>
-    <the-separation class="separation-line" />
+    <the-separation />
   </div>
 </template>
 
@@ -62,13 +62,5 @@ main {
   box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
   background-color: #fdfdfd;
   overflow: hidden;
-}
-
-.separation-line {
-  position: absolute;
-  left: v-bind(sideWidth);
-  top: 0;
-  bottom: 0;
-  width: 5px;
 }
 </style>

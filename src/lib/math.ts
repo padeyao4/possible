@@ -26,12 +26,7 @@ export function clampMax(n: number, max: number) {
 }
 
 export function clamp(n: number, min: number, max: number) {
-  if (min == max) return min
-  if (min > max) {
-    const temp = min
-    min = max
-    max = temp
-  }
+  if (min > max) return min
   if (n <= min) return min
   if (n >= max) return max
   return n
