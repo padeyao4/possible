@@ -206,3 +206,23 @@ export function syncProjects() {
     syncProjectByIndex(iterator, index)
   }
 }
+
+export function tryMoveUpWhole(project: Project, node: Node) {
+  if (node.y <= 0) {
+    return
+  }
+  node.y -= 1
+  getCollideNodes(project, node).forEach((collideNode) => {
+    tryMoveUpWhole(project, collideNode)
+  })
+  if (getCollideNodes(project, node).length !== 0) {
+    node.y += 1
+  }
+}
+
+export function tryMoveDownWhole(project: Project, node: Node) {
+  node.y +=1
+  getCollideNodes(project, node).forEach((collideNode) => {
+    tryMoveDownWhole(project, collideNode)
+  })
+}

@@ -1,6 +1,6 @@
 import { useCanvasContextMenu } from "../contextmenu-store"
 import { useProjects } from "../projects"
-import { currentProject, moveDown, moveLeft, moveRight, tryMoveUp } from "./project.service"
+import { currentProject, moveDown, moveLeft, moveRight, tryMoveDownWhole, tryMoveUp, tryMoveUpWhole } from "./project.service"
 
 export function showRightCards() {
     const projects = useProjects()
@@ -82,4 +82,22 @@ export function handleDeleteTask() {
     const el = contextmenu.mouseEvent.target as Element
     const key = el.getAttribute('data-key')
     useProjects().removeNode(project, key)
+}
+
+export function handleMoveUpWhole() {
+    const contextmenu = useCanvasContextMenu()
+    const project = currentProject()
+    const el = contextmenu.mouseEvent.target as Element
+    const key = el.getAttribute('data-key')
+    const node = project.nodeMap.get(key)
+    tryMoveUpWhole(project, node)
+}
+
+export function handleMoveDownWhole() {
+    const contextmenu = useCanvasContextMenu()
+    const project = currentProject()
+    const el = contextmenu.mouseEvent.target as Element
+    const key = el.getAttribute('data-key')
+    const node = project.nodeMap.get(key)
+    tryMoveDownWhole(project, node)
 }

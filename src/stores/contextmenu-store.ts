@@ -6,7 +6,7 @@ import { useSettings } from '@/stores/settings'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref, shallowRef } from 'vue'
 import { useProjects } from './projects'
-import { handleCompletedTask, handleDeleteTask, tryMoveDownNode, tryMoveRgitNode, tryMoveUpNode, tryMoveLeftNode } from './service/contextmenu.service'
+import { handleCompletedTask, handleDeleteTask, tryMoveDownNode, tryMoveRgitNode, tryMoveUpNode, tryMoveLeftNode, handleMoveUpWhole, handleMoveDownWhole } from './service/contextmenu.service'
 
 
 const items = reactive({
@@ -28,6 +28,8 @@ const items = reactive({
     // '显示左侧节点': showLefCards,
     // '显示相关节点': showAllCards,
     '添加': () => { },
+    '上推': handleMoveUpWhole,
+    '下推': handleMoveDownWhole,
     '右移': tryMoveRgitNode,
     '左移': tryMoveLeftNode,
     '下移': tryMoveDownNode,
