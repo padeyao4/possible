@@ -6,8 +6,6 @@ export interface SettingsType {
   sideWidth: number
   unitHeight: number
   unitWidth: number
-  offsetX: number
-  offsetY: number
   offsetCardX: number
   offsetCardY: number
 }

@@ -40,6 +40,10 @@ export abstract class BaseBehavior {
     const type = el.getAttribute('data-mouse-style')
     this.mouseStyle.setStyleWithUnlock(type !== null ? type : 'default')
   }
+
+  toggleMouseOut() {
+    this.mouseStyle.setStyleWithUnlock('default')
+  }
 }
 
 export class Register {

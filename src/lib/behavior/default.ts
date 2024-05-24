@@ -3,7 +3,8 @@ import { BaseBehavior, type EventDispatch } from '@/lib/base'
 export class DefaultBehavior extends BaseBehavior {
   getEventDispatch(): EventDispatch {
     return {
-      ':mouseover': this.toggleMouseOver.bind(this)
+      ':mouseover': this.toggleMouseOver.bind(this),
+      ':mouseout': this.toggleMouseOut.bind(this)
     }
   }
 }
