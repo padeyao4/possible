@@ -121,6 +121,7 @@ body {
 .side-icon {
   width: 20px;
   height: 20px;
+  margin: 0 8px;
 }
 
 .side-item-text {

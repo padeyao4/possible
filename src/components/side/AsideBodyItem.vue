@@ -102,7 +102,7 @@ const projectName = computed(() => {
   display: flex;
   align-items: center;
   height: 40px;
-  padding: 4px;
+  padding: 4px 8px;
   width: 100%;
   z-index: 3;
 }
