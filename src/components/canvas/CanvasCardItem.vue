@@ -25,7 +25,7 @@ const height = computed(() => {
 })
 
 const backgroundColor = computed(() => {
-  return node.completed ? '#000' : '#fff'
+  return node.completed ? '#dddddd' : '#fff'
 })
 </script>
 
