@@ -1,13 +1,7 @@
 import { useCanvasContextMenu } from "../contextmenu-store"
 import { useProjects } from "../projects"
-import { currentProject, moveDown, moveRight, tryMoveUp } from "./project.service"
+import { currentProject, moveDown, moveLeft, moveRight, tryMoveUp } from "./project.service"
 
-/**
- * Shows the right-click context menu for a node in the canvas.
- * This function is called when the user right-clicks on a node in the canvas.
- * It retrieves the current project, the node ID of the clicked node, and then
- * traverses the outgoing edges of the node to perform some action (currently empty).
- */
 export function showRightCards() {
     const projects = useProjects()
     const contextmenu = useCanvasContextMenu()
@@ -65,6 +59,14 @@ export function tryMoveRgitNode() {
     moveRight(project, project.nodeMap.get(nodeId))
 }
 
+export function tryMoveLeftNode() {
+    const contextmenu = useCanvasContextMenu()
+    const target = contextmenu.mouseEvent.target as Element
+    const nodeId = target.getAttribute('data-key')
+    const project = currentProject()
+    moveLeft(project, project.nodeMap.get(nodeId))
+}
+
 export function handleCompletedTask() {
     const contextmenu = useCanvasContextMenu()
     const target = contextmenu.mouseEvent.target as Element
@@ -74,7 +76,7 @@ export function handleCompletedTask() {
     node.completed = !node.completed
 }
 
-export function handleDeleteTask(){
+export function handleDeleteTask() {
     const contextmenu = useCanvasContextMenu()
     const project = currentProject()
     const el = contextmenu.mouseEvent.target as Element

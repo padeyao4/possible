@@ -108,10 +108,6 @@ export function getCollideNodes(project: Project, node: Node): Node[] {
 
 /**
  * 判断是不是右边相邻的节点
- * @param project 
- * @param node 
- * @param node2 
- * @returns 
  */
 export function isRightNode(project: Project, node: Node, node2: Node): boolean {
   const { outMap } = project
@@ -137,6 +133,9 @@ export function tryMoveUp(project: Project, node: Node) {
   }
 }
 
+/**
+ * 图中获取右边相邻的节点
+ */
 export function getRightNodes(project: Project, node: Node): Node[] {
   const { outMap, nodeMap } = project
   const set = outMap.get(node.id)
@@ -145,12 +144,42 @@ export function getRightNodes(project: Project, node: Node): Node[] {
     .filter((n) => n.x - node.x === node.width)
 }
 
+/**
+ * 图中获取左边相邻的节点
+ */
+export function getLeftNodes(project: Project, node: Node): Node[] {
+  const { inMap, nodeMap } = project
+  const set = inMap.get(node.id)
+  return Array.from(set)
+    .map((edge) => nodeMap.get(edge.source))
+    .filter((n) => node.x - n.x === n.width)
+}
+
+/**
+ * dag图在当前节点和其右侧节点向右移动
+ */
 export function moveRight(project: Project, node: Node) {
   const rightNodes = getRightNodes(project, node)
   rightNodes.forEach((rightNode) => {
     moveRight(project, rightNode)
   })
   node.x += 1
+  getCollideNodes(project, node).forEach((collideNode) => {
+    while (isCross(node, collideNode)) {
+      moveDown(project, collideNode)
+    }
+  })
+}
+
+/**
+ * dag图在当前节点和其左侧节点向左移动
+ */
+export function moveLeft(project: Project, node: Node) {
+  const leftNodes = getLeftNodes(project, node)
+  leftNodes.forEach((leftNode) => {
+    moveLeft(project, leftNode)
+  })
+  node.x -= 1
   getCollideNodes(project, node).forEach((collideNode) => {
     while (isCross(node, collideNode)) {
       moveDown(project, collideNode)

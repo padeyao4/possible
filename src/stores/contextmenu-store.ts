@@ -6,7 +6,7 @@ import { useSettings } from '@/stores/settings'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref, shallowRef } from 'vue'
 import { useProjects } from './projects'
-import { handleCompletedTask, handleDeleteTask, showAllCards, showLefCards, showRightCards, tryMoveDownNode, tryMoveRgitNode, tryMoveUpNode } from './service/contextmenu.service'
+import { handleCompletedTask, handleDeleteTask, tryMoveDownNode, tryMoveRgitNode, tryMoveUpNode, tryMoveLeftNode } from './service/contextmenu.service'
 
 
 const items = reactive({
@@ -24,12 +24,14 @@ const items = reactive({
     }
   },
   node: {
-    '显示右侧节点': showRightCards,
-    '显示左侧节点': showLefCards,
-    '显示相关节点': showAllCards,
-    '向下移动': tryMoveDownNode,
-    '向上移动': tryMoveUpNode,
-    '向右移动': tryMoveRgitNode,
+    // '显示右侧节点': showRightCards,
+    // '显示左侧节点': showLefCards,
+    // '显示相关节点': showAllCards,
+    '添加': () => { },
+    '右移': tryMoveRgitNode,
+    '左移': tryMoveLeftNode,
+    '下移': tryMoveDownNode,
+    '上移': tryMoveUpNode,
     '编辑': () => { },
     '完成': handleCompletedTask,
     '删除': handleDeleteTask
