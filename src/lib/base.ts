@@ -3,7 +3,7 @@ import { type MouseStyleType, useMouseStyle } from '@/stores/mouse'
 import { type SettingsType, useSettings } from '@/stores/settings'
 import { useEventListener } from '@vueuse/core'
 
-const eventTypes = ['mouseover', 'mouseout', 'mousedown', 'mouseup', 'mousemove', 'click', 'dblclick', 'contextmenu']
+const eventTypes = ['mouseover', 'mouseout', 'mousedown', 'mouseup', 'mousemove', 'click', 'dblclick', 'contextmenu','wheel']
 
 export type EventType =
   'mouseover'
@@ -14,6 +14,7 @@ export type EventType =
   | 'click'
   | 'dblclick'
   | 'contextmenu'
+  | 'wheel'
 export type ElementType = 'canvas' | 'node' | 'edge' | 'anchor' | 'resize' | ''
 export type CanvasEventType = `${ElementType}:${EventType}`
 

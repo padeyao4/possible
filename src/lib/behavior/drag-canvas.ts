@@ -22,6 +22,7 @@ export default class DragCanvas extends BaseBehavior {
     this.position.x = e.x
     this.position.y = e.y
     const { x, y } = this.project.offset
+
     this.offset.x = x
     this.offset.y = y
     this.mouseStyle.lockStyle('grabbing')

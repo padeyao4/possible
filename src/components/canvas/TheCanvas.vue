@@ -14,6 +14,7 @@ import { DefaultBehavior } from '@/lib/behavior/default'
 import { DoubleClickCard } from '@/lib/behavior/double-click-card'
 import { CreateEdge } from '@/lib/behavior/create-edge'
 import { HandleContextmenu } from '@/lib/behavior/handle-contextmenu'
+import WheelCanvas from '@/lib/behavior/wheel-canvas'
 
 const svg = ref()
 const canvas = useCanvas()
@@ -22,7 +23,16 @@ const project = currentProject()
 onMounted(() => {
   canvas.set(svg.value)
   const register = new Register(svg.value, project)
-  register.addBehaviors(DefaultBehavior, DragCanvas, DragCard, ResizeCard, DoubleClickCard, CreateEdge, HandleContextmenu)
+  register.addBehaviors(
+    DefaultBehavior,
+    DragCanvas,
+    DragCard,
+    ResizeCard,
+    DoubleClickCard,
+    CreateEdge,
+    HandleContextmenu,
+    WheelCanvas
+  )
   register.listen()
 })
 
@@ -31,11 +41,7 @@ const translateY = computed(() => project?.offset.y)
 </script>
 
 <template>
-  <svg
-    ref="svg"
-    @contextmenu.prevent
-    data-el-type="canvas"
-    data-type="canvas">
+  <svg ref="svg" @contextmenu.prevent data-el-type="canvas" data-type="canvas">
     <g :transform="`translate(${translateX},${translateY})`">
       <canvas-paths />
       <canvas-cards />
