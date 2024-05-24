@@ -6,7 +6,7 @@ import { useSettings } from '@/stores/settings'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref, shallowRef } from 'vue'
 import { useProjects } from './projects'
-import { showAllCards, showLefCards, showRightCards, tryMoveDownNode, tryMoveRgitNode, tryMoveUpNode } from './service/contextmenu.service'
+import { handleCompletedTask, handleDeleteTask, showAllCards, showLefCards, showRightCards, tryMoveDownNode, tryMoveRgitNode, tryMoveUpNode } from './service/contextmenu.service'
 
 
 const items = reactive({
@@ -31,13 +31,8 @@ const items = reactive({
     '向上移动': tryMoveUpNode,
     '向右移动': tryMoveRgitNode,
     '编辑': () => { },
-    '删除': () => {
-      const contextmenu = useCanvasContextMenu()
-      const project = currentProject()
-      const el = contextmenu.mouseEvent.target as Element
-      const key = el.getAttribute('data-key')
-      useProjects().removeNode(project, key)
-    }
+    '完成': handleCompletedTask,
+    '删除': handleDeleteTask
   },
   edge: {
     '删除': () => {

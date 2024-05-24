@@ -6,6 +6,8 @@ import { useSettings } from '@/stores/settings'
 const props = defineProps<{ node: Node }>()
 const settings = useSettings()
 
+const { node } = props
+
 const translateX = computed(() => {
   return props.node.x * settings.unitWidth + settings.offsetCardX
 })
@@ -21,6 +23,10 @@ const width = computed(() => {
 const height = computed(() => {
   return props.node.height * settings.unitHeight - settings.offsetCardY * 2
 })
+
+const backgroundColor = computed(() => {
+  return node.completed ? '#000' : '#fff'
+})
 </script>
 
 <template>
@@ -31,7 +37,7 @@ const height = computed(() => {
       opacity="0.7"
       stroke-width="1"
       stroke="#000"
-      fill="#fff"
+      :fill="backgroundColor"
       rx="8"
     />
     <foreignObject :width="width" :height="height" opacity="1">

@@ -64,3 +64,20 @@ export function tryMoveRgitNode() {
     const project = currentProject()
     moveRight(project, project.nodeMap.get(nodeId))
 }
+
+export function handleCompletedTask() {
+    const contextmenu = useCanvasContextMenu()
+    const target = contextmenu.mouseEvent.target as Element
+    const nodeId = target.getAttribute('data-key')
+    const project = currentProject()
+    const node = project.nodeMap.get(nodeId)
+    node.completed = !node.completed
+}
+
+export function handleDeleteTask(){
+    const contextmenu = useCanvasContextMenu()
+    const project = currentProject()
+    const el = contextmenu.mouseEvent.target as Element
+    const key = el.getAttribute('data-key')
+    useProjects().removeNode(project, key)
+}
