@@ -10,7 +10,7 @@ function handleBack() {
 }
 
 const dataPath = computed(() => {
-  return isTauri() ? useInvoke('get_data_dir') : ''
+  return isTauri() ? useInvoke('get_data_dir') : '临时数据'
 })
 </script>
 <template>
@@ -88,6 +88,7 @@ const dataPath = computed(() => {
         background-color: #2a2a2a;
         color: #d9d9d9;
         user-select: text;
+        padding: 8px;
       }
     }
   }
