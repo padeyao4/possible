@@ -2,8 +2,8 @@ import { isCross } from '@/lib/math'
 import { useProjects, type Edge, type ID, type Node, type Project } from '@/stores/projects'
 import { faker } from '@faker-js/faker'
 import { v4 } from 'uuid'
-import { useRoute } from '../route'
-import { getDaysBetweenDates, useTimer } from '../timer'
+import { useRoute } from '@/stores/route'
+import { getDaysBetweenDates, useTimer } from '@/stores/timer'
 
 export function createProjectTemplate(): Project {
   const { projectMap } = useProjects()

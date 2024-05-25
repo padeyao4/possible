@@ -1,6 +1,6 @@
 import { BaseBehavior, type EventDispatch } from '@/lib/base'
 import type { Node, Point } from '@/stores/projects'
-import { collideNodes } from '@/stores/service/project.service'
+import { collideNodes } from '@/service/project.service'
 import { clampMin } from '../math'
 
 export class DragCard extends BaseBehavior {

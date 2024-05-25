@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import TheSeparation from '@/components/TheSeparation.vue'
 import TheAside from '@/components/TheAside.vue'
-import { updateProjects } from '@/stores/service/project.service'
+import { updateProjects } from '@/service/project.service'
 import { useSettings } from '@/stores/settings'
 import { scheduleMidnightTask, useTimer } from '@/stores/timer'
 import { tryOnBeforeMount, tryOnBeforeUnmount } from '@vueuse/core'

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { currentProject } from '@/stores/service/project.service'
+import { currentProject } from '@/service/project.service'
 import { computed } from 'vue'
 import { useSettings } from '@/stores/settings'
 import type { Point } from '@/stores/projects'

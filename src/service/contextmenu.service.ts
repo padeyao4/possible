@@ -1,6 +1,6 @@
-import { useCanvasContextMenu } from "../contextmenu-store"
-import { useProjects } from "../projects"
-import { appendNode, currentProject, moveDown, moveLeft, moveRight, tryMoveDownWhole, tryMoveUp, tryMoveUpWhole } from "./project.service"
+import { useCanvasContextMenu } from "@/stores/contextmenu-store"
+import { useProjects } from "@/stores/projects"
+import { appendNode, currentProject, moveDown, moveLeft, moveRight, tryMoveDownWhole, tryMoveUp, tryMoveUpWhole } from "@/service/project.service"
 
 export function showRightCards() {
     const projects = useProjects()
@@ -102,7 +102,7 @@ export function handleMoveDownWhole() {
     tryMoveDownWhole(project, node)
 }
 
-export function handleAppendNode(){
+export function handleAppendNode() {
     const contextmenu = useCanvasContextMenu()
     const project = currentProject()
     const el = contextmenu.mouseEvent.target as Element

@@ -2,7 +2,7 @@
 import CanvasPaths from '@/components/canvas/CanvasPaths.vue'
 import CanvasCards from '@/components/canvas/CanvasCards.vue'
 
-import { currentProject } from '@/stores/service/project.service'
+import { currentProject } from '@/service/project.service'
 import { computed, onMounted, ref } from 'vue'
 import { Register } from '@/lib/base'
 import CanvasTempPaths from '@/components/canvas/CanvasTempPaths.vue'

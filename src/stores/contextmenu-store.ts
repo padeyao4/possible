@@ -1,12 +1,12 @@
 import {
   createNodeTemplate,
   currentProject
-} from '@/stores/service/project.service'
+} from '@/service/project.service'
 import { useSettings } from '@/stores/settings'
 import { defineStore } from 'pinia'
 import { computed, reactive, ref, shallowRef } from 'vue'
 import { useProjects } from './projects'
-import { handleAppendNode, handleCompletedTask, handleDeleteTask, handleMoveDownWhole, handleMoveUpWhole, tryMoveDownNode, tryMoveLeftNode, tryMoveRgitNode, tryMoveUpNode } from './service/contextmenu.service'
+import { handleAppendNode, handleCompletedTask, handleDeleteTask, handleMoveDownWhole, handleMoveUpWhole, tryMoveDownNode, tryMoveLeftNode, tryMoveRgitNode, tryMoveUpNode } from '@/service/contextmenu.service'
 
 
 const items = reactive({

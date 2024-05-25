@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useProjects } from '@/stores/projects';
 import { useRoute } from '@/stores/route';
-import { createProjectTemplate } from '@/stores/service/project.service';
+import { createProjectTemplate } from '@/service/project.service';
 
 const route = useRoute()
 

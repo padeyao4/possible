@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { v4 } from 'uuid'
 import { ref } from 'vue'
-import { createProjectTemplate } from './service/project.service'
+import { createProjectTemplate } from '@/service/project.service'
 
 export type ID = string | number
 

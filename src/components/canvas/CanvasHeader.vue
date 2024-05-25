@@ -2,7 +2,7 @@
 import { computed, ref, watchEffect } from 'vue'
 import { useWindowSize } from '@vueuse/core'
 import { useSettings } from '@/stores/settings'
-import { currentProject } from '@/stores/service/project.service'
+import { currentProject } from '@/service/project.service'
 import CanvasHeaderItem from '@/components/canvas/CanvasHeaderItem.vue'
 import { getDaysBetweenDates, useTimer } from '@/stores/timer'
 

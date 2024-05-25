@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { currentProject } from '@/stores/service/project.service'
+import { currentProject } from '@/service/project.service'
 import ProjectComponentGroup from '@/components/ProjectComponentGroup.vue'
 import ProjectFooter from '@/components/TheFooter.vue'
 import { computed } from 'vue'
