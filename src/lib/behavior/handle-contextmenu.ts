@@ -1,6 +1,6 @@
 import { BaseBehavior, type EventDispatch } from '@/lib/base'
 import { useCanvas } from '@/stores/canvas'
-import { useCanvasContextMenu } from '@/stores/contextmenu-store'
+import { useCanvasContextMenu } from '@/stores/contextmenu'
 import { useMouseStyle } from '@/stores/mouse'
 import { clampMax } from '../math'
 

@@ -1,5 +1,5 @@
 import { BaseBehavior, type EventDispatch } from '@/lib/base'
-import { useEditor } from '@/stores/canvas-editor'
+import { useEditor } from '@/stores/editor'
 
 export class DoubleClickCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {

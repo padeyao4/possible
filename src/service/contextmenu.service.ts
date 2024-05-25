@@ -1,4 +1,4 @@
-import { useCanvasContextMenu } from "@/stores/contextmenu-store"
+import { useCanvasContextMenu } from "@/stores/contextmenu"
 import { useProjects } from "@/stores/projects"
 import { appendNode, currentProject, moveDown, moveLeft, moveRight, tryMoveDownWhole, tryMoveUp, tryMoveUpWhole } from "@/service/project.service"
 

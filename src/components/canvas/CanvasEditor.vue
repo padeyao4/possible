@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useEditor } from '@/stores/canvas-editor'
+import { useEditor } from '@/stores/editor'
 import { computed, ref } from 'vue'
 import { currentProject } from '@/service/project.service'
 import { useEventListener, useTextareaAutosize } from '@vueuse/core'

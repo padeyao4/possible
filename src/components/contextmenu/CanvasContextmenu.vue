@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCanvasContextMenu } from '@/stores/contextmenu-store'
+import { useCanvasContextMenu } from '@/stores/contextmenu'
 import { computed, onMounted, ref } from 'vue'
 
 const contextmenuRef = ref()
