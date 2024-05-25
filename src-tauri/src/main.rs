@@ -1,9 +1,11 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::SystemTray;
+use std::path::PathBuf;
+
 use tauri::{
-    AppHandle, CustomMenuItem, Manager, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem, Window,
+    api, command, AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
+    SystemTrayMenuItem, Window,
 };
 use webbrowser;
 use window_shadows::set_shadow;
@@ -28,6 +30,7 @@ fn main() {
         .system_tray(tray)
         .on_system_tray_event(system_tray_handle)
         .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![get_data_dir])
         .plugin(tauri_plugin_single_instance::init(|app, _argv, _cwd| {
             let window = app.get_window("main").unwrap(); //二次打开软件时，显示已打开窗口，单例运行app
             window.set_focus().unwrap();
@@ -63,7 +66,14 @@ fn system_tray_handle(app: &AppHandle, event: SystemTrayEvent) {
     }
 }
 
-#[tauri::command]
+#[command]
 fn greet(name: &str) -> String {
     format!("Hello, {}!", name)
+}
+
+#[command]
+fn get_data_dir() -> Option<PathBuf> {
+    let context = tauri::generate_context!();
+    let config = context.config();
+    api::path::app_data_dir(config)
 }

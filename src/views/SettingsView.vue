@@ -1,11 +1,17 @@
 <script setup>
 import { useRoute } from '@/stores/route'
+import { isTauri, useInvoke } from '@/tauri-util'
+import { computed } from 'vue'
 
 const route = useRoute()
 
 function handleBack() {
   route.back()
 }
+
+const dataPath = computed(() => {
+  return isTauri() ? useInvoke('get_data_dir') : ''
+})
 </script>
 <template>
   <div class="settings">
@@ -14,8 +20,8 @@ function handleBack() {
     </header>
     <main>
       <div class="item">
-        <div>存储设置</div>
-        <input />
+        <div>数据存储地址</div>
+        <div class="description">{{ dataPath }}</div>
       </div>
     </main>
   </div>
@@ -75,6 +81,13 @@ function handleBack() {
         border: 1px solid #ffffff30;
         border-radius: 4px;
         padding: 8px;
+      }
+      .description {
+        border: 1px solid #ffffff30;
+        border-radius: 4px;
+        background-color: #2a2a2a;
+        color: #d9d9d9;
+        user-select: text;
       }
     }
   }
