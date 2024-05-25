@@ -15,18 +15,22 @@ const router = createRouter({
       children: [
         {
           path: 'today',
+          name: 'today',
           component: ListView
         },
         {
           path: 'backlog',
+          name: 'backlog',
           component: BacklogView
         },
         {
           path: 'manage',
+          name: 'manage',
           component: ManageView
         },
         {
-          path: 'project/:id',
+          path: 'project/:param',
+          name: 'project',
           props: true,
           component: ProjectView
         }
@@ -34,6 +38,7 @@ const router = createRouter({
     },
     {
       path: '/settings',
+      name: 'settings',
       component: SettingsView
     },
     { path: '/', redirect: '/index/today' }

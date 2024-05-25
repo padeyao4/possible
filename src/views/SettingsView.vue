@@ -1,9 +1,10 @@
 <script setup>
-import { linkTo } from '@/stores/service/route.service';
+import { useRoute } from '@/stores/route'
 
+const route = useRoute()
 
 function handleBack() {
-  linkTo('/')
+  route.back()
 }
 </script>
 <template>

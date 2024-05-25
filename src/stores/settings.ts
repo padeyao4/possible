@@ -14,7 +14,6 @@ export const useSettings = defineStore('settings', () => {
   /**
    * 左侧边栏,激活项
    */
-  const active = ref('today')
   const sideWidth = ref(240)
   /**
    * 画布中每个单元格宽度
@@ -27,10 +26,7 @@ export const useSettings = defineStore('settings', () => {
   const offsetCardX = ref(10)
   const offsetCardY = ref(10)
 
-  // const storagePath = ref('')
-
   return {
-    active,
     sideWidth,
     unitHeight,
     unitWidth,

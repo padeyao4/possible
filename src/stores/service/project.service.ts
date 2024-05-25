@@ -1,8 +1,8 @@
 import { isCross } from '@/lib/math'
 import { useProjects, type Edge, type ID, type Node, type Project } from '@/stores/projects'
-import { useSettings } from '@/stores/settings'
 import { faker } from '@faker-js/faker'
 import { v4 } from 'uuid'
+import { useRoute } from '../route'
 import { calculateDaysBetweenDates, useTimer } from '../timer'
 
 export function createProjectTemplate(): Project {
@@ -55,9 +55,9 @@ export function createRandomNodeTemplate(): Node {
 }
 
 export function currentProject(): Project {
-  const settings = useSettings()
+  const route = useRoute()
   const { projectMap } = useProjects()
-  return projectMap.get(settings.active) ?? createProjectTemplate()
+  return projectMap.get(route.active.param) ?? createProjectTemplate()
 }
 
 export function testProjects() {

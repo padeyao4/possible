@@ -1,21 +1,18 @@
 <script setup lang="ts">
 import ModeDialog from '@/components/other/ModeDialog.vue'
-import { useProjects, type ID, type Project } from '@/stores/projects'
-import { linkTo } from '@/stores/service/route.service'
-import { useSettings } from '@/stores/settings'
+import { useProjects, type Project } from '@/stores/projects'
+import { useRoute } from '@/stores/route'
 import { computed, ref } from 'vue'
 
-const settings = useSettings()
 const props = defineProps<{ project: Project }>()
-
 const { project } = props
+
+const route = useRoute()
 
 const visible = ref(false)
 
-function onclick(projectId: ID) {
-  setTimeout(() => {
-    linkTo('/index/project/' + projectId)
-  })
+function onclick(projectId: string) {
+  route.linkTo('project', projectId)
 }
 
 function handleInputRef(e: HTMLElement) {
@@ -35,11 +32,16 @@ function handleDelete() {
 function okCallback() {
   useProjects().removeProject(project.id)
   visible.value = false
+  route.linkTo('today')
 }
 
 const projectName = computed(() => {
   const name = project.name.trim()
   return name === '' ? '未命名项目' : name
+})
+
+const isActive = computed(() => {
+  return route.active.name === 'project' && project.id === route.active.param
 })
 </script>
 
@@ -49,17 +51,17 @@ const projectName = computed(() => {
       v-if="project.editable"
       v-model="project.name"
       class="side-list-item project-item"
-      :data-active="settings.active === project.id"
+      :data-active="isActive"
       @blur="project.editable = false"
       @keydown.enter="project.editable = false"
       :ref="handleInputRef"
     />
     <div
       v-else
-      @click="onclick(project.id)"
+      @click="onclick(project.id.toString())"
       class="side-list-item project-item"
       data-hover
-      :data-active="settings.active === project.id"
+      :data-active="isActive"
     >
       <div class="info">{{ projectName }}</div>
       <div class="operation" :data-project-id="project.id">

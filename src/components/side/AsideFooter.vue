@@ -1,19 +1,21 @@
 <script setup lang="ts">
-import { useProjects } from '@/stores/projects'
-import { createProjectTemplate } from '@/stores/service/project.service'
-import { linkTo } from '@/stores/service/route.service'
+import { useProjects } from '@/stores/projects';
+import { useRoute } from '@/stores/route';
+import { createProjectTemplate } from '@/stores/service/project.service';
+
+const route = useRoute()
 
 function onclick() {
   const project = createProjectTemplate()
   useProjects().addProject(project)
   setTimeout(() => {
-    linkTo('/index/project/' + project.id)
+    route.linkTo('project', project.id.toString())
     project.editable = true
   })
 }
 
 function handleSettings() {
-  linkTo('/settings')
+  route.linkTo('settings')
 }
 </script>
 

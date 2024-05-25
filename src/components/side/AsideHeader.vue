@@ -1,41 +1,34 @@
 <script setup lang="ts">
-import { linkTo } from '@/stores/service/route.service'
-import { useSettings } from '@/stores/settings'
+import { useRoute } from '@/stores/route';
 
-const settings = useSettings()
-
-function onclick(path: string) {
-  setTimeout(() => {
-    linkTo(path)
-  })
-}
+const route = useRoute()
 </script>
 
 <template>
   <div id="aside-header">
     <div
       class="side-list-item"
-      :data-active="settings.active === 'today'"
+      :data-active="route.active.name === 'today'"
       data-hover
-      @click="onclick('/index/today')"
+      @click="route.linkTo('today')"
     >
       <my-icon icon="solar:sun-2-broken" class="side-icon" />
       <div class="side-item-text">我的一天</div>
     </div>
     <div
       class="side-list-item"
-      :data-active="settings.active === 'backlog'"
+      :data-active="route.active.name === 'backlog'"
       data-hover
-      @click="onclick('/index/backlog')"
+      @click="route.linkTo('backlog')"
     >
       <my-icon icon="solar:pallete-2-broken" class="side-icon" />
       <div class="side-item-text">备忘录</div>
     </div>
     <div
       class="side-list-item"
-      :data-active="settings.active === 'manage'"
+      :data-active="route.active.name === 'manage'"
       data-hover
-      @click="onclick('/index/manage')"
+      @click="route.linkTo('manage')"
     >
       <my-icon icon="solar:checklist-minimalistic-broken" class="side-icon" />
       <div class="side-item-text">任务管理</div>
