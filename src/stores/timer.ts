@@ -12,12 +12,12 @@ export const timeFormat = new Intl.DateTimeFormat('zh-Hans')
 const ONE_DAY_MS = 24 * 60 * 60 * 1000
 const ONE_MINUTE_MS = 60_000
 
-export function days(date: Date | number) {
+export function days(date: Date | number | string) {
   const d = new Date(date)
   return Math.ceil((d.getTime() - d.getTimezoneOffset() * ONE_MINUTE_MS) / ONE_DAY_MS)
 }
 
-export function calculateDaysBetweenDates(startDate: Date | number, endDate: Date | number): number {
+export function getDaysBetweenDates(startDate: Date | number | string, endDate: Date | number | string): number {
   return days(startDate) - days(endDate)
 }
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { currentProject } from '@/stores/service/project.service'
-import { calculateDaysBetweenDates, useTimer } from '@/stores/timer'
+import { getDaysBetweenDates, useTimer } from '@/stores/timer'
 import { useSettings } from '@/stores/settings'
 
 const setting = useSettings()
@@ -14,7 +14,7 @@ function handleBackHome() {
 
 function handleToday() {
   project.offset.x =
-    calculateDaysBetweenDates(project.createTime, timer.timestamp) * setting.unitWidth
+    getDaysBetweenDates(project.createTime, timer.timestamp) * setting.unitWidth
 }
 
 function handleTest() {

@@ -3,7 +3,7 @@ import { useProjects, type Edge, type ID, type Node, type Project } from '@/stor
 import { faker } from '@faker-js/faker'
 import { v4 } from 'uuid'
 import { useRoute } from '../route'
-import { calculateDaysBetweenDates, useTimer } from '../timer'
+import { getDaysBetweenDates, useTimer } from '../timer'
 
 export function createProjectTemplate(): Project {
   const { projectMap } = useProjects()
@@ -187,23 +187,28 @@ export function moveLeft(project: Project, node: Node) {
   })
 }
 
-function syncProjectByIndex(project: Project, index: number) {
+function updateProjectByIndex(project: Project, index: number) {
   const { nodeMap } = project
   const nodes = Array.from(nodeMap.values())
 
-  let tempNodes = nodes.filter((n) => n.x + n.width <= index && n.completed === false)
+  const filterFunc = (n: Node) => n.x + n.width <= index && n.completed === false
+
+  let tempNodes = nodes.filter(filterFunc)
   while (tempNodes.length > 0) {
     tempNodes.forEach((node) => moveRight(project, node))
-    tempNodes = nodes.filter((n) => n.x + n.width <= index)
+    tempNodes = nodes.filter(filterFunc)
   }
 }
 
-export function syncProjects() {
+/**
+ * 每日更新任务项目状态
+ */
+export function updateProjects() {
   const projects = useProjects()
   const timer = useTimer()
   for (const iterator of projects.projectMap.values()) {
-    const index = calculateDaysBetweenDates(timer.timestamp, iterator.createTime)
-    syncProjectByIndex(iterator, index)
+    const index = getDaysBetweenDates(timer.timestamp, iterator.createTime)
+    updateProjectByIndex(iterator, index)
   }
 }
 

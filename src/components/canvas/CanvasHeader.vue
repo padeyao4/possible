@@ -4,7 +4,7 @@ import { useWindowSize } from '@vueuse/core'
 import { useSettings } from '@/stores/settings'
 import { currentProject } from '@/stores/service/project.service'
 import CanvasHeaderItem from '@/components/canvas/CanvasHeaderItem.vue'
-import { calculateDaysBetweenDates, useTimer } from '@/stores/timer'
+import { getDaysBetweenDates, useTimer } from '@/stores/timer'
 
 const settings = useSettings()
 const indexes = ref<number[]>([])
@@ -26,7 +26,7 @@ const translateX = computed(
 
 const unitWidth = computed(() => settings.unitWidth + 'px')
 
-const todayIndex = computed(() => calculateDaysBetweenDates(timer.timestamp, project.createTime))
+const todayIndex = computed(() => getDaysBetweenDates(timer.timestamp, project.createTime))
 </script>
 
 <template>
