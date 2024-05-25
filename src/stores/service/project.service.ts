@@ -226,3 +226,19 @@ export function tryMoveDownWhole(project: Project, node: Node) {
     tryMoveDownWhole(project, collideNode)
   })
 }
+
+export function appendNode(project: Project, node: Node) {
+  moveRight(project, node)
+  node.x -= 1
+  const newNode = createNodeTemplate()
+  newNode.x = node.x + 1
+  newNode.y = node.y
+  useProjects().addNode(project, newNode)
+  const { outMap } = project
+  const projects = useProjects()
+  outMap.get(node.id).forEach((edge) => {
+    projects.addEdge(project, { id: newNode.id }, { id: edge.target })
+    projects.removeEdge(project, edge.id)
+  })
+  projects.addEdge(project, { id: node.id }, { id: newNode.id })
+}
