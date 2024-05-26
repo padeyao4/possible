@@ -26,7 +26,7 @@ watch(config.value, writeConfig)
     <main>
       <div class="container">
         <div class="item">
-          <div>本地数据存储地址</div>
+          <div>数据本地存储地址</div>
           <div class="description">{{ config?.base_path ?? '临时数据' }}</div>
         </div>
         <div class="item">
@@ -43,18 +43,21 @@ watch(config.value, writeConfig)
             </select>
             <template v-if="config.git_enable">
               <div>git地址</div>
-              <input v-model="config.git_url" />
+              <input
+                v-model="config.git_url"
+                placeholder="例如: https://github.com/username/repo.git"
+              />
               <div>认证方式</div>
               <select v-model="config.git_auth_method">
-                <option value="Password">密码/password</option>
-                <option value="Key">密钥/ssh_key</option>
+                <option value="Password">密码认证 - Username & Password</option>
+                <option value="Key">密钥认证 - Private Key</option>
               </select>
-              <div>{{ config.git_auth_method }}</div>
               <template v-if="config.git_auth_method === 'Password'">
                 <input v-model="config.git_username" placeholder="用户名" />
                 <input v-model="config.git_password" placeholder="密码" type="password" />
               </template>
               <input v-else v-model="config.git_ssh_key" placeholder="私钥地址" />
+              <button>验证</button>
             </template>
           </template>
         </div>
@@ -117,12 +120,12 @@ watch(config.value, writeConfig)
         margin-bottom: 12px;
         margin-left: 0;
         margin-right: 0;
-        padding: 8px 0;
+        padding: 0 0 24px 0;
         width: 100%;
         border-bottom: 1px solid #ffffff30;
         & > * {
           margin: 4px 0;
-          padding: 8px 0;
+          padding: 4px 0;
         }
         input {
           outline-style: none;
@@ -137,17 +140,19 @@ watch(config.value, writeConfig)
           color: #d4d4d4;
           border: 1px solid #444;
           padding: 5px;
-        }
-        select option {
-          background-color: #1e1e1e;
-          color: #d4d4d4;
-          border: 1px solid #444;
-          padding: 5px;
-        }
+          border-radius: 4px;
 
-        select option:hover {
-          background-color: #333;
-          color: #fff;
+          & option {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            border: 1px solid #444;
+            padding: 5px;
+
+            &:hover {
+              background-color: #333;
+              color: #fff;
+            }
+          }
         }
 
         .description {
@@ -157,6 +162,20 @@ watch(config.value, writeConfig)
           color: #d9d9d9;
           user-select: text;
           padding: 8px;
+        }
+        button {
+          width: fit-content;
+          background-color: #026ec1; /* 类似 VSCode 的深色背景 */
+          color: #d4d4d4; /* 浅灰色文字 */
+          padding: 8px 12px;
+          border: 1px solid #444; /* 较深的边框 */
+          cursor: pointer;
+          border-radius: 3px;
+          box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+          &:hover {
+            background-color: #026eaa;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+          }
         }
       }
     }
