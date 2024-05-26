@@ -24,38 +24,40 @@ watch(config.value, writeConfig)
       <my-icon icon="solar:arrow-left-linear" class="back-button" @click="route.back()" /> 设置
     </header>
     <main>
-      <div class="item">
-        <div>本地数据存储地址</div>
-        <div class="description">{{ config?.base_path ?? '临时数据' }}</div>
-      </div>
-      <div class="item">
-        <div>数据远程存储</div>
-        <select v-model="config.remote_enable">
-          <option :value="true">开启</option>
-          <option :value="false">关闭</option>
-        </select>
-        <template v-if="config.remote_enable">
-          <div>使用git同步</div>
-          <select v-model="config.git_enable">
+      <div class="container">
+        <div class="item">
+          <div>本地数据存储地址</div>
+          <div class="description">{{ config?.base_path ?? '临时数据' }}</div>
+        </div>
+        <div class="item">
+          <div>数据远程存储</div>
+          <select v-model="config.remote_enable">
             <option :value="true">开启</option>
             <option :value="false">关闭</option>
           </select>
-          <template v-if="config.git_enable">
-            <div>git地址</div>
-            <input v-model="config.git_url" />
-            <div>认证方式</div>
-            <select v-model="config.git_auth_method">
-              <option value="Password">密码/password</option>
-              <option value="Key">密钥/ssh_key</option>
+          <template v-if="config.remote_enable">
+            <div>使用git同步</div>
+            <select v-model="config.git_enable">
+              <option :value="true">开启</option>
+              <option :value="false">关闭</option>
             </select>
-            <div>{{ config.git_auth_method }}</div>
-            <template v-if="config.git_auth_method === 'Password'">
-              <input v-model="config.git_username" placeholder="用户名" />
-              <input v-model="config.git_password" placeholder="密码" type="password" />
+            <template v-if="config.git_enable">
+              <div>git地址</div>
+              <input v-model="config.git_url" />
+              <div>认证方式</div>
+              <select v-model="config.git_auth_method">
+                <option value="Password">密码/password</option>
+                <option value="Key">密钥/ssh_key</option>
+              </select>
+              <div>{{ config.git_auth_method }}</div>
+              <template v-if="config.git_auth_method === 'Password'">
+                <input v-model="config.git_username" placeholder="用户名" />
+                <input v-model="config.git_password" placeholder="密码" type="password" />
+              </template>
+              <input v-else v-model="config.git_ssh_key" placeholder="私钥地址" />
             </template>
-            <input v-else v-model="config.git_ssh_key" placeholder="私钥地址" />
           </template>
-        </template>
+        </div>
       </div>
     </main>
   </div>
@@ -67,7 +69,6 @@ watch(config.value, writeConfig)
   flex-direction: column;
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
   background-color: #1a1b1c;
   color: #d9d9d9;
 
@@ -95,60 +96,68 @@ watch(config.value, writeConfig)
 
   main {
     display: flex;
-    flex-direction: column;
     justify-content: center;
-    width: 550px;
+    width: 100%;
+    height: calc(100vh - 64px);
+    overflow-y: auto;
 
-    & > *:first-child {
-      margin-top: 12px;
-    }
-
-    .item {
+    .container {
       display: flex;
       flex-direction: column;
-      margin-bottom: 12px;
-      margin-left: 0;
-      margin-right: 0;
-      padding: 8px 0;
-      width: 100%;
-      border-bottom: 1px solid #ffffff30;
-      & > * {
-        margin: 4px 0;
+      width: 550px;
+      height: 100%;
+
+      & > *:first-child {
+        margin-top: 12px;
+      }
+
+      .item {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 12px;
+        margin-left: 0;
+        margin-right: 0;
         padding: 8px 0;
-      }
-      input {
-        outline-style: none;
-        background-color: #2a2a2a;
-        color: #d4d4d4;
-        border: 1px solid #ffffff30;
-        border-radius: 4px;
-        padding: 8px;
-      }
-      select {
-        background-color: #1e1e1e;
-        color: #d4d4d4;
-        border: 1px solid #444;
-        padding: 5px;
-      }
-      select option {
-        background-color: #1e1e1e;
-        color: #d4d4d4;
-        border: 1px solid #444;
-        padding: 5px;
-      }
+        width: 100%;
+        border-bottom: 1px solid #ffffff30;
+        & > * {
+          margin: 4px 0;
+          padding: 8px 0;
+        }
+        input {
+          outline-style: none;
+          background-color: #2a2a2a;
+          color: #d4d4d4;
+          border: 1px solid #ffffff30;
+          border-radius: 4px;
+          padding: 8px;
+        }
+        select {
+          background-color: #1e1e1e;
+          color: #d4d4d4;
+          border: 1px solid #444;
+          padding: 5px;
+        }
+        select option {
+          background-color: #1e1e1e;
+          color: #d4d4d4;
+          border: 1px solid #444;
+          padding: 5px;
+        }
 
-      select option:hover {
-        background-color: #333;
-        color: #fff;
-      }
+        select option:hover {
+          background-color: #333;
+          color: #fff;
+        }
 
-      .description {
-        border: 1px solid #ffffff30;
-        border-radius: 4px;
-        background-color: #2a2a2a;
-        color: #d9d9d9;
-        user-select: text;
-        padding: 8px;
+        .description {
+          border: 1px solid #ffffff30;
+          border-radius: 4px;
+          background-color: #2a2a2a;
+          color: #d9d9d9;
+          user-select: text;
+          padding: 8px;
+        }
       }
     }
   }
