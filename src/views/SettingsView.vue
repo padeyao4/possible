@@ -1,35 +1,61 @@
 <script setup>
 import { useRoute } from '@/stores/route'
-import { isTauri, useInvoke } from '@/tauri-util'
-import { computed } from 'vue'
+import { ref, watch } from 'vue'
+import { invoke } from '@tauri-apps/api'
+import { useDebounceFn } from '@vueuse/core'
 
 const route = useRoute()
 
-function handleBack() {
-  route.back()
-}
+const config = ref({ base_path: '', remote_enable: false, git_auth_method: 'Password' })
 
-const dataPath = computed(() => {
-  return isTauri() ? useInvoke('get_base_path') : '临时数据'
+invoke('read_config').then((response) => {
+  Object.assign(config.value, response)
 })
+
+const writeConfig = useDebounceFn(async () => {
+  await invoke('write_config', { config: config.value })
+}, 1000)
+
+watch(config.value, writeConfig)
 </script>
 <template>
   <div class="settings">
     <header>
-      <my-icon icon="solar:arrow-left-linear" class="back-button" @click="handleBack" /> 设置
+      <my-icon icon="solar:arrow-left-linear" class="back-button" @click="route.back()" /> 设置
     </header>
     <main>
       <div class="item">
         <div>本地数据存储地址</div>
-        <div class="description">{{ dataPath }}</div>
+        <div class="description">{{ config?.base_path ?? '临时数据' }}</div>
       </div>
       <div class="item">
-        <div>远程数据</div>
-        <div>使用git同步</div>
-        <div>地址</div>
-        <div>认证方式 (password/ssh key)</div>
-        <div>同步方式 (手动/自动)</div>
-        <div>同步周期</div>
+        <div>数据远程存储</div>
+        <select v-model="config.remote_enable">
+          <option :value="true">开启</option>
+          <option :value="false">关闭</option>
+        </select>
+        <template v-if="config.remote_enable">
+          <div>使用git同步</div>
+          <select v-model="config.git_enable">
+            <option :value="true">开启</option>
+            <option :value="false">关闭</option>
+          </select>
+          <template v-if="config.git_enable">
+            <div>git地址</div>
+            <input v-model="config.git_url" />
+            <div>认证方式</div>
+            <select v-model="config.git_auth_method">
+              <option value="Password">密码/password</option>
+              <option value="Key">密钥/ssh_key</option>
+            </select>
+            <div>{{ config.git_auth_method }}</div>
+            <template v-if="config.git_auth_method === 'Password'">
+              <input v-model="config.git_username" placeholder="用户名" />
+              <input v-model="config.git_password" placeholder="密码" type="password" />
+            </template>
+            <input v-else v-model="config.git_ssh_key" placeholder="私钥地址" />
+          </template>
+        </template>
       </div>
     </main>
   </div>
@@ -93,11 +119,29 @@ const dataPath = computed(() => {
       input {
         outline-style: none;
         background-color: #2a2a2a;
-        color: #d9d9d9;
+        color: #d4d4d4;
         border: 1px solid #ffffff30;
         border-radius: 4px;
         padding: 8px;
       }
+      select {
+        background-color: #1e1e1e;
+        color: #d4d4d4;
+        border: 1px solid #444;
+        padding: 5px;
+      }
+      select option {
+        background-color: #1e1e1e;
+        color: #d4d4d4;
+        border: 1px solid #444;
+        padding: 5px;
+      }
+
+      select option:hover {
+        background-color: #333;
+        color: #fff;
+      }
+
       .description {
         border: 1px solid #ffffff30;
         border-radius: 4px;
