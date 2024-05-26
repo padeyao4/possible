@@ -3,6 +3,7 @@ import { useRoute } from '@/stores/route'
 import { ref, watch } from 'vue'
 import { invoke } from '@tauri-apps/api'
 import { useDebounceFn } from '@vueuse/core'
+import { sendNotiflyMessage } from '@/tauri-util'
 
 const route = useRoute()
 
@@ -17,6 +18,10 @@ const writeConfig = useDebounceFn(async () => {
 }, 1000)
 
 watch(config.value, writeConfig)
+
+async function handleTest() {
+  await sendNotiflyMessage('test', '测试消息')
+}
 </script>
 <template>
   <div class="settings">
@@ -57,7 +62,7 @@ watch(config.value, writeConfig)
                 <input v-model="config.git_password" placeholder="密码" type="password" />
               </template>
               <input v-else v-model="config.git_ssh_key" placeholder="私钥地址" />
-              <button>验证</button>
+              <button @click="handleTest">验证</button>
             </template>
           </template>
         </div>
