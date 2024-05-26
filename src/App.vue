@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import WindowTitlebar from '@/components/WindowTitlebar.vue'
+import GithubCorner from './components/GithubCorner.vue'
 import { tryOnBeforeMount } from '@vueuse/core'
 import { Store } from 'tauri-plugin-store-api'
 import { useRoute } from 'vue-router'
@@ -24,6 +25,7 @@ tryOnBeforeMount(async () => {
 <template>
   <window-titlebar />
   <router-view :key="route.fullPath" />
+  <github-corner />
 </template>
 
 <style scoped></style>

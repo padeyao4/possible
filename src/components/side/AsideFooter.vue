@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { useProjects } from '@/stores/projects';
-import { useRoute } from '@/stores/route';
-import { createProjectTemplate } from '@/service/project.service';
+import { createProjectTemplate } from '@/service/project.service'
+import { useProjects } from '@/stores/projects'
+import { useRoute } from '@/stores/route'
+import { isTauri } from '@/tauri-util'
+import { computed } from 'vue'
 
 const route = useRoute()
 
@@ -17,6 +19,10 @@ function onclick() {
 function handleSettings() {
   route.linkTo('settings')
 }
+
+const visible = computed(() => {
+  return isTauri()
+})
 </script>
 
 <template>
@@ -25,10 +31,12 @@ function handleSettings() {
       <my-icon icon="solar:add-square-broken" class="side-icon" />
       <div class="side-item-text">创建项目</div>
     </div>
-    <div class="splite"></div>
-    <div class="side-list-item settings" @click="handleSettings">
-      <my-icon icon="solar:settings-broken" />
-    </div>
+    <template v-if="visible">
+      <div class="splite"></div>
+      <div class="side-list-item settings" @click="handleSettings">
+        <my-icon icon="solar:settings-broken" />
+      </div>
+    </template>
   </div>
 </template>
 
