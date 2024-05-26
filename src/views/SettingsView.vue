@@ -10,7 +10,7 @@ function handleBack() {
 }
 
 const dataPath = computed(() => {
-  return isTauri() ? useInvoke('get_data_dir') : '临时数据'
+  return isTauri() ? useInvoke('get_base_path') : '临时数据'
 })
 </script>
 <template>
