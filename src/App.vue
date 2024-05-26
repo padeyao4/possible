@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import WindowTitlebar from '@/components/WindowTitlebar.vue'
 import GithubCorner from './components/GithubCorner.vue'
-import { tryOnBeforeMount } from '@vueuse/core'
+import { tryOnBeforeMount, useDebounceFn } from '@vueuse/core'
 import { Store } from 'tauri-plugin-store-api'
 import { useRoute } from 'vue-router'
 import { useProjects } from './stores/projects'
@@ -14,10 +14,11 @@ tryOnBeforeMount(async () => {
   if (isTauri()) {
     const db = new Store(import.meta.env?.VITE_DATA_PATH ?? './test.db')
     projects.deserialize(await db.get('projects'))
-    projects.$subscribe(async () => {
+    const debounceFn = useDebounceFn(async () => {
       await db.set('projects', projects.serialize())
       await db.save()
-    })
+    }, 1000)
+    projects.$subscribe(debounceFn)
   }
 })
 </script>
