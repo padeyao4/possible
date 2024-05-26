@@ -154,56 +154,42 @@ export const useProjects = defineStore('projects', () => {
     edgeMap.delete(edgeId)
   }
 
-  function deserialize(json: string): void {
-    if (json === '' || json === null) return
-    const data = JSON.parse(json) as Project[]
-    for (let i = 0; i < data.length; i++) {
-      const project = data[i]
-      const temp = createProjectTemplate()
+  function deserialize(data: any[]): void {
+    if (!Array.isArray(data)) return
 
-      temp.id = project.id
-      temp.name = project.name
-      temp.completed = project.completed
-      temp.sortIndex = project.sortIndex
-      temp.editable = project.editable
-      temp.createTime = project.createTime
-      temp.offset = project.offset
-
-      project.nodeMap.forEach((node: Node) => {
-        addNode(temp, node)
+    data.forEach((projectData) => {
+      const project: Project = createProjectTemplate()
+      project.id = projectData.id
+      project.name = projectData.name
+      project.completed = projectData.completed
+      project.sortIndex = projectData.sortIndex
+      project.editable = projectData.editable
+      project.createTime = projectData.createTime
+      project.offset = { x: 0, y: 0 }
+      projectData.nodeMap.forEach((value) => {
+        addNode(project, value)
       })
-
-      project.edgeMap.forEach((edge: Edge) => {
-        addEdge(temp, { id: edge.source }, { id: edge.target }, edge.id)
+      projectData.edgeMap.forEach((edge: Edge) => {
+        addEdge(project, { id: edge.source }, { id: edge.target }, edge.id)
       })
-
-      addProject(temp)
-    }
+      addProject(project)
+    })
   }
 
-  function serialize(): string {
-    const data = []
-    for (const [key] of projectMap.value) {
-      const project = projectMap.value.get(key)!
-      data.push({
-        id: key,
-        name: project.name,
-        nodeMap: Array.from(project.nodeMap.values()),
-        edgeMap: Array.from(project.edgeMap.values()),
-        inMap: Array.from(project.inMap.entries()).map(([key, value]) => {
-          return [key, Array.from(value)]
-        }),
-        outMap: Array.from(project.outMap.entries()).map(([key, value]) => {
-          return [key, Array.from(value)]
-        }),
-        completed: project.completed,
-        sortIndex: project.sortIndex,
-        editable: project.editable,
-        createTime: project.createTime,
-        offset: project.offset
-      })
-    }
-    return JSON.stringify(data)
+  function serialize() {
+    return Array.from(projectMap.value).map(([key, value]) => ({
+      id: key,
+      name: value.name,
+      nodeMap: Array.from(value.nodeMap.values()),
+      edgeMap: Array.from(value.edgeMap.values()),
+      inMap: Array.from(value.inMap).map(([k, v]) => [k, Array.from(v)]),
+      outMap: Array.from(value.outMap).map(([k, v]) => [k, Array.from(v)]),
+      completed: value.completed,
+      sortIndex: value.sortIndex,
+      editable: value.editable,
+      createTime: value.createTime,
+      offset: value.offset
+    }))
   }
 
   return {
