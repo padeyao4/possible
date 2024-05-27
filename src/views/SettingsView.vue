@@ -27,10 +27,17 @@ function cloneRepository() {
     cloneRepositoryLoading.value = false
     sendNotiflyMessage({
       title: '下载数据',
-      body: response?'数据下载成功':'下载数据失败',
+      body: response ? '数据下载成功' : '下载数据失败',
     })
   })
 }
+
+function handleTest() {
+  invoke('git_add_and_commit').then(response => {
+    console.log(response)
+  })
+}
+
 </script>
 <template>
   <div class="settings">
@@ -70,6 +77,7 @@ function cloneRepository() {
               <input v-else v-model="config.git_ssh_key" placeholder="私钥地址" />
               <button @click="cloneRepository" :disabled="cloneRepositoryLoading">{{ cloneRepositoryLoading ? '下载中...'
                 : '下载仓库' }}</button>
+              <button @click="handleTest">add and commit</button>
             </template>
           </template>
         </div>

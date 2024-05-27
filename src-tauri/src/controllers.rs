@@ -4,7 +4,7 @@ use std::{
     path::PathBuf,
 };
 
-use git2::{Cred, RemoteCallbacks};
+use git2::{Cred, IndexAddOption, RemoteCallbacks, Repository};
 use serde_json::from_str;
 use tauri::{api, command};
 
@@ -53,7 +53,7 @@ fn get_base_path() -> Option<PathBuf> {
     api::path::app_data_dir(config)
 }
 
-#[command]
+#[command(async)]
 pub fn read_config() -> ConfigFile {
     let config_path = get_base_path().map(|f| {
         let mut o = f.clone();
@@ -74,7 +74,7 @@ pub fn read_config() -> ConfigFile {
     };
 }
 
-#[command]
+#[command(async)]
 pub fn write_config(config: ConfigFile) {
     let config_path = get_base_path()
         .map(|f| {
@@ -128,4 +128,39 @@ pub fn clone_repository() -> bool {
             return false;
         }
     }
+}
+
+#[command(async)]
+pub fn git_add_and_commit() {
+    let config = read_config();
+    let repo = Repository::open(&config.base_path.join(config.data_dir)).unwrap();
+    let mut index = repo.index().unwrap();
+
+    index
+        .add_all(["."].iter(), IndexAddOption::DEFAULT, None)
+        .unwrap();
+
+    let oid = index.write_tree().unwrap();
+    let tree = repo.find_tree(oid).unwrap();
+
+    let author = repo.signature().unwrap();
+
+    let head = repo.head().unwrap();
+    let parent = repo.find_commit(head.target().unwrap()).unwrap();
+
+    repo.commit(
+        Some("HEAD"),
+        &author,
+        &author,
+        "",
+        &tree,
+        &[&parent],
+    )
+    .unwrap();
+
+    index
+        .add_all(["."].iter(), IndexAddOption::DEFAULT, None)
+        .unwrap();
+
+    index.write().unwrap();
 }
