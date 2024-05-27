@@ -88,7 +88,7 @@ pub fn write_config(config: ConfigFile) {
     file.write_all(json.as_bytes()).unwrap();
 }
 
-#[command]
+#[command(async)]
 pub fn clone_repository() -> bool {
     let config = read_config();
 
