@@ -4,6 +4,7 @@ use std::{
     path::PathBuf,
 };
 
+use git2::{Cred, RemoteCallbacks};
 use serde_json::from_str;
 use tauri::{api, command};
 
@@ -85,4 +86,46 @@ pub fn write_config(config: ConfigFile) {
     let mut file = File::create(config_path).unwrap();
     let json = serde_json::to_string_pretty(&config).unwrap();
     file.write_all(json.as_bytes()).unwrap();
+}
+
+#[command]
+pub fn clone_repository() -> bool {
+    let config = read_config();
+
+    let mut callbacks = RemoteCallbacks::new();
+    callbacks.credentials(|_url, username_from_url, _allowed_types| {
+        return match config.git_auth_method {
+            GitAuthMethod::Password => {
+                Cred::userpass_plaintext(&config.git_username, &config.git_password)
+            }
+            GitAuthMethod::Key => Cred::ssh_key(
+                username_from_url.unwrap(),
+                None,
+                config.git_ssh_key.as_path(),
+                None,
+            ),
+        };
+    });
+
+    // Prepare fetch options.
+    let mut fo = git2::FetchOptions::new();
+    fo.remote_callbacks(callbacks);
+
+    // Prepare builder.
+    let mut builder = git2::build::RepoBuilder::new();
+    builder.fetch_options(fo);
+
+    // Clone the project.
+    let repository = builder.clone(&config.git_url, &config.base_path.join(config.data_dir));
+
+    match repository {
+        Ok(_repo) => {
+            println!("Successfully cloned repository");
+            return true;
+        }
+        Err(e) => {
+            println!("Failed to clone repository: {}", e);
+            return false;
+        }
+    }
 }

@@ -19,8 +19,17 @@ const writeConfig = useDebounceFn(async () => {
 
 watch(config.value, writeConfig)
 
-async function handleTest() {
-  await sendNotiflyMessage('test', '测试消息')
+const cloneRepositoryLoading = ref(false)
+
+function cloneRepository() {
+  cloneRepositoryLoading.value = true
+  invoke('clone_repository').then((response) => {
+    cloneRepositoryLoading.value = false
+    sendNotiflyMessage({
+      title: '下载数据',
+      body: response?'数据下载成功':'下载数据失败',
+    })
+  })
 }
 </script>
 <template>
@@ -48,10 +57,7 @@ async function handleTest() {
             </select>
             <template v-if="config.git_enable">
               <div>git地址</div>
-              <input
-                v-model="config.git_url"
-                placeholder="例如: https://github.com/username/repo.git"
-              />
+              <input v-model="config.git_url" placeholder="例如: https://github.com/username/repo.git" />
               <div>认证方式</div>
               <select v-model="config.git_auth_method">
                 <option value="Password">密码认证 - Username & Password</option>
@@ -62,7 +68,8 @@ async function handleTest() {
                 <input v-model="config.git_password" placeholder="密码" type="password" />
               </template>
               <input v-else v-model="config.git_ssh_key" placeholder="私钥地址" />
-              <button @click="handleTest">验证</button>
+              <button @click="cloneRepository" :disabled="cloneRepositoryLoading">{{ cloneRepositoryLoading ? '下载中...'
+                : '下载仓库' }}</button>
             </template>
           </template>
         </div>
@@ -88,6 +95,7 @@ async function handleTest() {
     margin-top: 12px;
     font-size: 24px;
     border-bottom: 1px solid #ffffff40;
+
     .back-button {
       display: flex;
       justify-content: center;
@@ -96,6 +104,7 @@ async function handleTest() {
       height: 40px;
       margin: 8px;
       padding: 4px;
+
       &:hover {
         background-color: #ffffff20;
       }
@@ -115,7 +124,7 @@ async function handleTest() {
       width: 550px;
       height: 100%;
 
-      & > *:first-child {
+      &>*:first-child {
         margin-top: 12px;
       }
 
@@ -128,10 +137,12 @@ async function handleTest() {
         padding: 0 0 24px 0;
         width: 100%;
         border-bottom: 1px solid #ffffff30;
-        & > * {
+
+        &>* {
           margin: 4px 0;
           padding: 4px 0;
         }
+
         input {
           outline-style: none;
           background-color: #2a2a2a;
@@ -140,6 +151,7 @@ async function handleTest() {
           border-radius: 4px;
           padding: 8px;
         }
+
         select {
           background-color: #1e1e1e;
           color: #d4d4d4;
@@ -168,15 +180,20 @@ async function handleTest() {
           user-select: text;
           padding: 8px;
         }
+
         button {
           width: fit-content;
-          background-color: #026ec1; /* 类似 VSCode 的深色背景 */
-          color: #d4d4d4; /* 浅灰色文字 */
+          background-color: #026ec1;
+          /* 类似 VSCode 的深色背景 */
+          color: #d4d4d4;
+          /* 浅灰色文字 */
           padding: 8px 12px;
-          border: 1px solid #444; /* 较深的边框 */
+          border: 1px solid #444;
+          /* 较深的边框 */
           cursor: pointer;
           border-radius: 3px;
           box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+
           &:hover {
             background-color: #026eaa;
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
