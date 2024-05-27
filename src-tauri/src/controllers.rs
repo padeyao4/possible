@@ -148,19 +148,33 @@ pub fn git_add_and_commit() {
     let head = repo.head().unwrap();
     let parent = repo.find_commit(head.target().unwrap()).unwrap();
 
-    repo.commit(
-        Some("HEAD"),
-        &author,
-        &author,
-        "",
-        &tree,
-        &[&parent],
-    )
-    .unwrap();
+    repo.commit(Some("HEAD"), &author, &author, "", &tree, &[&parent])
+        .unwrap();
 
     index
         .add_all(["."].iter(), IndexAddOption::DEFAULT, None)
         .unwrap();
 
     index.write().unwrap();
+}
+
+#[command(async)]
+pub fn git_pull() {
+    let config = read_config();
+    let repo = Repository::open(&config.base_path.join(config.data_dir)).unwrap();
+    repo.find_remote("origin")
+        .unwrap()
+        .fetch(&["main"], None, None)
+        .unwrap();
+}
+
+#[command(async)]
+pub fn git_push() {
+    let config = read_config();
+    let repo = Repository::open(&config.base_path.join(config.data_dir)).unwrap();
+
+    repo.find_remote("origin")
+        .unwrap()
+        .push(&["main"], None)
+        .unwrap();
 }

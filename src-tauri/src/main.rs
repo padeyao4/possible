@@ -1,7 +1,9 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 mod controllers;
-use controllers::{clone_repository, git_add_and_commit, read_config, write_config};
+use controllers::{
+    clone_repository, git_add_and_commit, git_pull, git_push, read_config, write_config,
+};
 use tauri::{
     AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu,
     SystemTrayMenuItem, Window,
@@ -32,7 +34,9 @@ fn main() {
             read_config,
             write_config,
             clone_repository,
-            git_add_and_commit
+            git_add_and_commit,
+            git_pull,
+            git_push,
         ])
         .plugin(tauri_plugin_single_instance::init(|app, _argv, _cwd| {
             let window = app.get_window("main").unwrap(); //二次打开软件时，显示已打开窗口，单例运行app
