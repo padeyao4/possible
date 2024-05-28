@@ -1,9 +1,8 @@
 <script setup lang="ts">
-
 import { useEventListener } from '@vueuse/core'
 
 const props = defineProps<{
-  ok?: () => void,
+  ok?: () => void
   cancel?: () => void
 }>()
 
@@ -33,54 +32,54 @@ useEventListener(document, 'keydown', (e) => {
 <style scoped>
 .the-container {
   position: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #00000030;
   top: 0;
   left: 0;
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100vw;
   height: 100vh;
-  z-index: 7;
+  background-color: #00000030;
 
   .dialog {
     display: flex;
+    flex-direction: column;
     width: 300px;
     height: 250px;
-    flex-direction: column;
-    border-radius: 8px;
-    border: solid 1px #00000070;
     background-color: #fdfdfd;
+    border: solid 1px #00000070;
+    border-radius: 8px;
   }
 }
 
 main {
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 200px;
+  justify-content: center;
   width: 100%;
-  font-size: 16px;
+  height: 200px;
   font-weight: lighter;
+  font-size: 16px;
 }
 
 footer {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
-  border-top: solid #00000030 1px;
   height: 50px;
+  border-top: solid #00000030 1px;
 
   & > * {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     width: 50px;
     margin-right: 12px;
     padding: 4px;
+    font-weight: lighter;
     border: #00000040 solid 1px;
     border-radius: 4px;
-    font-weight: lighter;
   }
 }
 </style>

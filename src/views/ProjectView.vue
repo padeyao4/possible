@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { currentProject } from '@/service/project.service'
 import ProjectGroupComponent from '@/components/ProjectViewComponent/ProjectGroupComponent.vue'
-import ProjectFooter from '@/components/TheFooter.vue'
+import ProjectFooter from '@/components/ProjectViewComponent/TheFooter.vue'
 import { computed } from 'vue'
 
 const project = currentProject()

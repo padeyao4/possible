@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ModeDialog from '@/components/other/ModeDialog.vue'
+import ModeDialog from '@/components/common/ModeDialog.vue'
 import { useProjects, type Project } from '@/stores/projects'
 import { useRoute } from '@/stores/route'
 import { computed, ref } from 'vue'

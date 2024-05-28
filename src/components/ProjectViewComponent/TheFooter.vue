@@ -13,8 +13,7 @@ function handleBackHome() {
 }
 
 function handleToday() {
-  project.offset.x =
-    getDaysBetweenDates(project.createTime, timer.timestamp) * setting.unitWidth
+  project.offset.x = getDaysBetweenDates(project.createTime, timer.timestamp) * setting.unitWidth
 }
 
 function handleTest() {
@@ -37,15 +36,15 @@ function handleMoveRight() {}
 <style scoped>
 #the-footer {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
 
   & > * {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     width: 32px;
     height: 32px;
     padding: 4px;

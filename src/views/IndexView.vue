@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TheSeparation from '@/components/TheSeparation.vue'
+import TheSeparation from '@/components/common/TheSeparation.vue'
 import TheAside from '@/components/IndexViewComponent/TheAside.vue'
 import { updateProjects } from '@/service/project.service'
 import { useSettings } from '@/stores/settings'
