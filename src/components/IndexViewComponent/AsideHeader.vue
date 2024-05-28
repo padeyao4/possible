@@ -87,6 +87,7 @@ const todoCount = computed(() => todoList.value.length)
   }
 
   .side-icon {
+    flex-shrink: 0;
     width: 20px;
     height: 20px;
   }
