@@ -1,0 +1,40 @@
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --info-color: #17a2b8;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+
+  --backgroud-color: #ffffff;
+  --text-color: #343a40;
+  --link-color: #007bff;
+  --link-hover-color: #0056b3;
+  --border-color: #dee2e6;
+  --border-radius: 0.25rem;
+  --box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+  --transition: all 0.15s ease-in-out;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-size: 1rem;
+  --line-height: 1.5;
+  --font-weight-bold: 700;
+  --font-weight-normal: 400;
+  --font-weight-light: 300;
+  --letter-spacing: 0.009375em;
+  --border-width: 1px;
+  --border-style: solid;
+  --border-style-none: none;
+  --border-style-hidden: hidden;
+  --border-style-dotted: dotted;
+  --border-style-dashed: dashed;
+  --border-style-solid: solid;
+  --border-style-double: double;
+  --border-style-groove: groove;
+  --border-style-ridge: ridge;
+  --border-style-inset: inset;
+  --border-style-outset: outset;
+  --border-style-initial: initial;
+  --border-style-inherit: inherit;
+}
