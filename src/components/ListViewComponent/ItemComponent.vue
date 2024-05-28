@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useProjects, type Node } from '@/stores/projects'
-import { computed, inject, ref, type Ref } from 'vue'
+import { useProjects, type Node } from '@/stores/projects';
+import { computed, ref } from 'vue';
 
 const props = defineProps<{
   node: Node
