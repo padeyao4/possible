@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
+import type { Project } from './projects'
 
 
 export function showWeek(date: Date | number): string {
@@ -19,6 +20,11 @@ export function days(date: Date | number | string) {
 
 export function getDaysBetweenDates(startDate: Date | number | string, endDate: Date | number | string): number {
   return days(startDate) - days(endDate)
+}
+
+export function getIndexByDate(project: Project): number {
+  const timer = useTimer()
+  return getDaysBetweenDates(project.createTime, timer.timestamp)
 }
 
 export function scheduleMidnightTask(clear: Ref<any>, callback: () => void) {

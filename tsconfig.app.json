@@ -3,7 +3,16 @@
   "include": [
     "env.d.ts",
     "src/**/*",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "src/components/**/*",
+    "src/components/**/*.vue",
+    "src/views/**/*",
+    "src/views/**/*.vue",
+    "src/router/**/*",
+    "src/router/**/*.vue",
+    "src/utils/**/*",
+    "src/utils/**/*.vue",
+    "src/services/**/*",
   ],
   "exclude": [
     "src/**/__tests__/*"

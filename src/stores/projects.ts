@@ -49,6 +49,10 @@ export type Path = { id: string, from: Point, to: Point, [key: string]: any }
 export const useProjects = defineStore('projects', () => {
   const projectMap = ref<Map<ID, Project>>(new Map<ID, Project>())
 
+  function getProject(id: ID): Project | undefined {
+    return projectMap.value.get(id)
+  }
+
   function bfsTraverseOutEdge(project: Project, nodeId: ID, callback: (node: Node) => void): void {
     const queue = [nodeId]
     const visited = new Set<ID>()
@@ -194,6 +198,7 @@ export const useProjects = defineStore('projects', () => {
 
   return {
     projectMap,
+    getProject,
     bfsTraverseOutEdge,
     bfsTraverseInEdge,
     bfsTraverseNode,

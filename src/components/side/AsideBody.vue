@@ -78,4 +78,18 @@ function onupdate() {
     opacity: 0;
   }
 }
+
+.ghost-class {
+  opacity: 0;
+}
+
+.drag-class {
+  box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+  border-radius: 4px;
+  background: #e5ebef;
+}
+
+.grabbing * {
+  cursor: grabbing !important;
+}
 </style>
