@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import { useRoute } from '@/stores/route';
+import { type Node } from '@/stores/projects'
+import { useRoute } from '@/stores/route'
+import { computed, inject, type Ref } from 'vue'
 
 const route = useRoute()
+
+const todoList: Ref<Node[]> = inject('todoList')
+
+const todoCount = computed(() => todoList.value.length)
 </script>
 
 <template>
-  <div id="aside-header">
+  <div class="side-header">
     <div
       class="side-list-item"
       :data-active="route.active.name === 'today'"
@@ -13,7 +19,8 @@ const route = useRoute()
       @click="route.linkTo('today')"
     >
       <my-icon icon="solar:sun-2-broken" class="side-icon" />
-      <div class="side-item-text">我的一天</div>
+      <div class="side-item-text my-day">我的一天</div>
+      <div class="todo-count">{{ todoCount }}</div>
     </div>
     <div
       class="side-list-item"
@@ -37,18 +44,18 @@ const route = useRoute()
 </template>
 
 <style scoped>
-#aside-header {
+.side-header {
+  margin-top: 24px;
   box-shadow:
     rgba(27, 31, 35, 0.06) 0 1px 0,
     rgba(255, 255, 255, 0.25) 0 1px 0 inset;
-  margin-top: 24px;
 
   & > * {
     display: flex;
     align-items: center;
     height: 40px;
-    padding: 4px;
     margin: 4px;
+    padding: 4px;
     user-select: none;
   }
 
@@ -57,6 +64,31 @@ const route = useRoute()
       width: 20px;
       height: 20px;
     }
+  }
+
+  .my-day {
+    flex-grow: 1;
+    width: 100%;
+  }
+
+  .todo-count {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-right: 4px;
+    color: #000000;
+    font-weight: 600;
+    font-size: 12px;
+    background-color: #00000015;
+    border-radius: 50%;
+  }
+
+  .side-icon {
+    width: 20px;
+    height: 20px;
   }
 }
 </style>

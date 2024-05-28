@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import AsideHeader from '@/components/IndexViewComponent/AsideHeader.vue'
-import AsideBody from '@/components/IndexViewComponent/AsideBody.vue'
-import AsideFooter from '@/components/IndexViewComponent/AsideFooter.vue'
-import { useMouseStyle } from '@/stores/mouse'
+import AsideBody from '@/components/IndexViewComponent/AsideBody.vue';
+import AsideFooter from '@/components/IndexViewComponent/AsideFooter.vue';
+import AsideHeader from '@/components/IndexViewComponent/AsideHeader.vue';
+import { useMouseStyle } from '@/stores/mouse';
 
 const mouseStyle = useMouseStyle()
 

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import TheSeparation from '@/components/common/TheSeparation.vue'
-import TheAside from '@/components/IndexViewComponent/TheAside.vue'
+import TheSide from '@/components/IndexViewComponent/TheSide.vue'
 import { updateProjects } from '@/service/project.service'
+import { useProjects } from '@/stores/projects'
 import { useSettings } from '@/stores/settings'
-import { scheduleMidnightTask, useTimer } from '@/stores/timer'
+import { getIndexByDate, scheduleMidnightTask, useTimer } from '@/stores/timer'
 import { tryOnBeforeMount, tryOnBeforeUnmount } from '@vueuse/core'
-import { computed, ref } from 'vue'
+import { computed, provide, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -14,6 +15,32 @@ const settings = useSettings()
 const sideWidth = computed(() => settings.sideWidth + 'px')
 const clear = ref()
 const timer = useTimer()
+
+const projects = useProjects()
+
+const nodes = computed(() => {
+  return Array.from(projects.projectMap.values())
+    .map((project) => {
+      const curX = getIndexByDate(project)
+      const { nodeMap } = project
+      return Array.from(nodeMap.values()).filter((node) => {
+        return node.x <= curX && curX < node.x + node.width
+      })
+    })
+    .flat()
+})
+
+const todoList = computed(() => {
+  return nodes.value.filter((node) => node.completed === false)
+})
+
+const completedList = computed(() => {
+  return nodes.value.filter((node) => node.completed === true)
+})
+
+provide('completedList', completedList)
+provide('todoList', todoList)
+provide('nodes', nodes)
 
 tryOnBeforeMount(() => {
   timer.update()
@@ -32,7 +59,7 @@ tryOnBeforeUnmount(() => {
 <template>
   <div class="container">
     <aside>
-      <the-aside />
+      <TheSide />
     </aside>
     <main>
       <router-view :key="route.fullPath" />
