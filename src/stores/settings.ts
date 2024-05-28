@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export interface SettingsType {
-  active: string
   sideWidth: number
   unitHeight: number
   unitWidth: number

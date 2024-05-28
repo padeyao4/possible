@@ -1,12 +1,12 @@
+import { createProjectTemplate } from '@/service/project.service'
 import { defineStore } from 'pinia'
 import { v4 } from 'uuid'
 import { ref } from 'vue'
-import { createProjectTemplate } from '@/service/project.service'
 
 export type ID = string | number
 
 export interface Point {
-  x: number,
+  x: number
   y: number
 }
 
@@ -44,7 +44,7 @@ export interface Project {
   offset: Point
 }
 
-export type Path = { id: string, from: Point, to: Point, [key: string]: any }
+export type Path = { id: string; from: Point; to: Point; [key: string]: any }
 
 export const useProjects = defineStore('projects', () => {
   const projectMap = ref<Map<ID, Project>>(new Map<ID, Project>())
@@ -136,7 +136,12 @@ export const useProjects = defineStore('projects', () => {
     nodeMap.delete(nodeId)
   }
 
-  function addEdge(project: Project, node1: Partial<Node>, node2: Partial<Node>, id: ID = undefined): void {
+  function addEdge(
+    project: Project,
+    node1: Partial<Node>,
+    node2: Partial<Node>,
+    id: ID = undefined
+  ): void {
     const { edgeMap, inMap, outMap } = project
     const edge = {
       id: id === undefined ? v4() : id,

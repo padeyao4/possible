@@ -3,10 +3,20 @@ import { type MouseStyleType, useMouseStyle } from '@/stores/mouse'
 import { type SettingsType, useSettings } from '@/stores/settings'
 import { useEventListener } from '@vueuse/core'
 
-const eventTypes = ['mouseover', 'mouseout', 'mousedown', 'mouseup', 'mousemove', 'click', 'dblclick', 'contextmenu','wheel']
+const eventTypes = [
+  'mouseover',
+  'mouseout',
+  'mousedown',
+  'mouseup',
+  'mousemove',
+  'click',
+  'dblclick',
+  'contextmenu',
+  'wheel'
+]
 
 export type EventType =
-  'mouseover'
+  | 'mouseover'
   | 'mouseout'
   | 'mousedown'
   | 'mouseup'
@@ -17,7 +27,6 @@ export type EventType =
   | 'wheel'
 export type ElementType = 'canvas' | 'node' | 'edge' | 'anchor' | 'resize' | ''
 export type CanvasEventType = `${ElementType}:${EventType}`
-
 
 export type EventDispatch = {
   [key in CanvasEventType]?: (e: Event, el: Element, elType: string) => void
@@ -64,20 +73,20 @@ export class Register {
   }
 
   public addBehaviors(...behaviors: (typeof BaseBehavior)[]) {
-    behaviors.forEach(b => {
+    behaviors.forEach((b) => {
       this.behaviors.push(Reflect.construct(b, [this.project, this.mouseStyle, this.settings]))
     })
   }
 
   public listen() {
-    eventTypes.forEach(mouseType => {
+    eventTypes.forEach((mouseType) => {
       this.container.addEventListener(mouseType, this.processEvent.bind(this))
     })
     this.globalListenerCleanup = useEventListener(document, 'mouseup', this.processEvent.bind(this))
   }
 
   public removeListen() {
-    eventTypes.forEach(mouseType => {
+    eventTypes.forEach((mouseType) => {
       this.container.removeEventListener(mouseType, this.processEvent)
     })
     this.globalListenerCleanup()
@@ -87,14 +96,16 @@ export class Register {
     const el = e.target as Element
     const eventType = e.type as EventType
     const elementType = el.getAttribute('data-el-type') ?? 'unknown'
-    this.behaviors.filter(behavior => {
-      const dispatch = behavior.getEventDispatch()
-      const set = new Set(Object.keys(dispatch))
-      return set.has(elementType + ':' + eventType) || set.has(':' + eventType)
-    }).forEach(behavior => {
-      const dispatchEvent = behavior.getEventDispatch()
-      dispatchEvent[elementType + ':' + eventType]?.(e, el, eventType, elementType)
-      dispatchEvent[':' + eventType]?.(e, el, eventType, elementType)
-    })
+    this.behaviors
+      .filter((behavior) => {
+        const dispatch = behavior.getEventDispatch()
+        const set = new Set(Object.keys(dispatch))
+        return set.has(elementType + ':' + eventType) || set.has(':' + eventType)
+      })
+      .forEach((behavior) => {
+        const dispatchEvent = behavior.getEventDispatch()
+        dispatchEvent[elementType + ':' + eventType]?.(e, el, eventType, elementType)
+        dispatchEvent[':' + eventType]?.(e, el, eventType, elementType)
+      })
   }
 }

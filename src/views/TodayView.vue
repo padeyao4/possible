@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import ItemComponent from '@/components/ListViewComponent/ItemComponent.vue'
-import { type Node } from '@/stores/projects'
-import { timeFormat, useTimer } from '@/stores/timer'
-import { computed, inject, ref, type Ref } from 'vue'
+import { useProjects } from '@/stores/projects'
+import { getIndexByDate, timeFormat, useTimer } from '@/stores/timer'
+import { computed, ref } from 'vue'
 import draggable from 'vuedraggable'
 
-const todoList = inject<Ref<Node[]>>('todoList')
-
-const completedList = inject<Ref<Node[]>>('completedList')
-
+const projects = useProjects()
 const visible = ref(false)
 
 const timer = useTimer()
@@ -17,14 +14,50 @@ const dateTime = computed(() => {
   return timeFormat.format(timer.localTimestamp) + ' 星期' + new Date(timer.localTimestamp).getDay()
 })
 
+const nodes = computed(() => {
+  console.log('update-nodes')
+  return Array.from(projects.projectMap.values())
+    .map((project) => {
+      const curX = getIndexByDate(project)
+      const { nodeMap } = project
+      return Array.from(nodeMap.values()).filter((node) => {
+        return node.x <= curX && curX < node.x + node.width
+      })
+    })
+    .flat()
+})
+
+const todoList = computed(() => {
+  console.log('todoList')
+  return nodes.value
+    .filter((node) => node.completed === false)
+    .sort((a, b) => {
+      return a.sortedIndex - b.sortedIndex
+    })
+})
+
+const completedList = computed(() => {
+  console.log('completedList')
+  return nodes.value
+    .filter((node) => node.completed === true)
+    .sort((a, b) => {
+      return a.sortedIndex - b.sortedIndex
+    })
+})
+
 function ondragend() {}
 
 function ondragstart() {}
 
-function onupdate() {
+function onupdateTodoList() {
+  console.log('update todo list')
   todoList.value.forEach((item, index) => {
     item.sortedIndex = index
   })
+}
+
+function onupdateCompletedList() {
+  console.log('update completed list')
   completedList.value.forEach((item, index) => {
     item.sortedIndex = index
   })
@@ -50,7 +83,7 @@ function onupdate() {
         @end="ondragend"
         @start="ondragstart"
         class="todo-class"
-        @update="onupdate"
+        @update="onupdateTodoList"
       >
         <template #item="{ element }">
           <item-component :node="element" />
@@ -73,7 +106,7 @@ function onupdate() {
         @end="ondragend"
         @start="ondragstart"
         class="todo-class"
-        @update="onupdate"
+        @update="onupdateCompletedList"
       >
         <template #item="{ element }">
           <item-component :node="element" />

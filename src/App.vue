@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import WindowTitlebar from '@/components/other/WindowTitlebar.vue'
 import GithubCorner from '@/components/other/GithubCorner.vue'
+import WindowTitlebar from '@/components/other/WindowTitlebar.vue'
+import { invoke } from '@tauri-apps/api'
 import { tryOnBeforeMount, useDebounceFn, useIntervalFn } from '@vueuse/core'
 import { Store } from 'tauri-plugin-store-api'
 import { useRoute } from 'vue-router'
 import { useProjects } from './stores/projects'
 import { isTauri } from './tauri-util'
-import { invoke } from '@tauri-apps/api'
 
 const projects = useProjects()
 const route = useRoute()
