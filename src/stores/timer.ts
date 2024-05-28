@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
-import { ref, type Ref } from 'vue'
+import { computed, ref, type Ref } from 'vue'
 import type { Project } from './projects'
-
 
 export function showWeek(date: Date | number): string {
   const arr = ['日', '一', '二', '三', '四', '五', '六']
@@ -18,7 +17,10 @@ export function days(date: Date | number | string) {
   return Math.ceil((d.getTime() - d.getTimezoneOffset() * ONE_MINUTE_MS) / ONE_DAY_MS)
 }
 
-export function getDaysBetweenDates(startDate: Date | number | string, endDate: Date | number | string): number {
+export function getDaysBetweenDates(
+  startDate: Date | number | string,
+  endDate: Date | number | string
+): number {
   return days(startDate) - days(endDate)
 }
 
@@ -42,12 +44,18 @@ export function scheduleMidnightTask(clear: Ref<any>, callback: () => void) {
 export const useTimer = defineStore('timestamp', () => {
   const timestamp = ref(new Date().valueOf())
 
+  const localTimestamp = computed(() => {
+    const d = new Date(timestamp.value)
+    return d.getTime() - d.getTimezoneOffset() * ONE_MINUTE_MS
+  })
+
   function update() {
     timestamp.value = new Date().valueOf()
   }
 
   return {
     timestamp,
+    localTimestamp,
     update
   }
 })

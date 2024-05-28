@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import ItemComponent from '@/components/ListViewComponent/ItemComponent.vue'
 import { type Node } from '@/stores/projects'
-import { inject, ref, type Ref } from 'vue'
+import { timeFormat, useTimer } from '@/stores/timer'
+import { computed, inject, ref, type Ref } from 'vue'
 import draggable from 'vuedraggable'
 
 const todoList = inject<Ref<Node[]>>('todoList')
@@ -9,6 +10,12 @@ const todoList = inject<Ref<Node[]>>('todoList')
 const completedList = inject<Ref<Node[]>>('completedList')
 
 const visible = ref(false)
+
+const timer = useTimer()
+
+const dateTime = computed(() => {
+  return timeFormat.format(timer.localTimestamp) + ' 星期' + new Date(timer.localTimestamp).getDay()
+})
 
 function ondragend() {}
 
@@ -21,7 +28,7 @@ function onupdate() {}
   <div id="home-view">
     <header data-tauri-drag-region>
       <div data-tauri-drag-region>我的一天</div>
-      <div data-tauri-drag-region>2024/5/28 星期2</div>
+      <div data-tauri-drag-region>{{ dateTime }}</div>
     </header>
     <main>
       <draggable
