@@ -24,7 +24,7 @@ export function getDaysBetweenDates(startDate: Date | number | string, endDate: 
 
 export function getIndexByDate(project: Project): number {
   const timer = useTimer()
-  return getDaysBetweenDates(project.createTime, timer.timestamp)
+  return getDaysBetweenDates(timer.timestamp, project.createTime)
 }
 
 export function scheduleMidnightTask(clear: Ref<any>, callback: () => void) {
