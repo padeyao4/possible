@@ -43,12 +43,12 @@ tryOnBeforeUnmount(() => {
 
 <style scoped>
 .container {
-  display: flex;
   position: relative;
+  display: flex;
+  flex-direction: row;
   width: 100vw;
   height: 100vh;
   background-color: #f7f7f9;
-  flex-direction: row;
 }
 
 aside {
@@ -58,9 +58,9 @@ aside {
 main {
   width: calc(100vw - v-bind(sideWidth));
   height: 100%;
+  overflow: hidden;
+  background-color: #fdfdfd;
   border-radius: 8px 0 0 0;
   box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
-  background-color: #fdfdfd;
-  overflow: hidden;
 }
 </style>

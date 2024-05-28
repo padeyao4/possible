@@ -1,43 +1,39 @@
 <script setup lang="ts">
-import { useProjects } from '@/stores/projects';
-import { getIndexByDate } from '@/stores/timer';
-import { computed, ref } from 'vue';
-import draggable from 'vuedraggable';
-import ItemComponent from '@/components/ListViewComponent/ItemComponent.vue';
+import { useProjects } from '@/stores/projects'
+import { getIndexByDate } from '@/stores/timer'
+import { computed, ref } from 'vue'
+import draggable from 'vuedraggable'
+import ItemComponent from '@/components/ListViewComponent/ItemComponent.vue'
 
 const projects = useProjects()
 
 const nodes = computed(() => {
-  return Array.from(projects.projectMap.values()).map(project => {
-    const curX = getIndexByDate(project)
-    const { nodeMap } = project
-    return Array.from(nodeMap.values()).filter(node => {
-      return node.x <= curX && curX < node.x + node.width
+  return Array.from(projects.projectMap.values())
+    .map((project) => {
+      const curX = getIndexByDate(project)
+      const { nodeMap } = project
+      return Array.from(nodeMap.values()).filter((node) => {
+        return node.x <= curX && curX < node.x + node.width
+      })
     })
-  }).flat()
+    .flat()
 })
 
 const todoList = computed(() => {
-  return nodes.value.filter(node => node.completed === false)
+  return nodes.value.filter((node) => node.completed === false)
 })
 
 const completedList = computed(() => {
-  return nodes.value.filter(node => node.completed === true)
+  return nodes.value.filter((node) => node.completed === true)
 })
 
 const visible = ref(false)
 
-function ondragend() {
+function ondragend() { }
 
-}
+function ondragstart() { }
 
-function ondragstart() {
-
-}
-
-function onupdate() {
-
-}
+function onupdate() { }
 </script>
 
 <template>

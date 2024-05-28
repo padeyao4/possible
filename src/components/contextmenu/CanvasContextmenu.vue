@@ -65,18 +65,19 @@ onMounted(() => {
     padding: 4px;
     border-radius: 4px;
     color: #ffffff90;
+
     &:hover {
       background-color: #ffffff60;
     }
   }
 }
 
-@keyframes fadeIn{
-  0%{
+@keyframes fadeIn {
+  0% {
     opacity: 0;
   }
 
-  100%{
+  100% {
     opacity: 1;
   }
 }
