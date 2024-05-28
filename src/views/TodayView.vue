@@ -21,7 +21,14 @@ function ondragend() {}
 
 function ondragstart() {}
 
-function onupdate() {}
+function onupdate() {
+  todoList.value.forEach((item, index) => {
+    item.sortedIndex = index
+  })
+  completedList.value.forEach((item, index) => {
+    item.sortedIndex = index
+  })
+}
 </script>
 
 <template>
