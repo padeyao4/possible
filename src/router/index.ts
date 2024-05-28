@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import ListView from '@/views/ListView.vue'
+import TodayView from '@/views/TodayView.vue'
 import ProjectView from '@/views/ProjectView.vue'
 import BacklogView from '@/views/BacklogView.vue'
 import ManageView from '@/views/ManageView.vue'
@@ -16,7 +16,7 @@ const router = createRouter({
         {
           path: 'today',
           name: 'today',
-          component: ListView
+          component: TodayView
         },
         {
           path: 'backlog',
