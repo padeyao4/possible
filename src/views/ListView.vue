@@ -12,7 +12,7 @@ const nodes = computed(() => {
     const curX = getIndexByDate(project)
     const { nodeMap } = project
     return Array.from(nodeMap.values()).filter(node => {
-      return node.x >= curX
+      return node.x <= curX && node.x + node.width >= curX
     })
   }).flat()
 })

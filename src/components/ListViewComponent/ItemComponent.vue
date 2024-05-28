@@ -6,17 +6,34 @@ const props = defineProps<{
     node: Node
 }>()
 
+const { node } = props
+
 const projects = useProjects()
 
-const project = computed(() => projects.getProject(props.node.projectId))
+const project = computed(() => projects.getProject(node.projectId))
 const over = ref(false)
+
+const textDecoration = computed(() => {
+    return node.completed ? 'line-through' : 'none'
+})
+
+const iconStyle = computed(() => {
+    if (node.completed) {
+        return !over.value ? 'solar:check-circle-linear' : 'solar:record-line-duotone';
+    } else {
+        return over.value ? 'solar:check-circle-linear' : 'solar:record-line-duotone';
+    }
+})
+
+function onclick() {
+    node.completed = !node.completed
+}
 
 </script>
 <template>
     <div class="item">
-        <div class="icon">
-            <my-icon :icon="over ? 'solar:check-circle-linear' : 'solar:record-line-duotone'" @mouseenter="over = true"
-                @mouseleave="over = false" />
+        <div class="icon" @click="onclick">
+            <my-icon :icon="iconStyle" @mouseenter="over = true" @mouseleave="over = false" />
         </div>
         <div class="content">
             <div class="one">
@@ -65,6 +82,7 @@ const over = ref(false)
             align-items: end;
             font-size: 15px;
             color: #000000;
+            text-decoration: v-bind(textDecoration);
         }
 
         .two {
