@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import CanvasHeader from '@/components/canvas/CanvasHeader.vue'
-import CanvasRuler from '@/components/canvas/CanvasRuler.vue'
-import CanvasGrid from '@/components/canvas/CanvasGrid.vue'
-import TheCanvas from '@/components/canvas/TheCanvas.vue'
-import NodeEditor from '@/components/canvas/CanvasEditor.vue'
+import CanvasHeader from '@/components/ProjectViewComponent/CanvasHeader.vue'
+import CanvasRuler from '@/components/ProjectViewComponent/CanvasRuler.vue'
+import CanvasGrid from '@/components/ProjectViewComponent/CanvasGrid.vue'
+import TheCanvas from '@/components/ProjectViewComponent/TheCanvas.vue'
+import NodeEditor from '@/components/ProjectViewComponent/CanvasEditor.vue'
 import CanvasContextmenu from '@/components/contextmenu/CanvasContextmenu.vue'
 
 </script>

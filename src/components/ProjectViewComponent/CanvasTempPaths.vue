@@ -4,7 +4,7 @@ import { computed } from 'vue'
 import { useSettings } from '@/stores/settings'
 import type { Point } from '@/stores/projects'
 import { useTempPaths } from '@/stores/temp-path'
-import CanvasTheTempPath from '@/components/canvas/CanvasTheTempPath.vue'
+import CanvasTheTempPath from '@/components/ProjectViewComponent/CanvasTheTempPath.vue'
 
 const project = currentProject()
 const setting = useSettings()

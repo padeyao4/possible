@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { currentProject } from '@/service/project.service'
-import ProjectComponentGroup from '@/components/ProjectComponentGroup.vue'
+import ProjectGroupComponent from '@/components/ProjectViewComponent/ProjectGroupComponent.vue'
 import ProjectFooter from '@/components/TheFooter.vue'
 import { computed } from 'vue'
 
@@ -21,7 +21,7 @@ const projectName = computed(() => {
       <div class="title">{{ projectName }}</div>
     </header>
     <main class="border-top-shadow canvas-background-color">
-      <project-component-group />
+      <ProjectGroupComponent />
     </main>
     <footer>
       <project-footer />

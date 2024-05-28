@@ -3,7 +3,7 @@ import { currentProject } from '@/service/project.service'
 import { computed } from 'vue'
 import { useSettings } from '@/stores/settings'
 import type { Path } from '@/stores/projects'
-import CanvasThePath from '@/components/canvas/CanvasThePath.vue'
+import CanvasThePath from '@/components/ProjectViewComponent/CanvasThePath.vue'
 
 const project = currentProject()
 const setting = useSettings()

@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import Draggable from 'vuedraggable/src/vuedraggable'
 import { useProjects } from '@/stores/projects'
-import AsideBodyItem from '@/components/side/AsideBodyItem.vue'
+import AsideBodyItem from '@/components/IndexViewComponent/AsideBodyItem.vue'
 import { useMouseStyle } from '@/stores/mouse'
 
 const { projectMap } = useProjects()

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import CanvasPaths from '@/components/canvas/CanvasPaths.vue'
-import CanvasCards from '@/components/canvas/CanvasCards.vue'
+import CanvasPaths from '@/components/ProjectViewComponent/CanvasPaths.vue'
+import CanvasCards from '@/components/ProjectViewComponent/CanvasCards.vue'
 
 import { currentProject } from '@/service/project.service'
 import { computed, onMounted, ref } from 'vue'
 import { Register } from '@/lib/base'
-import CanvasTempPaths from '@/components/canvas/CanvasTempPaths.vue'
+import CanvasTempPaths from '@/components/ProjectViewComponent/CanvasTempPaths.vue'
 import { useCanvas } from '@/stores/canvas'
 import DragCanvas from '@/lib/behavior/drag-canvas'
 import { DragCard } from '@/lib/behavior/drag-card'
