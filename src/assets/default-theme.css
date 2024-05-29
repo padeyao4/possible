@@ -15,4 +15,15 @@
   --background-active-color: #e5ebef;
 
   --border-default-color: #33333350;
+  --border-default-style: 1px solid  var(--border-default-color);
+
+  --border-radius-default-value: 4px;
+
+  --box-shadow-default-value: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  --transition-default-value: all 0.3s ease-in-out;
+
+  --primary-color: #409eff;
+  --primary-color-light: #e6f7ff;
+  --primary-color-dark: #3a8ee6;
 }

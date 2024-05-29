@@ -27,11 +27,10 @@ function cloneRepository() {
     cloneRepositoryLoading.value = false
     sendNotiflyMessage({
       title: '下载数据',
-      body: response ? '数据下载成功' : '下载数据失败',
+      body: response ? '数据下载成功' : '下载数据失败'
     })
   })
 }
-
 </script>
 <template>
   <div class="settings">
@@ -58,7 +57,10 @@ function cloneRepository() {
             </select>
             <template v-if="config.git_enable">
               <div>git地址</div>
-              <input v-model="config.git_url" placeholder="例如: https://github.com/username/repo.git" />
+              <input
+                v-model="config.git_url"
+                placeholder="例如: https://github.com/username/repo.git"
+              />
               <div>认证方式</div>
               <select v-model="config.git_auth_method">
                 <option value="Password">密码认证 - Username & Password</option>
@@ -69,8 +71,9 @@ function cloneRepository() {
                 <input v-model="config.git_password" placeholder="密码" type="password" />
               </template>
               <input v-else v-model="config.git_ssh_key" placeholder="私钥地址" />
-              <button @click="cloneRepository" :disabled="cloneRepositoryLoading">{{ cloneRepositoryLoading ? '下载中...'
-                : '下载仓库' }}</button>
+              <button @click="cloneRepository" :disabled="cloneRepositoryLoading">
+                {{ cloneRepositoryLoading ? '下载中...' : '下载仓库' }}
+              </button>
             </template>
           </template>
         </div>
@@ -81,12 +84,11 @@ function cloneRepository() {
 <style scoped>
 .settings {
   display: flex;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
   width: 100vw;
   height: 100vh;
-  background-color: #1a1b1c;
-  color: #d9d9d9;
+  background-color: var(--background-bottom-color);
 
   header {
     display: flex;
@@ -95,19 +97,19 @@ function cloneRepository() {
     height: 64px;
     margin-top: 12px;
     font-size: 24px;
-    border-bottom: 1px solid #ffffff40;
+    border-bottom: var(--border-default-style);
 
     .back-button {
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       width: 40px;
       height: 40px;
       margin: 8px;
       padding: 4px;
 
       &:hover {
-        background-color: #ffffff20;
+        background-color: var(--background-top-color);
       }
     }
   }
@@ -125,78 +127,73 @@ function cloneRepository() {
       width: 550px;
       height: 100%;
 
-      &>*:first-child {
+      & > *:first-child {
         margin-top: 12px;
       }
 
       .item {
         display: flex;
         flex-direction: column;
+        width: 100%;
+        margin-right: 0;
         margin-bottom: 12px;
         margin-left: 0;
-        margin-right: 0;
         padding: 0 0 24px 0;
-        width: 100%;
-        border-bottom: 1px solid #ffffff30;
+        border-bottom: var(--border-default-style);
 
-        &>* {
+        & > * {
           margin: 4px 0;
           padding: 4px 0;
         }
 
         input {
-          outline-style: none;
-          background-color: #2a2a2a;
-          color: #d4d4d4;
-          border: 1px solid #ffffff30;
-          border-radius: 4px;
           padding: 8px;
+          background-color: var(--background-middle-color);
+          border: var(--border-default-style);
+          border-radius: 4px;
+          outline-style: none;
         }
 
         select {
-          background-color: #1e1e1e;
-          color: #d4d4d4;
-          border: 1px solid #444;
           padding: 5px;
+          background-color: var(--background-middle-color);
+          border: var(--border-default-style);
           border-radius: 4px;
 
           & option {
-            background-color: #1e1e1e;
-            color: #d4d4d4;
-            border: 1px solid #444;
             padding: 5px;
+            background-color: var(--background-middle-color);
+            border: var(--border-default-style);
 
             &:hover {
-              background-color: #333;
-              color: #fff;
+              background-color: var(--background-top-color);
             }
+          }
+          &:focus {
+            outline: none;
           }
         }
 
         .description {
-          border: 1px solid #ffffff30;
-          border-radius: 4px;
-          background-color: #2a2a2a;
-          color: #d9d9d9;
-          user-select: text;
           padding: 8px;
+          background-color: var(--background-middle-color);
+          border: var(--border-default-style);
+          border-radius: 4px;
+          user-select: text;
         }
 
         button {
           width: fit-content;
-          background-color: #026ec1;
-          /* 类似 VSCode 的深色背景 */
-          color: #d4d4d4;
-          /* 浅灰色文字 */
           padding: 8px 12px;
-          border: 1px solid #444;
-          /* 较深的边框 */
-          cursor: pointer;
+          background-color: var(--primary-color);
+          border: var(--border-default-style);
           border-radius: 3px;
           box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+          /* 较深的边框 */
+          cursor: pointer;
 
           &:hover {
-            background-color: #026eaa;
+            background-color: var(--primary-color-dark);
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
           }
         }
