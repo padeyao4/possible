@@ -53,6 +53,10 @@ export const useProjects = defineStore('projects', () => {
     return projectMap.value.get(id)
   }
 
+  function getProjectByNode(node: Node) {
+    return getProject(node.projectId)
+  }
+
   function bfsTraverseOutEdge(project: Project, nodeId: ID, callback: (node: Node) => void): void {
     const queue = [nodeId]
     const visited = new Set<ID>()
@@ -204,6 +208,7 @@ export const useProjects = defineStore('projects', () => {
   return {
     projectMap,
     getProject,
+    getProjectByNode,
     bfsTraverseOutEdge,
     bfsTraverseInEdge,
     bfsTraverseNode,
