@@ -14,7 +14,8 @@ const route = useRoute()
     >
       <my-icon icon="solar:sun-2-broken" class="side-icon" />
       <div class="side-item-text my-day">我的一天</div>
-      <div class="todo-count">0</div>
+      <!-- 等待后续数据解耦 -->
+      <!-- <div class="todo-count">0</div> -->
     </div>
     <div
       class="side-list-item"

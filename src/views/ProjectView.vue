@@ -43,13 +43,13 @@ header {
   width: 100%;
   margin-top: 24px;
   margin-bottom: 12px;
-  font-size: 20px;
 
   .title {
     height: 40px;
     margin-left: 16px;
     display: flex;
     align-items: center;
+    font-size: var(--font-large-size);
   }
 }
 

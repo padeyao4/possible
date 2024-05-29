@@ -1,4 +1,4 @@
-@import './light-theme.css';
+@import './default-theme.css';
 
 *,
 *::before,
@@ -10,6 +10,9 @@
 }
 
 * {
+  color: var(--text-default-color);
+  font-size: var(--font-middle-size);
+  font-weight: var(--font-default-weight);
   font-family:
     Inter,
     -apple-system,
