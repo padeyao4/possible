@@ -1,8 +1,5 @@
 import { BaseBehavior, type EventDispatch } from '@/lib/base'
-import { useCanvas } from '@/stores/canvas'
-import { useCanvasContextMenu } from '@/stores/contextmenu'
-import { useMouseStyle } from '@/stores/mouse'
-import { clampMax } from '../math'
+import $bus from '@/lib/bus'
 
 export class HandleContextmenu extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -26,19 +23,6 @@ export class HandleContextmenu extends BaseBehavior {
   }
 
   private process(e: MouseEvent, elementType: 'node' | 'canvas' | 'edge') {
-    const contextmenu = useCanvasContextMenu()
-    const canvas = useCanvas()
-
-    contextmenu.setActive(elementType)
-    contextmenu.mouseEvent = e
-    contextmenu.visible = true
-
-    setTimeout(() => {
-      const svg = canvas.svg.getBoundingClientRect()
-      contextmenu.clientX = clampMax(e.x, svg.right - contextmenu.bounding().width)
-      contextmenu.clientY = clampMax(e.y, svg.bottom - contextmenu.bounding().height)
-      const mouseStyle = useMouseStyle()
-      mouseStyle.setStyleWithUnlock('default')
-    })
+    $bus.emit('contextmenu', { e, elementType })
   }
 }

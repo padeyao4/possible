@@ -33,6 +33,9 @@ const visible = computed(() => !isTauri())
   </a>
 </template>
 <style scoped>
+* {
+  color: #fff;
+}
 .github-corner:hover .octo-arm {
   animation: octocat-wave 560ms ease-in-out;
 }

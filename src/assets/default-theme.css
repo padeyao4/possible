@@ -2,7 +2,7 @@
   --font-middle-size: 15px;
   --font-large-size: 18px;
   --font-small-size: 13px;
-  
+
   --font-default-weight: 400;
   --font-light-weight: 200;
   --font-strong-weight: 600;
@@ -12,4 +12,7 @@
   --background-top-color: #ffffff;
   --background-middle-color: #f9fafd;
   --background-bottom-color: #f2f3f6;
+  --background-active-color: #e5ebef;
+
+  --border-default-color: #33333350;
 }
