@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useProjects, type Node } from '@/stores/projects';
-import { computed, ref } from 'vue';
+import { useProjects, type Node } from '@/stores/projects'
+import { computed, ref } from 'vue'
 
 const props = defineProps<{
   node: Node
@@ -80,14 +80,13 @@ function onclick() {
       display: flex;
       align-items: end;
       height: 28px;
-      color: #000000;
-      font-size: 15px;
+      font-size: var(--font-default-size);
       text-decoration: v-bind(textDecoration);
     }
 
     .two {
       height: 28px;
-      font-size: 13px;
+      font-size: var(--font-small-size);
     }
   }
 

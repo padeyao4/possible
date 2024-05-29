@@ -48,7 +48,7 @@ tryOnBeforeUnmount(() => {
   flex-direction: row;
   width: 100vw;
   height: 100vh;
-  background-color: #f7f7f9;
+  background-color: var(--background-bottom-color);
 }
 
 aside {
@@ -59,7 +59,7 @@ main {
   width: calc(100vw - v-bind(sideWidth));
   height: 100%;
   overflow: hidden;
-  background-color: #fdfdfd;
+  background-color: var(--background-middle-color);
   border-radius: 8px 0 0 0;
   box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
 }

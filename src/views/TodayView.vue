@@ -164,13 +164,12 @@ header {
   }
 
   & div:first-child {
-    font-size: 20px;
+    font-size: var(--font-large-size);
   }
 
   & div:nth-child(2) {
-    color: rgba(0, 0, 0, 0.8);
-    font-weight: 300;
-    font-size: 14px;
+    font-size: var(--font-small-size);
+    font-weight: var(--font-light-weight);
   }
 }
 
