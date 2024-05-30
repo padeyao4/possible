@@ -9,9 +9,9 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const { fullPath } = useRoute()
-const settings = useSettings()
+const { sideWidth } = useSettings()
 
-const sideWidth = computed(() => settings.sideWidth + 'px')
+const width = computed(() => sideWidth + 'px')
 const clear = ref()
 const timer = useTimer()
 
@@ -48,11 +48,11 @@ tryOnBeforeUnmount(() => {
 }
 
 .side {
-  width: v-bind(sideWidth);
+  width: v-bind(width);
 }
 
 .main {
-  width: calc(100vw - v-bind(sideWidth));
+  width: calc(100vw - v-bind(width));
   height: 100%;
   overflow: hidden;
   background-color: var(--background-middle-color);

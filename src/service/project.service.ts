@@ -55,9 +55,9 @@ export function createRandomNodeTemplate(): Node {
 }
 
 export function currentProject(): Project {
-  const route = useRoute()
-  const { projectMap } = useProjects()
-  return projectMap.get(route.active.param) ?? createProjectTemplate()
+  const { active } = useRoute()
+  const { getProject } = useProjects()
+  return getProject(active.param) ?? createProjectTemplate()
 }
 
 export function testProjects() {
