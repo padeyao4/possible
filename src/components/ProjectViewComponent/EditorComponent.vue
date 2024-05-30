@@ -113,7 +113,7 @@ function handleCloseButton() {
 .editor-component {
   flex-shrink: 0;
   width: v-bind(widthStyle);
-  background-color: var(--background-bottom-color);
+  background-color: var(--background-middle-color);
 }
 
 .node-info {
