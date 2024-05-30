@@ -56,5 +56,6 @@ svg {
   height: calc(100% - 40px);
   margin-left: 40px;
   margin-top: 40px;
+  background-color: antiquewhite;
 }
 </style>

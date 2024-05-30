@@ -47,7 +47,7 @@ const todayIndex = computed(() => getDaysBetweenDates(timer.timestamp, project.c
   top: 0;
   left: 0;
   right: 0;
-  height: 39px;
+  height: 40px;
   overflow-x: hidden;
   background-color: transparent;
   pointer-events: none;
