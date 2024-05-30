@@ -18,7 +18,7 @@ const projectName = computed(() => {
 
 <template>
   <div class="project-view">
-    <header>
+    <header data-tauri-drag-region>
       <div class="title">{{ projectName }}</div>
     </header>
     <main class="project-group">
