@@ -20,7 +20,7 @@ const projectName = computed(() => {
     <header>
       <div class="title">{{ projectName }}</div>
     </header>
-    <main class="border-top-shadow project-canvas-color">
+    <main class="project-canvas-color">
       <ProjectGroupComponent />
     </main>
     <footer>
@@ -61,12 +61,15 @@ footer {
   flex-shrink: 0;
   height: 48px;
   background: transparent !important;
-  box-shadow:
+  /* box-shadow:
     rgba(27, 31, 35, 0.06) 0 -1px 0,
-    rgba(255, 255, 255, 0.25) 0 -1px 0 inset;
+    rgba(255, 255, 255, 0.25) 0 -1px 0 inset; */
+  border-top: 1px solid #00000010;
 }
 
 .project-canvas-color {
-  background-color: var(--background-top-color);
+  /* background-color: var(--background-top-color); */
+  background-color: var(--background-middle-color);
+  border-top: 1px solid #00000010;
 }
 </style>

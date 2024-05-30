@@ -30,7 +30,7 @@ const todayIndex = computed(() => getDaysBetweenDates(timer.timestamp, project.c
 </script>
 
 <template>
-  <div class="canvas-header border-bottom-shadow">
+  <div class="canvas-header">
     <div class="container">
       <div v-for="idx in indexes" class="item" :key="idx">
         <canvas-header-item :idx="idx + x" :isToday="todayIndex === idx + x" />
@@ -52,6 +52,7 @@ const todayIndex = computed(() => getDaysBetweenDates(timer.timestamp, project.c
   background-color: transparent;
   pointer-events: none;
   clip-path: polygon(40px 0, 100% 0, 100% 40px, 40px 40px);
+  border-bottom: 1px solid #00000010;
 }
 
 .container {

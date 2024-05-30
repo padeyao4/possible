@@ -147,7 +147,7 @@ body {
   backdrop-filter: blur(5px);
 }
 
-.border-shadow {
+/* .border-shadow {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
 }
 
@@ -171,7 +171,7 @@ body {
 
 .border-left-shadow {
   box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
-}
+} */
 
 .canvas-background-color {
   background-color: #f2f4f7;

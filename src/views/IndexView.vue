@@ -61,6 +61,7 @@ main {
   overflow: hidden;
   background-color: var(--background-middle-color);
   border-radius: 8px 0 0 0;
-  box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px;
+  /* box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px; */
+  border-left: 1px solid #00000020  
 }
 </style>
