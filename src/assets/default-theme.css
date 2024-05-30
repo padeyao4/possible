@@ -14,6 +14,7 @@
   --background-bottom-color: #f2f3f6;
   --background-active-color: #e5ebef;
   --background-card-color: #e1e2e3;
+  --background-canvas-color: #f2f4f7;
 
   --border-default-color: #33333350;
   --border-default-style: 1px solid var(--border-default-color);
