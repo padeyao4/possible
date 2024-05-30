@@ -1,5 +1,5 @@
 import { BaseBehavior, type EventDispatch } from '@/lib/base'
-import { useEditor } from '@/stores/editor'
+import $bus from '../bus'
 
 export class DoubleClickCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -10,11 +10,10 @@ export class DoubleClickCard extends BaseBehavior {
 
   onclick(e: MouseEvent, el: Element) {
     if (e.button !== 0) return
-    const editor = useEditor()
-    editor.x = e.x
-    editor.y = e.y
-    editor.visible = true
-    editor.nodeId = el.getAttribute('data-key')
-    document.body.style.cursor = 'default'
+    $bus.emit('open-editor', {
+      event: e,
+      id: el.getAttribute('data-key'),
+      shapeType: el.getAttribute('data-el-type')
+    })
   }
 }

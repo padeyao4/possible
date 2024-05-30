@@ -13,9 +13,10 @@
   --background-middle-color: #f9fafd;
   --background-bottom-color: #f2f3f6;
   --background-active-color: #e5ebef;
+  --background-card-color: #e1e2e3;
 
   --border-default-color: #33333350;
-  --border-default-style: 1px solid  var(--border-default-color);
+  --border-default-style: 1px solid var(--border-default-color);
 
   --border-radius-default-value: 4px;
 

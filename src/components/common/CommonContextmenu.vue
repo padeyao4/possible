@@ -112,6 +112,7 @@ function handleDeleteTask() {
   const key = el.getAttribute('data-key')
   useProjects().removeNode(project, key)
   visible.value = false
+  $bus.emit('home-editor')
 }
 
 function handleDeleteEdge() {

@@ -3,6 +3,7 @@ import { currentProject } from '@/service/project.service'
 import ProjectGroupComponent from '@/components/ProjectViewComponent/ProjectGroupComponent.vue'
 import ProjectFooter from '@/components/ProjectViewComponent/TheFooter.vue'
 import { computed } from 'vue'
+import EditorComponent from '@/components/ProjectViewComponent/EditorComponent.vue'
 
 const project = currentProject()
 
@@ -20,8 +21,9 @@ const projectName = computed(() => {
     <header>
       <div class="title">{{ projectName }}</div>
     </header>
-    <main class="project-canvas-color">
+    <main class="project-group">
       <ProjectGroupComponent />
+      <EditorComponent class="editor" />
     </main>
     <footer>
       <project-footer />
@@ -61,15 +63,17 @@ footer {
   flex-shrink: 0;
   height: 48px;
   background: transparent !important;
-  /* box-shadow:
-    rgba(27, 31, 35, 0.06) 0 -1px 0,
-    rgba(255, 255, 255, 0.25) 0 -1px 0 inset; */
   border-top: 1px solid #00000010;
 }
 
-.project-canvas-color {
-  /* background-color: var(--background-top-color); */
+.project-group {
+  display: flex;
+  flex-direction: row;
   background-color: var(--background-middle-color);
   border-top: 1px solid #00000010;
+}
+
+.editor {
+  border-left: #00000010 1px solid;
 }
 </style>
