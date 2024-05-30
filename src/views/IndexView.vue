@@ -8,7 +8,7 @@ import { tryOnBeforeMount, tryOnBeforeUnmount } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-const route = useRoute()
+const { fullPath } = useRoute()
 const settings = useSettings()
 
 const sideWidth = computed(() => settings.sideWidth + 'px')
@@ -31,12 +31,8 @@ tryOnBeforeUnmount(() => {
 
 <template>
   <div class="container">
-    <aside>
-      <TheSide />
-    </aside>
-    <main>
-      <router-view :key="route.fullPath" />
-    </main>
+    <TheSide class="side" />
+    <router-view :key="fullPath" class="main" />
     <the-separation />
   </div>
 </template>
@@ -51,17 +47,17 @@ tryOnBeforeUnmount(() => {
   background-color: var(--background-bottom-color);
 }
 
-aside {
+.side {
   width: v-bind(sideWidth);
 }
 
-main {
+.main {
   width: calc(100vw - v-bind(sideWidth));
   height: 100%;
   overflow: hidden;
   background-color: var(--background-middle-color);
-  border-radius: 8px 0 0 0;
   /* box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px; */
-  border-left: 1px solid #00000020  
+  border-left: 1px solid #00000020;
+  border-radius: 8px 0 0 0;
 }
 </style>

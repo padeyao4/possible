@@ -5,23 +5,23 @@ import { invoke } from '@tauri-apps/api'
 import { tryOnBeforeMount, useDebounceFn, useIntervalFn } from '@vueuse/core'
 import { Store } from 'tauri-plugin-store-api'
 import { useRoute } from 'vue-router'
-import { useProjects } from './stores/projects'
-import { isTauri } from './tauri-util'
+import { useProjects } from '@/stores/projects'
+import { isTauri } from '@/tauri-util'
 
-const projects = useProjects()
-const route = useRoute()
+const { deserialize, serialize, $subscribe } = useProjects()
+const { fullPath } = useRoute()
 
 tryOnBeforeMount(async () => {
   if (isTauri()) {
     const config: any = await invoke('read_config')
     const path = config.base_path + '/' + config.data_dir + '/db.dat'
     const db = new Store(path)
-    projects.deserialize(await db.get('projects'))
+    deserialize(await db.get('projects'))
     const debounceFn = useDebounceFn(async () => {
-      await db.set('projects', projects.serialize())
+      await db.set('projects', serialize())
       await db.save()
     }, 1000)
-    projects.$subscribe(debounceFn)
+    $subscribe(debounceFn)
   }
 })
 
@@ -42,7 +42,7 @@ useIntervalFn(
 
 <template>
   <window-titlebar />
-  <router-view :key="route.fullPath" />
+  <router-view :key="fullPath" />
   <github-corner />
 </template>
 

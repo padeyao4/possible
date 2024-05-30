@@ -61,7 +61,7 @@ function onupdateCompletedList() {
 </script>
 
 <template>
-  <div id="home-view">
+  <div class="home-view">
     <header data-tauri-drag-region>
       <div data-tauri-drag-region>我的一天</div>
       <div data-tauri-drag-region>{{ dateTime }}</div>
@@ -136,13 +136,13 @@ function onupdateCompletedList() {
   user-select: none;
 }
 
-#home-view {
+.home-view {
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #82bbb5;
+  background: #82bbb5 !important;
 }
 
 header {
