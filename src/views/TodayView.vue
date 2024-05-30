@@ -28,7 +28,6 @@ const nodes = computed(() => {
 })
 
 const todoList = computed(() => {
-  console.log('todoList')
   return nodes.value
     .filter((node) => node.completed === false)
     .sort((a, b) => {
@@ -37,7 +36,6 @@ const todoList = computed(() => {
 })
 
 const completedList = computed(() => {
-  console.log('completedList')
   return nodes.value
     .filter((node) => node.completed === true)
     .sort((a, b) => {
@@ -50,14 +48,12 @@ function ondragend() {}
 function ondragstart() {}
 
 function onupdateTodoList() {
-  console.log('update todo list')
   todoList.value.forEach((item, index) => {
     item.sortedIndex = index
   })
 }
 
 function onupdateCompletedList() {
-  console.log('update completed list')
   completedList.value.forEach((item, index) => {
     item.sortedIndex = index
   })
