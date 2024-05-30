@@ -280,7 +280,7 @@ onBeforeUnmount(() => {
   display: v-bind(visible);
   flex-direction: column;
   width: 200px;
-  background-color: var(--background-top-color);
+  background-color: var(--background-middle-color);
   border: 1px solid var(--border-default-color);
   border-radius: 6px;
   animation: fadeIn 200ms ease-in;

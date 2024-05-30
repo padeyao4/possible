@@ -43,9 +43,9 @@ const translateY = computed(() => project?.offset.y)
 <template>
   <svg ref="svg" @contextmenu.prevent data-el-type="canvas" data-type="canvas">
     <g :transform="`translate(${translateX},${translateY})`">
-      <canvas-paths />
-      <canvas-cards />
-      <canvas-temp-paths />
+      <canvas-paths></canvas-paths>
+      <canvas-cards></canvas-cards>
+      <canvas-temp-paths></canvas-temp-paths>
     </g>
   </svg>
 </template>
@@ -54,8 +54,8 @@ const translateY = computed(() => project?.offset.y)
 svg {
   width: calc(100% - 40px);
   height: calc(100% - 40px);
-  margin-left: 40px;
   margin-top: 40px;
-  background-color: var(--background-top-color);
+  margin-left: 40px;
+  background-color: var(--background-canvas-color);
 }
 </style>

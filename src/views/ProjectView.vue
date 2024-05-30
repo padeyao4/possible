@@ -69,7 +69,7 @@ footer {
 .project-group {
   display: flex;
   flex-direction: row;
-  background-color: var(--background-middle-color);
+  background-color: var(--background-canvas-color);
   border-top: 1px solid #00000010;
 }
 

@@ -22,6 +22,23 @@ export function createProjectTemplate(): Project {
   }
 }
 
+export function createRandomProjectTemplate(): Project {
+  const { projectMap } = useProjects()
+  return {
+    id: v4(),
+    name: faker.company.name(),
+    nodeMap: new Map<ID, Node>(),
+    edgeMap: new Map<ID, Edge>(),
+    inMap: new Map<ID, Set<Edge>>(),
+    outMap: new Map<ID, Set<Edge>>(),
+    completed: false,
+    sortIndex: Array.from(projectMap.values()).length + 1,
+    editable: false,
+    createTime: Date.now().valueOf(),
+    offset: { x: 0, y: 0 }
+  }
+}
+
 export function createNodeTemplate(): Node {
   return {
     id: v4(),
@@ -61,18 +78,19 @@ export function currentProject(): Project {
 }
 
 export function testProjects() {
-  const projects = useProjects()
+  const { addEdge, addNode, addProject, projectMap } = useProjects()
   for (let i = 0; i < 10; i++) {
-    const project = createProjectTemplate()
-    const node1 = createNodeTemplate()
-    const node2 = createNodeTemplate()
+    const project = createRandomProjectTemplate()
+    const node1 = createRandomNodeTemplate()
+    const node2 = createRandomNodeTemplate()
     if (!isCross(node1, node2) && node1.x + node1.width < node2.x) {
-      projects.addNode(project, node1)
-      projects.addNode(project, node2)
-      projects.addProject(project)
-      projects.addEdge(project, node1, node2)
+      addNode(project, node1)
+      addNode(project, node2)
+      addProject(project)
+      addEdge(project, node1, node2)
     }
   }
+  console.log(projectMap)
 }
 
 /**

@@ -7,9 +7,10 @@ import { Store } from 'tauri-plugin-store-api'
 import { useRoute } from 'vue-router'
 import { useProjects } from '@/stores/projects'
 import { isTauri } from '@/tauri-util'
+import { testProjects } from './service/project.service'
 
 const { deserialize, serialize, $subscribe } = useProjects()
-const { fullPath } = useRoute()
+const route = useRoute()
 
 tryOnBeforeMount(async () => {
   if (isTauri()) {
@@ -22,6 +23,8 @@ tryOnBeforeMount(async () => {
       await db.save()
     }, 1000)
     $subscribe(debounceFn)
+  } else {
+    testProjects()
   }
 })
 
@@ -42,7 +45,7 @@ useIntervalFn(
 
 <template>
   <window-titlebar />
-  <router-view :key="fullPath" />
+  <router-view :key="route.fullPath" />
   <github-corner />
 </template>
 
