@@ -10,17 +10,13 @@ const translateX = computed(
   () => (project.offset.x % settings.unitWidth) - settings.unitWidth + 'px'
 )
 
-const translateY = computed(() => {
-  return (project.offset.y % settings.unitHeight) - settings.unitHeight + 'px'
-})
+const translateY = computed(
+  () => (project.offset.y % settings.unitHeight) - settings.unitHeight + 'px'
+)
 
-const width = computed(() => {
-  return settings.unitWidth + 'px'
-})
+const width = computed(() => settings.unitWidth + 'px')
 
-const height = computed(() => {
-  return settings.unitHeight + 'px'
-})
+const height = computed(() => settings.unitHeight + 'px')
 </script>
 
 <template>
@@ -32,15 +28,15 @@ const height = computed(() => {
 <style scoped>
 .canvas-grid {
   position: absolute;
-  left: 0;
-  right: 0;
   top: 0;
+  right: 0;
   bottom: 0;
+  left: 0;
+  z-index: 0;
   margin-top: 40px;
   margin-left: 40px;
   overflow: hidden;
   pointer-events: none;
-  z-index: 0;
 }
 
 .container {
