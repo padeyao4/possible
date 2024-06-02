@@ -78,7 +78,7 @@ export function currentProject(): Project {
 }
 
 export function testProjects() {
-  const { addEdge, addNode, addProject, projectMap } = useProjects()
+  const { addEdge, addNode, addProject } = useProjects()
   for (let i = 0; i < 10; i++) {
     const project = createRandomProjectTemplate()
     const node1 = createRandomNodeTemplate()
@@ -90,7 +90,6 @@ export function testProjects() {
       addEdge(project, node1, node2)
     }
   }
-  console.log(projectMap)
 }
 
 /**

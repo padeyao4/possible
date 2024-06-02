@@ -59,7 +59,7 @@ useEventListener(window, 'resize', () => {
   width: 5px;
 
   &:hover {
-    cursor: e-resize;
+    cursor: ew-resize;
   }
 
   &[mode] {
@@ -68,7 +68,7 @@ useEventListener(window, 'resize', () => {
     bottom: 0;
     right: 0;
     width: 100vw;
-    cursor: e-resize;
+    cursor: ew-resize;
   }
 }
 </style>

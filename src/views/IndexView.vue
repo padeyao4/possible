@@ -6,12 +6,10 @@ import { useSettings } from '@/stores/settings'
 import { scheduleMidnightTask, useTimer } from '@/stores/timer'
 import { tryOnBeforeMount, tryOnBeforeUnmount } from '@vueuse/core'
 import { computed, ref } from 'vue'
-import { useRoute } from 'vue-router'
 
-const { fullPath } = useRoute()
-const { sideWidth } = useSettings()
+const settings = useSettings()
 
-const width = computed(() => sideWidth + 'px')
+const width = computed(() => settings.sideWidth + 'px')
 const clear = ref()
 const timer = useTimer()
 
@@ -32,7 +30,7 @@ tryOnBeforeUnmount(() => {
 <template>
   <div class="container">
     <TheSide class="side" />
-    <router-view :key="fullPath" class="main" />
+    <router-view :key="$route.fullPath" class="main" />
     <the-separation />
   </div>
 </template>

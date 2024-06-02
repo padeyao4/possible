@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import GithubCorner from '@/components/other/GithubCorner.vue'
 import WindowTitlebar from '@/components/other/WindowTitlebar.vue'
+import { useProjects } from '@/stores/projects'
+import { isTauri } from '@/tauri-util'
 import { invoke } from '@tauri-apps/api'
 import { tryOnBeforeMount, useDebounceFn, useIntervalFn } from '@vueuse/core'
 import { Store } from 'tauri-plugin-store-api'
-import { useRoute } from 'vue-router'
-import { useProjects } from '@/stores/projects'
-import { isTauri } from '@/tauri-util'
 import { testProjects } from './service/project.service'
 
 const { deserialize, serialize, $subscribe } = useProjects()
-const route = useRoute()
 
 tryOnBeforeMount(async () => {
   if (isTauri()) {
@@ -45,7 +43,7 @@ useIntervalFn(
 
 <template>
   <window-titlebar />
-  <router-view :key="route.fullPath" />
+  <router-view :key="$route.fullPath" />
   <github-corner />
 </template>
 
