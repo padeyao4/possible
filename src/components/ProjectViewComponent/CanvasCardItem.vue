@@ -60,7 +60,7 @@ const backgroundColor = computed(() => {
     <g opacity="0">
       <rect
         :data-key="node.id"
-        data-mouse-style="nw-resize"
+        data-mouse-style="nwse-resize"
         data-type="node"
         data-el-type="resize"
         data-direction="lt"
@@ -72,7 +72,7 @@ const backgroundColor = computed(() => {
       />
       <rect
         :data-key="node.id"
-        data-mouse-style="ne-resize"
+        data-mouse-style="nesw-resize"
         data-el-type="resize"
         data-type="node"
         data-direction="rt"
@@ -84,7 +84,7 @@ const backgroundColor = computed(() => {
       />
       <rect
         :data-key="node.id"
-        data-mouse-style="n-resize"
+        data-mouse-style="ns-resize"
         data-el-type="resize"
         data-type="node"
         data-direction="t"
@@ -96,7 +96,7 @@ const backgroundColor = computed(() => {
       <rect
         :data-key="node.id"
         data-el-type="resize"
-        data-mouse-style="n-resize"
+        data-mouse-style="ns-resize"
         data-type="node"
         data-direction="b"
         x="2.5"
@@ -107,7 +107,7 @@ const backgroundColor = computed(() => {
       <rect
         :data-key="node.id"
         data-el-type="resize"
-        data-mouse-style="w-resize"
+        data-mouse-style="ew-resize"
         data-type="node"
         data-direction="l"
         x="-2.5"
@@ -118,7 +118,7 @@ const backgroundColor = computed(() => {
       <rect
         :data-key="node.id"
         data-el-type="resize"
-        data-mouse-style="e-resize"
+        data-mouse-style="ew-resize"
         data-type="node"
         data-direction="r"
         :x="width - 2.5"
@@ -129,7 +129,7 @@ const backgroundColor = computed(() => {
       <rect
         :data-key="node.id"
         data-el-type="resize"
-        data-mouse-style="ne-resize"
+        data-mouse-style="nesw-resize"
         data-type="node"
         data-direction="lb"
         x="-2.5"
@@ -141,7 +141,7 @@ const backgroundColor = computed(() => {
       <rect
         :data-key="node.id"
         data-el-type="resize"
-        data-mouse-style="nw-resize"
+        data-mouse-style="nwse-resize"
         data-type="node"
         data-direction="rb"
         :x="width - 2.5"
