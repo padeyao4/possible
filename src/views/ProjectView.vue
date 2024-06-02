@@ -56,7 +56,7 @@ header {
 }
 
 main {
-  flex-grow: 1;
+  height: calc(100% - 48px - 76px);
 }
 
 footer {
@@ -75,5 +75,6 @@ footer {
 
 .editor {
   border-left: #00000010 1px solid;
+  overflow-y: auto;
 }
 </style>
