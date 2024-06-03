@@ -102,7 +102,6 @@ function handleCloseButton() {
         </div>
       </div>
       <div v-else class="canvas-editor">
-        <h1>没有选择内容</h1>
       </div>
     </div>
     <div v-else class="target-info"></div>

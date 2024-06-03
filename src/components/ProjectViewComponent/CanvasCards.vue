@@ -4,7 +4,7 @@ import { isCross } from '@/lib/math'
 import { currentProject } from '@/service/project.service'
 import { useSettings } from '@/stores/settings'
 import { useWindowSize } from '@vueuse/core'
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 
 const settings = useSettings()
 const project = currentProject()
@@ -26,10 +26,6 @@ const rect = computed(() => {
 
 const nodes = computed(() => {
   return Array.from(project.nodeMap.values()).filter((node) => isCross(rect.value, node))
-})
-
-watch(nodes, () => {
-  console.log(nodes.value.length)
 })
 </script>
 

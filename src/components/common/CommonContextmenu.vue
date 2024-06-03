@@ -123,10 +123,6 @@ function handleDeleteEdge() {
   visible.value = false
 }
 
-// '显示右侧节点': showRightCards,
-// '显示左侧节点': showLefCards,
-// '显示相关节点': showAllCards,
-
 const data = {
   node: [
     {
@@ -192,7 +188,7 @@ const data = {
     {
       name: '操作',
       borderStyle: {
-        borderBottom: '1px solid #33333350'
+        borderBottom: undefined
       },
       group: [
         {
@@ -206,7 +202,7 @@ const data = {
     {
       name: '操作',
       borderStyle: {
-        borderBottom: '1px solid #33333350'
+        borderBottom: undefined
       },
       group: [
         {
@@ -281,8 +277,11 @@ onBeforeUnmount(() => {
   flex-direction: column;
   width: 200px;
   background-color: var(--background-middle-color);
-  border: 1px solid var(--border-default-color);
-  border-radius: 6px;
+  border: 1px solid #00000020;
+  border-radius: 5px;
+  box-shadow:
+    0 0 10px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(247, 247, 249, 0.25);
   animation: fadeIn 200ms ease-in;
 }
 .contextmenu:focus {
