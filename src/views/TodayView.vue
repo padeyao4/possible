@@ -91,6 +91,7 @@ function onupdateCompletedList() {
 }
 
 .drag-class {
+  display: flex;
   background: #e5ebef;
   box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
 }

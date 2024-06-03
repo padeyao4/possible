@@ -52,41 +52,49 @@ function onclick() {
   align-items: center;
   height: 56px;
   margin-bottom: 4px;
-  padding: 0 12px;
-  overflow-x: hidden;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 4px;
+  grid-row: 1;
 
   .icon {
     display: flex;
     flex-shrink: 0;
     align-items: start;
     justify-content: center;
-    width: max-content;
     height: 100%;
-    padding-top: 10px;
-    padding-right: 12px;
 
     & > * {
       width: 24px;
       height: 24px;
+      margin: 12px;
     }
   }
 
   .content {
+    display: flex;
+    flex-direction: column;
     flex-grow: 1;
+    overflow: hidden;
 
     .one {
       display: flex;
       align-items: end;
+      flex-grow: 1;
       height: 28px;
+      overflow: hidden;
       font-size: var(--font-default-size);
+      white-space: nowrap;
       text-decoration: v-bind(textDecoration);
+      text-overflow: ellipsis;
     }
 
     .two {
+      flex-grow: 1;      
       height: 28px;
+      overflow: hidden;
       font-size: var(--font-small-size);
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
   }
 
@@ -95,6 +103,7 @@ function onclick() {
     width: fit-content;
     width: 24px;
     height: 100%;
+    margin: 12px;
   }
 }
 </style>
