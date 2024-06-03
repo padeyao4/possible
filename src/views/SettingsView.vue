@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AccountComponent from '@/components/SettingsViewComponent/AccountComponent.vue'
 import { useRoute } from '@/stores/route'
 
 const { back } = useRoute()
@@ -9,7 +10,9 @@ const { back } = useRoute()
       <my-icon icon="solar:arrow-left-linear" class="back-button" @click="back()" /> 设置
     </header>
     <main>
-      <div class="container"></div>
+      <div class="container">
+        <AccountComponent />
+      </div>
     </main>
   </div>
 </template>
@@ -58,78 +61,6 @@ const { back } = useRoute()
       flex-direction: column;
       width: 550px;
       height: 100%;
-
-      & > *:first-child {
-        margin-top: 12px;
-      }
-
-      .item {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        margin-right: 0;
-        margin-bottom: 12px;
-        margin-left: 0;
-        padding: 0 0 24px 0;
-        border-bottom: var(--border-default-style);
-
-        & > * {
-          margin: 4px 0;
-          padding: 4px 0;
-        }
-
-        input {
-          padding: 8px;
-          background-color: var(--background-middle-color);
-          border: var(--border-default-style);
-          border-radius: 4px;
-          outline-style: none;
-        }
-
-        select {
-          padding: 5px;
-          background-color: var(--background-middle-color);
-          border: var(--border-default-style);
-          border-radius: 4px;
-
-          & option {
-            padding: 5px;
-            background-color: var(--background-middle-color);
-            border: var(--border-default-style);
-
-            &:hover {
-              background-color: var(--background-top-color);
-            }
-          }
-          &:focus {
-            outline: none;
-          }
-        }
-
-        .description {
-          padding: 8px;
-          background-color: var(--background-middle-color);
-          border: var(--border-default-style);
-          border-radius: 4px;
-          user-select: text;
-        }
-
-        button {
-          width: fit-content;
-          padding: 8px 12px;
-          background-color: var(--primary-color);
-          border: var(--border-default-style);
-          border-radius: 3px;
-          box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-          /* 较深的边框 */
-          cursor: pointer;
-
-          &:hover {
-            background-color: var(--primary-color-dark);
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
-          }
-        }
-      }
     }
   }
 }
