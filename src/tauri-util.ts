@@ -4,7 +4,7 @@ import {
     isPermissionGranted,
     requestPermission,
     sendNotification
-} from '@tauri-apps/api/notification'
+} from '@tauri-apps/plugin-notification'
 
 export function isTauri() {
     return import.meta.env?.VITE_TAURI === 'true'

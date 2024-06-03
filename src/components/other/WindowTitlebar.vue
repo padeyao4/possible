@@ -4,7 +4,7 @@ import { Icon } from '@iconify/vue'
 import { useEventListener } from '@vueuse/core'
 
 function onMaximize() {
-  appWindow.toggleMaximize()
+  appWindow.toggleMaximize().then((r) => console.log(r))
 }
 
 function onClose() {
@@ -15,7 +15,7 @@ const showTitlebar = import.meta.env?.VITE_TITLEBAR === 'true'
 
 if (showTitlebar) {
   useEventListener(window, 'resize', () => {
-    appWindow.isMaximized().then(r => {
+    appWindow.isMaximized().then((r) => {
       const el1 = document.getElementById('titlebar')
       el1.toggleAttribute('data-operation-cancel', r)
       const el2 = document.getElementById('mouse-style')
@@ -26,9 +26,7 @@ if (showTitlebar) {
 </script>
 
 <template>
-  <div
-    v-if="showTitlebar"
-    id="titlebar">
+  <div v-if="showTitlebar" id="titlebar">
     <div class="drag-area" data-tauri-drag-region></div>
     <div class="titlebar-button system-icon-other" @click="appWindow.minimize()">
       <icon icon="clarity:window-min-line" width="20" height="20" class="system-icon" />
@@ -54,19 +52,19 @@ if (showTitlebar) {
 
 <style scoped>
 #titlebar {
-  height: 24px;
-  border-radius: 8px 8px 0 0;
-  overflow: hidden;
-  background: rgba(0, 0, 0, 0);
-  margin: 0;
-  user-select: none;
-  display: flex;
-  justify-content: flex-end;
   position: fixed;
   top: 0;
-  left: 0;
   right: 0;
+  left: 0;
   z-index: 999;
+  display: flex;
+  justify-content: flex-end;
+  height: 24px;
+  margin: 0;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0);
+  border-radius: 8px 8px 0 0;
+  user-select: none;
 
   .drag-area {
     width: 100%;
@@ -81,8 +79,8 @@ if (showTitlebar) {
 
 .titlebar-button {
   display: inline-flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   width: 48px;
   height: 24px;
 }
@@ -109,10 +107,10 @@ if (showTitlebar) {
 
   .top {
     position: fixed;
-    height: 5px;
-    width: calc(100vw - 10px);
     top: 0;
     left: 5px;
+    width: calc(100vw - 10px);
+    height: 5px;
 
     &:hover {
       cursor: n-resize;
@@ -121,10 +119,10 @@ if (showTitlebar) {
 
   .bottom {
     position: fixed;
-    height: 5px;
-    width: calc(100vw - 10px);
     bottom: 0;
     left: 5px;
+    width: calc(100vw - 10px);
+    height: 5px;
 
     &:hover {
       cursor: n-resize;
@@ -133,10 +131,10 @@ if (showTitlebar) {
 
   .left {
     position: fixed;
-    height: calc(100vh - 10px);
-    width: 5px;
     top: 5px;
     left: 0;
+    width: 5px;
+    height: calc(100vh - 10px);
 
     &:hover {
       cursor: w-resize;
@@ -145,10 +143,10 @@ if (showTitlebar) {
 
   .right {
     position: fixed;
-    height: calc(100vh - 10px);
-    width: 5px;
     top: 5px;
     right: 0;
+    width: 5px;
+    height: calc(100vh - 10px);
 
     &:hover {
       cursor: w-resize;
@@ -157,10 +155,10 @@ if (showTitlebar) {
 
   .top-left {
     position: fixed;
-    height: 5px;
-    width: 5px;
     top: 0;
     left: 0;
+    width: 5px;
+    height: 5px;
 
     &:hover {
       cursor: nw-resize;
@@ -169,10 +167,10 @@ if (showTitlebar) {
 
   .top-right {
     position: fixed;
-    height: 5px;
-    width: 5px;
     top: 0;
     right: 0;
+    width: 5px;
+    height: 5px;
 
     &:hover {
       cursor: sw-resize;
@@ -181,10 +179,10 @@ if (showTitlebar) {
 
   .bottom-right {
     position: fixed;
-    height: 5px;
-    width: 5px;
-    bottom: 0;
     right: 0;
+    bottom: 0;
+    width: 5px;
+    height: 5px;
 
     &:hover {
       cursor: nw-resize;
@@ -193,10 +191,10 @@ if (showTitlebar) {
 
   .bottom-left {
     position: fixed;
-    height: 5px;
-    width: 5px;
     bottom: 0;
     left: 0;
+    width: 5px;
+    height: 5px;
 
     &:hover {
       cursor: sw-resize;
