@@ -83,7 +83,7 @@ export function testProjects() {
     const project = createRandomProjectTemplate()
 
     addProject(project)
-    for (let j = 0; j < 1000; j++) {
+    for (let j = 0; j < 30; j++) {
       const node1 = createRandomNodeTemplate()
       addNode(project, node1)
     }

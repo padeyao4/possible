@@ -7,12 +7,12 @@ import EditorComponent from '@/components/ProjectViewComponent/EditorComponent.v
 
 const project = currentProject()
 
-const projectName = computed(() => project?.name === '' ? '未命名项目' : project.name)
+const projectName = computed(() => (project?.name === '' ? '未命名项目' : project.name))
 </script>
 
 <template>
   <div class="project-view">
-    <header data-tauri-drag-region>
+    <header>
       <div class="title">{{ projectName }}</div>
     </header>
     <main class="project-group">
@@ -36,14 +36,15 @@ const projectName = computed(() => project?.name === '' ? '未命名项目' : pr
 header {
   display: flex;
   align-items: center;
-  width: 100%;
-  padding: 12px 16px;
+  height: 40px;
+  margin: 12px 16px;
 
   .title {
-    display: flex;
-    align-items: center;
-    height: 40px;
+    display: block;
+    overflow: hidden;
     font-size: var(--font-large-size);
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 }
 
