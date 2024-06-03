@@ -62,9 +62,9 @@ function onupdateCompletedList() {
 
 <template>
   <div class="home-view">
-    <header data-tauri-drag-region>
-      <div data-tauri-drag-region>我的一天</div>
-      <div data-tauri-drag-region>{{ dateTime }}</div>
+    <header>
+      <div>我的一天</div>
+      <div>{{ dateTime }}</div>
     </header>
     <main>
       <draggable
@@ -151,7 +151,7 @@ header {
   flex-shrink: 0;
   justify-content: center;
   height: 58px;
-  margin: 24px 24px 12px 24px;
+  padding: 36px 24px;
   overflow-y: hidden;
 
   & > * {
@@ -164,8 +164,8 @@ header {
   }
 
   & div:nth-child(2) {
-    font-size: var(--font-small-size);
     font-weight: var(--font-light-weight);
+    font-size: var(--font-small-size);
   }
 }
 

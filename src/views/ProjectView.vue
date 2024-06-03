@@ -7,13 +7,7 @@ import EditorComponent from '@/components/ProjectViewComponent/EditorComponent.v
 
 const project = currentProject()
 
-const projectName = computed(() => {
-  if (project?.name === undefined || project?.name === null || project?.name === '') {
-    return '未命名项目'
-  } else {
-    return project.name
-  }
-})
+const projectName = computed(() => project?.name === '' ? '未命名项目' : project.name)
 </script>
 
 <template>
@@ -43,20 +37,18 @@ header {
   display: flex;
   align-items: center;
   width: 100%;
-  margin-top: 24px;
-  margin-bottom: 12px;
+  padding: 12px 16px;
 
   .title {
     display: flex;
     align-items: center;
     height: 40px;
-    margin-left: 16px;
     font-size: var(--font-large-size);
   }
 }
 
 main {
-  height: calc(100% - 48px - 76px);
+  flex-grow: 1;
 }
 
 footer {
@@ -74,7 +66,7 @@ footer {
 }
 
 .editor {
-  border-left: #00000010 1px solid;
   overflow-y: auto;
+  border-left: #00000010 1px solid;
 }
 </style>

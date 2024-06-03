@@ -12,30 +12,30 @@ function onmouseover(event: MouseEvent) {
 </script>
 
 <template>
-  <div class="the-aside" @mouseover="onmouseover">
-    <aside-header class="aside-header" />
-    <aside-body class="aside-body" />
-    <aside-footer class="aside-footer" />
+  <div class="the-side" @mouseover="onmouseover">
+    <aside-header class="side-header" />
+    <aside-body class="side-body" />
+    <aside-footer class="side-footer" />
   </div>
 </template>
 
 <style scoped>
-.the-aside {
+.the-side {
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
 }
 
-.aside-header {
+.side-header {
   height: min-content;
 }
 
-.aside-body {
+.side-body {
   flex-grow: 1;
 }
 
-.aside-footer {
+.side-footer {
   flex-shrink: 0;
 }
 </style>

@@ -51,10 +51,8 @@ tryOnBeforeUnmount(() => {
 
 .main {
   width: calc(100vw - v-bind(width));
-  height: 100%;
   overflow: hidden;
   background-color: var(--background-middle-color);
-  /* box-shadow: rgba(0, 0, 0, 0.09) 0 0 4px; */
   border-left: 1px solid #00000020;
   border-radius: 8px 0 0 0;
 }

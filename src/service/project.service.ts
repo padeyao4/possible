@@ -34,7 +34,7 @@ export function createRandomProjectTemplate(): Project {
     completed: false,
     sortIndex: Array.from(projectMap.values()).length + 1,
     editable: false,
-    createTime: Date.now().valueOf(),
+    createTime: faker.date.between({ from: '1900-01-01', to: '2024-06-01' }).getTime(),
     offset: { x: 0, y: 0 }
   }
 }

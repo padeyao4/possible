@@ -40,7 +40,7 @@ const route = useRoute()
 
 <style scoped>
 .side-header {
-  margin-top: 24px;
+  margin-top: 12px;
   box-shadow:
     rgba(27, 31, 35, 0.06) 0 1px 0,
     rgba(255, 255, 255, 0.25) 0 1px 0 inset;
