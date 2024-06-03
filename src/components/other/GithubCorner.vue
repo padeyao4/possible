@@ -1,12 +1,6 @@
-<script setup lang="ts">
-import { isTauri } from '@/tauri-util'
-import { computed } from 'vue'
-
-const visible = computed(() => !isTauri())
-</script>
+<script setup lang="ts"></script>
 <template>
   <a
-    v-if="visible"
     href="https://github.com/padeyao4/possible"
     class="github-corner"
     aria-label="View source on GitHub"

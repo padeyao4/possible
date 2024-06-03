@@ -29,7 +29,7 @@ tryOnBeforeUnmount(() => {
 
 <template>
   <div class="container">
-    <TheSide class="side" />
+    <the-side class="side" />
     <router-view :key="$route.fullPath" class="main" />
     <the-separation />
   </div>
