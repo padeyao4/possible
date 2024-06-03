@@ -35,6 +35,7 @@ const projectName = computed(() => (project?.name === '' ? '未命名项目' : p
 
 header {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   height: 40px;
   margin: 12px 16px;
@@ -62,6 +63,7 @@ footer {
 .project-group {
   display: flex;
   flex-direction: row;
+  overflow: hidden;
   background-color: var(--background-canvas-color);
   border-top: 1px solid #00000010;
 }

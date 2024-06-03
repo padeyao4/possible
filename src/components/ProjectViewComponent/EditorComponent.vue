@@ -166,8 +166,11 @@ input {
 }
 
 .header-bar {
+  position: sticky;
+  top: 0;
   display: flex;
   flex-direction: row-reverse;
+  background-color: var(--background-bottom-color);
   & > * {
     width: 24px;
     height: 24px;
