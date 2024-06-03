@@ -79,7 +79,7 @@ export function currentProject(): Project {
 
 export function testProjects() {
   const { addNode, addProject } = useProjects()
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 20; i++) {
     const project = createRandomProjectTemplate()
 
     addProject(project)

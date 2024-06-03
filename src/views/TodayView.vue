@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import ItemComponent from '@/components/ListViewComponent/ItemComponent.vue'
-import { useProjects } from '@/stores/projects'
-import { getIndexByDate, timeFormat, useTimer } from '@/stores/timer'
-import { computed, ref } from 'vue'
+import { type Node } from '@/stores/projects'
+import { timeFormat, useTimer } from '@/stores/timer'
+import { computed, inject, ref, type Ref } from 'vue'
 import draggable from 'vuedraggable'
 
-const projects = useProjects()
 const visible = ref(false)
 
 const timer = useTimer()
@@ -14,38 +13,12 @@ const dateTime = computed(() => {
   return timeFormat.format(timer.localTimestamp) + ' 星期' + new Date(timer.localTimestamp).getDay()
 })
 
-const nodes = computed(() => {
-  console.log('update-nodes')
-  return Array.from(projects.projectMap.values())
-    .map((project) => {
-      const curX = getIndexByDate(project)
-      const { nodeMap } = project
-      return Array.from(nodeMap.values()).filter((node) => {
-        return node.x <= curX && curX < node.x + node.width
-      })
-    })
-    .flat()
-})
-
-const todoList = computed(() => {
-  return nodes.value
-    .filter((node) => node.completed === false)
-    .sort((a, b) => {
-      return a.sortedIndex - b.sortedIndex
-    })
-})
-
-const completedList = computed(() => {
-  return nodes.value
-    .filter((node) => node.completed === true)
-    .sort((a, b) => {
-      return a.sortedIndex - b.sortedIndex
-    })
-})
-
 function ondragend() {}
 
 function ondragstart() {}
+
+const todoList = inject<Ref<Node[]>>('todoList',ref([]))
+const completedList = inject<Ref<Node[]>>('completedList',ref([]))
 
 function onupdateTodoList() {
   todoList.value.forEach((item, index) => {

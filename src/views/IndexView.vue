@@ -1,12 +1,48 @@
 <script setup lang="ts">
 import TheSide from '@/components/IndexViewComponent/TheSide.vue'
 import TheSeparation from '@/components/common/TheSeparation.vue'
+import { useProjects } from '@/stores/projects';
 import { useSettings } from '@/stores/settings'
-import { computed } from 'vue'
+import { getIndexByDate } from '@/stores/timer';
+import { computed, provide } from 'vue'
 
 const settings = useSettings()
 
 const width = computed(() => settings.sideWidth + 'px')
+
+const projects = useProjects()
+
+const nodes = computed(() => {
+  return Array.from(projects.projectMap.values())
+    .map((project) => {
+      const curX = getIndexByDate(project)
+      const { nodeMap } = project
+      return Array.from(nodeMap.values()).filter((node) => {
+        return node.x <= curX && curX < node.x + node.width
+      })
+    })
+    .flat()
+})
+
+const todoList = computed(() => {
+  return nodes.value
+    .filter((node) => node.completed === false)
+    .sort((a, b) => {
+      return a.sortedIndex - b.sortedIndex
+    })
+})
+
+const completedList = computed(() => {
+  return nodes.value
+    .filter((node) => node.completed === true)
+    .sort((a, b) => {
+      return a.sortedIndex - b.sortedIndex
+    })
+})
+
+provide('todoList', todoList)
+provide('completedList', completedList)
+provide('nodes', nodes)
 </script>
 
 <template>
