@@ -2,27 +2,17 @@
 import { createProjectTemplate } from '@/service/project.service'
 import { useProjects } from '@/stores/projects'
 import { useRoute } from '@/stores/route'
-import { isTauri } from '@/tauri-util'
-import { computed } from 'vue'
 
-const route = useRoute()
+const { linkTo } = useRoute()
 
 function onclick() {
   const project = createProjectTemplate()
   useProjects().addProject(project)
   setTimeout(() => {
-    route.linkTo('project', project.id.toString())
+    linkTo('project', project.id.toString())
     project.editable = true
   })
 }
-
-function handleSettings() {
-  route.linkTo('settings')
-}
-
-const visible = computed(() => {
-  return isTauri()
-})
 </script>
 
 <template>
@@ -31,12 +21,16 @@ const visible = computed(() => {
       <my-icon icon="solar:add-square-broken" class="side-icon" />
       <div class="side-item-text">创建项目</div>
     </div>
-    <template v-if="visible">
-      <div class="splite"></div>
-      <div class="side-list-item settings" @click="handleSettings">
+    <!-- <div class="icon-button">
+      <div class="side-list-item icon-warp">
+        <my-icon icon="solar:accessibility-broken" />
+      </div>
+    </div> -->
+    <div class="icon-button">
+      <div class="side-list-item icon-warp" @click="linkTo('settings')">
         <my-icon icon="solar:settings-broken" />
       </div>
-    </template>
+    </div>
   </div>
 </template>
 
@@ -45,43 +39,32 @@ const visible = computed(() => {
   display: flex;
   flex-direction: row;
   height: 48px;
-  /* box-shadow:
-    rgba(27, 31, 35, 0.06) 0 -1px 0,
-    rgba(255, 255, 255, 0.25) 0 -1px 0 inset; */
   border-top: #00000010 1px solid;
 
-  & > *:first-child {
+  .icon-button {
     display: flex;
     align-items: center;
-    height: 40px;
+    justify-content: center;
     padding: 4px;
-    margin: 4px;
-  }
-
-  .splite {
     border-left: 1px solid #00000010;
   }
 
-  & > *:last-child {
-    display: flex;
-    align-items: center;
-    height: 40px;
-    width: 40px;
-    padding: 4px;
-    margin: 4px;
-  }
-
   .add {
+    display: flex;
     flex-grow: 1;
+    align-items: center;
+    height: 40px;
+    margin: 4px;
+    padding: 4px;
   }
 
-  .settings {
+  .icon-warp {
     display: flex;
-    justify-content: center;
+    flex-shrink: 0;
     align-items: center;
+    justify-content: center;
     width: 40px;
     height: 40px;
-    flex-shrink: 0;
     border-radius: 8px;
     & > * {
       width: 24px;

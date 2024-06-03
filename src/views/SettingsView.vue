@@ -1,9 +1,9 @@
 <script setup>
 import { useRoute } from '@/stores/route'
-import { ref, watch } from 'vue'
+import { isTauri, sendNotiflyMessage } from '@/tauri-util'
 import { invoke } from '@tauri-apps/api'
 import { useDebounceFn } from '@vueuse/core'
-import { sendNotiflyMessage } from '@/tauri-util'
+import { ref, watch } from 'vue'
 
 const route = useRoute()
 
@@ -39,44 +39,46 @@ function cloneRepository() {
     </header>
     <main>
       <div class="container">
-        <div class="item">
-          <div>数据本地存储地址</div>
-          <div class="description">{{ config?.base_path ?? '临时数据' }}</div>
-        </div>
-        <div class="item">
-          <div>数据远程存储</div>
-          <select v-model="config.remote_enable">
-            <option :value="true">开启</option>
-            <option :value="false">关闭</option>
-          </select>
-          <template v-if="config.remote_enable">
-            <div>使用git同步</div>
-            <select v-model="config.git_enable">
+        <template v-if="isTauri()">
+          <div class="item">
+            <div>数据本地存储地址</div>
+            <div class="description">{{ config?.base_path ?? '临时数据' }}</div>
+          </div>
+          <div class="item">
+            <div>数据远程存储</div>
+            <select v-model="config.remote_enable">
               <option :value="true">开启</option>
               <option :value="false">关闭</option>
             </select>
-            <template v-if="config.git_enable">
-              <div>git地址</div>
-              <input
-                v-model="config.git_url"
-                placeholder="例如: https://github.com/username/repo.git"
-              />
-              <div>认证方式</div>
-              <select v-model="config.git_auth_method">
-                <option value="Password">密码认证 - Username & Password</option>
-                <option value="Key">密钥认证 - Private Key</option>
+            <template v-if="config.remote_enable">
+              <div>使用git同步</div>
+              <select v-model="config.git_enable">
+                <option :value="true">开启</option>
+                <option :value="false">关闭</option>
               </select>
-              <template v-if="config.git_auth_method === 'Password'">
-                <input v-model="config.git_username" placeholder="用户名" />
-                <input v-model="config.git_password" placeholder="密码" type="password" />
+              <template v-if="config.git_enable">
+                <div>git地址</div>
+                <input
+                  v-model="config.git_url"
+                  placeholder="例如: https://github.com/username/repo.git"
+                />
+                <div>认证方式</div>
+                <select v-model="config.git_auth_method">
+                  <option value="Password">密码认证 - Username & Password</option>
+                  <option value="Key">密钥认证 - Private Key</option>
+                </select>
+                <template v-if="config.git_auth_method === 'Password'">
+                  <input v-model="config.git_username" placeholder="用户名" />
+                  <input v-model="config.git_password" placeholder="密码" type="password" />
+                </template>
+                <input v-else v-model="config.git_ssh_key" placeholder="私钥地址" />
+                <button @click="cloneRepository" :disabled="cloneRepositoryLoading">
+                  {{ cloneRepositoryLoading ? '下载中...' : '下载仓库' }}
+                </button>
               </template>
-              <input v-else v-model="config.git_ssh_key" placeholder="私钥地址" />
-              <button @click="cloneRepository" :disabled="cloneRepositoryLoading">
-                {{ cloneRepositoryLoading ? '下载中...' : '下载仓库' }}
-              </button>
             </template>
-          </template>
-        </div>
+          </div>
+        </template>
       </div>
     </main>
   </div>

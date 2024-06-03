@@ -24,7 +24,7 @@ function onmousemove(ev: MouseEvent) {
   if (attr.down) {
     const dx = ev.x - attr.x
     const width = dx + attr.width
-    settings.sideWidth = clamp(width, 200, clientWidth.value - 400)
+    settings.sideWidth = clamp(width, 220, clientWidth.value - 400)
   }
 }
 
