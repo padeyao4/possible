@@ -1,9 +1,9 @@
 import { isCross } from '@/lib/math'
 import { useProjects, type Edge, type ID, type Node, type Project } from '@/stores/projects'
-import { faker } from '@faker-js/faker'
-import { v4 } from 'uuid'
 import { useRoute } from '@/stores/route'
 import { getDaysBetweenDates, useTimer } from '@/stores/timer'
+import { faker } from '@faker-js/faker'
+import { v4 } from 'uuid'
 
 export function createProjectTemplate(): Project {
   const { projectMap } = useProjects()
@@ -26,7 +26,7 @@ export function createRandomProjectTemplate(): Project {
   const { projectMap } = useProjects()
   return {
     id: v4(),
-    name: faker.company.name(),
+    name: faker.lorem.words({ min: 3, max: 50 }),
     nodeMap: new Map<ID, Node>(),
     edgeMap: new Map<ID, Edge>(),
     inMap: new Map<ID, Set<Edge>>(),
@@ -59,12 +59,12 @@ export function createRandomNodeTemplate(): Node {
   return {
     id: v4(),
     name: faker.lorem.words({ min: 5, max: 20 }),
-    x: faker.number.int({ min: 0, max: 10 }),
-    y: faker.number.int({ min: 0, max: 5 }),
-    height: faker.number.int({ min: 1, max: 3 }),
-    width: faker.number.int({ min: 1, max: 5 }),
-    detail: faker.lorem.paragraphs(2),
-    record: faker.lorem.paragraphs(3),
+    x: faker.number.int({ min: 0, max: 100 }),
+    y: faker.number.int({ min: 0, max: 100 }),
+    height: faker.number.int({ min: 1, max: 5 }),
+    width: faker.number.int({ min: 1, max: 10 }),
+    detail: faker.lorem.paragraphs({ min: 1, max: 5 }),
+    record: faker.lorem.paragraphs({ min: 2, max: 10 }),
     completed: false,
     sortedIndex: -1,
     projectId: -1
@@ -78,16 +78,14 @@ export function currentProject(): Project {
 }
 
 export function testProjects() {
-  const { addEdge, addNode, addProject } = useProjects()
-  for (let i = 0; i < 10; i++) {
+  const { addNode, addProject } = useProjects()
+  for (let i = 0; i < 30; i++) {
     const project = createRandomProjectTemplate()
-    const node1 = createRandomNodeTemplate()
-    const node2 = createRandomNodeTemplate()
-    if (!isCross(node1, node2) && node1.x + node1.width < node2.x) {
+
+    addProject(project)
+    for (let j = 0; j < 1000; j++) {
+      const node1 = createRandomNodeTemplate()
       addNode(project, node1)
-      addNode(project, node2)
-      addProject(project)
-      addEdge(project, node1, node2)
     }
   }
 }

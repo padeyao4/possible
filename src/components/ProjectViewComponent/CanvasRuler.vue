@@ -12,8 +12,8 @@ const rulers = ref<number[]>([])
 const { height } = useWindowSize()
 
 watchEffect(() => {
-  const size = Math.ceil(height.value / settings.unitHeight)
-  rulers.value = Array.from({ length: size }, (_, i) => i + 1)
+  const count = Math.ceil(height.value / settings.unitHeight)
+  rulers.value = Array.from({ length: count }, (_, i) => i + 1)
 })
 
 const y = computed(() => {
@@ -21,16 +21,21 @@ const y = computed(() => {
   return Math.floor(absY / settings.unitHeight) - 2
 })
 
-const translateY = computed(() => project.offset.y % settings.unitHeight - settings.unitHeight + 'px')
+const translateY = computed(
+  () => (project.offset.y % settings.unitHeight) - settings.unitHeight + 'px'
+)
 </script>
 
 <template>
   <div class="canvas-ruler">
     <div class="container">
-      <div v-for="item in rulers"
-           class="ruler-unit"
-           :key="item"
-           :style="{'height':`${settings.unitHeight}px`}">{{ item + y }}
+      <div
+        v-for="item in rulers"
+        class="ruler-unit"
+        :key="item"
+        :style="{ height: `${settings.unitHeight}px` }"
+      >
+        {{ item + y }}
       </div>
     </div>
   </div>
@@ -40,29 +45,29 @@ const translateY = computed(() => project.offset.y % settings.unitHeight - setti
 .canvas-ruler {
   position: absolute;
   top: 0;
-  left: 0;
   bottom: 0;
+  left: 0;
   width: 40px;
-  overflow-y: hidden;
-  pointer-events: none;
   padding-left: 16px;
-  border-right: 1px solid rgba(27, 31, 35, 0.06);
+  overflow-y: hidden;
   background-color: transparent;
+  border-right: 1px solid rgba(27, 31, 35, 0.06);
   clip-path: polygon(0 40px, 40px 40px, 40px 100%, 0 100%);
+  pointer-events: none;
 }
 
 .container {
+  height: calc(100% - 40px);
   margin-top: 40px;
   transform: translateY(v-bind(translateY));
-  height: calc(100% - 40px);
 }
 
 .ruler-unit {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   overflow: hidden;
-  border-bottom: #00000010 solid 1px;
   font-weight: lighter;
+  border-bottom: #00000010 solid 1px;
 }
 </style>

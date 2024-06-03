@@ -1,30 +1,12 @@
 <script setup lang="ts">
 import TheSide from '@/components/IndexViewComponent/TheSide.vue'
 import TheSeparation from '@/components/common/TheSeparation.vue'
-import { updateProjects } from '@/service/project.service'
 import { useSettings } from '@/stores/settings'
-import { scheduleMidnightTask, useTimer } from '@/stores/timer'
-import { tryOnBeforeMount, tryOnBeforeUnmount } from '@vueuse/core'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 
 const settings = useSettings()
 
 const width = computed(() => settings.sideWidth + 'px')
-const clear = ref()
-const timer = useTimer()
-
-tryOnBeforeMount(() => {
-  timer.update()
-  updateProjects()
-  scheduleMidnightTask(clear, () => {
-    timer.update()
-    updateProjects()
-  })
-})
-
-tryOnBeforeUnmount(() => {
-  clearTimeout(clear.value)
-})
 </script>
 
 <template>
