@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { currentProject } from '@/service/project.service'
-import { getDaysBetweenDates, useTimer } from '@/stores/timer'
-import { useSettings } from '@/stores/settings'
+import { useProjects } from '@/stores/projects'
+import { useTimer } from '@/stores/timer'
+import { ref } from 'vue'
 
-const setting = useSettings()
 const project = currentProject()
 const timer = useTimer()
+const { setOffsetByDate } = useProjects()
 
 function handleBackHome() {
   project.offset.x = 0
@@ -13,7 +14,7 @@ function handleBackHome() {
 }
 
 function handleToday() {
-  project.offset.x = getDaysBetweenDates(project.createTime, timer.timestamp) * setting.unitWidth
+  setOffsetByDate(project, timer.timestamp)
 }
 
 function handleTest() {
@@ -21,20 +22,51 @@ function handleTest() {
 }
 
 function handleMoveRight() {}
+
+const dateInput = ref<HTMLElement & { showPicker: () => void }>()
+
+function handleCalendar() {
+  dateInput.value?.showPicker()
+}
+
+const dateInputValue = defineModel()
+
+function handleDateChange() {
+  const date = dateInputValue.value as string
+  if (date !== '' && date !== null) {
+    setOffsetByDate(project, date)
+  }
+}
 </script>
 
 <template>
-  <div id="the-footer">
+  <div class="the-footer">
     <my-icon icon="solar:home-2-broken" @click="handleBackHome" />
     <my-icon icon="solar:map-point-broken" @click="handleToday" />
     <my-icon icon="solar:test-tube-broken" @click="handleTest" />
-    <my-icon icon="solar:calendar-search-broken" />
+    <div>
+      <my-icon
+        icon="solar:calendar-search-broken"
+        for="calendar-input"
+        class="calendar-icon"
+        @click="handleCalendar"
+      />
+      <input
+        type="date"
+        v-model="dateInputValue"
+        class="date-select"
+        orientation="top"
+        ref="dateInput"
+        id="calendar-input"
+        @change="handleDateChange"
+      />
+    </div>
     <my-icon icon="solar:round-alt-arrow-right-broken" @click="handleMoveRight" />
   </div>
 </template>
 
 <style scoped>
-#the-footer {
+.the-footer {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -42,6 +74,7 @@ function handleMoveRight() {}
   height: 100%;
 
   & > * {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -55,5 +88,19 @@ function handleMoveRight() {}
       background-color: #b8823050;
     }
   }
+}
+
+.calendar-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.date-select {
+  position: absolute;
+  top: -10px;
+  background-color: #b8823050;
+  border: 1px solid #00000020;
+  border-radius: 4px;
+  visibility: hidden;
 }
 </style>

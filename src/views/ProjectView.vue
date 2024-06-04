@@ -16,12 +16,10 @@ const projectName = computed(() => (project?.name === '' ? '未命名项目' : p
       <div class="title">{{ projectName }}</div>
     </header>
     <main class="project-group">
-      <ProjectGroupComponent />
-      <EditorComponent class="editor" />
+      <project-group-component />
+      <editor-component class="editor" />
     </main>
-    <footer>
-      <project-footer />
-    </footer>
+    <project-footer class="footer" />
   </div>
 </template>
 
@@ -53,9 +51,9 @@ main {
   flex-grow: 1;
 }
 
-footer {
+.footer {
   flex-shrink: 0;
-  height: 48px;
+  height: 48px !important;
   background: transparent !important;
   border-top: 1px solid #00000010;
 }

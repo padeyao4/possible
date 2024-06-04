@@ -2,6 +2,8 @@ import { createProjectTemplate } from '@/service/project.service'
 import { defineStore } from 'pinia'
 import { v4 } from 'uuid'
 import { ref } from 'vue'
+import { getDaysBetweenDates } from './timer'
+import { useSettings } from './settings'
 
 export type ID = string | number
 
@@ -140,6 +142,11 @@ export const useProjects = defineStore('projects', () => {
     nodeMap.delete(nodeId)
   }
 
+  function setOffsetByDate(project: Project, date: Date | string | number) {
+    const settings = useSettings()
+    project.offset.x = getDaysBetweenDates(project.createTime, new Date(date)) * settings.unitWidth
+  }
+
   function addEdge(
     project: Project,
     node1: Partial<Node>,
@@ -219,6 +226,7 @@ export const useProjects = defineStore('projects', () => {
     addEdge,
     removeEdge,
     deserialize,
-    serialize
+    serialize,
+    setOffsetByDate
   }
 })
