@@ -1,13 +1,42 @@
 import { createProjectTemplate } from '@/service/project.service'
 import { defineStore } from 'pinia'
 import { v4 } from 'uuid'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useRoute } from './route'
 import { useSettings } from './settings'
-import { getDaysBetweenDates } from './timer'
+import { getDaysBetweenDates, getIndexByDate } from './timer'
 import type { Edge, ID, Node, Project } from './types'
 
 export const useProjects = defineStore('projects', () => {
   const projectMap = ref<Map<ID, Project>>(new Map<ID, Project>())
+
+  const nodes = computed(() => {
+    return Array.from(projectMap.value.values())
+      .map((project) => {
+        const curX = getIndexByDate(project)
+        const { nodeMap } = project
+        return Array.from(nodeMap.values()).filter((node) => {
+          return node.x <= curX && curX < node.x + node.width
+        })
+      })
+      .flat()
+  })
+
+  const todoList = computed(() => {
+    return nodes.value
+      .filter((node) => node.completed === false)
+      .sort((a, b) => {
+        return a.sortedIndex - b.sortedIndex
+      })
+  })
+
+  const completedList = computed(() => {
+    return nodes.value
+      .filter((node) => node.completed === true)
+      .sort((a, b) => {
+        return a.sortedIndex - b.sortedIndex
+      })
+  })
 
   function getProject(id: ID): Project | undefined {
     return projectMap.value.get(id)
@@ -170,8 +199,15 @@ export const useProjects = defineStore('projects', () => {
     }))
   }
 
+  function getCurrentProject(): Project {
+    const { active } = useRoute()
+    return getProject(active.param) ?? createProjectTemplate()
+  }
+
   return {
     projectMap,
+    todoList,
+    completedList,
     getProject,
     getProjectByNode,
     bfsTraverseOutEdge,
@@ -185,6 +221,7 @@ export const useProjects = defineStore('projects', () => {
     removeEdge,
     deserialize,
     serialize,
-    setOffsetByDate
+    setOffsetByDate,
+    getCurrentProject
   }
 })

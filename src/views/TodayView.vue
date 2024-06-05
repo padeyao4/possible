@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import ItemComponent from '@/components/ListViewComponent/ItemComponent.vue'
-import { type Node } from '@/stores/projects'
+import { useProjects } from '@/stores/projects'
 import { timeFormat, useTimer } from '@/stores/timer'
-import { computed, inject, ref, type Ref } from 'vue'
+import { computed, ref } from 'vue'
 import draggable from 'vuedraggable'
 
 const visible = ref(false)
@@ -17,17 +17,16 @@ function ondragend() {}
 
 function ondragstart() {}
 
-const todoList = inject<Ref<Node[]>>('todoList',ref([]))
-const completedList = inject<Ref<Node[]>>('completedList',ref([]))
+const projects = useProjects()
 
 function onupdateTodoList() {
-  todoList.value.forEach((item, index) => {
+  projects.todoList.forEach((item, index) => {
     item.sortedIndex = index
   })
 }
 
 function onupdateCompletedList() {
-  completedList.value.forEach((item, index) => {
+  projects.completedList.forEach((item, index) => {
     item.sortedIndex = index
   })
 }
@@ -41,7 +40,7 @@ function onupdateCompletedList() {
     </header>
     <main>
       <draggable
-        :list="todoList"
+        :list="projects.todoList"
         item-key="id"
         chosenClass="chosen-class"
         dragClass="drag-class"
@@ -58,13 +57,13 @@ function onupdateCompletedList() {
           <item-component :node="element" />
         </template>
       </draggable>
-      <div class="show-button" v-if="completedList.length > 0" @click="visible = !visible">
+      <div class="show-button" v-if="projects.completedList.length > 0" @click="visible = !visible">
         <my-icon :icon="visible ? 'solar:alt-arrow-down-bold' : 'solar:alt-arrow-right-bold'" />
-        已完成 {{ completedList.length }}
+        已完成 {{ projects.completedList.length }}
       </div>
       <draggable
         v-if="visible"
-        :list="completedList"
+        :list="projects.completedList"
         item-key="id"
         chosenClass="chosen-class"
         dragClass="drag-class"

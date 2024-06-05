@@ -1,10 +1,9 @@
 <script setup lang="ts">
+import { useProjects } from '@/stores/projects'
 import { useRoute } from '@/stores/route'
-import { inject, type Ref } from 'vue'
-import type { Node } from '@/stores/types'
 
 const route = useRoute()
-const todoList = inject<Ref<Node[]>>('todoList')
+const projects = useProjects()
 </script>
 
 <template>
@@ -17,7 +16,7 @@ const todoList = inject<Ref<Node[]>>('todoList')
     >
       <my-icon icon="solar:sun-2-broken" class="side-icon" />
       <div class="side-item-text my-day">我的一天</div>
-      <div class="todo-count">{{ todoList.length }}</div>
+      <div class="todo-count">{{ projects.todoList.length }}</div>
     </div>
     <div
       class="side-list-item"

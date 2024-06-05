@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useProjects, type Node } from '@/stores/projects'
-import { computed, ref } from 'vue'
+import { useProjects } from '@/stores/projects';
+import type { Node } from '@/stores/types';
+import { computed, ref } from 'vue';
 
 const props = defineProps<{
   node: Node
@@ -49,12 +50,12 @@ function onclick() {
 <style scoped>
 .item {
   display: flex;
+  grid-row: 1;
   align-items: center;
   height: 56px;
   margin-bottom: 4px;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 4px;
-  grid-row: 1;
 
   .icon {
     display: flex;
@@ -78,8 +79,8 @@ function onclick() {
 
     .one {
       display: flex;
-      align-items: end;
       flex-grow: 1;
+      align-items: end;
       height: 28px;
       overflow: hidden;
       font-size: var(--font-default-size);
@@ -89,7 +90,7 @@ function onclick() {
     }
 
     .two {
-      flex-grow: 1;      
+      flex-grow: 1;
       height: 28px;
       overflow: hidden;
       font-size: var(--font-small-size);
