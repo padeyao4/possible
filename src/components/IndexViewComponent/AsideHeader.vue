@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRoute } from '@/stores/route'
 import { inject, type Ref } from 'vue'
-import { type Node } from '@/stores/projects'
+import type { Node } from '@/stores/types'
 
 const route = useRoute()
 const todoList = inject<Ref<Node[]>>('todoList')

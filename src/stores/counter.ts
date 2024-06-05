@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, reactive } from 'vue'
-import { type ID, type Node } from './projects'
 import { getIndex, useTimer } from './timer'
+import type { ID, Node } from './types'
 
 export const counter = defineStore('counter', () => {
   const mapper = reactive<Map<number, Set<ID>>>(new Map())

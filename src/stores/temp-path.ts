@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { ID, Point } from '@/stores/projects'
 import { v4 } from 'uuid'
+import type { ID, Point } from './types'
 
 export type TempPath = {
   id: ID,

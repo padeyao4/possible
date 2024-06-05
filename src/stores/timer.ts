@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref, type Ref } from 'vue'
-import { type Node, useProjects, type Project } from './projects'
+import { useProjects } from './projects'
+import type { Node, Project } from './types'
 
 export function showWeek(date: Date | number): string {
   const arr = ['日', '一', '二', '三', '四', '五', '六']

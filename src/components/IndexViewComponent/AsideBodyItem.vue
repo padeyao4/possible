@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import ModeDialog from '@/components/common/ModeDialog.vue'
-import { useProjects, type Project } from '@/stores/projects'
+import { useProjects } from '@/stores/projects'
 import { useRoute } from '@/stores/route'
 import { computed, ref } from 'vue'
+import type { Project } from '@/stores/types'
 
 const props = defineProps<{ project: Project }>()
 const { project } = props
@@ -79,11 +80,13 @@ const isActive = computed(() => {
         }
       "
     >
-      删除
-      <b
-        ><i style="color: red">{{ project.name }}</i></b
-      >
-      项目吗?
+      <div class="solt-container">
+        <div>删除</div>
+        <div class="text-content">
+          {{ project.name }}
+        </div>
+        <div>项目吗?</div>
+      </div>
     </mode-dialog>
   </div>
 </template>
@@ -99,37 +102,54 @@ const isActive = computed(() => {
   }
 }
 
+.solt-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 0 8px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.text-content {
+  display: block;
+  overflow: hidden;
+  color: red;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .project-item {
   position: relative;
+  z-index: 3;
   display: flex;
   align-items: center;
+  width: 100%;
   height: 40px;
   padding: 4px 8px;
-  width: 100%;
-  z-index: 3;
 }
 
 input {
-  outline-style: none;
-  user-select: auto;
-  border: 0;
   font-size: 15px;
   text-indent: 4px;
+  border: 0;
+  outline-style: none;
+  user-select: auto;
 }
 
 .info {
-  margin: 0 4px;
   flex-grow: 1;
-  white-space: nowrap;
+  margin: 0 4px;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .operation {
   display: none;
+  flex-shrink: 0;
   align-items: center;
   justify-content: end;
   width: 68px;
-  flex-shrink: 0;
 }
 </style>

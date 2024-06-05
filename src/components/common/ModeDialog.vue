@@ -18,7 +18,7 @@ useEventListener(document, 'keydown', (e) => {
     <div class="the-container">
       <div class="dialog">
         <main>
-          <slot />
+          <slot></slot>
         </main>
         <footer>
           <div @click="ok">确定</div>
@@ -45,11 +45,14 @@ useEventListener(document, 'keydown', (e) => {
   .dialog {
     display: flex;
     flex-direction: column;
-    width: 300px;
+    width: 350px;
     height: 250px;
     background-color: #fdfdfd;
-    border: solid 1px #00000070;
+    border: solid 1px #00000030;
     border-radius: 8px;
+    box-shadow:
+      0 0 10px rgba(0, 0, 0, 0.5),
+      0 0 20px rgba(247, 247, 249, 0.25);
   }
 }
 
@@ -59,6 +62,7 @@ main {
   justify-content: center;
   width: 100%;
   height: 200px;
+  overflow: hidden;
   font-weight: lighter;
   font-size: 16px;
 }

@@ -1,7 +1,8 @@
 import { isCross } from '@/lib/math'
-import { useProjects, type Edge, type ID, type Node, type Project } from '@/stores/projects'
+import { useProjects } from '@/stores/projects'
 import { useRoute } from '@/stores/route'
 import { getDaysBetweenDates, useTimer } from '@/stores/timer'
+import type { Edge, ID, Project, Node } from '@/stores/types'
 import { faker } from '@faker-js/faker'
 import { v4 } from 'uuid'
 
@@ -51,7 +52,7 @@ export function createNodeTemplate(): Node {
     record: '',
     completed: false,
     sortedIndex: -1,
-    projectId: -1
+    projectId: ''
   }
 }
 
@@ -67,7 +68,7 @@ export function createRandomNodeTemplate(): Node {
     record: faker.lorem.paragraphs({ min: 2, max: 10 }),
     completed: false,
     sortedIndex: -1,
-    projectId: -1
+    projectId: ''
   }
 }
 

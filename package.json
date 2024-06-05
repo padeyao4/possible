@@ -11,8 +11,8 @@
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
-    "predeploy": "build -c vite.config.page.ts --mode dev",
-    "deploy": "gh-pages -d dist -b page"
+    "predeploy": "pnpm build -c vite.config.page.ts",
+    "deploy": "pnpm gh-pages -d dist -b page"
   },
   "dependencies": {
     "@faker-js/faker": "^8.4.1",
