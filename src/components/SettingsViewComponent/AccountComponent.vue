@@ -40,10 +40,8 @@ import PosButton from '@/components/common/PosButton.vue'
 
 .username {
   font-size: 30px;
-  /* background-color: aquamarine; */
 }
 .email {
   font-size: 18px;
-  /* background-color: cadetblue; */
 }
 </style>

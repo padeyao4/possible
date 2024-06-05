@@ -12,8 +12,8 @@ const route = useRoute()
 
 const visible = ref(false)
 
-function onclick(projectId: string) {
-  route.linkTo('project', projectId)
+async function onclick(projectId: string) {
+  await route.linkTo('project', projectId)
 }
 
 function handleInputRef(e: HTMLElement) {
@@ -26,14 +26,18 @@ function handleEdit() {
   project.editable = true
 }
 
-function handleDelete() {
+function handleDelete(e: Event) {
   visible.value = true
+  e.stopPropagation()
 }
 
 function okCallback() {
-  useProjects().removeProject(project.id)
+  const { removeProject, getCurrentProject } = useProjects()
+  if (getCurrentProject().id === project.id) {
+    route.linkTo('today')
+  }
+  removeProject(project.id)
   visible.value = false
-  route.linkTo('today')
 }
 
 const projectName = computed(() => {
