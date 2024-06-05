@@ -4,8 +4,8 @@ import PosButton from '@/components/common/PosButton.vue'
 <template>
   <div class="avatar-container">
     <div class="acount-info">
-      <div class="username">jian guo</div>
-      <div class="email">118189395@qq.com</div>
+      <div class="username">username</div>
+      <div class="email">email</div>
     </div>
     <div class="account-button-group">
       <pos-button background="info">账单</pos-button>
