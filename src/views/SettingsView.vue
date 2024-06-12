@@ -1,23 +1,25 @@
 <script setup lang="ts">
-import AccountComponent from '@/components/SettingsViewComponent/AccountComponent.vue'
 import { useRoute } from '@/stores/route'
 
-const { back } = useRoute()
+const { back, linkTo } = useRoute()
 </script>
 <template>
-  <div class="settings">
+  <div class="login">
     <header>
       <my-icon icon="solar:arrow-left-linear" class="back-button" @click="back()" /> 设置
     </header>
     <main>
       <div class="container">
-        <AccountComponent />
+        <div class="item">
+          <button @click="linkTo('login')">登录</button>
+          <button @click="linkTo('/register')">注册</button>
+        </div>
       </div>
     </main>
   </div>
 </template>
 <style scoped>
-.settings {
+.login {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -63,5 +65,10 @@ const { back } = useRoute()
       height: 100%;
     }
   }
+}
+
+.item {
+  background-color: aquamarine;
+  border-bottom: 1px solid #00000030;
 }
 </style>
