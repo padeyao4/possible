@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import $bus from '@/lib/bus'
+import { useAccount } from '@/stores/account'
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { AccountControllerApi } from '@/openapi'
 
 const visible = ref(false)
+const account = useAccount()
 
 const username = defineModel<string>('username')
 const password = defineModel<string>('password')
-const api = new AccountControllerApi()
 
 watch(username, () => {
   console.log(username.value)
@@ -30,12 +30,10 @@ function handleClose() {
 }
 
 async function handleLogin() {
-  const respone = await api.login({
-    username: username.value,
-    password: password.value
-  })
-  const { data } = respone
-  console.log(data)
+  await account.login(username.value, password.value)
+  if (account.online) {
+    visible.value = false
+  }
 }
 </script>
 <template>

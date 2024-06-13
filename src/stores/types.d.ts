@@ -40,12 +40,3 @@ export interface Project {
   createTime: number
   offset: Point
 }
-
-export interface Account {
-  name: string
-  password: string
-  token: string
-  email: string
-}
-
-export type AccountStatus = 'ONLINE' | 'OFFLINE'

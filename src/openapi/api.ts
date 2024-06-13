@@ -61,6 +61,56 @@ export interface RegisterRequest {
      */
     'password'?: string;
 }
+/**
+ * 
+ * @export
+ * @interface RestResponseObject
+ */
+export interface RestResponseObject {
+    /**
+     * 
+     * @type {string}
+     * @memberof RestResponseObject
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof RestResponseObject
+     */
+    'code'?: number;
+    /**
+     * 
+     * @type {object}
+     * @memberof RestResponseObject
+     */
+    'payload'?: object;
+}
+/**
+ * 
+ * @export
+ * @interface RestResponseString
+ */
+export interface RestResponseString {
+    /**
+     * 
+     * @type {string}
+     * @memberof RestResponseString
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof RestResponseString
+     */
+    'code'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof RestResponseString
+     */
+    'payload'?: string;
+}
 
 /**
  * AccountControllerApi - axios parameter creator
@@ -183,7 +233,7 @@ export const AccountControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async login(loginRequest: LoginRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async login(loginRequest: LoginRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseString>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.login(loginRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AccountControllerApi.login']?.[localVarOperationServerIndex]?.url;
@@ -194,7 +244,7 @@ export const AccountControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async logout(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async logout(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseObject>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.logout(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AccountControllerApi.logout']?.[localVarOperationServerIndex]?.url;
@@ -206,7 +256,7 @@ export const AccountControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async register(registerRequest: RegisterRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async register(registerRequest: RegisterRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseObject>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.register(registerRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AccountControllerApi.register']?.[localVarOperationServerIndex]?.url;
@@ -228,7 +278,7 @@ export const AccountControllerApiFactory = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        login(loginRequest: LoginRequest, options?: any): AxiosPromise<object> {
+        login(loginRequest: LoginRequest, options?: any): AxiosPromise<RestResponseString> {
             return localVarFp.login(loginRequest, options).then((request) => request(axios, basePath));
         },
         /**
@@ -236,7 +286,7 @@ export const AccountControllerApiFactory = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        logout(options?: any): AxiosPromise<object> {
+        logout(options?: any): AxiosPromise<RestResponseObject> {
             return localVarFp.logout(options).then((request) => request(axios, basePath));
         },
         /**
@@ -245,7 +295,7 @@ export const AccountControllerApiFactory = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        register(registerRequest: RegisterRequest, options?: any): AxiosPromise<object> {
+        register(registerRequest: RegisterRequest, options?: any): AxiosPromise<RestResponseObject> {
             return localVarFp.register(registerRequest, options).then((request) => request(axios, basePath));
         },
     };
@@ -343,7 +393,7 @@ export const ApiControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async hello(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async hello(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseObject>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.hello(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ApiControllerApi.hello']?.[localVarOperationServerIndex]?.url;
@@ -364,7 +414,7 @@ export const ApiControllerApiFactory = function (configuration?: Configuration, 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        hello(options?: any): AxiosPromise<object> {
+        hello(options?: any): AxiosPromise<RestResponseObject> {
             return localVarFp.hello(options).then((request) => request(axios, basePath));
         },
     };
