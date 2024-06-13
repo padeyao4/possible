@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import AccountInfoComponent from '@/components/SettingsViewComponent/AccountInfoComponent.vue'
 import { useRoute } from '@/stores/route'
 
-const { back, linkTo } = useRoute()
+const { back } = useRoute()
 </script>
 <template>
   <div class="login">
@@ -11,8 +12,7 @@ const { back, linkTo } = useRoute()
     <main>
       <div class="container">
         <div class="item">
-          <button @click="linkTo('login')">登录</button>
-          <button @click="linkTo('/register')">注册</button>
+          <AccountInfoComponent />
         </div>
       </div>
     </main>
