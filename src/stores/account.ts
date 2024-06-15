@@ -9,15 +9,30 @@ export const useAccount = defineStore('account', () => {
   const online = ref(false)
   const token = ref()
 
-  async function login(username: string, password: string) {
-    const response = await accountApi.login({ username, password })
-    const { data } = response
-    const { code, payload } = data
-    if (code === 200) {
-      token.value = payload
-      online.value = true
-      axios.defaults.headers.common['Token'] = payload
-    }
+  function login(
+    username: string,
+    password: string,
+    success?: () => void,
+    fail?: () => void,
+    final?: () => void
+  ) {
+    accountApi
+      .login({ username, password })
+      .then((r) => {
+        const { code, payload } = r.data
+        if (code === 2000) {
+          token.value = payload
+          online.value = true
+          axios.defaults.headers.common['Token'] = payload
+          success?.()
+        } else {
+          fail?.()
+        }
+      })
+      .catch(() => {
+        fail?.()
+      })
+      .finally(() => final?.())
   }
 
   async function logout() {

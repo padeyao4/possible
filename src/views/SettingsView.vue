@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import AccountInfoComponent from '@/components/SettingsViewComponent/AccountInfoComponent.vue'
+import AccountInfo from '@/components/SettingsViewComponent/AccountInfo.vue'
+import AccountHasLogin from '@/components/SettingsViewComponent/AccountHasLogin.vue'
+import GlobalSettingsCompnonet from '@/components/SettingsViewComponent/GlobalSettingsComponent.vue'
 import { useRoute } from '@/stores/route'
 
 const { back } = useRoute()
 </script>
 <template>
-  <div class="login">
+  <div class="settings">
     <header>
       <my-icon icon="solar:arrow-left-linear" class="back-button" @click="back()" /> 设置
     </header>
-    <main>
-      <div class="container">
-        <div class="item">
-          <AccountInfoComponent />
-        </div>
-      </div>
-    </main>
+    <div class="container">
+      <AccountInfo />
+      <AccountHasLogin />
+      <GlobalSettingsCompnonet />
+    </div>
   </div>
 </template>
 <style scoped>
-.login {
+.settings {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -51,24 +51,14 @@ const { back } = useRoute()
     }
   }
 
-  main {
+  .container {
     display: flex;
-    justify-content: center;
-    width: 100%;
-    height: calc(100vh - 64px);
-    overflow-y: auto;
-
-    .container {
-      display: flex;
-      flex-direction: column;
-      width: 550px;
-      height: 100%;
-    }
+    flex-direction: column;
+    width: 550px;
+    height: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    background-color: antiquewhite;
   }
-}
-
-.item {
-  background-color: aquamarine;
-  border-bottom: 1px solid #00000030;
 }
 </style>
