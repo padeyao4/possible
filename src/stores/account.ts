@@ -5,6 +5,7 @@ import { AccountControllerApi, Configuration } from '@/openapi'
 export const useAccount = defineStore('account', () => {
   const online = ref(false)
   const username = ref<string>()
+  const enableSync = ref(false)
 
   function getConfig() {
     return new Configuration({
@@ -41,6 +42,7 @@ export const useAccount = defineStore('account', () => {
   return {
     online,
     username,
+    enableSync,
     login,
     logout,
     syncAccountInfo

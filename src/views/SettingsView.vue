@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import AccountInfo from '@/components/SettingsViewComponent/AccountInfo.vue'
-import SyncSettingsComponent from '@/components/SettingsViewComponent/SyncSettingsComponent.vue'
-import GlobalSettingsCompnonet from '@/components/SettingsViewComponent/GlobalSettingsComponent.vue'
-import { useRoute } from '@/stores/route'
-import SettingsItem from '@/components/SettingsViewComponent/SettingsItem.vue';
+import AccountInfo from '@/components/SettingsViewComponent/AccountInfo.vue';
+import SyncSettingsComponent from '@/components/SettingsViewComponent/SyncSettingsComponent.vue';
+import { useRoute } from '@/stores/route';
 
 const { back } = useRoute()
 </script>
@@ -15,8 +13,6 @@ const { back } = useRoute()
     <div class="container">
       <AccountInfo />
       <SyncSettingsComponent />
-      <GlobalSettingsCompnonet />
-      <SettingsItem/>
     </div>
   </div>
 </template>

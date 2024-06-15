@@ -1,6 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineProps<{
+  disabled?: boolean
+}>()
+
+const checked = defineModel()
+</script>
 <template>
-  <input type="checkbox" />
+  <input type="checkbox" v-model="checked" :disabled="disabled" />
 </template>
 <style scoped>
 input[type='checkbox'] {
@@ -20,7 +26,7 @@ input[type='checkbox']:before {
   height: 20px;
   background: white;
   border-radius: 50%;
-  transition: left cubic-bezier(0.3, 1.5, 0.7, 1) 0.3s;
+  transition: left linear 0.1s;
   content: '';
 }
 input[type='checkbox']:after {

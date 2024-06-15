@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import SettingsItem from '@/components/SettingsViewComponent/SettingsItem.vue'
 import ECheckbox from '@/components/common/ECheckbox.vue'
-import { ref, watch } from 'vue'
+import { useAccount } from '@/stores/account'
+import { computed } from 'vue'
 
-const check = ref(true)
+const account = useAccount()
 
-watch(check, () => {
-  console.log(check.value)
+const checked = computed({
+  get: () => {
+    return account.online && account.enableSync
+  },
+  set: (value) => {
+    if (account.online) {
+      account.enableSync = value
+    }
+  }
 })
 </script>
 <template>
@@ -14,8 +22,7 @@ watch(check, () => {
     <template #title>远程存储</template>
     <template #description>启用服务端存储,将本地数据备份到服务器。需要登录账号</template>
     <template #option>
-      <!-- todo 设置check -->
-      <e-checkbox :checked="true" />
+      <e-checkbox v-model="checked" :disabled="!account.online" />
     </template>
   </SettingsItem>
 </template>

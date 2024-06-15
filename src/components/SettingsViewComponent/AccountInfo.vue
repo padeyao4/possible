@@ -12,7 +12,7 @@ const accout = useAccount()
     <template #description>
       <template v-if="accout.online"> 当前登录账号为 {{ accout.username ?? '未命名' }} </template>
       <template v-else>
-        你没有登录。使用Possible同步服务,分享信息及获取会员服务都需要你登录账号
+        你没有登录。使用同步服务、分享信息等都需要你登录账号
       </template>
     </template>
     <template #option>
@@ -32,7 +32,6 @@ const accout = useAccount()
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 4px;
   padding: 0 4px;
   color: #00000090;
   border: 1px solid #00000050;
