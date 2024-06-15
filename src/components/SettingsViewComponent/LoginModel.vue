@@ -22,7 +22,6 @@ async function handleLogin() {
   try {
     loginLoading.value = true
     await account.login(username.value, password.value)
-    await account.syncAccountInfo()
   } finally {
     loginLoading.value = false
   }

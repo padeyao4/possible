@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { Icon } from '@iconify/vue'
+</script>
 <template>
   <div class="close-icon-button">
-    <my-icon icon="iconamoon:close-thin" class="icon" />
+    <Icon icon="iconamoon:close-thin" class="icon" />
   </div>
 </template>
 <style scoped>

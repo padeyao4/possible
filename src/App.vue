@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import GithubCorner from '@/components/other/GithubCorner.vue';
-import { onMounted } from 'vue';
+import GithubCorner from '@/components/other/GithubCorner.vue'
+import { onMounted } from 'vue'
+import useSyncService from './service/useSyncService'
+import useAccountService from './service/useAccountService';
 
-onMounted(() => {
-})
+useAccountService()
+useSyncService()
+
+onMounted(() => {})
 </script>
 
 <template>
