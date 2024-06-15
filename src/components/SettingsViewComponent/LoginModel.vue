@@ -16,25 +16,13 @@ function handleClose() {
 }
 
 async function handleLogin() {
-  loginLoading.value = true
+  if (loginLoading.value === true) return
+
   try {
-    account.login(
-      username.value,
-      password.value,
-      () => {
-        visible.value = false
-        loginLoading.value = false
-      },
-      () => {
-        loginLoading.value = false
-        console.log('log fail')
-      },
-      () => {
-        console.log('final')
-      }
-    )
-  } catch (e) {
-    console.log(e, 'net fail')
+    loginLoading.value = true
+    await account.login(username.value, password.value)
+  } finally {
+    loginLoading.value = false
   }
 }
 </script>
@@ -125,7 +113,8 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 50px;
+  margin: 0 4px;
+  padding: 0 4px;
   color: #00000090;
   border: 1px solid #00000050;
   border-radius: 4px;
@@ -148,5 +137,8 @@ input {
   background-color: var(--primary-color);
   border: 1px solid #00000050;
   border-radius: 4px;
+}
+.submit-button:hover {
+  opacity: 0.8;
 }
 </style>

@@ -1,61 +1,41 @@
 <script setup lang="ts">
+import SettingsItem from '@/components/SettingsViewComponent/SettingsItem.vue'
+import { useAccount } from '@/stores/account'
 import LoginModel from './LoginModel.vue'
-import RegisterButton from './RegisterButton.vue'
+
+const accout = useAccount()
 </script>
 
 <template>
-  <div class="account-info">
-    <div class="right">
-      <p class="info-h">你的账户</p>
-      <p class="info-text">
+  <SettingsItem>
+    <template #title>你的账号</template>
+    <template #description>
+      <template v-if="accout.online"> 当前登录账号为 {{ accout.username ?? '未命名' }} </template>
+      <template v-else>
         你没有登录。使用Possible同步服务,分享信息及获取会员服务都需要你登录账号
-      </p>
-    </div>
-    <div class="left">
-      <LoginModel />
-      <RegisterButton />
-    </div>
-  </div>
+      </template>
+    </template>
+    <template #option>
+      <template v-if="accout.online">
+        <div class="button" @click="accout.logout">退出登录</div>
+      </template>
+      <template v-else>
+        <LoginModel />
+        <div class="button">注册</div>
+      </template>
+    </template>
+  </SettingsItem>
 </template>
 
 <style scoped>
-.account-info {
+.button {
   display: flex;
-  flex-direction: row;
-  padding: 4px 0;
-  border: 1px solid #00000030;
-
-  .right {
-    flex-grow: 1;
-    width: 100%;
-    margin: 4px 0;
-
-    .info-h {
-      font-size: 15px;
-    }
-    .info-text {
-      font-size: 13px;
-    }
-  }
-  .left {
-    display: flex;
-    flex-direction: row;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-    & > * {
-      margin: 0 4px;
-    }
-    & > *:first-child {
-      margin: 0 4px 0 0;
-    }
-    & > *:last-child {
-      margin: 0 0 0 4px;
-    }
-  }
-}
-
-p {
+  align-items: center;
+  justify-content: center;
+  margin: 0 4px;
+  padding: 0 4px;
   color: #00000090;
+  border: 1px solid #00000050;
+  border-radius: 4px;
 }
 </style>

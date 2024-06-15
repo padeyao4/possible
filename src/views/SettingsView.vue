@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import AccountInfo from '@/components/SettingsViewComponent/AccountInfo.vue'
-import AccountHasLogin from '@/components/SettingsViewComponent/AccountHasLogin.vue'
+import SyncSettingsComponent from '@/components/SettingsViewComponent/SyncSettingsComponent.vue'
 import GlobalSettingsCompnonet from '@/components/SettingsViewComponent/GlobalSettingsComponent.vue'
 import { useRoute } from '@/stores/route'
+import SettingsItem from '@/components/SettingsViewComponent/SettingsItem.vue';
 
 const { back } = useRoute()
 </script>
@@ -13,8 +14,9 @@ const { back } = useRoute()
     </header>
     <div class="container">
       <AccountInfo />
-      <AccountHasLogin />
+      <SyncSettingsComponent />
       <GlobalSettingsCompnonet />
+      <SettingsItem/>
     </div>
   </div>
 </template>
@@ -58,7 +60,6 @@ const { back } = useRoute()
     height: 100%;
     margin-right: auto;
     margin-left: auto;
-    background-color: antiquewhite;
   }
 }
 </style>
