@@ -8,7 +8,6 @@ const accountApi = new AccountControllerApi()
 export const useAccount = defineStore('account', () => {
   const online = ref(false)
   const token = ref()
-  const synchronization = ref()
 
   async function login(username: string, password: string) {
     const response = await accountApi.login({ username, password })

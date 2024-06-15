@@ -1,17 +1,17 @@
 import { createProjectTemplate } from '@/service/project.service'
 import { defineStore } from 'pinia'
 import { v4 } from 'uuid'
-import { computed, ref } from 'vue'
+import { computed, reactive } from 'vue'
 import { useRoute } from './route'
 import { useSettings } from './settings'
 import { getDaysBetweenDates, getIndexByDate } from './timer'
 import type { Edge, ID, Node, Project } from './types'
 
 export const useProjects = defineStore('projects', () => {
-  const projectMap = ref<Map<ID, Project>>(new Map<ID, Project>())
+  const projectMap = reactive(new Map<ID, Project>())
 
   const nodes = computed(() => {
-    return Array.from(projectMap.value.values())
+    return Array.from(projectMap.values())
       .map((project) => {
         const curX = getIndexByDate(project)
         const { nodeMap } = project
@@ -33,13 +33,11 @@ export const useProjects = defineStore('projects', () => {
   const completedList = computed(() => {
     return nodes.value
       .filter((node) => node.completed === true)
-      .sort((a, b) => {
-        return a.sortedIndex - b.sortedIndex
-      })
+      .sort((a, b) => a.sortedIndex - b.sortedIndex)
   })
 
   function getProject(id: ID): Project | undefined {
-    return projectMap.value.get(id)
+    return projectMap.get(id)
   }
 
   function getProjectByNode(node: Node) {
@@ -95,11 +93,11 @@ export const useProjects = defineStore('projects', () => {
   }
 
   function addProject(project: Project): void {
-    projectMap.value.set(project.id, project)
+    projectMap.set(project.id, project)
   }
 
   function removeProject(projectId: ID): void {
-    projectMap.value.delete(projectId)
+    projectMap.delete(projectId)
   }
 
   function addNode(project: Project, node: Node): void {
@@ -184,7 +182,7 @@ export const useProjects = defineStore('projects', () => {
   }
 
   function serialize() {
-    return Array.from(projectMap.value).map(([key, value]) => ({
+    return Array.from(projectMap).map(([key, value]) => ({
       id: key,
       name: value.name,
       nodeMap: Array.from(value.nodeMap.values()),
