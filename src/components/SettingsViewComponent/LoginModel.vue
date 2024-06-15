@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAccount } from '@/stores/account'
+import CloseIconButton from '@/components/common/CloseIconButton.vue'
 import { ref } from 'vue'
 
 const visible = ref(false)
@@ -33,7 +34,7 @@ async function handleLogin() {
       <main>
         <div class="head">
           <div>登录</div>
-          <div @click="handleClose">关闭</div>
+          <CloseIconButton @click="handleClose" />
         </div>
         <div class="content">
           <div>
@@ -83,7 +84,9 @@ main {
   background-color: var(--background-top-color);
   border: 1px solid #00000030;
   border-radius: 8px;
-  box-shadow: 0 0 10px;
+  box-shadow:
+    0 0 10px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(247, 247, 249, 0.25);
 }
 
 .head {
