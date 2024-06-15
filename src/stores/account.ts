@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { AccountControllerApi, Configuration } from '@/openapi'
+import { AccountControllerApi, Configuration, UserControllerApi } from '@/openapi'
 
 export const useAccount = defineStore('account', () => {
   const online = ref(false)
@@ -19,7 +19,9 @@ export const useAccount = defineStore('account', () => {
   }
 
   async function syncAccountInfo() {
-    // todo
+    const userApi = new UserControllerApi(getConfig())
+    const response = await userApi.userInfo()
+    username.value = response.data.payload.username
   }
 
   async function login(username: string, password: string) {
