@@ -1,17 +1,13 @@
 <script setup lang="ts">
-import $bus from '@/lib/bus'
-import { useAccount } from '@/stores/account'
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import $bus from '@/lib/bus';
+import { useAccount } from '@/stores/account';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 const visible = ref(false)
 const account = useAccount()
 
 const username = defineModel<string>('username')
 const password = defineModel<string>('password')
-
-watch(username, () => {
-  console.log(username.value)
-})
 
 onMounted(() => {
   $bus.on('login', (e: any) => {
@@ -37,6 +33,7 @@ async function handleLogin() {
 }
 </script>
 <template>
+  <div></div>
   <div class="login" v-if="visible">
     <main>
       <div>login</div>
