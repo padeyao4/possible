@@ -22,6 +22,8 @@ async function handleLogin() {
   await account.login(username.value, password.value)
   loginLoading.value = false
 }
+
+const forgetUrl = import.meta.env.VITE_FORGET_URL ?? '/forget'
 </script>
 <template>
   <div class="login-button" @click="visible = !visible">登录</div>
@@ -48,6 +50,7 @@ async function handleLogin() {
           </div>
         </div>
         <div class="footer">
+          <a class="forget" :href="forgetUrl" target="_blank">忘记密码?</a>
           <div @click="handleLogin" class="submit-button">
             {{ loginLoading ? '登录中...' : '登录' }}
           </div>
@@ -57,6 +60,13 @@ async function handleLogin() {
   </Teleport>
 </template>
 <style scoped>
+.forget {
+  color: #00000090;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .modal {
   position: absolute;
   top: 0;
@@ -104,9 +114,13 @@ main {
 
 .footer {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   height: 50px;
+  & > * {
+    margin: 0 10px;
+  }
 }
 .login-button {
   display: flex;
