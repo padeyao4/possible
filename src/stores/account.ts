@@ -21,7 +21,6 @@ export const useAccount = defineStore('account', () => {
 
   function getConfig() {
     return new Configuration({
-      basePath: import.meta.env.VITE_BASE_PATH ?? '/',
       baseOptions: {
         headers: {
           Token: token.value

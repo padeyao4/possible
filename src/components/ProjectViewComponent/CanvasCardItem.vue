@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { type Node } from '@/stores/projects'
 import { computed } from 'vue'
 import { useSettings } from '@/stores/settings'
+import type { Node } from '@/stores/types'
 
 const props = defineProps<{ node: Node }>()
 const settings = useSettings()
@@ -196,15 +196,15 @@ const backgroundColor = computed(() => {
 
 .text {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
   padding: 10px;
   p {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     font-weight: 100;
     font-size: 13px;
     text-align: center;
