@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { createProjectTemplate } from '@/service/project.service'
+import { useNotity } from '@/stores/notity'
 import { useProjects } from '@/stores/projects'
 import { useRoute } from '@/stores/route'
+import { Icon } from '@iconify/vue/dist/iconify.js'
 
 const { linkTo } = useRoute()
+const notity = useNotity()
 
 function onclick() {
   const project = createProjectTemplate()
@@ -21,14 +24,10 @@ function onclick() {
       <my-icon icon="solar:add-square-broken" class="side-icon" />
       <div class="side-item-text">创建项目</div>
     </div>
-    <!-- <div class="icon-button">
-      <div class="side-list-item icon-warp">
-        <my-icon icon="solar:accessibility-broken" />
-      </div>
-    </div> -->
     <div class="icon-button">
       <div class="side-list-item icon-warp" @click="linkTo('settings')">
-        <my-icon icon="solar:settings-broken" />
+        <Icon icon="solar:settings-broken" class="settings-icon" />
+        <div class="notity" v-show="notity.hasNotity"></div>
       </div>
     </div>
   </div>
@@ -59,6 +58,7 @@ function onclick() {
   }
 
   .icon-warp {
+    position: relative;
     display: flex;
     flex-shrink: 0;
     align-items: center;
@@ -66,14 +66,25 @@ function onclick() {
     width: 40px;
     height: 40px;
     border-radius: 8px;
-    & > * {
-      width: 24px;
-      height: 24px;
-      border-radius: 8px;
-    }
     &:hover {
       background-color: burlywood;
     }
   }
+}
+
+.settings-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+}
+
+.notity {
+  position: absolute;
+  top: 10%;
+  right: 10%;
+  width: 8px;
+  height: 8px;
+  background-color: #ff000090;
+  border-radius: 50%;
 }
 </style>

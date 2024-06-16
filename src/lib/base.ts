@@ -1,6 +1,6 @@
-import type { Project } from '@/stores/projects'
 import { type MouseStyleType, useMouseStyle } from '@/stores/mouse'
 import { type SettingsType, useSettings } from '@/stores/settings'
+import type { Project } from '@/stores/types'
 import { useEventListener } from '@vueuse/core'
 
 const eventTypes = [

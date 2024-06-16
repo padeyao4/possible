@@ -77,6 +77,31 @@ export interface RegisterRequest {
 /**
  * 
  * @export
+ * @interface RestResponseLong
+ */
+export interface RestResponseLong {
+    /**
+     * 
+     * @type {string}
+     * @memberof RestResponseLong
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof RestResponseLong
+     */
+    'code'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof RestResponseLong
+     */
+    'payload'?: number;
+}
+/**
+ * 
+ * @export
  * @interface RestResponseObject
  */
 export interface RestResponseObject {
@@ -177,31 +202,6 @@ export interface RestResponseUser {
 /**
  * 
  * @export
- * @interface RestResponseVoid
- */
-export interface RestResponseVoid {
-    /**
-     * 
-     * @type {string}
-     * @memberof RestResponseVoid
-     */
-    'message'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof RestResponseVoid
-     */
-    'code'?: number;
-    /**
-     * 
-     * @type {object}
-     * @memberof RestResponseVoid
-     */
-    'payload'?: object;
-}
-/**
- * 
- * @export
  * @interface Storage
  */
 export interface Storage {
@@ -260,6 +260,12 @@ export interface StoragePutRequest {
      * @memberof StoragePutRequest
      */
     'content'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof StoragePutRequest
+     */
+    'parentId'?: number;
 }
 /**
  * 
@@ -308,13 +314,7 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    'enabled'?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof User
-     */
-    'accountNonLocked'?: boolean;
+    'accountNonExpired'?: boolean;
     /**
      * 
      * @type {boolean}
@@ -326,7 +326,13 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    'accountNonExpired'?: boolean;
+    'accountNonLocked'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof User
+     */
+    'enabled'?: boolean;
 }
 
 /**
@@ -665,6 +671,41 @@ export const StorageControllerApiAxiosParamCreator = function (configuration?: C
     return {
         /**
          * 
+         * @param {StoragePutRequest} storagePutRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        forcePut: async (storagePutRequest: StoragePutRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'storagePutRequest' is not null or undefined
+            assertParamExists('forcePut', 'storagePutRequest', storagePutRequest)
+            const localVarPath = `/storage/force/put`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(storagePutRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -739,6 +780,18 @@ export const StorageControllerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @param {StoragePutRequest} storagePutRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async forcePut(storagePutRequest: StoragePutRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseLong>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.forcePut(storagePutRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StorageControllerApi.forcePut']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -754,7 +807,7 @@ export const StorageControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async put(storagePutRequest: StoragePutRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseVoid>> {
+        async put(storagePutRequest: StoragePutRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseLong>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.put(storagePutRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['StorageControllerApi.put']?.[localVarOperationServerIndex]?.url;
@@ -772,6 +825,15 @@ export const StorageControllerApiFactory = function (configuration?: Configurati
     return {
         /**
          * 
+         * @param {StoragePutRequest} storagePutRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        forcePut(storagePutRequest: StoragePutRequest, options?: any): AxiosPromise<RestResponseLong> {
+            return localVarFp.forcePut(storagePutRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -784,7 +846,7 @@ export const StorageControllerApiFactory = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        put(storagePutRequest: StoragePutRequest, options?: any): AxiosPromise<RestResponseVoid> {
+        put(storagePutRequest: StoragePutRequest, options?: any): AxiosPromise<RestResponseLong> {
             return localVarFp.put(storagePutRequest, options).then((request) => request(axios, basePath));
         },
     };
@@ -797,6 +859,17 @@ export const StorageControllerApiFactory = function (configuration?: Configurati
  * @extends {BaseAPI}
  */
 export class StorageControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {StoragePutRequest} storagePutRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StorageControllerApi
+     */
+    public forcePut(storagePutRequest: StoragePutRequest, options?: RawAxiosRequestConfig) {
+        return StorageControllerApiFp(this.configuration).forcePut(storagePutRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @param {*} [options] Override http request option.

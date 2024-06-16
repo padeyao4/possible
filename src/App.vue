@@ -2,9 +2,11 @@
 import GithubCorner from '@/components/other/GithubCorner.vue'
 import { onMounted } from 'vue'
 import useSyncService from './service/useSyncService'
-import useAccountService from './service/useAccountService';
+import useLoadAccount from './service/useLoadAccount';
+import useLoadProjects from './service/useLoadProjects';
 
-useAccountService()
+useLoadAccount()
+useLoadProjects()
 useSyncService()
 
 onMounted(() => {})

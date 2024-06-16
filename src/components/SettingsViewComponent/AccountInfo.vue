@@ -2,39 +2,37 @@
 import SettingsItem from '@/components/SettingsViewComponent/SettingsItem.vue'
 import { useAccount } from '@/stores/account'
 import LoginModel from './LoginModel.vue'
+import EButton from '@/components/common/EButton.vue'
+import { ref } from 'vue'
 
-const accout = useAccount()
+const account = useAccount()
+
+const logoutLoading = ref()
+
+async function handleLogout() {
+  logoutLoading.value = true
+  await account.logout()
+  logoutLoading.value = false
+}
 </script>
 
 <template>
   <SettingsItem>
     <template #title>你的账号</template>
     <template #description>
-      <template v-if="accout.online"> 当前登录账号为 {{ accout.username ?? '未命名' }} </template>
-      <template v-else>
-        你没有登录。使用同步服务、分享信息等都需要你登录账号
-      </template>
+      <template v-if="account.online"> 当前登录账号为 {{ account.username ?? '未命名' }} </template>
+      <template v-else> 你没有登录。使用同步服务、分享信息等都需要你登录账号 </template>
     </template>
     <template #option>
-      <template v-if="accout.online">
-        <div class="button" @click="accout.logout">退出登录</div>
+      <template v-if="account.online">
+        <e-button @click="handleLogout" :loading="logoutLoading">退出登录</e-button>
       </template>
       <template v-else>
         <LoginModel />
-        <div class="button">注册</div>
+        <e-button>注册</e-button>
       </template>
     </template>
   </SettingsItem>
 </template>
 
-<style scoped>
-.button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 4px;
-  color: #00000090;
-  border: 1px solid #00000050;
-  border-radius: 4px;
-}
-</style>
+<style scoped></style>

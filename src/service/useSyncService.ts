@@ -3,6 +3,9 @@ import { useProjects } from '@/stores/projects'
 import { useDebounceFn } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
 
+/**
+ * 如果用户开启了同步服务(用户已登录并且开启远程存储)，监听项目变换并发送数据到远程服务器
+ */
 export default function () {
   const account = useAccount()
   const projects = useProjects()
@@ -14,12 +17,8 @@ export default function () {
   const unsubscribe = ref()
 
   const syncFnc = useDebounceFn(() => {
-    try {
-      account.syncProjects()
-    } catch (e) {
-      console.error('project sync failed', e)
-    }
-  }, 3_000)
+    account.sendProjects()
+  }, 1000)
 
   watch(
     isSync,

@@ -1,2 +1,24 @@
-// todo 加载数据,判断加载服务器数据 或者 本地数据
-// todo 解决数据冲突问题,利用哈希值?
+import { useProjects } from '@/stores/projects';
+import { useDebounceFn } from '@vueuse/core';
+
+/**
+ * 1.加载本地数据
+ * 2.开启内存数据实时同步到本地数据
+ */
+export default function () {
+  const projects = useProjects()
+
+  ;(() => {
+    const s = localStorage.getItem('projects')
+    const o = JSON.parse(s)
+    projects.deserialize(o)
+  })()
+
+  const syncFnc = useDebounceFn(() => {
+    const o = projects.serialize()
+    const s = JSON.stringify(o)
+    localStorage.setItem('projects', s)
+  }, 500)
+
+  projects.$subscribe(syncFnc)
+}

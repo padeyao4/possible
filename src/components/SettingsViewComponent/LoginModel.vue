@@ -18,13 +18,9 @@ function handleClose() {
 
 async function handleLogin() {
   if (loginLoading.value === true) return
-
-  try {
-    loginLoading.value = true
-    await account.login(username.value, password.value)
-  } finally {
-    loginLoading.value = false
-  }
+  loginLoading.value = true
+  await account.login(username.value, password.value)
+  loginLoading.value = false
 }
 </script>
 <template>
