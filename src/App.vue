@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import GithubCorner from '@/components/other/GithubCorner.vue'
-import { onMounted } from 'vue'
-import useSyncService from './service/useSyncService'
+import GithubCorner from '@/components/other/GithubCorner.vue';
+import { onBeforeMount } from 'vue';
+import useSyncService from './service/useSyncService';
 import useLoadAccount from './service/useLoadAccount';
 import useLoadProjects from './service/useLoadProjects';
+import { useProjectStore } from '@/stores/project';
 
-useLoadAccount()
-useLoadProjects()
-useSyncService()
+useLoadAccount();
+useLoadProjects();
+useSyncService();
 
-onMounted(() => {})
+onBeforeMount(() => {
+  useProjectStore().faker();
+});
 </script>
 
 <template>

@@ -1,34 +1,34 @@
 <script setup lang="ts">
-import { useProjects } from '@/stores/projects';
+import { useProjectStore } from '@/stores/project';
 import type { Node } from '@/stores/types';
 import { computed, ref } from 'vue';
 
 const props = defineProps<{
-  node: Node
-}>()
+  node: Node;
+}>();
 
-const { node } = props
+const { node } = props;
 
-const projects = useProjects()
+const projects = useProjectStore();
 
-const project = computed(() => projects.getProject(node.projectId))
-const over = ref(false)
+const project = computed(() => projects.getProject(node.projectId));
+const over = ref(false);
 
 const textDecoration = computed(() => {
-  return node.completed ? 'line-through' : 'none'
-})
+  return node.completed ? 'line-through' : 'none';
+});
 
 const iconStyle = computed(() => {
   if (node.completed) {
-    return !over.value ? 'solar:check-circle-linear' : 'solar:record-line-duotone'
+    return !over.value ? 'solar:check-circle-linear' : 'solar:record-line-duotone';
   } else {
-    return over.value ? 'solar:check-circle-linear' : 'solar:record-line-duotone'
+    return over.value ? 'solar:check-circle-linear' : 'solar:record-line-duotone';
   }
-})
+});
 
 function onclick() {
-  node.completed = !node.completed
-  node.sortedIndex = -1
+  node.completed = !node.completed;
+  node.sortedIndex = -1;
 }
 </script>
 <template>

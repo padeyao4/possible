@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import $bus from '@/lib/bus'
-import { clampMax } from '@/lib/math'
+import $bus from '@/lib/bus';
+import { clampMax } from '@/lib/math';
 import {
   appendNode,
-  createNodeTemplate,
+  // createNodeTemplate,
   currentProject,
   moveDown,
   moveLeft,
@@ -11,116 +11,135 @@ import {
   tryMoveDownWhole,
   tryMoveUp,
   tryMoveUpWhole
-} from '@/service/project.service'
-import { useCanvas } from '@/stores/canvas'
-import { useMouseStyle } from '@/stores/mouse'
-import { useProjects } from '@/stores/projects'
-import { useSettings } from '@/stores/settings'
-import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue'
+} from '@/service/project.service';
+import Node from '@/core/Node';
+import { useCanvas } from '@/stores/canvas';
+import { useMouseStyle } from '@/stores/mouse';
+import { useProjectStore } from '@/stores/project';
+import { useSettings } from '@/stores/settings';
+import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue';
 
-const element = ref<HTMLElement>()
-const top = ref(0)
-const left = ref(0)
-const visible = ref(false)
-const canvas = useCanvas()
-const mouseStyle = useMouseStyle()
-const elementType = ref<'node' | 'canvas' | 'edge'>('node')
-const currentMouseEvent = ref<PointerEvent>()
+const element = ref<HTMLElement>();
+const top = ref(0);
+const left = ref(0);
+const visible = ref(false);
+const canvas = useCanvas();
+const mouseStyle = useMouseStyle();
+const elementType = ref<'node' | 'canvas' | 'edge'>('node');
+const currentMouseEvent = ref<PointerEvent>();
 
 function createNode() {
-  const settings = useSettings()
-  const project = currentProject()
-  const x = currentMouseEvent.value.offsetX - project.offset.x
-  const y = currentMouseEvent.value.offsetY - project.offset.y
-  const node = createNodeTemplate()
-  node.x = Math.floor(x / settings.unitWidth)
-  node.y = Math.floor(y / settings.unitHeight)
-  useProjects().addNode(project, node)
-  visible.value = false
+  const settings = useSettings();
+  const project = currentProject();
+  const x = currentMouseEvent.value.offsetX - project.offset.x;
+  const y = currentMouseEvent.value.offsetY - project.offset.y;
+  const node = new Node();
+  node.x = Math.floor(x / settings.unitWidth);
+  node.y = Math.floor(y / settings.unitHeight);
+  useProjectStore().addNode(project, node);
+  visible.value = false;
 }
 
 function handleAppendNode() {
-  const project = currentProject()
-  const el = currentMouseEvent.value.target as Element
-  const key = el.getAttribute('data-key')
-  const node = project.nodeMap.get(key)
-  appendNode(project, node)
-  visible.value = false
+  const project = currentProject();
+  const el = currentMouseEvent.value.target as Element;
+  const key = el.getAttribute('data-key');
+  const node = project.nodeMap.get(key);
+  appendNode(project, node);
+  visible.value = false;
 }
 
 function handleMoveUpWhole() {
-  const project = currentProject()
-  const el = currentMouseEvent.value.target as Element
-  const key = el.getAttribute('data-key')
-  const node = project.nodeMap.get(key)
-  tryMoveUpWhole(project, node)
-  visible.value = false
+  const project = currentProject();
+  const el = currentMouseEvent.value.target as Element;
+  const key = el.getAttribute('data-key');
+  const node = project.nodeMap.get(key);
+  tryMoveUpWhole(project, node);
+  visible.value = false;
 }
 function handleMoveDownWhole() {
-  const project = currentProject()
-  const el = currentMouseEvent.value.target as Element
-  const key = el.getAttribute('data-key')
-  const node = project.nodeMap.get(key)
-  tryMoveDownWhole(project, node)
-  visible.value = false
+  const project = currentProject();
+  const el = currentMouseEvent.value.target as Element;
+  const key = el.getAttribute('data-key');
+  const node = project.nodeMap.get(key);
+  tryMoveDownWhole(project, node);
+  visible.value = false;
 }
 
 function tryMoveRgitNode() {
-  const target = currentMouseEvent.value.target as Element
-  const nodeId = target.getAttribute('data-key')
-  const project = currentProject()
-  moveRight(project, project.nodeMap.get(nodeId))
-  visible.value = false
+  const target = currentMouseEvent.value.target as Element;
+  const nodeId = target.getAttribute('data-key');
+  const project = currentProject();
+  moveRight(project, project.nodeMap.get(nodeId));
+  visible.value = false;
 }
 
 function tryMoveLeftNode() {
-  const target = currentMouseEvent.value.target as Element
-  const nodeId = target.getAttribute('data-key')
-  const project = currentProject()
-  moveLeft(project, project.nodeMap.get(nodeId))
-  visible.value = false
+  const target = currentMouseEvent.value.target as Element;
+  const nodeId = target.getAttribute('data-key');
+  const project = currentProject();
+  console.log(project, nodeId);
+  const node = project.nodeMap.get(nodeId);
+  node.test();
+  moveLeft(project, node);
+  visible.value = false;
 }
 
 function tryMoveDownNode() {
-  const target = currentMouseEvent.value.target as Element
-  const nodeId = target.getAttribute('data-key')
-  const project = currentProject()
-  moveDown(project, project.nodeMap.get(nodeId))
-  visible.value = false
+  const target = currentMouseEvent.value.target as Element;
+  const nodeId = target.getAttribute('data-key');
+  const project = currentProject();
+  moveDown(project, project.nodeMap.get(nodeId));
+  visible.value = false;
 }
 
 function tryMoveUpNode() {
-  const target = currentMouseEvent.value.target as Element
-  const nodeId = target.getAttribute('data-key')
-  const project = currentProject()
-  tryMoveUp(project, project.nodeMap.get(nodeId))
-  visible.value = false
+  const target = currentMouseEvent.value.target as Element;
+  const nodeId = target.getAttribute('data-key');
+  const project = currentProject();
+  tryMoveUp(project, project.nodeMap.get(nodeId));
+  visible.value = false;
 }
 
 function handleCompletedTask() {
-  const target = currentMouseEvent.value.target as Element
-  const nodeId = target.getAttribute('data-key')
-  const project = currentProject()
-  const node = project.nodeMap.get(nodeId)
-  node.completed = !node.completed
-  visible.value = false
+  const target = currentMouseEvent.value.target as Element;
+  const nodeId = target.getAttribute('data-key');
+  const project = currentProject();
+  const node = project.nodeMap.get(nodeId);
+  node.completed = !node.completed;
+  visible.value = false;
 }
 
 function handleDeleteTask() {
-  const project = currentProject()
-  const el = currentMouseEvent.value.target as Element
-  const key = el.getAttribute('data-key')
-  useProjects().removeNode(project, key)
-  visible.value = false
-  $bus.emit('home-editor')
+  const project = currentProject();
+  const el = currentMouseEvent.value.target as Element;
+  const key = el.getAttribute('data-key');
+  useProjectStore().removeNode(project, key);
+  visible.value = false;
+  $bus.emit('home-editor');
 }
 
 function handleDeleteEdge() {
-  const project = currentProject()
-  const el = currentMouseEvent.value.target as Element
-  const key = el.getAttribute('data-key')
-  useProjects().removeEdge(project, key)
-  visible.value = false
+  const project = currentProject();
+  const el = currentMouseEvent.value.target as Element;
+  const key = el.getAttribute('data-key');
+  useProjectStore().removeEdge(project, key);
+  visible.value = false;
+}
+
+function breakAwayFromRelation() {
+  const project = currentProject();
+  const el = currentMouseEvent.value.target as Element;
+  const nodeId = el.getAttribute('data-key');
+
+  const { inMap, outMap, nodeMap } = project;
+  // 找到左侧关系节点
+  const leftNodes = Array.from(inMap.get(nodeId)).map((edge) => nodeMap.get(edge.source));
+  // 找到右侧关系节点
+  const rightNodes = Array.from(outMap.get(nodeId)).map((edge) => nodeMap.get(edge.target));
+  // todo
+  // 左侧和右侧一一建立关系
+  // 删除当前节点所有边
 }
 
 const data = {
@@ -138,6 +157,10 @@ const data = {
         {
           title: '追加节点',
           action: handleAppendNode
+        },
+        {
+          title: '插入节点',
+          action: () => {}
         }
       ]
     },
@@ -178,6 +201,10 @@ const data = {
       },
       group: [
         {
+          title: '脱离节点',
+          action: () => {}
+        },
+        {
           title: '删除节点',
           action: handleDeleteTask
         }
@@ -212,40 +239,40 @@ const data = {
       ]
     }
   ]
-}
+};
 
 const items = computed(() => {
-  return data[elementType.value]
-})
+  return data[elementType.value];
+});
 
 onBeforeMount(() => {
   $bus.on('contextmenu', ({ e: event, elementType: elType }: any) => {
-    visible.value = true
-    elementType.value = elType
-    currentMouseEvent.value = event
+    visible.value = true;
+    elementType.value = elType;
+    currentMouseEvent.value = event;
 
     setTimeout(() => {
-      const b1 = element.value.getBoundingClientRect()
-      const b2 = canvas.svg.getBoundingClientRect()
-      left.value = clampMax(event.x, b2.right - b1.width)
-      top.value = clampMax(event.y, b2.bottom - b1.height)
-      mouseStyle.setStyleWithUnlock('default')
-      element.value?.focus?.()
-    })
-  })
-})
+      const b1 = element.value.getBoundingClientRect();
+      const b2 = canvas.svg.getBoundingClientRect();
+      left.value = clampMax(event.x, b2.right - b1.width);
+      top.value = clampMax(event.y, b2.bottom - b1.height);
+      mouseStyle.setStyleWithUnlock('default');
+      element.value?.focus?.();
+    });
+  });
+});
 
 const styleTop = computed(() => {
-  return top.value + 'px'
-})
+  return top.value + 'px';
+});
 
 const styleLeft = computed(() => {
-  return left.value + 'px'
-})
+  return left.value + 'px';
+});
 
 onBeforeUnmount(() => {
-  $bus.off('contextmenu')
-})
+  $bus.off('contextmenu');
+});
 </script>
 
 <template>

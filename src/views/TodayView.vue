@@ -1,40 +1,40 @@
 <script setup lang="ts">
-import ItemComponent from '@/components/ListViewComponent/ItemComponent.vue'
-import { handleNewProject } from '@/service/project.service'
-import { useProjects } from '@/stores/projects'
-import { showWeekAndLocalDate, useTimer } from '@/stores/timer'
-import { computed, ref } from 'vue'
-import draggable from 'vuedraggable'
+import ItemComponent from '@/components/ListViewComponent/ItemComponent.vue';
+import { handleNewProject } from '@/service/project.service';
+import { useProjectStore } from '@/stores/project';
+import { showWeekAndLocalDate, useTimer } from '@/stores/timer';
+import { computed, ref } from 'vue';
+import draggable from 'vuedraggable';
 
-const visible = ref(false)
+const visible = ref(false);
 
-const timer = useTimer()
+const timer = useTimer();
 
 const dateTime = computed(() => {
-  return showWeekAndLocalDate(timer.localTimestamp)
-})
+  return showWeekAndLocalDate(timer.localTimestamp);
+});
 
 function ondragend() {}
 
 function ondragstart() {}
 
-const projects = useProjects()
+const projects = useProjectStore();
 
 function onupdateTodoList() {
   projects.todoList.forEach((item, index) => {
-    item.sortedIndex = index
-  })
+    item.sortedIndex = index;
+  });
 }
 
 function onupdateCompletedList() {
   projects.completedList.forEach((item, index) => {
-    item.sortedIndex = index
-  })
+    item.sortedIndex = index;
+  });
 }
 
-const showWeclome = computed(() => {
-  return projects.todoList.length === 0 && projects.completedList.length === 0
-})
+const showWelcome = computed(() => {
+  return projects.todoList.length === 0 && projects.completedList.length === 0;
+});
 </script>
 
 <template>
@@ -43,7 +43,7 @@ const showWeclome = computed(() => {
       <div>我的一天</div>
       <div>{{ dateTime }}</div>
     </header>
-    <div v-if="showWeclome" class="content empty-class">
+    <div v-if="showWelcome" class="content empty-class">
       <div>
         <div class="empty-info">今日空闲,享受悠闲时光~</div>
         <div class="empty-next">

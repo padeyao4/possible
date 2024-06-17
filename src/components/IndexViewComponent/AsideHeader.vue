@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { useProjects } from '@/stores/projects'
-import { useRoute } from '@/stores/route'
-import { computed } from 'vue'
+import { useProjectStore } from '@/stores/project';
+import { useRoute } from '@/stores/route';
+import { computed } from 'vue';
 
-const route = useRoute()
-const projects = useProjects()
+const route = useRoute();
+const projects = useProjectStore();
 const showCounter = computed(() => {
-  return projects.todoList.length > 0
-})
+  return projects.todoList.length > 0;
+});
 </script>
 
 <template>

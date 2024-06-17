@@ -1,40 +1,40 @@
 <script setup lang="ts">
-import { currentProject } from '@/service/project.service'
-import { useProjects } from '@/stores/projects'
-import { useTimer } from '@/stores/timer'
-import { ref } from 'vue'
+import { currentProject } from '@/service/project.service';
+import { useProjectStore } from '@/stores/project';
+import { useTimer } from '@/stores/timer';
+import { ref } from 'vue';
 
-const project = currentProject()
-const timer = useTimer()
-const { setOffsetByDate } = useProjects()
+const project = currentProject();
+const timer = useTimer();
+const { setOffsetByDate } = useProjectStore();
 
 function handleBackHome() {
-  project.offset.x = 0
-  project.offset.y = 0
+  project.offset.x = 0;
+  project.offset.y = 0;
 }
 
 function handleToday() {
-  setOffsetByDate(project, timer.timestamp)
+  setOffsetByDate(project, timer.timestamp);
 }
 
 function handleTest() {
-  console.log(project.offset)
+  console.log(project.offset);
 }
 
 function handleMoveRight() {}
 
-const dateInput = ref<HTMLElement & { showPicker: () => void }>()
+const dateInput = ref<HTMLElement & { showPicker: () => void }>();
 
 function handleCalendar() {
-  dateInput.value?.showPicker()
+  dateInput.value?.showPicker();
 }
 
-const dateInputValue = defineModel()
+const dateInputValue = defineModel();
 
 function handleDateChange() {
-  const date = dateInputValue.value as string
+  const date = dateInputValue.value as string;
   if (date !== '' && date !== null) {
-    setOffsetByDate(project, date)
+    setOffsetByDate(project, date);
   }
 }
 </script>

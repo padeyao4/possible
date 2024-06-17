@@ -1,53 +1,53 @@
 <script setup lang="ts">
-import ModeDialog from '@/components/common/ModeDialog.vue'
-import { useProjects } from '@/stores/projects'
-import { useRoute } from '@/stores/route'
-import { computed, ref } from 'vue'
-import type { Project } from '@/stores/types'
+import ModeDialog from '@/components/common/ModeDialog.vue';
+import { useProjectStore } from '@/stores/project';
+import { useRoute } from '@/stores/route';
+import { computed, ref } from 'vue';
+import type { Project } from '@/stores/types';
 
-const props = defineProps<{ project: Project }>()
-const { project } = props
+const props = defineProps<{ project: Project }>();
+const { project } = props;
 
-const route = useRoute()
+const route = useRoute();
 
-const visible = ref(false)
+const visible = ref(false);
 
 async function onclick(projectId: string) {
-  await route.linkTo('project', projectId)
+  await route.linkTo('project', projectId);
 }
 
 function handleInputRef(e: HTMLElement) {
   setTimeout(() => {
-    e?.focus()
-  })
+    e?.focus();
+  });
 }
 
 function handleEdit() {
-  project.editable = true
+  project.editable = true;
 }
 
 function handleDelete(e: Event) {
-  visible.value = true
-  e.stopPropagation()
+  visible.value = true;
+  e.stopPropagation();
 }
 
 function okCallback() {
-  const { removeProject, getCurrentProject } = useProjects()
+  const { removeProject, getCurrentProject } = useProjectStore();
   if (getCurrentProject().id === project.id) {
-    route.linkTo('today')
+    route.linkTo('today');
   }
-  removeProject(project.id)
-  visible.value = false
+  removeProject(project.id);
+  visible.value = false;
 }
 
 const projectName = computed(() => {
-  const name = project.name.trim()
-  return name === '' ? '未命名项目' : name
-})
+  const name = project.name.trim();
+  return name === '' ? '未命名项目' : name;
+});
 
 const isActive = computed(() => {
-  return route.active.name === 'project' && project.id === route.active.param
-})
+  return route.active.name === 'project' && project.id === route.active.param;
+});
 </script>
 
 <template>
@@ -80,7 +80,7 @@ const isActive = computed(() => {
       :ok="okCallback"
       :cancel="
         () => {
-          visible = false
+          visible = false;
         }
       "
     >
