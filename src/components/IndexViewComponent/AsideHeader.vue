@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { useProjects } from '@/stores/projects'
 import { useRoute } from '@/stores/route'
+import { computed } from 'vue'
 
 const route = useRoute()
 const projects = useProjects()
+const showCounter = computed(() => {
+  return projects.todoList.length > 0
+})
 </script>
 
 <template>
@@ -16,7 +20,7 @@ const projects = useProjects()
     >
       <my-icon icon="solar:sun-2-broken" class="side-icon" />
       <div class="side-item-text my-day">我的一天</div>
-      <div class="todo-count">{{ projects.todoList.length }}</div>
+      <div class="todo-count" v-show="showCounter">{{ projects.todoList.length }}</div>
     </div>
     <div
       class="side-list-item"
