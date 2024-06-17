@@ -2,7 +2,7 @@
 import { currentProject } from '@/service/project.service'
 import { computed } from 'vue'
 import { useSettings } from '@/stores/settings'
-import type { Point } from '@/stores/projects'
+import type { Point } from '@/stores/types'
 import { useTempPaths } from '@/stores/temp-path'
 import CanvasTheTempPath from '@/components/ProjectViewComponent/CanvasTheTempPath.vue'
 

@@ -147,6 +147,9 @@ export function tryMoveUp(project: Project, node: Node) {
   while (collideNodes(project, node) && node.y > 0) {
     node.y -= 1
   }
+  while (collideNodes(project, node)) {
+    node.y += 1
+  }
 }
 
 /**
@@ -269,7 +272,7 @@ export function appendNode(project: Project, node: Node) {
  */
 export function handleNewProject() {
   const project = createProjectTemplate()
-  const {linkTo} = useRoute()
+  const { linkTo } = useRoute()
   useProjects().addProject(project)
   setTimeout(() => {
     linkTo('project', project.id.toString())

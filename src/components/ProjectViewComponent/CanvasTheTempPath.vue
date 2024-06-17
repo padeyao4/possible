@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Path } from '@/stores/projects'
+import type { Path } from '@/stores/types'
 import { computed } from 'vue'
 
 const props = defineProps<{ edge: Path }>()
