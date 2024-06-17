@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ItemComponent from '@/components/ListViewComponent/ItemComponent.vue'
+import { handleNewProject } from '@/service/project.service'
 import { useProjects } from '@/stores/projects'
 import { showWeekAndLocalDate, useTimer } from '@/stores/timer'
 import { computed, ref } from 'vue'
@@ -30,6 +31,10 @@ function onupdateCompletedList() {
     item.sortedIndex = index
   })
 }
+
+const showWeclome = computed(() => {
+  return projects.todoList.length === 0 && projects.completedList.length === 0
+})
 </script>
 
 <template>
@@ -38,7 +43,15 @@ function onupdateCompletedList() {
       <div>我的一天</div>
       <div>{{ dateTime }}</div>
     </header>
-    <main>
+    <div v-if="showWeclome" class="content empty-class">
+      <div>
+        <div class="empty-info">今日空闲,享受悠闲时光~</div>
+        <div class="empty-next">
+          或者开始<i @click="handleNewProject" class="empty-new">新的计划</i>
+        </div>
+      </div>
+    </div>
+    <div v-else class="content">
       <draggable
         :list="projects.todoList"
         item-key="id"
@@ -80,11 +93,39 @@ function onupdateCompletedList() {
           <item-component :node="element" />
         </template>
       </draggable>
-    </main>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.empty-class {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-info {
+  color: #00000070;
+  font-weight: bold;
+  font-size: large;
+  font-style: italic;
+}
+
+.empty-next {
+  margin-top: 8px;
+  color: #00000070;
+  font-size: 15px;
+  font-style: italic;
+}
+
+.empty-new {
+  margin-left: 2px;
+  color: #00000080;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .ghost-class {
   opacity: 0;
 }
@@ -142,7 +183,7 @@ header {
   }
 }
 
-main {
+.content {
   height: 100%;
   padding: 0 24px 24px 24px;
   overflow-x: hidden;

@@ -1,27 +1,18 @@
 <script setup lang="ts">
-import { createProjectTemplate } from '@/service/project.service'
+import { handleNewProject } from '@/service/project.service'
 import { useNotity } from '@/stores/notity'
-import { useProjects } from '@/stores/projects'
 import { useRoute } from '@/stores/route'
 import { Icon } from '@iconify/vue/dist/iconify.js'
 
 const { linkTo } = useRoute()
 const notity = useNotity()
 
-function onclick() {
-  const project = createProjectTemplate()
-  useProjects().addProject(project)
-  setTimeout(() => {
-    linkTo('project', project.id.toString())
-    project.editable = true
-  })
-}
 </script>
 
 <template>
   <div id="aside-footer">
-    <div class="side-list-item add" data-hover @click="onclick">
-      <my-icon icon="solar:add-square-broken" class="side-icon" />
+    <div class="side-list-item add" data-hover @click="handleNewProject">
+      <Icon icon="solar:add-square-broken" class="side-icon" />
       <div class="side-item-text">创建项目</div>
     </div>
     <div class="icon-button">

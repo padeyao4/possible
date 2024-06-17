@@ -263,3 +263,16 @@ export function appendNode(project: Project, node: Node) {
   })
   projects.addEdge(project, { id: node.id }, { id: newNode.id })
 }
+
+/**
+ * 创建项目按钮
+ */
+export function handleNewProject() {
+  const project = createProjectTemplate()
+  const {linkTo} = useRoute()
+  useProjects().addProject(project)
+  setTimeout(() => {
+    linkTo('project', project.id.toString())
+    project.editable = true
+  })
+}
