@@ -1,7 +1,8 @@
 import { BaseBehavior, type EventDispatch } from '@/lib/base'
 import type { Node, Point } from '@/stores/types'
-import { collideNodes } from '@/service/project.service'
+import { collideNodes, getLeftNodes, getRightNodes } from '@/service/project.service'
 import { clampMin } from '../math'
+import { useProjects } from '@/stores/projects'
 
 export class DragCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -44,12 +45,24 @@ export class DragCard extends BaseBehavior {
       const node = this.project.nodeMap.get(this.oldNode.id)
       node.x = clampMin(Math.round(node.x), 0)
       node.y = clampMin(Math.round(node.y), 0)
-      if (collideNodes(this.project, node)) {
+
+      if (collideNodes(this.project, node) || !this.checkMoveAviable(node)) {
         node.x = this.oldNode.x
         node.y = this.oldNode.y
       }
       this.mouseStyle.unlock()
       this.toggleMouseOver(e)
     }
+  }
+
+  checkMoveAviable(node: Node) {
+    const { inMap, outMap, nodeMap } = this.project
+    const leftAviable = Array.from(inMap.get(node.id)).every(
+      (edge) => nodeMap.get(edge.source).x < node.x
+    )
+    const rightAviable = Array.from(outMap.get(node.id)).every(
+      (edge) => nodeMap.get(edge.target).x > node.x
+    )
+    return leftAviable && rightAviable
   }
 }

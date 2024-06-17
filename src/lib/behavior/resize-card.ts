@@ -1,5 +1,5 @@
 import { BaseBehavior, type EventDispatch } from '@/lib/base'
-import { type Node } from '@/stores/projects'
+import type { Node } from '@/stores/types'
 import { clampMin } from '@/lib/math'
 
 export class ResizeCard extends BaseBehavior {
@@ -59,8 +59,8 @@ export class ResizeCard extends BaseBehavior {
     const lw = clampMin(this.oldNode.width - deltaWidth, 1)
     const bh = clampMin(this.oldNode.height + deltaHeight, 1)
     const th = clampMin(this.oldNode.height - deltaHeight, 1)
-    const x = this.oldNode.x + (lw === 1 ? (this.oldNode.width - 1) : deltaWidth)
-    const y = this.oldNode.y + (th === 1 ? (this.oldNode.height - 1) : deltaHeight)
+    const x = this.oldNode.x + (lw === 1 ? this.oldNode.width - 1 : deltaWidth)
+    const y = this.oldNode.y + (th === 1 ? this.oldNode.height - 1 : deltaHeight)
 
     switch (this.direction) {
       case 'l':
