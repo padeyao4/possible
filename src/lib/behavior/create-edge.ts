@@ -1,6 +1,7 @@
 import { BaseBehavior, type EventDispatch } from '@/lib/base'
 import { getCanvasPointByOffsetPoint } from '@/lib/util'
-import { useProjects, type ID } from '@/stores/projects'
+import { useProjects } from '@/stores/projects'
+import type { ID } from '@/stores/types'
 import { useTempPaths, type TempPath } from '@/stores/temp-path'
 
 export class CreateEdge extends BaseBehavior {

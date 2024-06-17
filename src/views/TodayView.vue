@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ItemComponent from '@/components/ListViewComponent/ItemComponent.vue'
 import { useProjects } from '@/stores/projects'
-import { timeFormat, useTimer } from '@/stores/timer'
+import { showWeekAndLocalDate, useTimer } from '@/stores/timer'
 import { computed, ref } from 'vue'
 import draggable from 'vuedraggable'
 
@@ -10,7 +10,7 @@ const visible = ref(false)
 const timer = useTimer()
 
 const dateTime = computed(() => {
-  return timeFormat.format(timer.localTimestamp) + ' 星期' + new Date(timer.localTimestamp).getDay()
+  return showWeekAndLocalDate(timer.localTimestamp)
 })
 
 function ondragend() {}

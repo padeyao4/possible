@@ -8,6 +8,16 @@ export function showWeek(date: Date | number): string {
   return '周' + arr[new Date(date).getDay()]
 }
 
+export function showWeekAndLocalDate(dateStr: string | number) {
+  const date = new Date(dateStr)
+  const adjustedDate = new Date(date.getTime())
+  const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
+  const dayIndex = adjustedDate.getDay()
+  const localDate = adjustedDate.toLocaleDateString()
+
+  return `${localDate} ${days[dayIndex]}`
+}
+
 export const timeFormat = new Intl.DateTimeFormat('zh-Hans')
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000

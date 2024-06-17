@@ -1,5 +1,5 @@
 import { BaseBehavior, type EventDispatch } from '@/lib/base'
-import type { Node, Point } from '@/stores/projects'
+import type { Node, Point } from '@/stores/types'
 import { collideNodes } from '@/service/project.service'
 import { clampMin } from '../math'
 
