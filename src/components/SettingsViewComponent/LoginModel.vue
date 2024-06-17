@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAccount } from '@/stores/account'
 import CloseIconButton from '@/components/common/CloseIconButton.vue'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 const visible = ref(false)
 const account = useAccount()
@@ -16,10 +16,23 @@ function handleClose() {
   password.value = ''
 }
 
+const loginMessage = ref()
+
+watch(
+  visible,
+  () => {
+    if (visible.value) {
+      loginMessage.value = ''
+    }
+  },
+  { immediate: true }
+)
+
 async function handleLogin() {
   if (loginLoading.value === true) return
   loginLoading.value = true
-  await account.login(username.value, password.value)
+  const response = await account.login(username.value, password.value)
+  loginMessage.value = response.message
   loginLoading.value = false
 }
 
@@ -48,6 +61,7 @@ const forgetUrl = import.meta.env.VITE_FORGET_URL ?? '/forget'
               placeholder="你的密码..."
             />
           </div>
+          <div class="account-login-info">{{ loginMessage }}</div>
         </div>
         <div class="footer">
           <a class="forget" :href="forgetUrl" target="_blank">忘记密码?</a>
@@ -60,6 +74,11 @@ const forgetUrl = import.meta.env.VITE_FORGET_URL ?? '/forget'
   </Teleport>
 </template>
 <style scoped>
+.account-login-info {
+  color: #ff000090;
+  font-size: 13px;
+}
+
 .forget {
   color: #00000090;
   font-size: 14px;
@@ -117,7 +136,8 @@ main {
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  height: 50px;
+  margin-top: 4px;
+  margin-bottom: 8px;
   & > * {
     margin: 0 10px;
   }

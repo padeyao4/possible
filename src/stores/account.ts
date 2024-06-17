@@ -46,6 +46,7 @@ export const useAccount = defineStore('account', () => {
       token.value = response.data.payload
       online.value = true
     }
+    return response.data
   }
 
   async function logout() {
