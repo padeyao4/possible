@@ -2,115 +2,37 @@ import {
   AccountControllerApi,
   Configuration,
   StorageControllerApi,
+  type User,
   UserControllerApi
 } from '@/openapi';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import { useNotify } from './notity';
 import { useProjectStore } from './project';
 
-export const useAccount = defineStore('account', () => {
-  const online = ref(false);
-  const username = ref<string>();
-  const enableSync = ref(false);
-  const token = ref<string>();
-  const dataVersion = ref<number>();
+export const useAccount = defineStore(
+  'account',
+  () => {
+    const online = ref(false);
+    const enableSync = ref(false);
+    const dataVersion = ref<number>(0);
+    const token = ref<string>();
+    const user = reactive<User>({});
 
-  const projects = useProjectStore();
-  const notify = useNotify();
-
-  function getConfig() {
-    return new Configuration({
-      baseOptions: {
-        headers: {
-          Token: token.value
-        }
-      }
-    });
-  }
-
-  async function syncAccountInfo() {
-    const userApi = new UserControllerApi(getConfig());
-    const response = await userApi.userInfo();
-    if (response.data.code === 200) {
-      username.value = response.data.payload.username;
-    } else {
-      notify.syncAccountFailed = true;
+    function updateUser(o: User) {
+      Object.assign(user, o);
     }
-  }
 
-  async function login(username: string, password: string) {
-    const accountApi = new AccountControllerApi(getConfig());
-    const response = await accountApi.login({ username, password });
-    if (response.data.code === 200) {
-      token.value = response.data.payload;
-      online.value = true;
-    }
-    return response.data;
+    return {
+      user,
+      token,
+      online,
+      enableSync,
+      dataVersion,
+      updateUser
+    };
+  },
+  {
+    persist: true
   }
-
-  async function logout() {
-    const accountApi = new AccountControllerApi(getConfig());
-    await accountApi.logout();
-    console.log('logout..');
-    online.value = false;
-    token.value = '';
-  }
-
-  async function sendProjects() {
-    const storageApi = new StorageControllerApi(getConfig());
-    const response = await storageApi.put({
-      uploadAt: new Date().toJSON(),
-      content: JSON.stringify(projects.serialize()),
-      parentId: dataVersion.value
-    });
-    if (response.data.code === 200) {
-      dataVersion.value = response.data.payload;
-    } else {
-      notify.projectsSyncFailed = true;
-      console.warn('project data has fork');
-    }
-  }
-
-  async function sendForceProjects() {
-    const storageApi = new StorageControllerApi(getConfig());
-    const response = await storageApi.forcePut({
-      uploadAt: new Date().toJSON(),
-      content: JSON.stringify(projects.serialize()),
-      parentId: dataVersion.value
-    });
-    if (response.data.code === 200) {
-      dataVersion.value = response.data.payload;
-      notify.projectsSyncFailed = false;
-    } else {
-      // todo 强制同步失败
-    }
-  }
-
-  async function pullProjects() {
-    const storageApi = new StorageControllerApi(getConfig());
-    const response = await storageApi.get();
-    if (response.data.code === 200) {
-      const o = JSON.parse(response.data.payload.content);
-      projects.deserialize(o);
-      dataVersion.value = response.data.payload.id;
-      notify.projectsSyncFailed = false;
-    } else {
-      // todo 加载服务端数据异常
-    }
-  }
-
-  return {
-    online,
-    username,
-    token,
-    enableSync,
-    dataVersion,
-    login,
-    logout,
-    syncAccountInfo,
-    sendProjects,
-    sendForceProjects,
-    pullProjects
-  };
-});
+);

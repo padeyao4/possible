@@ -5,12 +5,8 @@ import { useProjectStore } from '@/stores/project';
 import AsideBodyItem from '@/components/IndexViewComponent/AsideBodyItem.vue';
 import { useMouseStyle } from '@/stores/mouse';
 
-const { sortProjects } = useProjectStore();
+const projectStore = useProjectStore();
 const draggableRef = ref<{ targetDomElement: Element }>();
-
-const list = computed(() => {
-  return Array.from([...sortProjects]).sort((p1, p2) => p1.sortIndex - p2.sortIndex);
-});
 
 function onstart() {
   draggableRef.value.targetDomElement.toggleAttribute('data-show', true);
@@ -34,14 +30,14 @@ function onend(e: any) {
 }
 
 function onupdate() {
-  list.value.forEach((value, index) => {
+  projectStore.sortProjects.forEach((value, index) => {
     value.sortIndex = index;
   });
 }
 </script>
 <template>
   <draggable
-    :list="list"
+    :list="projectStore.sortProjects"
     class="aside-body"
     ref="draggableRef"
     item-key="id"

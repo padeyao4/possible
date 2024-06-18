@@ -184,4 +184,15 @@ export default class Project {
   public getNode(id: ID) {
     return this.nodeMap.get(id);
   }
+
+  /**
+   * 根据偏移量获取画布上的点，此偏移量是只鼠标事件在画布上点的坐标。
+   * @param point 在逻辑上离画布原点的距离
+   */
+  public getPointByOffsetPoint(point: Point) {
+    return {
+      x: point.x - this.offset.x,
+      y: point.y - this.offset.y
+    };
+  }
 }

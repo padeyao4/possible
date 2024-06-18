@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useProjectStore } from '@/stores/project';
-import type { Node } from '@/stores/types';
 import { computed, ref } from 'vue';
+import { Icon } from '@iconify/vue';
+import Node from '@/core/Node';
 
 const props = defineProps<{
   node: Node;
@@ -9,9 +10,9 @@ const props = defineProps<{
 
 const { node } = props;
 
-const projects = useProjectStore();
+const projectStore = useProjectStore();
 
-const project = computed(() => projects.getProject(node.projectId));
+const project = computed(() => projectStore.getProjectById(node.projectId));
 const over = ref(false);
 
 const textDecoration = computed(() => {
@@ -34,7 +35,7 @@ function onclick() {
 <template>
   <div class="item">
     <div class="icon" @click="onclick">
-      <my-icon :icon="iconStyle" @mouseenter="over = true" @mouseleave="over = false" />
+      <Icon :icon="iconStyle" @mouseenter="over = true" @mouseleave="over = false" />
     </div>
     <div class="content">
       <div class="one">
@@ -44,7 +45,7 @@ function onclick() {
         {{ project?.name }}
       </div>
     </div>
-    <my-icon icon="iconoir:menu" class="operation move" />
+    <Icon icon="iconoir:menu" class="operation move" />
   </div>
 </template>
 <style scoped>
@@ -83,7 +84,6 @@ function onclick() {
       align-items: end;
       height: 28px;
       overflow: hidden;
-      font-size: var(--font-default-size);
       white-space: nowrap;
       text-decoration: v-bind(textDecoration);
       text-overflow: ellipsis;

@@ -6,7 +6,7 @@ import { useNotify } from '@/stores/notity';
 import { computed } from 'vue';
 
 const account = useAccount();
-const notity = useNotify();
+const notify = useNotify();
 
 const checked = computed({
   get: () => {
@@ -19,8 +19,8 @@ const checked = computed({
   }
 });
 
-const notityShow = computed(() => {
-  return checked.value && notity.projectsSyncFailed;
+const notifyShow = computed(() => {
+  return checked.value && notify.projectsSyncFailed;
 });
 
 async function coverLocalData() {
@@ -36,7 +36,7 @@ async function coverRemoteData() {
     <template #title>远程存储</template>
     <template #description>
       <p>启用服务端存储,将本地数据备份到服务器。需要登录账号</p>
-      <p v-show="notityShow" class="error">
+      <p v-show="notifyShow" class="error">
         本地数据落后于服务端,是否<a @click="coverRemoteData">覆盖服务器端数据</a> 或者
         <a @click="coverLocalData">覆盖本地数据</a>
       </p>

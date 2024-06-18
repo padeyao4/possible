@@ -265,7 +265,7 @@ export interface StoragePutRequest {
      * @type {number}
      * @memberof StoragePutRequest
      */
-    'parentId'?: number;
+    'dataVersion'?: number;
 }
 /**
  * 
@@ -320,7 +320,7 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    'accountNonExpired'?: boolean;
+    'accountNonLocked'?: boolean;
     /**
      * 
      * @type {boolean}
@@ -332,7 +332,7 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    'accountNonLocked'?: boolean;
+    'accountNonExpired'?: boolean;
 }
 
 /**

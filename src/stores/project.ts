@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { computed, reactive, toRaw } from 'vue';
+import { computed, reactive } from 'vue';
 import { useRoute } from './route';
 import { useSettings } from './settings';
 import { getDaysBetweenDates, getIndexByDate } from './timer';
@@ -159,15 +159,13 @@ export const useProjectStore = defineStore('projects', () => {
   }
 
   function deserialize(data: any[]): void {
-    if (!Array.isArray(data)) return;
     data.forEach((obj) => {
-      const project = Project.fromPlainObject(obj);
-      addProject(project);
+      addProject(Project.fromPlainObject(obj));
     });
   }
 
   function serialize() {
-    return Array.from(mapper).map(([key, value]) => value.plainObject());
+    return Array.from(mapper).map(([_, value]) => value.plainObject());
   }
 
   function getCurrentProject() {
@@ -180,14 +178,11 @@ export const useProjectStore = defineStore('projects', () => {
   }
 
   return {
-    // projectMap: mapper,
+    mapper,
     todoList,
     completedList,
     sortProjects,
     getProjectById,
-    bfsTraverseOutEdge,
-    bfsTraverseInEdge,
-    bfsTraverseNode,
     addProject,
     removeProject,
     addNode,

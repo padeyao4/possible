@@ -1,42 +1,59 @@
 <script setup lang="ts">
-import { useAccount } from '@/stores/account'
-import CloseIconButton from '@/components/common/CloseIconButton.vue'
-import { ref, watch } from 'vue'
+import { useAccount } from '@/stores/account';
+import CloseIconButton from '@/components/common/CloseIconButton.vue';
+import { ref, watch } from 'vue';
+import { AccountControllerApi } from '@/openapi';
+import { config } from '@/service/client';
 
-const visible = ref(false)
-const account = useAccount()
+const visible = ref(false);
 
-const username = defineModel<string>('username')
-const password = defineModel<string>('password')
-const loginLoading = ref(false)
+const username = defineModel<string>('username');
+const password = defineModel<string>('password');
+const loginLoading = ref(false);
+const account = useAccount();
 
 function handleClose() {
-  visible.value = false
-  username.value = ''
-  password.value = ''
+  visible.value = false;
+  username.value = '';
+  password.value = '';
 }
 
-const loginMessage = ref()
+const loginMessage = ref();
 
 watch(
   visible,
   () => {
     if (visible.value) {
-      loginMessage.value = ''
+      loginMessage.value = '';
     }
   },
   { immediate: true }
-)
+);
 
 async function handleLogin() {
-  if (loginLoading.value === true) return
-  loginLoading.value = true
-  const response = await account.login(username.value, password.value)
-  loginMessage.value = response.message
-  loginLoading.value = false
+  if (loginLoading.value === true) return;
+
+  loginLoading.value = true;
+  new AccountControllerApi(config())
+    .login({ username: username.value, password: password.value })
+    .then((response) => {
+      return response.data;
+    })
+    .then((data) => {
+      visible.value = false;
+      account.online = true;
+      account.token = data.payload;
+    })
+    .catch((error) => {
+      console.error(error);
+      loginMessage.value = error.message;
+    })
+    .finally(() => {
+      loginLoading.value = false;
+    });
 }
 
-const forgetUrl = import.meta.env.VITE_FORGET_URL ?? '/forget'
+const forgetUrl = import.meta.env.VITE_FORGET_URL ?? '/forget';
 </script>
 <template>
   <div class="login-button" @click="visible = !visible">登录</div>
@@ -65,9 +82,9 @@ const forgetUrl = import.meta.env.VITE_FORGET_URL ?? '/forget'
         </div>
         <div class="footer">
           <a class="forget" :href="forgetUrl" target="_blank">忘记密码?</a>
-          <div @click="handleLogin" class="submit-button">
+          <button @click="handleLogin" class="submit-button" :data-disabled="loginLoading">
             {{ loginLoading ? '登录中...' : '登录' }}
-          </div>
+          </button>
         </div>
       </main>
     </div>
@@ -92,7 +109,6 @@ const forgetUrl = import.meta.env.VITE_FORGET_URL ?? '/forget'
   left: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
   align-items: center;
   justify-content: center;
   width: 100vw;
@@ -166,12 +182,13 @@ input {
   align-items: center;
   justify-content: center;
   padding: 2px 4px;
-  color: #00000090;
+  color: #ffffff;
   background-color: var(--primary-color);
   border: 1px solid #00000050;
   border-radius: 4px;
+  cursor: pointer;
 }
-.submit-button:hover {
+.submit-button[data-disabled='false']:hover {
   opacity: 0.8;
 }
 </style>

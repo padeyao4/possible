@@ -23,6 +23,7 @@
     "loglevel": "^1.9.1",
     "mitt": "^3.0.1",
     "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^3.2.1",
     "uuid": "^9.0.1",
     "vue": "^3.4.27",
     "vue-router": "^4.3.2",

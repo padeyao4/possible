@@ -1,5 +1,4 @@
 import { BaseBehavior, type EventDispatch } from '@/lib/base';
-import { getCanvasPointByOffsetPoint } from '@/lib/util';
 import { type TempPath, useTempPaths } from '@/stores/temp-path';
 import type { ID } from '@/core/types';
 
@@ -24,7 +23,7 @@ export class CreateEdge extends BaseBehavior {
       this.isDown = true;
       const key = el.getAttribute('data-key');
       const direction = el.getAttribute('data-anchor');
-      const point = getCanvasPointByOffsetPoint({ x: e.offsetX, y: e.offsetY }, this.project);
+      const point = this.project.getPointByOffsetPoint({ x: e.offsetX, y: e.offsetY });
       const path = this.tempPaths.createTempPath(
         key,
         point,
@@ -42,7 +41,7 @@ export class CreateEdge extends BaseBehavior {
   }
 
   private updatePoint(e: MouseEvent) {
-    const point = getCanvasPointByOffsetPoint({ x: e.offsetX, y: e.offsetY }, this.project);
+    const point = this.project.getPointByOffsetPoint({ x: e.offsetX, y: e.offsetY });
     const path = this.tempPaths.getPath(this.pathId);
     path.location.x = point.x;
     path.location.y = point.y;
@@ -50,7 +49,7 @@ export class CreateEdge extends BaseBehavior {
 
   onmouseup(e: MouseEvent, el: Element, __, elType: string) {
     if (this.isDown) {
-      const point = getCanvasPointByOffsetPoint({ x: e.offsetX, y: e.offsetY }, this.project);
+      const point = this.project.getPointByOffsetPoint({ x: e.offsetX, y: e.offsetY });
       const path = this.tempPaths.getPath(this.pathId);
       path.location.x = point.x;
       path.location.y = point.y;

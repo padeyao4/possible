@@ -1,18 +1,10 @@
 <script setup lang="ts">
 import GithubCorner from '@/components/other/GithubCorner.vue';
-import { onBeforeMount } from 'vue';
-import useSyncService from './service/useSyncService';
-import useLoadAccount from './service/useLoadAccount';
-import useLoadProjects from './service/useLoadProjects';
-import { useProjectStore } from '@/stores/project';
+import { useListenDataChange, useListenLogin, useLoadLocalData } from '@/service/client';
 
-useLoadAccount();
-useLoadProjects();
-useSyncService();
-
-onBeforeMount(() => {
-  useProjectStore().faker();
-});
+useLoadLocalData();
+useListenLogin();
+useListenDataChange();
 </script>
 
 <template>
