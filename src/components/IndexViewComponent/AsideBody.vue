@@ -5,11 +5,11 @@ import { useProjectStore } from '@/stores/project';
 import AsideBodyItem from '@/components/IndexViewComponent/AsideBodyItem.vue';
 import { useMouseStyle } from '@/stores/mouse';
 
-const { projectMap } = useProjectStore();
+const { sortProjects } = useProjectStore();
 const draggableRef = ref<{ targetDomElement: Element }>();
 
 const list = computed(() => {
-  return Array.from(projectMap.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex);
+  return Array.from([...sortProjects]).sort((p1, p2) => p1.sortIndex - p2.sortIndex);
 });
 
 function onstart() {

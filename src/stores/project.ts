@@ -11,6 +11,10 @@ import Edge from '@/core/Edge';
 export const useProjectStore = defineStore('projects', () => {
   const mapper = reactive<Map<ID, Project>>(new Map());
 
+  const sortProjects = computed(() => {
+    return Array.from(mapper.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex);
+  });
+
   const nodes = computed<Node[]>(() => {
     return Array.from(mapper.values())
       .map((project) => {
@@ -47,14 +51,6 @@ export const useProjectStore = defineStore('projects', () => {
       mapper.set(project.id, project);
     }
   }
-
-  // function getProject(id: ID): Project | undefined {
-  //   return mapper.get(id);
-  // }
-
-  // function getProjectByNode(node: Node) {
-  //   return getProject(node.projectId);
-  // }
 
   function bfsTraverseOutEdge(project: Project, nodeId: ID, callback: (node: Node) => void): void {
     const queue = [nodeId];
@@ -179,12 +175,16 @@ export const useProjectStore = defineStore('projects', () => {
     return mapper.get(active.param) ?? new Project();
   }
 
+  function getProjectById(projectId: ID) {
+    return mapper.get(projectId);
+  }
+
   return {
-    projectMap: mapper,
+    // projectMap: mapper,
     todoList,
     completedList,
-    // getProject,
-    // getProjectByNode,
+    sortProjects,
+    getProjectById,
     bfsTraverseOutEdge,
     bfsTraverseInEdge,
     bfsTraverseNode,

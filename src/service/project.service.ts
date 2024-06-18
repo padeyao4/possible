@@ -104,7 +104,7 @@ function updateProjectByIndex(project: Project, index: number) {
 export function updateProjects() {
   const projects = useProjectStore();
   const timer = useTimer();
-  for (const iterator of projects.projectMap.values()) {
+  for (const iterator of projects.sortProjects) {
     const index = getDaysBetweenDates(timer.timestamp, iterator.createTime);
     updateProjectByIndex(<Project>iterator, index);
   }

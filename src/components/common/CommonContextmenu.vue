@@ -18,7 +18,9 @@ import { useProjectStore } from '@/stores/project';
 import { useSettings } from '@/stores/settings';
 import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue';
 import type Project from '@/core/Project';
+import { ne } from '@faker-js/faker';
 
+const projectStore = useProjectStore();
 const element = ref<HTMLElement>();
 const top = ref(0);
 const left = ref(0);
@@ -67,7 +69,7 @@ function handleMoveDownWhole() {
   visible.value = false;
 }
 
-function tryMoveRgitNode() {
+function tryMoveRightNode() {
   const target = currentMouseEvent.value.target as Element;
   const nodeId = target.getAttribute('data-key');
   const project = currentProject();
@@ -112,7 +114,6 @@ function handleDeleteTask() {
   const project = currentProject();
   const el = currentMouseEvent.value.target as Element;
   const key = el.getAttribute('data-key');
-  // useProjectStore().removeNode(project, key);
   project.removeNode(key);
   visible.value = false;
   $bus.emit('home-editor');
@@ -122,7 +123,6 @@ function handleDeleteEdge() {
   const project = currentProject();
   const el = currentMouseEvent.value.target as Element;
   const key = el.getAttribute('data-key');
-  // useProjectStore().removeEdge(project, key);
   project.removeEdge(key);
   visible.value = false;
 }
@@ -147,6 +147,28 @@ function breakAwayFromRelation() {
   visible.value = false;
 }
 
+function insertNode() {
+  const project = projectStore.getCurrentProject();
+  const el = currentMouseEvent.value.target as Element;
+  const nodeId = el.getAttribute('data-key');
+  const rightNode = project.getNode(nodeId);
+  const sources = project.getRelationLeftNodes(nodeId);
+  moveRight(<Project>project, rightNode);
+  const newNode = new Node();
+  newNode.name = '新节点';
+  newNode.x = rightNode.x - 1;
+  newNode.y = rightNode.y;
+  project.addNode(newNode);
+  // 删除旧边
+  project.removeLeftRelations(nodeId);
+  // 添加新边
+  sources.forEach((source) => {
+    project.addEdge(source, newNode);
+  });
+  project.addEdge(newNode, rightNode);
+  visible.value = false;
+}
+
 const data = {
   node: [
     {
@@ -165,9 +187,7 @@ const data = {
         },
         {
           title: '插入节点',
-          action: () => {
-            console.log('todo');
-          }
+          action: insertNode
         }
       ]
     },
@@ -185,7 +205,7 @@ const data = {
         },
         {
           title: '向右移动',
-          action: tryMoveRgitNode
+          action: tryMoveRightNode
         },
         {
           title: '向左移动',

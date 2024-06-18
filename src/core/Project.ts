@@ -160,13 +160,13 @@ export default class Project {
     edgeMap.delete(edge.id);
   }
 
-  private removeLeftRelations(nodeId: ID) {
+  public removeLeftRelations(nodeId: ID) {
     Array.from(this.inMap.get(nodeId)).forEach((edge) => {
       this.removeEdge(edge);
     });
   }
 
-  private removeRightRelations(nodeId: ID) {
+  public removeRightRelations(nodeId: ID) {
     Array.from(this.outMap.get(nodeId)).forEach((edge) => {
       this.removeEdge(edge);
     });
@@ -179,5 +179,9 @@ export default class Project {
   public removeRelations(nodeId: ID) {
     this.removeLeftRelations(nodeId);
     this.removeRightRelations(nodeId);
+  }
+
+  public getNode(id: ID) {
+    return this.nodeMap.get(id);
   }
 }

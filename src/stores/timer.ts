@@ -43,7 +43,7 @@ export function getIndexByDate(project: Project): number {
 
 export function getIndex(node: Node) {
   const projects = useProjectStore();
-  const project = projects.getProjectByNode(node);
+  const project = projects.getProjectById(node.projectId);
   return node.x + getDaysBetweenDates(project.createTime, 0);
 }
 

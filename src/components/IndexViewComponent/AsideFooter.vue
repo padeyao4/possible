@@ -17,7 +17,7 @@ const notify = useNotify();
     <div class="icon-button">
       <div class="side-list-item icon-warp" @click="linkTo('settings')">
         <Icon icon="solar:settings-broken" class="settings-icon" />
-        <div class="notify" v-show="notify.hasNotity"></div>
+        <div class="notify" v-show="notify.hasNotify"></div>
       </div>
     </div>
   </div>
