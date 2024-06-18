@@ -1,26 +1,27 @@
 <script setup lang="ts">
-import $bus from '@/lib/bus'
-import { currentProject } from '@/service/project.service'
-import { useEventListener, useTextareaAutosize } from '@vueuse/core'
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import $bus from '@/lib/bus';
+import { currentProject } from '@/service/project.service';
+import { useEventListener, useTextareaAutosize } from '@vueuse/core';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { Icon } from '@iconify/vue';
 
-const width = ref(300)
-const visible = ref(false)
-const contentType = ref('node')
+const width = ref(300);
+const visible = ref(false);
+const contentType = ref('node');
 
-const { textarea: nameTextarea, input: nameInput } = useTextareaAutosize()
-const { textarea: detailTextarea, input: detailInput } = useTextareaAutosize()
-const { textarea: recordTextarea, input: recordInput } = useTextareaAutosize()
+const { textarea: nameTextarea, input: nameInput } = useTextareaAutosize();
+const { textarea: detailTextarea, input: detailInput } = useTextareaAutosize();
+const { textarea: recordTextarea, input: recordInput } = useTextareaAutosize();
 
 const widthStyle = computed(() => {
-  return (visible.value ? width.value : 16) + 'px'
-})
+  return (visible.value ? width.value : 16) + 'px';
+});
 
-const project = currentProject()
+const project = currentProject();
 
-const nameWatchHandle = ref()
-const detailWatchHandle = ref()
-const recordWatchHandle = ref()
+const nameWatchHandle = ref();
+const detailWatchHandle = ref();
+const recordWatchHandle = ref();
 
 onMounted(() => {
   $bus.on(
@@ -29,66 +30,66 @@ onMounted(() => {
       id,
       shapeType
     }: {
-      event: PointerEvent
-      id: string
-      shapeType: 'node' | 'canvas' | 'edge'
+      event: PointerEvent;
+      id: string;
+      shapeType: 'node' | 'canvas' | 'edge';
     }) => {
-      contentType.value = shapeType
-      visible.value = true
-      const node = project.nodeMap.get(id)
-      nameInput.value = node.name
-      detailInput.value = node.detail
-      recordInput.value = node.record
+      contentType.value = shapeType;
+      visible.value = true;
+      const node = project.nodeMap.get(id);
+      nameInput.value = node.name;
+      detailInput.value = node.detail;
+      recordInput.value = node.record;
 
-      nameWatchHandle.value?.()
+      nameWatchHandle.value?.();
       nameWatchHandle.value = watch(nameInput, () => {
-        node.name = nameInput.value
-      })
-      detailWatchHandle.value?.()
+        node.name = nameInput.value;
+      });
+      detailWatchHandle.value?.();
       detailWatchHandle.value = watch(detailInput, () => {
-        node.detail = detailInput.value
-      })
-      recordWatchHandle.value?.()
+        node.detail = detailInput.value;
+      });
+      recordWatchHandle.value?.();
       recordWatchHandle.value = watch(recordInput, () => {
-        node.record = recordInput.value
-      })
+        node.record = recordInput.value;
+      });
     }
-  )
+  );
   $bus.on('close-editor', () => {
-    visible.value = false
-    contentType.value = 'canvas'
-    nameWatchHandle.value?.()
-    detailWatchHandle.value?.()
-    recordWatchHandle.value?.()
-  })
+    visible.value = false;
+    contentType.value = 'canvas';
+    nameWatchHandle.value?.();
+    detailWatchHandle.value?.();
+    recordWatchHandle.value?.();
+  });
 
   $bus.on('home-editor', () => {
-    contentType.value = 'canvas'
-    nameWatchHandle.value?.()
-    detailWatchHandle.value?.()
-    recordWatchHandle.value?.()
-  })
-})
+    contentType.value = 'canvas';
+    nameWatchHandle.value?.();
+    detailWatchHandle.value?.();
+    recordWatchHandle.value?.();
+  });
+});
 
 onUnmounted(() => {
-  $bus.off('open-editor')
-})
+  $bus.off('open-editor');
+});
 
 useEventListener(document, 'keydown', (e: KeyboardEvent) => {
   if (e.key === 'Escape') {
-    $bus.emit('close-editor')
+    $bus.emit('close-editor');
   }
-})
+});
 
 function handleCloseButton() {
-  visible.value = false
+  visible.value = false;
 }
 </script>
 <template>
   <div class="editor-component">
     <div v-if="visible">
       <div class="header-bar">
-        <my-icon icon="iconamoon:close-thin" @click="handleCloseButton" />
+        <Icon icon="iconamoon:close-thin" @click="handleCloseButton" />
       </div>
       <div v-if="contentType === 'node'" class="node-info">
         <div class="card">
@@ -101,8 +102,7 @@ function handleCloseButton() {
           <textarea ref="recordTextarea" v-model="recordInput" placeholder=""></textarea>
         </div>
       </div>
-      <div v-else class="canvas-editor">
-      </div>
+      <div v-else class="canvas-editor"></div>
     </div>
     <div v-else class="target-info"></div>
   </div>

@@ -2,6 +2,7 @@
 import { useProjectStore } from '@/stores/project';
 import { useRoute } from '@/stores/route';
 import { computed } from 'vue';
+import { Icon } from '@iconify/vue';
 
 const route = useRoute();
 const projects = useProjectStore();
@@ -18,7 +19,7 @@ const showCounter = computed(() => {
       data-hover
       @click="route.linkTo('today')"
     >
-      <my-icon icon="solar:sun-2-broken" class="side-icon" />
+      <Icon icon="solar:sun-2-broken" class="side-icon" />
       <div class="side-item-text my-day">我的一天</div>
       <div class="todo-count" v-show="showCounter">{{ projects.todoList.length }}</div>
     </div>
@@ -28,7 +29,7 @@ const showCounter = computed(() => {
       data-hover
       @click="route.linkTo('backlog')"
     >
-      <my-icon icon="solar:pallete-2-broken" class="side-icon" />
+      <Icon icon="solar:pallete-2-broken" class="side-icon" />
       <div class="side-item-text">备忘录</div>
     </div>
     <div
@@ -37,7 +38,7 @@ const showCounter = computed(() => {
       data-hover
       @click="route.linkTo('manage')"
     >
-      <my-icon icon="solar:checklist-minimalistic-broken" class="side-icon" />
+      <Icon icon="solar:checklist-minimalistic-broken" class="side-icon" />
       <div class="side-item-text">任务管理</div>
     </div>
   </div>

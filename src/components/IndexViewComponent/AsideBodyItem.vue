@@ -3,7 +3,8 @@ import ModeDialog from '@/components/common/ModeDialog.vue';
 import { useProjectStore } from '@/stores/project';
 import { useRoute } from '@/stores/route';
 import { computed, ref } from 'vue';
-import type { Project } from '@/stores/types';
+import type Project from '@/core/Project';
+import { Icon } from '@iconify/vue';
 
 const props = defineProps<{ project: Project }>();
 const { project } = props;
@@ -70,9 +71,9 @@ const isActive = computed(() => {
     >
       <div class="info">{{ projectName }}</div>
       <div class="operation" :data-project-id="project.id">
-        <my-icon icon="iconoir:edit-pencil" @click="handleEdit" />
-        <my-icon icon="iconoir:trash" @click="handleDelete" />
-        <my-icon icon="iconoir:menu" class="move" />
+        <Icon icon="iconoir:edit-pencil" @click="handleEdit" />
+        <Icon icon="iconoir:trash" @click="handleDelete" />
+        <Icon icon="iconoir:menu" class="move" />
       </div>
     </div>
     <mode-dialog

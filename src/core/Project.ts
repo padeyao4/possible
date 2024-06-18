@@ -59,12 +59,6 @@ export default class Project {
    * @param node
    */
   public collides(node: Node): Node[] {
-    const nodes = Array.from(this.nodeMap.values());
-    const ans = [];
-    for (let i = 0; i < nodes.length; i++) {
-      if (nodes[i].id === node.id || !node.cross(nodes[i])) continue;
-      ans.push(nodes[i]);
-    }
-    return ans;
+    return Array.from(this.nodeMap.values()).filter((n) => n.id !== node.id && n.cross(node));
   }
 }

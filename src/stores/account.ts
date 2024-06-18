@@ -6,7 +6,7 @@ import {
 } from '@/openapi';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { useNotity } from './notity';
+import { useNotify } from './notity';
 import { useProjectStore } from './project';
 
 export const useAccount = defineStore('account', () => {
@@ -17,7 +17,7 @@ export const useAccount = defineStore('account', () => {
   const dataVersion = ref<number>();
 
   const projects = useProjectStore();
-  const notity = useNotity();
+  const notify = useNotify();
 
   function getConfig() {
     return new Configuration({
@@ -35,7 +35,7 @@ export const useAccount = defineStore('account', () => {
     if (response.data.code === 200) {
       username.value = response.data.payload.username;
     } else {
-      notity.syncAccountFailed = true;
+      notify.syncAccountFailed = true;
     }
   }
 
@@ -67,7 +67,7 @@ export const useAccount = defineStore('account', () => {
     if (response.data.code === 200) {
       dataVersion.value = response.data.payload;
     } else {
-      notity.projectsSyncFailed = true;
+      notify.projectsSyncFailed = true;
       console.warn('project data has fork');
     }
   }
@@ -81,7 +81,7 @@ export const useAccount = defineStore('account', () => {
     });
     if (response.data.code === 200) {
       dataVersion.value = response.data.payload;
-      notity.projectsSyncFailed = false;
+      notify.projectsSyncFailed = false;
     } else {
       // todo 强制同步失败
     }
@@ -94,7 +94,7 @@ export const useAccount = defineStore('account', () => {
       const o = JSON.parse(response.data.payload.content);
       projects.deserialize(o);
       dataVersion.value = response.data.payload.id;
-      notity.projectsSyncFailed = false;
+      notify.projectsSyncFailed = false;
     } else {
       // todo 加载服务端数据异常
     }

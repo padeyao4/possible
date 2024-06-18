@@ -3,6 +3,7 @@ import { currentProject } from '@/service/project.service';
 import { useProjectStore } from '@/stores/project';
 import { useTimer } from '@/stores/timer';
 import { ref } from 'vue';
+import { Icon } from '@iconify/vue';
 
 const project = currentProject();
 const timer = useTimer();
@@ -41,11 +42,11 @@ function handleDateChange() {
 
 <template>
   <div class="the-footer">
-    <my-icon icon="solar:home-2-broken" @click="handleBackHome" />
-    <my-icon icon="solar:map-point-broken" @click="handleToday" />
-    <my-icon icon="solar:test-tube-broken" @click="handleTest" />
+    <Icon icon="solar:home-2-broken" @click="handleBackHome" />
+    <Icon icon="solar:map-point-broken" @click="handleToday" />
+    <Icon icon="solar:test-tube-broken" @click="handleTest" />
     <div>
-      <my-icon
+      <Icon
         icon="solar:calendar-search-broken"
         for="calendar-input"
         class="calendar-icon"
@@ -61,7 +62,7 @@ function handleDateChange() {
         @change="handleDateChange"
       />
     </div>
-    <my-icon icon="solar:round-alt-arrow-right-broken" @click="handleMoveRight" />
+    <Icon icon="solar:round-alt-arrow-right-broken" @click="handleMoveRight" />
   </div>
 </template>
 

@@ -55,4 +55,30 @@ export default class Node {
     const { x: x2, y: y2, width: w2, height: h2 } = this;
     return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2;
   }
+
+  /**
+   * 向上移动
+   * @param step
+   */
+  public moveUp(step = 1) {
+    this.y -= step;
+  }
+
+  /**移动到底部 */
+  public moveDown(step = 1) {
+    // 移动到底部
+    this.y += step;
+  }
+
+  /**移动到左边 */
+  public moveLeft(step = 1) {
+    // 移动到左边
+    this.x -= step;
+  }
+
+  /**移动到右边 */
+  public moveRight(step = 1) {
+    // 移动到右边
+    this.x += step;
+  }
 }

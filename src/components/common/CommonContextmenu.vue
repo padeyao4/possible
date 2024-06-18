@@ -3,7 +3,6 @@ import $bus from '@/lib/bus';
 import { clampMax } from '@/lib/math';
 import {
   appendNode,
-  // createNodeTemplate,
   currentProject,
   moveDown,
   moveLeft,
@@ -78,10 +77,7 @@ function tryMoveLeftNode() {
   const target = currentMouseEvent.value.target as Element;
   const nodeId = target.getAttribute('data-key');
   const project = currentProject();
-  console.log(project, nodeId);
-  const node = project.nodeMap.get(nodeId);
-  node.test();
-  moveLeft(project, node);
+  moveLeft(project, project.nodeMap.get(nodeId));
   visible.value = false;
 }
 

@@ -38,6 +38,7 @@ export const useProjectStore = defineStore('projects', () => {
   });
 
   function faker() {
+    mapper.clear();
     for (let i = 0; i < 10; i++) {
       const project = Project.faker();
       for (let j = 0; j < 10; j++) {

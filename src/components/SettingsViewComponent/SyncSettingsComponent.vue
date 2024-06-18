@@ -1,34 +1,34 @@
 <script setup lang="ts">
-import SettingsItem from '@/components/SettingsViewComponent/SettingsItem.vue'
-import ECheckbox from '@/components/common/ECheckbox.vue'
-import { useAccount } from '@/stores/account'
-import { useNotity } from '@/stores/notity'
-import { computed } from 'vue'
+import SettingsItem from '@/components/SettingsViewComponent/SettingsItem.vue';
+import ECheckbox from '@/components/common/ECheckbox.vue';
+import { useAccount } from '@/stores/account';
+import { useNotify } from '@/stores/notity';
+import { computed } from 'vue';
 
-const account = useAccount()
-const notity = useNotity()
+const account = useAccount();
+const notity = useNotify();
 
 const checked = computed({
   get: () => {
-    return account.online && account.enableSync
+    return account.online && account.enableSync;
   },
   set: (value) => {
     if (account.online) {
-      account.enableSync = value
+      account.enableSync = value;
     }
   }
-})
+});
 
 const notityShow = computed(() => {
-  return checked.value && notity.projectsSyncFailed
-})
+  return checked.value && notity.projectsSyncFailed;
+});
 
 async function coverLocalData() {
-  await account.pullProjects()
+  await account.pullProjects();
 }
 
 async function coverRemoteData() {
-  await account.sendForceProjects()
+  await account.sendForceProjects();
 }
 </script>
 <template>

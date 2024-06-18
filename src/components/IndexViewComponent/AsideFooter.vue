@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { handleNewProject } from '@/service/project.service'
-import { useNotity } from '@/stores/notity'
-import { useRoute } from '@/stores/route'
-import { Icon } from '@iconify/vue/dist/iconify.js'
+import { handleNewProject } from '@/service/project.service';
+import { useNotify } from '@/stores/notity';
+import { useRoute } from '@/stores/route';
+import { Icon } from '@iconify/vue/dist/iconify.js';
 
-const { linkTo } = useRoute()
-const notity = useNotity()
-
+const { linkTo } = useRoute();
+const notify = useNotify();
 </script>
 
 <template>
@@ -18,7 +17,7 @@ const notity = useNotity()
     <div class="icon-button">
       <div class="side-list-item icon-warp" @click="linkTo('settings')">
         <Icon icon="solar:settings-broken" class="settings-icon" />
-        <div class="notity" v-show="notity.hasNotity"></div>
+        <div class="notify" v-show="notify.hasNotity"></div>
       </div>
     </div>
   </div>
@@ -69,7 +68,7 @@ const notity = useNotity()
   border-radius: 8px;
 }
 
-.notity {
+.notify {
   position: absolute;
   top: 10%;
   right: 10%;
