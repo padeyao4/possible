@@ -27,7 +27,6 @@ export function axiosConfig() {
       return resp;
     },
     (error) => {
-      console.log(error);
       return Promise.reject({
         ...error,
         message: error?.response?.data?.message ?? errorCode[error.code]

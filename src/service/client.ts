@@ -3,6 +3,7 @@ import { onMounted, watch } from 'vue';
 import { Configuration, StorageControllerApi, UserControllerApi } from '@/openapi';
 import { useProjectStore } from '@/stores/project';
 import { useDebounceFn } from '@vueuse/core';
+import { useNotify, KEYS } from '@/stores/notity';
 
 let dataLoading = false;
 
@@ -21,6 +22,7 @@ export const config = () => {
  */
 export function useListenLogin() {
   const account = useAccount();
+  const notify = useNotify();
   const projectStore = useProjectStore();
   watch(
     () => account.online,
@@ -52,7 +54,12 @@ export function useListenLogin() {
               const objs = JSON.parse(data.content);
               projectStore.deserialize(objs);
               account.dataVersion = data.id;
+              notify.removeNotify(KEYS.GET_DATA_FAILED);
             }
+          })
+          .catch((e) => {
+            notify.addNotify(KEYS.GET_DATA_FAILED, '获取数据失败,请检查网络连接');
+            console.error(e);
           })
           .finally(() => {
             dataLoading = false;
@@ -84,6 +91,7 @@ export function useLoadLocalData() {
 export function useListenDataChange() {
   const account = useAccount();
   const projectStore = useProjectStore();
+  const notify = useNotify();
   const fnc = useDebounceFn(() => {
     if (dataLoading) return;
     // 将数据写入本地
@@ -99,10 +107,13 @@ export function useListenDataChange() {
           dataVersion: account.dataVersion ?? 0
         })
         .then((r) => r.data.payload)
-        .then((id) => (account.dataVersion = id))
+        .then((id) => {
+          account.dataVersion = id;
+          notify.removeNotify(KEYS.PUT_DATA_FAILED);
+        })
         .catch((e) => {
-          // todo 处理数据异常
-          console.log(e);
+          notify.addNotify(KEYS.PUT_DATA_FAILED, '保存数据失败,请检查网络连接');
+          console.error(e);
         });
     }
   }, 2000);
