@@ -320,7 +320,7 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    'accountNonLocked'?: boolean;
+    'accountNonExpired'?: boolean;
     /**
      * 
      * @type {boolean}
@@ -332,7 +332,7 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    'accountNonExpired'?: boolean;
+    'accountNonLocked'?: boolean;
 }
 
 /**
@@ -350,7 +350,7 @@ export const AccountControllerApiAxiosParamCreator = function (configuration?: C
         login: async (loginRequest: LoginRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'loginRequest' is not null or undefined
             assertParamExists('login', 'loginRequest', loginRequest)
-            const localVarPath = `/login`;
+            const localVarPath = `/account/login`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -382,7 +382,7 @@ export const AccountControllerApiAxiosParamCreator = function (configuration?: C
          * @throws {RequiredError}
          */
         logout: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/logout`;
+            const localVarPath = `/account/logout`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -414,7 +414,7 @@ export const AccountControllerApiAxiosParamCreator = function (configuration?: C
         register: async (registerRequest: RegisterRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'registerRequest' is not null or undefined
             assertParamExists('register', 'registerRequest', registerRequest)
-            const localVarPath = `/register`;
+            const localVarPath = `/account/register`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
