@@ -7,8 +7,8 @@ export interface Point {
   y: number;
 }
 
-export interface Edge {
-  id: ID;
-  source: ID;
-  target: ID;
-}
+// export interface Edge {
+//   id: ID;
+//   source: ID;
+//   target: ID;
+// }

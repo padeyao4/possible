@@ -5,6 +5,7 @@ import { useProjectStore } from '@/stores/project';
 import { showWeekAndLocalDate, useTimer } from '@/stores/timer';
 import { computed, ref } from 'vue';
 import draggable from 'vuedraggable';
+import { Icon } from '@iconify/vue';
 
 const visible = ref(false);
 
@@ -71,7 +72,7 @@ const showWelcome = computed(() => {
         </template>
       </draggable>
       <div class="show-button" v-if="projects.completedList.length > 0" @click="visible = !visible">
-        <my-icon :icon="visible ? 'solar:alt-arrow-down-bold' : 'solar:alt-arrow-right-bold'" />
+        <Icon :icon="visible ? 'solar:alt-arrow-down-bold' : 'solar:alt-arrow-right-bold'" />
         已完成 {{ projects.completedList.length }}
       </div>
       <draggable

@@ -128,14 +128,18 @@ function breakAwayFromRelation() {
   const el = currentMouseEvent.value.target as Element;
   const nodeId = el.getAttribute('data-key');
 
-  const { inMap, outMap, nodeMap } = project;
   // 找到左侧关系节点
-  const leftNodes = Array.from(inMap.get(nodeId)).map((edge) => nodeMap.get(edge.source));
+  const leftNodes = project.getRelationLeftNodes(nodeId);
   // 找到右侧关系节点
-  const rightNodes = Array.from(outMap.get(nodeId)).map((edge) => nodeMap.get(edge.target));
-  // todo
+  const rightNodes = project.getRelationRightNodes(nodeId);
   // 左侧和右侧一一建立关系
+  leftNodes.forEach((leftNode) => {
+    rightNodes.forEach((rightNode) => {
+      project.addEdge(leftNode, rightNode);
+    });
+  });
   // 删除当前节点所有边
+  project.removeRelations(nodeId);
 }
 
 const data = {
@@ -157,6 +161,10 @@ const data = {
         {
           title: '插入节点',
           action: () => {}
+        },
+        {
+          title: '脱离节点',
+          action: breakAwayFromRelation
         }
       ]
     },

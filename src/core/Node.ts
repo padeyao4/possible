@@ -29,6 +29,22 @@ export default class Node {
     this.projectId = null;
   }
 
+  public plainObject() {
+    return {
+      id: this.id,
+      name: this.name,
+      x: this.x,
+      y: this.y,
+      height: this.height,
+      width: this.width,
+      detail: this.detail,
+      record: this.record,
+      completed: this.completed,
+      sortedIndex: this.sortedIndex,
+      projectId: this.projectId
+    };
+  }
+
   public static faker(): Node {
     const template = {
       id: v4(),
@@ -80,5 +96,9 @@ export default class Node {
   public moveRight(step = 1) {
     // 移动到右边
     this.x += step;
+  }
+
+  public static fromPlainObject(node: any) {
+    return Object.assign(new Node(), node);
   }
 }

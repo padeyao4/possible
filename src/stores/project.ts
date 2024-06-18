@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia';
-import { v4 } from 'uuid';
 import { computed, reactive } from 'vue';
 import { useRoute } from './route';
 import { useSettings } from './settings';
 import { getDaysBetweenDates, getIndexByDate } from './timer';
 import Project from '@/core/Project';
 import Node from '@/core/Node';
-import type { Edge, ID } from '@/core/types';
+import type { ID } from '@/core/types';
+import Edge from '@/core/Edge';
 
 export const useProjectStore = defineStore('projects', () => {
   const mapper = reactive(new Map<ID, Project>());
@@ -42,8 +42,7 @@ export const useProjectStore = defineStore('projects', () => {
     for (let i = 0; i < 10; i++) {
       const project = Project.faker();
       for (let j = 0; j < 10; j++) {
-        const node = Node.faker();
-        project.add(node);
+        project.add(Node.faker());
       }
       mapper.set(project.id, project);
     }
@@ -145,18 +144,9 @@ export const useProjectStore = defineStore('projects', () => {
     project.offset.x = getDaysBetweenDates(project.createTime, new Date(date)) * settings.unitWidth;
   }
 
-  function addEdge(
-    project: Project,
-    node1: Partial<Node>,
-    node2: Partial<Node>,
-    id: ID = undefined
-  ): void {
+  function addEdge(project: Project, node1: Partial<Node>, node2: Partial<Node>, id?: ID): void {
     const { edgeMap, inMap, outMap } = project;
-    const edge = {
-      id: id === undefined ? v4() : id,
-      source: node1.id,
-      target: node2.id
-    };
+    const edge = new Edge(node1.id, node2.id, id);
     edgeMap.set(edge.id, edge);
     inMap.get(edge.target).add(edge);
     outMap.get(edge.source).add(edge);
@@ -174,40 +164,14 @@ export const useProjectStore = defineStore('projects', () => {
 
   function deserialize(data: any[]): void {
     if (!Array.isArray(data)) return;
-
-    data.forEach((projectData) => {
-      const project: Project = new Project();
-      project.id = projectData.id;
-      project.name = projectData.name;
-      project.completed = projectData.completed;
-      project.sortIndex = projectData.sortIndex;
-      project.editable = projectData.editable;
-      project.createTime = projectData.createTime;
-      project.offset = { x: 0, y: 0 };
-      projectData.nodeMap.forEach((value) => {
-        addNode(project, value);
-      });
-      projectData.edgeMap.forEach((edge: Edge) => {
-        addEdge(project, { id: edge.source }, { id: edge.target }, edge.id);
-      });
+    data.forEach((obj) => {
+      const project = Project.fromPlainObject(obj);
       addProject(project);
     });
   }
 
   function serialize() {
-    return Array.from(mapper).map(([key, value]) => ({
-      id: key,
-      name: value.name,
-      nodeMap: Array.from(value.nodeMap.values()),
-      edgeMap: Array.from(value.edgeMap.values()),
-      inMap: Array.from(value.inMap).map(([k, v]) => [k, Array.from(v)]),
-      outMap: Array.from(value.outMap).map(([k, v]) => [k, Array.from(v)]),
-      completed: value.completed,
-      sortIndex: value.sortIndex,
-      editable: value.editable,
-      createTime: value.createTime,
-      offset: value.offset
-    }));
+    return Array.from(mapper).map(([key, value]) => value.plainObject());
   }
 
   function getCurrentProject(): Project {
