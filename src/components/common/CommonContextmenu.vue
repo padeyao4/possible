@@ -17,6 +17,7 @@ import { useMouseStyle } from '@/stores/mouse';
 import { useProjectStore } from '@/stores/project';
 import { useSettings } from '@/stores/settings';
 import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue';
+import type Project from '@/core/Project';
 
 const element = ref<HTMLElement>();
 const top = ref(0);
@@ -35,7 +36,8 @@ function createNode() {
   const node = new Node();
   node.x = Math.floor(x / settings.unitWidth);
   node.y = Math.floor(y / settings.unitHeight);
-  useProjectStore().addNode(project, node);
+  // useProjectStore().addNode(project, node);
+  project.addNode(node);
   visible.value = false;
 }
 
@@ -44,7 +46,7 @@ function handleAppendNode() {
   const el = currentMouseEvent.value.target as Element;
   const key = el.getAttribute('data-key');
   const node = project.nodeMap.get(key);
-  appendNode(project, node);
+  appendNode(<Project>project, node);
   visible.value = false;
 }
 
@@ -53,7 +55,7 @@ function handleMoveUpWhole() {
   const el = currentMouseEvent.value.target as Element;
   const key = el.getAttribute('data-key');
   const node = project.nodeMap.get(key);
-  tryMoveUpWhole(project, node);
+  tryMoveUpWhole(<Project>project, node);
   visible.value = false;
 }
 function handleMoveDownWhole() {
@@ -61,7 +63,7 @@ function handleMoveDownWhole() {
   const el = currentMouseEvent.value.target as Element;
   const key = el.getAttribute('data-key');
   const node = project.nodeMap.get(key);
-  tryMoveDownWhole(project, node);
+  tryMoveDownWhole(<Project>project, node);
   visible.value = false;
 }
 
@@ -69,7 +71,7 @@ function tryMoveRgitNode() {
   const target = currentMouseEvent.value.target as Element;
   const nodeId = target.getAttribute('data-key');
   const project = currentProject();
-  moveRight(project, project.nodeMap.get(nodeId));
+  moveRight(<Project>project, project.nodeMap.get(nodeId));
   visible.value = false;
 }
 
@@ -77,7 +79,7 @@ function tryMoveLeftNode() {
   const target = currentMouseEvent.value.target as Element;
   const nodeId = target.getAttribute('data-key');
   const project = currentProject();
-  moveLeft(project, project.nodeMap.get(nodeId));
+  moveLeft(<Project>project, project.nodeMap.get(nodeId));
   visible.value = false;
 }
 
@@ -85,7 +87,7 @@ function tryMoveDownNode() {
   const target = currentMouseEvent.value.target as Element;
   const nodeId = target.getAttribute('data-key');
   const project = currentProject();
-  moveDown(project, project.nodeMap.get(nodeId));
+  moveDown(<Project>project, project.nodeMap.get(nodeId));
   visible.value = false;
 }
 
@@ -93,7 +95,7 @@ function tryMoveUpNode() {
   const target = currentMouseEvent.value.target as Element;
   const nodeId = target.getAttribute('data-key');
   const project = currentProject();
-  tryMoveUp(project, project.nodeMap.get(nodeId));
+  tryMoveUp(<Project>project, project.nodeMap.get(nodeId));
   visible.value = false;
 }
 
@@ -110,7 +112,8 @@ function handleDeleteTask() {
   const project = currentProject();
   const el = currentMouseEvent.value.target as Element;
   const key = el.getAttribute('data-key');
-  useProjectStore().removeNode(project, key);
+  // useProjectStore().removeNode(project, key);
+  project.removeNode(key);
   visible.value = false;
   $bus.emit('home-editor');
 }
@@ -119,7 +122,8 @@ function handleDeleteEdge() {
   const project = currentProject();
   const el = currentMouseEvent.value.target as Element;
   const key = el.getAttribute('data-key');
-  useProjectStore().removeEdge(project, key);
+  // useProjectStore().removeEdge(project, key);
+  project.removeEdge(key);
   visible.value = false;
 }
 
@@ -140,6 +144,7 @@ function breakAwayFromRelation() {
   });
   // 删除当前节点所有边
   project.removeRelations(nodeId);
+  visible.value = false;
 }
 
 const data = {
@@ -160,11 +165,9 @@ const data = {
         },
         {
           title: '插入节点',
-          action: () => {}
-        },
-        {
-          title: '脱离节点',
-          action: breakAwayFromRelation
+          action: () => {
+            console.log('todo');
+          }
         }
       ]
     },
@@ -206,7 +209,7 @@ const data = {
       group: [
         {
           title: '脱离节点',
-          action: () => {}
+          action: breakAwayFromRelation
         },
         {
           title: '删除节点',

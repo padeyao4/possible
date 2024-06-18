@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { computed, reactive } from 'vue';
+import { computed, reactive, toRaw } from 'vue';
 import { useRoute } from './route';
 import { useSettings } from './settings';
 import { getDaysBetweenDates, getIndexByDate } from './timer';
@@ -9,12 +9,12 @@ import type { ID } from '@/core/types';
 import Edge from '@/core/Edge';
 
 export const useProjectStore = defineStore('projects', () => {
-  const mapper = reactive(new Map<ID, Project>());
+  const mapper = reactive<Map<ID, Project>>(new Map());
 
   const nodes = computed<Node[]>(() => {
     return Array.from(mapper.values())
       .map((project) => {
-        const curX = getIndexByDate(project);
+        const curX = getIndexByDate(<Project>project);
         const { nodeMap } = project;
         return Array.from(nodeMap.values()).filter((node) => {
           return node.x <= curX && curX < node.x + node.width;
@@ -42,19 +42,19 @@ export const useProjectStore = defineStore('projects', () => {
     for (let i = 0; i < 10; i++) {
       const project = Project.faker();
       for (let j = 0; j < 10; j++) {
-        project.add(Node.faker());
+        project.addNode(Node.faker());
       }
       mapper.set(project.id, project);
     }
   }
 
-  function getProject(id: ID): Project | undefined {
-    return mapper.get(id);
-  }
+  // function getProject(id: ID): Project | undefined {
+  //   return mapper.get(id);
+  // }
 
-  function getProjectByNode(node: Node) {
-    return getProject(node.projectId);
-  }
+  // function getProjectByNode(node: Node) {
+  //   return getProject(node.projectId);
+  // }
 
   function bfsTraverseOutEdge(project: Project, nodeId: ID, callback: (node: Node) => void): void {
     const queue = [nodeId];
@@ -174,17 +174,17 @@ export const useProjectStore = defineStore('projects', () => {
     return Array.from(mapper).map(([key, value]) => value.plainObject());
   }
 
-  function getCurrentProject(): Project {
+  function getCurrentProject() {
     const { active } = useRoute();
-    return getProject(active.param) ?? new Project();
+    return mapper.get(active.param) ?? new Project();
   }
 
   return {
     projectMap: mapper,
     todoList,
     completedList,
-    getProject,
-    getProjectByNode,
+    // getProject,
+    // getProjectByNode,
     bfsTraverseOutEdge,
     bfsTraverseInEdge,
     bfsTraverseNode,

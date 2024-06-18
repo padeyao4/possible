@@ -5,10 +5,8 @@ import { getDaysBetweenDates, useTimer } from '@/stores/timer';
 import Node from '@/core/Node';
 import Project from '@/core/Project';
 
-export function currentProject(): Project {
-  const { active } = useRoute();
-  const { getProject } = useProjectStore();
-  return getProject(active.param) ?? new Project();
+export function currentProject() {
+  return useProjectStore().getCurrentProject();
 }
 
 export function moveDown(project: Project, node: Node) {
@@ -108,7 +106,7 @@ export function updateProjects() {
   const timer = useTimer();
   for (const iterator of projects.projectMap.values()) {
     const index = getDaysBetweenDates(timer.timestamp, iterator.createTime);
-    updateProjectByIndex(iterator, index);
+    updateProjectByIndex(<Project>iterator, index);
   }
 }
 

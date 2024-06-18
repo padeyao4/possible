@@ -58,7 +58,7 @@ export default class Project {
     project.offset = obj.offset;
 
     obj.nodeMap.forEach((node: any) => {
-      project.add(Node.fromPlainObject(node));
+      project.addNode(Node.fromPlainObject(node));
     });
 
     obj.edgeMap.forEach((edge: any) => {
@@ -83,7 +83,8 @@ export default class Project {
     });
   }
 
-  public add(node: Node) {
+  public addNode(node: Node) {
+    if (this.nodeMap.has(node.id)) return;
     node.projectId = this.id;
     this.nodeMap.set(node.id, node);
     this.inMap.set(node.id, new Set<Edge>());
@@ -104,7 +105,7 @@ export default class Project {
    */
   public getRelationLeftNodes(item: Node | ID) {
     const nodeId = typeof item === 'string' ? item : item.id;
-    return Array.from(this.inMap.get(nodeId)).map((edge) => this.nodeMap.get(edge.target));
+    return Array.from(this.inMap.get(nodeId)).map((edge) => this.nodeMap.get(edge.source));
   }
 
   /**
@@ -113,7 +114,7 @@ export default class Project {
    */
   public getRelationRightNodes(item: Node | ID) {
     const nodeId = typeof item === 'string' ? item : item.id;
-    return Array.from(this.inMap.get(nodeId)).map((edge) => this.nodeMap.get(edge.source));
+    return Array.from(this.outMap.get(nodeId)).map((edge) => this.nodeMap.get(edge.target));
   }
 
   public addEdge(source: Node | ID, target: Node | ID, id?: ID) {
@@ -149,22 +150,34 @@ export default class Project {
     nodeMap.delete(nodeId);
   }
 
+  public removeEdge(item: Edge | ID) {
+    const edge = typeof item === 'string' ? this.edgeMap.get(item) : item;
+    const { edgeMap, inMap, outMap } = this;
+    const sourceNodeId = edge.source;
+    const targetNodeId = edge.target;
+    inMap.get(targetNodeId).delete(edge);
+    outMap.get(sourceNodeId).delete(edge);
+    edgeMap.delete(edge.id);
+  }
+
+  private removeLeftRelations(nodeId: ID) {
+    Array.from(this.inMap.get(nodeId)).forEach((edge) => {
+      this.removeEdge(edge);
+    });
+  }
+
+  private removeRightRelations(nodeId: ID) {
+    Array.from(this.outMap.get(nodeId)).forEach((edge) => {
+      this.removeEdge(edge);
+    });
+  }
+
   /**
    * 删除节点相关的所有边
    * @param nodeId
    */
   public removeRelations(nodeId: ID) {
-    const { inMap, outMap } = this;
-
-    outMap.get(nodeId)?.forEach((edge) => {
-      inMap.get(edge.target)?.delete(edge);
-    });
-
-    inMap.get(nodeId)?.forEach((edge) => {
-      outMap.get(edge.source)?.delete(edge);
-    });
-
-    outMap.delete(nodeId);
-    inMap.delete(nodeId);
+    this.removeLeftRelations(nodeId);
+    this.removeRightRelations(nodeId);
   }
 }
