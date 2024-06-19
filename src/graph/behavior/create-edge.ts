@@ -1,4 +1,4 @@
-import { BaseBehavior, type EventDispatch } from '@/lib/base';
+import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { type TempPath, useTempPaths } from '@/stores/temp-path';
 import type { ID } from '@/core/types';
 

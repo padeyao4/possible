@@ -1,4 +1,4 @@
-import { isCross } from '@/lib/math';
+import { isCross } from '@/graph/math';
 import { useProjectStore } from '@/stores/project';
 import { useRoute } from '@/stores/route';
 import { getDaysBetweenDates, useTimer } from '@/stores/timer';

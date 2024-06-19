@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import $bus from '@/lib/bus';
-import { clampMax } from '@/lib/math';
+import $bus from '@/graph/bus';
+import { clampMax } from '@/graph/math';
 import {
   appendNode,
   currentProject,

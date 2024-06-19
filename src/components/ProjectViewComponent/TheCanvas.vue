@@ -2,17 +2,17 @@
 import CanvasPaths from '@/components/ProjectViewComponent/CanvasPaths.vue';
 import CanvasCards from '@/components/ProjectViewComponent/CanvasCards.vue';
 import { computed, onMounted, ref } from 'vue';
-import { Register } from '@/lib/base';
+import { Register } from '@/graph/base';
 import CanvasTempPaths from '@/components/ProjectViewComponent/CanvasTempPaths.vue';
 import { useCanvas } from '@/stores/canvas';
-import DragCanvas from '@/lib/behavior/drag-canvas';
-import { DragCard } from '@/lib/behavior/drag-card';
-import { ResizeCard } from '@/lib/behavior/resize-card';
-import { DefaultBehavior } from '@/lib/behavior/default';
-import { DoubleClickCard } from '@/lib/behavior/double-click-card';
-import { CreateEdge } from '@/lib/behavior/create-edge';
-import { HandleContextmenu } from '@/lib/behavior/handle-contextmenu';
-import WheelCanvas from '@/lib/behavior/wheel-canvas';
+import DragCanvas from '@/graph/behavior/drag-canvas';
+import { DragCard } from '@/graph/behavior/drag-card';
+import { ResizeCard } from '@/graph/behavior/resize-card';
+import { DefaultBehavior } from '@/graph/behavior/default';
+import { DoubleClickCard } from '@/graph/behavior/double-click-card';
+import { CreateEdge } from '@/graph/behavior/create-edge';
+import { HandleContextmenu } from '@/graph/behavior/handle-contextmenu';
+import WheelCanvas from '@/graph/behavior/wheel-canvas';
 import { useProjectStore } from '@/stores/project';
 
 const svg = ref();

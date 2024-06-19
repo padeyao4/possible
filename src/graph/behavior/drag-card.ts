@@ -1,4 +1,4 @@
-import { BaseBehavior, type EventDispatch } from '@/lib/base';
+import { BaseBehavior, type EventDispatch } from '@/graph/base';
 // import { collideNodes } from '@/service/project.service';
 import { clampMin } from '../math';
 import type { Point } from '@/core/types';
@@ -46,23 +46,12 @@ export class DragCard extends BaseBehavior {
       node.x = clampMin(Math.round(node.x), 0);
       node.y = clampMin(Math.round(node.y), 0);
 
-      if (this.project.collides(node).length !== 0 || !this.checkMoveAvailability(node)) {
+      if (this.project.collides(node).length !== 0 || !this.project.correctOrderOfNode(node)) {
         node.x = this.oldNode.x;
         node.y = this.oldNode.y;
       }
       this.mouseStyle.unlock();
       this.toggleMouseOver(e);
     }
-  }
-
-  checkMoveAvailability(node: Node) {
-    const { inMap, outMap, nodeMap } = this.project;
-    const leftAvailable = Array.from(inMap.get(node.id)).every(
-      (edge) => nodeMap.get(edge.source).x < node.x
-    );
-    const rightAvailable = Array.from(outMap.get(node.id)).every(
-      (edge) => nodeMap.get(edge.target).x > node.x
-    );
-    return leftAvailable && rightAvailable;
   }
 }

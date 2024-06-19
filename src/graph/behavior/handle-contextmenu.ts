@@ -1,5 +1,5 @@
-import { BaseBehavior, type EventDispatch } from '@/lib/base'
-import $bus from '@/lib/bus'
+import { BaseBehavior, type EventDispatch } from '@/graph/base';
+import $bus from '@/graph/bus';
 
 export class HandleContextmenu extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -7,22 +7,22 @@ export class HandleContextmenu extends BaseBehavior {
       'canvas:contextmenu': this.onCanvasContextmenu.bind(this),
       'node:contextmenu': this.onNodeContextmenu.bind(this),
       'edge:contextmenu': this.onEdgeContextmenu.bind(this)
-    }
+    };
   }
 
   onNodeContextmenu(e: MouseEvent) {
-    this.process(e, 'node')
+    this.process(e, 'node');
   }
 
   onCanvasContextmenu(e: MouseEvent) {
-    this.process(e, 'canvas')
+    this.process(e, 'canvas');
   }
 
   onEdgeContextmenu(e: MouseEvent) {
-    this.process(e, 'edge')
+    this.process(e, 'edge');
   }
 
   private process(e: MouseEvent, elementType: 'node' | 'canvas' | 'edge') {
-    $bus.emit('contextmenu', { e, elementType })
+    $bus.emit('contextmenu', { e, elementType });
   }
 }

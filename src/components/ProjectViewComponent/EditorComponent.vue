@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import $bus from '@/lib/bus';
+import $bus from '@/graph/bus';
 import { currentProject } from '@/service/project.service';
 import { useEventListener, useTextareaAutosize } from '@vueuse/core';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';

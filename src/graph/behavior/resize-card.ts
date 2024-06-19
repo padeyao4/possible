@@ -1,5 +1,5 @@
-import { BaseBehavior, type EventDispatch } from '@/lib/base';
-import { clampMin } from '@/lib/math';
+import { BaseBehavior, type EventDispatch } from '@/graph/base';
+import { clampMin } from '@/graph/math';
 import Node from '@/core/Node';
 
 export class ResizeCard extends BaseBehavior {
@@ -43,7 +43,7 @@ export class ResizeCard extends BaseBehavior {
     if (this.isPressed) {
       this.isPressed = false;
       const node = this.project.getNode(this.oldNode.id);
-      if (this.project.collides(node).length === 0) {
+      if (this.project.collides(node).length === 0 && this.project.correctOrderOfNode(node)) {
         node.width = Math.round(node.width);
         node.height = Math.round(node.height);
         node.x = Math.round(node.x);

@@ -195,4 +195,22 @@ export default class Project {
       y: point.y - this.offset.y
     };
   }
+
+  /**
+   * 检查节点在graph关系中 是否正确顺序.
+   * 例如 a->b-c 的图, b节点位置不能超过c,也不能小于a
+   * @param node
+   */
+  public correctOrderOfNode(node: Node) {
+    const { inMap, outMap, nodeMap } = this;
+    const leftAvailable = Array.from(inMap.get(node.id)).every((edge) => {
+      const source = nodeMap.get(edge.source);
+      return source.x + source.width <= node.x;
+    });
+    const rightAvailable = Array.from(outMap.get(node.id)).every((edge) => {
+      const target = nodeMap.get(edge.target);
+      return node.x + node.width <= target.x;
+    });
+    return leftAvailable && rightAvailable;
+  }
 }
