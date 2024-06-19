@@ -50,7 +50,7 @@ const projectName = computed(() => {
         {{ taskName }}
       </div>
       <div class="two">
-        {{ project?.name }}
+        {{ projectName }}
       </div>
     </div>
     <Icon icon="iconoir:menu" class="operation move" />

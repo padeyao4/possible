@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useSettings } from '@/stores/settings';
-import type { Node } from '@/stores/types';
+import Node from '@/core/Node';
 
 const props = defineProps<{ node: Node }>();
 const settings = useSettings();
@@ -30,6 +30,10 @@ const backgroundColor = computed(() => {
 
 const taskName = computed(() => {
   return node.name.trim() === '' ? '未命名' : node.name;
+});
+
+const lienCount = computed(() => {
+  return Math.floor(height.value / 20);
 });
 </script>
 
@@ -206,14 +210,18 @@ const taskName = computed(() => {
   height: 100%;
   padding: 10px;
   p {
-    display: flex;
+    display: -webkit-box;
     align-items: center;
     justify-content: center;
     font-weight: 100;
     font-size: 13px;
+    /*此处设置字体高度要和框高一起计算*/
+    line-height: 20px;
     text-align: center;
     word-wrap: break-word;
     word-break: break-all;
+    -webkit-line-clamp: v-bind(lienCount);
+    -webkit-box-orient: vertical;
   }
 }
 </style>
