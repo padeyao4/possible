@@ -1,5 +1,5 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
-import $bus from '@/graph/bus';
+import emitter from '@/graph/emitter';
 
 export class HandleContextmenu extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -23,6 +23,6 @@ export class HandleContextmenu extends BaseBehavior {
   }
 
   private process(e: MouseEvent, elementType: 'node' | 'canvas' | 'edge') {
-    $bus.emit('contextmenu', { e, elementType });
+    emitter.emit('contextmenu', { e, elementType });
   }
 }

@@ -1,5 +1,5 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
-import $bus from '../bus';
+import emitter from '../emitter';
 
 export class DoubleClickCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -10,7 +10,7 @@ export class DoubleClickCard extends BaseBehavior {
 
   onclick(e: MouseEvent, el: Element) {
     if (e.button !== 0) return;
-    $bus.emit('open-editor', {
+    emitter.emit('open-editor', {
       event: e,
       id: el.getAttribute('data-key'),
       shapeType: el.getAttribute('data-el-type')

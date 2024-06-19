@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
+import { Icon } from '@iconify/vue';
 </script>
 <template>
   <div class="close-icon-button">
@@ -14,10 +14,9 @@ import { Icon } from '@iconify/vue'
   width: 24px;
   height: 24px;
   border-radius: 2px;
-}
-
-.close-icon-button:hover {
-  background-color: #ff000010;
+  &:hover {
+    background-color: #ff000010;
+  }
 }
 
 .icon {

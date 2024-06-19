@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import $bus from '@/graph/bus';
+import emitter from '@/graph/emitter';
 import { clampMax } from '@/graph/math';
 import {
   appendNode,
@@ -18,7 +18,6 @@ import { useProjectStore } from '@/stores/project';
 import { useSettings } from '@/stores/settings';
 import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue';
 import type Project from '@/core/Project';
-import { ne } from '@faker-js/faker';
 
 const projectStore = useProjectStore();
 const element = ref<HTMLElement>();
@@ -38,7 +37,6 @@ function createNode() {
   const node = new Node();
   node.x = Math.floor(x / settings.unitWidth);
   node.y = Math.floor(y / settings.unitHeight);
-  // useProjectStore().addNode(project, node);
   project.addNode(node);
   visible.value = false;
 }
@@ -116,7 +114,7 @@ function handleDeleteTask() {
   const key = el.getAttribute('data-key');
   project.removeNode(key);
   visible.value = false;
-  $bus.emit('home-editor');
+  emitter.emit('home-editor');
 }
 
 function handleDeleteEdge() {
@@ -169,111 +167,117 @@ function insertNode() {
   visible.value = false;
 }
 
-const data = {
-  node: [
-    {
-      name: '操作',
-      borderStyle: {
-        borderBottom: '1px solid #33333350'
-      },
-      group: [
-        {
-          title: '标记完成',
-          action: handleCompletedTask
-        },
-        {
-          title: '追加节点',
-          action: handleAppendNode
-        },
-        {
-          title: '插入节点',
-          action: insertNode
-        }
-      ]
+const nodeOptions = [
+  {
+    name: '操作',
+    borderStyle: {
+      borderBottom: '1px solid #33333350'
     },
-    {
-      name: '移动操作',
-      borderStyle: '',
-      group: [
-        {
-          title: '向上推动',
-          action: handleMoveUpWhole
-        },
-        {
-          title: '向下推动',
-          action: handleMoveDownWhole
-        },
-        {
-          title: '向右移动',
-          action: tryMoveRightNode
-        },
-        {
-          title: '向左移动',
-          action: tryMoveLeftNode
-        },
-        {
-          title: '向上移动',
-          action: tryMoveUpNode
-        },
-        {
-          title: '向下移动',
-          action: tryMoveDownNode
-        }
-      ]
+    group: [
+      {
+        title: '标记完成',
+        action: handleCompletedTask
+      },
+      {
+        title: '追加节点',
+        action: handleAppendNode
+      },
+      {
+        title: '插入节点',
+        action: insertNode
+      }
+    ]
+  },
+  {
+    name: '移动操作',
+    borderStyle: '',
+    group: [
+      {
+        title: '向上推动',
+        action: handleMoveUpWhole
+      },
+      {
+        title: '向下推动',
+        action: handleMoveDownWhole
+      },
+      {
+        title: '向右移动',
+        action: tryMoveRightNode
+      },
+      {
+        title: '向左移动',
+        action: tryMoveLeftNode
+      },
+      {
+        title: '向上移动',
+        action: tryMoveUpNode
+      },
+      {
+        title: '向下移动',
+        action: tryMoveDownNode
+      }
+    ]
+  },
+  {
+    name: '删除',
+    borderStyle: {
+      borderTop: '1px solid #33333350'
     },
-    {
-      name: '删除',
-      borderStyle: {
-        borderTop: '1px solid #33333350'
+    group: [
+      {
+        title: '脱离节点',
+        action: breakAwayFromRelation
       },
-      group: [
-        {
-          title: '脱离节点',
-          action: breakAwayFromRelation
-        },
-        {
-          title: '删除节点',
-          action: handleDeleteTask
-        }
-      ]
-    }
-  ],
-  canvas: [
-    {
-      name: '操作',
-      borderStyle: {
-        borderBottom: undefined
-      },
-      group: [
-        {
-          title: '创建节点',
-          action: createNode
-        }
-      ]
-    }
-  ],
-  edge: [
-    {
-      name: '操作',
-      borderStyle: {
-        borderBottom: undefined
-      },
-      group: [
-        {
-          title: '删除边',
-          action: handleDeleteEdge
-        }
-      ]
-    }
-  ]
+      {
+        title: '删除节点',
+        action: handleDeleteTask
+      }
+    ]
+  }
+];
+
+const canvasOptions = [
+  {
+    name: '操作',
+    borderStyle: {
+      borderBottom: undefined
+    },
+    group: [
+      {
+        title: '创建节点',
+        action: createNode
+      }
+    ]
+  }
+];
+
+const edgeOptions = [
+  {
+    name: '操作',
+    borderStyle: {
+      borderBottom: undefined
+    },
+    group: [
+      {
+        title: '删除边',
+        action: handleDeleteEdge
+      }
+    ]
+  }
+];
+
+const options = {
+  node: nodeOptions,
+  canvas: canvasOptions,
+  edge: edgeOptions
 };
 
 const items = computed(() => {
-  return data[elementType.value];
+  return options[elementType.value];
 });
 
 onBeforeMount(() => {
-  $bus.on('contextmenu', ({ e: event, elementType: elType }: any) => {
+  emitter.on('contextmenu', ({ e: event, elementType: elType }: any) => {
     visible.value = true;
     elementType.value = elType;
     currentMouseEvent.value = event;
@@ -298,14 +302,14 @@ const styleLeft = computed(() => {
 });
 
 onBeforeUnmount(() => {
-  $bus.off('contextmenu');
+  emitter.off('contextmenu');
 });
 </script>
 
 <template>
   <teleport to="body">
     <div
-      v-if="visible"
+      v-show="visible"
       class="contextmenu"
       @contextmenu.prevent
       ref="element"
