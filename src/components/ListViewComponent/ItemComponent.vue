@@ -12,7 +12,7 @@ const { node } = props;
 
 const projectStore = useProjectStore();
 
-const project = computed(() => projectStore.getProjectById(node.projectId));
+const project = projectStore.getProjectById(node.projectId);
 const over = ref(false);
 
 const textDecoration = computed(() => {
@@ -31,6 +31,14 @@ function onclick() {
   node.completed = !node.completed;
   node.sortedIndex = -1;
 }
+
+const taskName = computed(() => {
+  return node.name.trim() === '' ? '未命名' : node.name;
+});
+
+const projectName = computed(() => {
+  return project?.name?.trim?.() === '' ? '未命名' : project?.name;
+});
 </script>
 <template>
   <div class="item">
@@ -39,7 +47,7 @@ function onclick() {
     </div>
     <div class="content">
       <div class="one">
-        {{ node.name }}
+        {{ taskName }}
       </div>
       <div class="two">
         {{ project?.name }}
@@ -101,7 +109,6 @@ function onclick() {
 
   .operation {
     flex-shrink: 0;
-    width: fit-content;
     width: 24px;
     height: 100%;
     margin: 12px;

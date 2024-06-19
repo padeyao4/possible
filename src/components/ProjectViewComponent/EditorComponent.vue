@@ -93,13 +93,13 @@ function handleCloseButton() {
       </div>
       <div v-if="contentType === 'node'" class="node-info">
         <div class="card">
-          <textarea ref="nameTextarea" v-model="nameInput" placeholder=""></textarea>
+          <textarea ref="nameTextarea" v-model="nameInput" placeholder="任务标题"></textarea>
         </div>
         <div class="card">
-          <textarea ref="detailTextarea" v-model="detailInput" placeholder=""></textarea>
+          <textarea ref="detailTextarea" v-model="detailInput" placeholder="添加备注"></textarea>
         </div>
         <div class="card">
-          <textarea ref="recordTextarea" v-model="recordInput" placeholder=""></textarea>
+          <textarea ref="recordTextarea" v-model="recordInput" placeholder="过程记录"></textarea>
         </div>
       </div>
       <div v-else class="canvas-editor"></div>
@@ -150,6 +150,11 @@ textarea {
 
 textarea::-webkit-scrollbar {
   display: none;
+}
+
+textarea::placeholder {
+  color: #00000060;
+  opacity: 0.7;
 }
 
 input {
