@@ -11,7 +11,7 @@ import { ResizeCard } from '@/graph/behavior/resize-card';
 import { DefaultBehavior } from '@/graph/behavior/default';
 import { DoubleClickCard } from '@/graph/behavior/double-click-card';
 import { CreateEdge } from '@/graph/behavior/create-edge';
-import { HandleContextmenu } from '@/graph/behavior/handle-contextmenu';
+import { Contextmenu } from '@/graph/behavior/contextmenu';
 import WheelCanvas from '@/graph/behavior/wheel-canvas';
 import { useProjectStore } from '@/stores/project';
 
@@ -30,7 +30,7 @@ onMounted(() => {
     ResizeCard,
     DoubleClickCard,
     CreateEdge,
-    HandleContextmenu,
+    Contextmenu,
     WheelCanvas
   );
   register.listen();

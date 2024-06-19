@@ -3,7 +3,7 @@ import CanvasHeader from '@/components/ProjectViewComponent/CanvasHeader.vue';
 import CanvasRuler from '@/components/ProjectViewComponent/CanvasRuler.vue';
 import CanvasGrid from '@/components/ProjectViewComponent/CanvasGrid.vue';
 import TheCanvas from '@/components/ProjectViewComponent/TheCanvas.vue';
-import GraphContextmenu from '@/components/ProjectViewComponent/GraphContextmenu.vue';
+import GraphContextmenu from '@/components/ProjectViewComponent/GraphContextmenuGroup.vue';
 </script>
 
 <template>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import emitter from '@/graph/emitter';
-import { clampMax } from '@/graph/math';
+import emitter, { BusEvents } from '@/graph/emitter';
 import {
   appendNode,
   currentProject,
@@ -16,24 +15,25 @@ import { useCanvas } from '@/stores/canvas';
 import { useCursor } from '@/stores/cursor';
 import { useProjectStore } from '@/stores/project';
 import { useSettings } from '@/stores/settings';
-import { computed, onBeforeUnmount, ref } from 'vue';
 import type Project from '@/core/Project';
+import type { ItemType } from '@/graph/types';
+import { computed, onBeforeUnmount, ref } from 'vue';
+import ContextmenuComponent from '@/components/ProjectViewComponent/ContextmenuComponent.vue';
+import type { OptionType } from '@/components/types';
 
 const projectStore = useProjectStore();
-const element = ref<HTMLElement>();
-const top = ref(0);
-const left = ref(0);
+const container = ref<HTMLElement>();
 const visible = ref(false);
 const canvas = useCanvas();
 const cursor = useCursor();
-const elementType = ref<'node' | 'canvas' | 'edge'>('node');
-const currentMouseEvent = ref<PointerEvent>();
+const itemType = ref<ItemType>('node');
+const event = ref<PointerEvent>();
 
 function createNode() {
   const settings = useSettings();
   const project = currentProject();
-  const x = currentMouseEvent.value.offsetX - project.offset.x;
-  const y = currentMouseEvent.value.offsetY - project.offset.y;
+  const x = event.value.offsetX - project.offset.x;
+  const y = event.value.offsetY - project.offset.y;
   const node = new Node();
   node.x = Math.floor(x / settings.unitWidth);
   node.y = Math.floor(y / settings.unitHeight);
@@ -43,7 +43,7 @@ function createNode() {
 
 function handleAppendNode() {
   const project = currentProject();
-  const el = currentMouseEvent.value.target as Element;
+  const el = event.value.target as Element;
   const key = el.getAttribute('data-key');
   const node = project.nodeMap.get(key);
   appendNode(<Project>project, node);
@@ -52,7 +52,7 @@ function handleAppendNode() {
 
 function handleMoveUpWhole() {
   const project = currentProject();
-  const el = currentMouseEvent.value.target as Element;
+  const el = event.value.target as Element;
   const key = el.getAttribute('data-key');
   const node = project.nodeMap.get(key);
   tryMoveUpWhole(<Project>project, node);
@@ -60,7 +60,7 @@ function handleMoveUpWhole() {
 }
 function handleMoveDownWhole() {
   const project = currentProject();
-  const el = currentMouseEvent.value.target as Element;
+  const el = event.value.target as Element;
   const key = el.getAttribute('data-key');
   const node = project.nodeMap.get(key);
   tryMoveDownWhole(<Project>project, node);
@@ -68,7 +68,7 @@ function handleMoveDownWhole() {
 }
 
 function tryMoveRightNode() {
-  const target = currentMouseEvent.value.target as Element;
+  const target = event.value.target as Element;
   const nodeId = target.getAttribute('data-key');
   const project = currentProject();
   moveRight(<Project>project, project.nodeMap.get(nodeId));
@@ -76,7 +76,7 @@ function tryMoveRightNode() {
 }
 
 function tryMoveLeftNode() {
-  const target = currentMouseEvent.value.target as Element;
+  const target = event.value.target as Element;
   const nodeId = target.getAttribute('data-key');
   const project = currentProject();
   moveLeft(<Project>project, project.nodeMap.get(nodeId));
@@ -84,7 +84,7 @@ function tryMoveLeftNode() {
 }
 
 function tryMoveDownNode() {
-  const target = currentMouseEvent.value.target as Element;
+  const target = event.value.target as Element;
   const nodeId = target.getAttribute('data-key');
   const project = currentProject();
   moveDown(<Project>project, project.nodeMap.get(nodeId));
@@ -92,7 +92,7 @@ function tryMoveDownNode() {
 }
 
 function tryMoveUpNode() {
-  const target = currentMouseEvent.value.target as Element;
+  const target = event.value.target as Element;
   const nodeId = target.getAttribute('data-key');
   const project = currentProject();
   tryMoveUp(<Project>project, project.nodeMap.get(nodeId));
@@ -100,7 +100,7 @@ function tryMoveUpNode() {
 }
 
 function handleCompletedTask() {
-  const target = currentMouseEvent.value.target as Element;
+  const target = event.value.target as Element;
   const nodeId = target.getAttribute('data-key');
   const project = currentProject();
   const node = project.nodeMap.get(nodeId);
@@ -110,7 +110,7 @@ function handleCompletedTask() {
 
 function handleDeleteTask() {
   const project = currentProject();
-  const el = currentMouseEvent.value.target as Element;
+  const el = event.value.target as Element;
   const key = el.getAttribute('data-key');
   project.removeNode(key);
   visible.value = false;
@@ -119,7 +119,7 @@ function handleDeleteTask() {
 
 function handleDeleteEdge() {
   const project = currentProject();
-  const el = currentMouseEvent.value.target as Element;
+  const el = event.value.target as Element;
   const key = el.getAttribute('data-key');
   project.removeEdge(key);
   visible.value = false;
@@ -127,7 +127,7 @@ function handleDeleteEdge() {
 
 function breakAwayFromRelation() {
   const project = currentProject();
-  const el = currentMouseEvent.value.target as Element;
+  const el = event.value.target as Element;
   const nodeId = el.getAttribute('data-key');
 
   // 找到左侧关系节点
@@ -147,7 +147,7 @@ function breakAwayFromRelation() {
 
 function insertNode() {
   const project = projectStore.getCurrentProject();
-  const el = currentMouseEvent.value.target as Element;
+  const el = event.value.target as Element;
   const nodeId = el.getAttribute('data-key');
   const rightNode = project.getNode(nodeId);
   const sources = project.getRelationLeftNodes(nodeId);
@@ -167,15 +167,13 @@ function insertNode() {
   visible.value = false;
 }
 
-const nodeOptions = [
+const nodeOptions: OptionType[] = [
   {
     name: '操作',
-    borderStyle: {
-      borderBottom: '1px solid #33333350'
-    },
     group: [
       {
         title: '标记完成',
+        icon: 'solar:check-read-line-duotone',
         action: handleCompletedTask
       },
       {
@@ -190,11 +188,15 @@ const nodeOptions = [
   },
   {
     name: '移动操作',
-    borderStyle: '',
     group: [
       {
         title: '向上推动',
         action: handleMoveUpWhole
+      },
+      {
+        title: '测试',
+        action: undefined,
+        children: [{ name: 'test1', group: [] }]
       },
       {
         title: '向下推动',
@@ -220,9 +222,6 @@ const nodeOptions = [
   },
   {
     name: '删除',
-    borderStyle: {
-      borderTop: '1px solid #33333350'
-    },
     group: [
       {
         title: '脱离节点',
@@ -230,18 +229,17 @@ const nodeOptions = [
       },
       {
         title: '删除节点',
+        icon: 'solar:notification-lines-remove-line-duotone',
+        shortcut: 'Delete',
         action: handleDeleteTask
       }
     ]
   }
 ];
 
-const canvasOptions = [
+const canvasOptions: OptionType[] = [
   {
     name: '操作',
-    borderStyle: {
-      borderBottom: undefined
-    },
     group: [
       {
         title: '创建节点',
@@ -251,12 +249,9 @@ const canvasOptions = [
   }
 ];
 
-const edgeOptions = [
+const edgeOptions: OptionType[] = [
   {
     name: '操作',
-    borderStyle: {
-      borderBottom: undefined
-    },
     group: [
       {
         title: '删除边',
@@ -273,100 +268,39 @@ const options = {
 };
 
 const items = computed(() => {
-  return options[elementType.value];
+  return options[itemType.value];
 });
 
-emitter.on('contextmenu', ({ e: event, elementType: elType }: any) => {
-  visible.value = true;
-  elementType.value = elType;
-  currentMouseEvent.value = event;
+emitter.on(
+  BusEvents['graph:contextmenu'],
+  ({ e, elementType }: { e: PointerEvent; elementType: ItemType }) => {
+    visible.value = true;
+    itemType.value = elementType;
+    event.value = e;
 
-  setTimeout(() => {
-    const b1 = element.value.getBoundingClientRect();
-    const b2 = canvas.svg.getBoundingClientRect();
-    left.value = clampMax(event.x, b2.right - b1.width);
-    top.value = clampMax(event.y, b2.bottom - b1.height);
-    cursor.setWithUnlock('default');
-    element.value?.focus?.();
-  });
-});
-
-const styleTop = computed(() => {
-  return top.value + 'px';
-});
-
-const styleLeft = computed(() => {
-  return left.value + 'px';
-});
+    setTimeout(() => {
+      cursor.setWithUnlock('default');
+      container.value?.focus?.();
+    });
+  }
+);
 
 onBeforeUnmount(() => {
-  emitter.off('contextmenu');
+  emitter.off(BusEvents['graph:contextmenu']);
 });
 </script>
 
 <template>
   <teleport to="body">
-    <div
-      v-show="visible"
-      class="contextmenu"
-      @contextmenu.prevent
-      ref="element"
-      tabindex="0"
-      @blur="visible = false"
-    >
-      <div v-for="(group, i) in items" :key="i" :style="group.borderStyle" class="group">
-        <div v-for="(value, j) in group.group" :key="j" class="item" @click="value.action">
-          {{ value.title }}
-        </div>
-      </div>
+    <div v-if="visible" @blur="visible = false" tabindex="0" ref="container" class="container">
+      <contextmenu-component :items="items" :canvas="canvas.svg" :x="event.x" :y="event.y" />"
     </div>
   </teleport>
 </template>
 
 <style scoped>
-.contextmenu {
+.container {
   position: fixed;
-  top: v-bind(styleTop);
-  left: v-bind(styleLeft);
-  z-index: 3;
-  display: v-bind(visible);
-  flex-direction: column;
-  width: 200px;
-  background-color: var(--background-middle-color);
-  border: 1px solid #00000020;
-  border-radius: 5px;
-  box-shadow:
-    0 0 10px rgba(0, 0, 0, 0.5),
-    0 0 20px rgba(247, 247, 249, 0.25);
-  animation: fadeIn 200ms ease-in;
-}
-.contextmenu:focus {
-  outline: none;
-}
-
-.group {
-  padding: 4px;
-}
-.item {
-  display: flex;
-  align-items: center;
-  justify-content: start;
-  height: 25px;
-  padding: 4px 24px;
-  border-radius: 4px;
-}
-
-.item:hover {
-  background-color: var(--background-active-color);
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
+  background-color: #3a8ee6;
 }
 </style>
