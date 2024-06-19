@@ -25,7 +25,7 @@ export default class DragCanvas extends BaseBehavior {
 
     this.offset.x = x;
     this.offset.y = y;
-    this.mouseStyle.lockStyle('grabbing');
+    this.mouseStyle.lock('grabbing');
   }
 
   onmousemove(e: MouseEvent) {

@@ -1,5 +1,4 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
-// import { collideNodes } from '@/service/project.service';
 import { clampMin } from '../math';
 import type { Point } from '@/core/types';
 import type Node from '@/core/Node';
@@ -36,7 +35,7 @@ export class DragCard extends BaseBehavior {
     const node = this.project.nodeMap.get(this.oldNode.id);
     node.x = this.oldNode.x + dx / this.settings.unitWidth;
     node.y = this.oldNode.y + dy / this.settings.unitHeight;
-    this.mouseStyle.lockStyle('move');
+    this.mouseStyle.lock('move');
   }
 
   onmouseup(e: MouseEvent) {

@@ -30,7 +30,7 @@ export class CreateEdge extends BaseBehavior {
         direction === 'left' ? 'target' : 'source'
       );
       this.pathId = path.id;
-      this.mouseStyle.lockStyle('crosshair');
+      this.mouseStyle.lock('crosshair');
     }
   }
 

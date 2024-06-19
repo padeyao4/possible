@@ -22,7 +22,7 @@ export class ResizeCard extends BaseBehavior {
     this.isPressed = true;
     this.direction = el.getAttribute('data-direction');
     const style = el.getAttribute('data-mouse-style');
-    this.mouseStyle.lockStyle(style);
+    this.mouseStyle.lock(style);
     this.mousePoint.x = e.x;
     this.mousePoint.y = e.y;
     const key = el.getAttribute('data-key');

@@ -16,7 +16,7 @@ import { useCanvas } from '@/stores/canvas';
 import { useMouseStyle } from '@/stores/mouse';
 import { useProjectStore } from '@/stores/project';
 import { useSettings } from '@/stores/settings';
-import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue';
+import { computed, onBeforeUnmount, ref } from 'vue';
 import type Project from '@/core/Project';
 
 const projectStore = useProjectStore();
@@ -276,20 +276,18 @@ const items = computed(() => {
   return options[elementType.value];
 });
 
-onBeforeMount(() => {
-  emitter.on('contextmenu', ({ e: event, elementType: elType }: any) => {
-    visible.value = true;
-    elementType.value = elType;
-    currentMouseEvent.value = event;
+emitter.on('contextmenu', ({ e: event, elementType: elType }: any) => {
+  visible.value = true;
+  elementType.value = elType;
+  currentMouseEvent.value = event;
 
-    setTimeout(() => {
-      const b1 = element.value.getBoundingClientRect();
-      const b2 = canvas.svg.getBoundingClientRect();
-      left.value = clampMax(event.x, b2.right - b1.width);
-      top.value = clampMax(event.y, b2.bottom - b1.height);
-      mouseStyle.setStyleWithUnlock('default');
-      element.value?.focus?.();
-    });
+  setTimeout(() => {
+    const b1 = element.value.getBoundingClientRect();
+    const b2 = canvas.svg.getBoundingClientRect();
+    left.value = clampMax(event.x, b2.right - b1.width);
+    top.value = clampMax(event.y, b2.bottom - b1.height);
+    mouseStyle.setStyleWithUnlock('default');
+    element.value?.focus?.();
   });
 });
 

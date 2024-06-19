@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import Draggable from 'vuedraggable/src/vuedraggable';
 import { useProjectStore } from '@/stores/project';
 import AsideBodyItem from '@/components/IndexViewComponent/AsideBodyItem.vue';
@@ -11,7 +11,7 @@ const draggableRef = ref<{ targetDomElement: Element }>();
 function onstart() {
   draggableRef.value.targetDomElement.toggleAttribute('data-show', true);
   const mouseStyle = useMouseStyle();
-  mouseStyle.lockStyle('move');
+  mouseStyle.lock('move');
   const els = document.getElementsByClassName('side-list-item');
   for (let el of els) {
     el.toggleAttribute('data-hover', false);
