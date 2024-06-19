@@ -2,12 +2,12 @@
 import AsideBody from '@/components/IndexViewComponent/AsideBody.vue';
 import AsideFooter from '@/components/IndexViewComponent/AsideFooter.vue';
 import AsideHeader from '@/components/IndexViewComponent/AsideHeader.vue';
-import { useMouseStyle } from '@/stores/mouse';
+import { useCursor } from '@/stores/cursor';
 
-const mouseStyle = useMouseStyle()
+const mouseStyle = useCursor();
 
 function onmouseover(event: MouseEvent) {
-  mouseStyle.toggleMouseStyle(event)
+  mouseStyle.refresh(event);
 }
 </script>
 

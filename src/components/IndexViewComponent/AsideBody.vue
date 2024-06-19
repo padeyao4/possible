@@ -3,15 +3,15 @@ import { ref } from 'vue';
 import Draggable from 'vuedraggable/src/vuedraggable';
 import { useProjectStore } from '@/stores/project';
 import AsideBodyItem from '@/components/IndexViewComponent/AsideBodyItem.vue';
-import { useMouseStyle } from '@/stores/mouse';
+import { useCursor } from '@/stores/cursor';
 
 const projectStore = useProjectStore();
 const draggableRef = ref<{ targetDomElement: Element }>();
 
 function onstart() {
   draggableRef.value.targetDomElement.toggleAttribute('data-show', true);
-  const mouseStyle = useMouseStyle();
-  mouseStyle.lock('move');
+  const cursor = useCursor();
+  cursor.lock('move');
   const els = document.getElementsByClassName('side-list-item');
   for (let el of els) {
     el.toggleAttribute('data-hover', false);
@@ -20,13 +20,13 @@ function onstart() {
 
 function onend(e: any) {
   draggableRef.value.targetDomElement.toggleAttribute('data-show', false);
-  const mouseStyle = useMouseStyle();
-  mouseStyle.unlock();
+  const cursor = useCursor();
+  cursor.unlock();
   const els = document.getElementsByClassName('side-list-item');
   for (let el of els) {
     el.toggleAttribute('data-hover', true);
   }
-  mouseStyle.toggleMouseStyle(e.originalEvent);
+  cursor.refresh(e.originalEvent);
 }
 
 function onupdate() {

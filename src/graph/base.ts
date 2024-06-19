@@ -1,4 +1,4 @@
-import { type MouseStyleType, useMouseStyle } from '@/stores/mouse';
+import { type CursorStoreType, useCursor } from '@/stores/cursor';
 import { type SettingsType, useSettings } from '@/stores/settings';
 import { useEventListener } from '@vueuse/core';
 import type Project from '@/core/Project';
@@ -34,10 +34,10 @@ export type EventDispatch = {
 
 export abstract class BaseBehavior {
   project: Project;
-  mouseStyle: MouseStyleType;
+  mouseStyle: CursorStoreType;
   settings: SettingsType;
 
-  constructor(project: Project, mouseStyle: MouseStyleType, settings: SettingsType) {
+  constructor(project: Project, mouseStyle: CursorStoreType, settings: SettingsType) {
     this.project = project;
     this.mouseStyle = mouseStyle;
     this.settings = settings;
@@ -48,11 +48,11 @@ export abstract class BaseBehavior {
   toggleMouseOver(e: MouseEvent) {
     const el = e.target as Element;
     const type = el.getAttribute('data-mouse-style');
-    this.mouseStyle.setStyleWithUnlock(type !== null ? type : 'default');
+    this.mouseStyle.setWithUnlock(type !== null ? type : 'default');
   }
 
   toggleMouseOut() {
-    this.mouseStyle.setStyleWithUnlock('default');
+    this.mouseStyle.setWithUnlock('default');
   }
 }
 
@@ -60,7 +60,7 @@ export class Register {
   behaviors: BaseBehavior[];
   container: Element;
   project: Project;
-  mouseStyle: MouseStyleType;
+  mouseStyle: CursorStoreType;
   settings: SettingsType;
   globalListenerCleanup: any;
 
@@ -68,7 +68,7 @@ export class Register {
     this.behaviors = [];
     this.container = container;
     this.project = project;
-    this.mouseStyle = useMouseStyle();
+    this.mouseStyle = useCursor();
     this.settings = useSettings();
   }
 

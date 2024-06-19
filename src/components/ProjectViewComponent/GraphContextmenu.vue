@@ -13,7 +13,7 @@ import {
 } from '@/service/project.service';
 import Node from '@/core/Node';
 import { useCanvas } from '@/stores/canvas';
-import { useMouseStyle } from '@/stores/mouse';
+import { useCursor } from '@/stores/cursor';
 import { useProjectStore } from '@/stores/project';
 import { useSettings } from '@/stores/settings';
 import { computed, onBeforeUnmount, ref } from 'vue';
@@ -25,7 +25,7 @@ const top = ref(0);
 const left = ref(0);
 const visible = ref(false);
 const canvas = useCanvas();
-const mouseStyle = useMouseStyle();
+const cursor = useCursor();
 const elementType = ref<'node' | 'canvas' | 'edge'>('node');
 const currentMouseEvent = ref<PointerEvent>();
 
@@ -286,7 +286,7 @@ emitter.on('contextmenu', ({ e: event, elementType: elType }: any) => {
     const b2 = canvas.svg.getBoundingClientRect();
     left.value = clampMax(event.x, b2.right - b1.width);
     top.value = clampMax(event.y, b2.bottom - b1.height);
-    mouseStyle.setStyleWithUnlock('default');
+    cursor.setWithUnlock('default');
     element.value?.focus?.();
   });
 });
