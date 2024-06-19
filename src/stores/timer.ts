@@ -11,7 +11,7 @@ export function showWeek(date: Date | number): string {
 
 export function showWeekAndLocalDate(dateStr: string | number) {
   const date = new Date(dateStr);
-  const adjustedDate = new Date(date.getTime());
+  const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
   const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
   const dayIndex = adjustedDate.getDay();
   const localDate = adjustedDate.toLocaleDateString();
