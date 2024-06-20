@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import emitter, { BusEvents } from '@/graph/emitter';
+import emitter, { BusEvents } from '@/utils/emitter';
 import {
   appendNode,
   currentProject,

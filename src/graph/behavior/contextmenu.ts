@@ -1,5 +1,5 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
-import emitter, { BusEvents } from '@/graph/emitter';
+import emitter, { BusEvents } from '@/utils/emitter';
 
 export class Contextmenu extends BaseBehavior {
   getEventDispatch(): EventDispatch {

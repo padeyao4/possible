@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import emitter, { BusEvents } from '@/graph/emitter';
+import emitter, { BusEvents } from '@/utils/emitter';
 import { currentProject } from '@/service/project.service';
 import { useEventListener, useTextareaAutosize } from '@vueuse/core';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';

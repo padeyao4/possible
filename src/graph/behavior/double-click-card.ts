@@ -1,5 +1,5 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
-import emitter, { BusEvents } from '../emitter';
+import emitter, { BusEvents } from '@/utils/emitter';
 
 export class DoubleClickCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {

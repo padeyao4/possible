@@ -24,7 +24,7 @@ export const timeFormat = new Intl.DateTimeFormat('zh-Hans');
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 const ONE_MINUTE_MS = 60_000;
 
-export function days(date: Date | number | string) {
+function days(date: Date | number | string) {
   const d = new Date(date);
   return Math.ceil((d.getTime() - d.getTimezoneOffset() * ONE_MINUTE_MS) / ONE_DAY_MS);
 }
@@ -48,8 +48,8 @@ export function getIndex(node: Node) {
 }
 
 export function scheduleMidnightTask(clear: Ref<any>, callback: () => void) {
-  const now: Date = new Date();
-  const midnight: Date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+  const now = new Date();
+  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
   const delay: number = midnight.getTime() - now.getTime();
   clearTimeout(clear.value);
   clear.value = setTimeout(() => {

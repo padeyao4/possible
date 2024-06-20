@@ -1,9 +1,10 @@
 import { useAccount } from '@/stores/account';
-import { onMounted, watch } from 'vue';
+import { onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue';
 import { Configuration, StorageControllerApi, UserControllerApi } from '@/openapi';
 import { useProjectStore } from '@/stores/project';
 import { useDebounceFn } from '@vueuse/core';
 import { useNotify, KEYS } from '@/stores/notity';
+import { useTimer } from '@/stores/timer';
 
 let dataLoading = false;
 
@@ -120,4 +121,36 @@ export function useListenDataChange() {
   onMounted(() => {
     projectStore.$subscribe(fnc);
   });
+}
+
+/**
+ * 启动日期更新定时器
+ */
+export function useStartSyncDate() {
+  const interval = ref();
+  const timer = useTimer();
+  onBeforeMount(() => {
+    clearInterval(interval.value);
+    interval.value = setInterval(() => {
+      timer.update();
+    }, 3_000);
+  });
+
+  onUnmounted(() => {
+    clearInterval(interval.value);
+  });
+}
+
+/**
+ * 每日晚上0:00自动管理任务状态。将昨日没有完成的任务更新到今日
+ */
+export function useUpdateLocalData() {
+  // todo
+}
+
+/**
+ * 页面启动时，检查任务状态。将今日以前没有完成的任务更新到今日
+ */
+export function useUpdateDataOnstart() {
+  // todo
 }
