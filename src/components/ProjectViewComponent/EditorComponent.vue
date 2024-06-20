@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import emitter from '@/graph/emitter';
+import emitter, { BusEvents } from '@/graph/emitter';
 import { currentProject } from '@/service/project.service';
 import { useEventListener, useTextareaAutosize } from '@vueuse/core';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
@@ -25,7 +25,7 @@ const recordWatchHandle = ref();
 
 onMounted(() => {
   emitter.on(
-    'open-editor',
+    BusEvents['editor:open'],
     ({
       id,
       shapeType
@@ -34,6 +34,7 @@ onMounted(() => {
       id: string;
       shapeType: 'node' | 'canvas' | 'edge';
     }) => {
+      console.log(id, shapeType);
       contentType.value = shapeType;
       visible.value = true;
       const node = project.nodeMap.get(id);
@@ -55,7 +56,7 @@ onMounted(() => {
       });
     }
   );
-  emitter.on('close-editor', () => {
+  emitter.on(BusEvents['editor:close'], () => {
     visible.value = false;
     contentType.value = 'canvas';
     nameWatchHandle.value?.();
@@ -72,12 +73,13 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  emitter.off('open-editor');
+  emitter.off(BusEvents['editor:close']);
+  emitter.off(BusEvents['editor:open']);
 });
 
 useEventListener(document, 'keydown', (e: KeyboardEvent) => {
   if (e.key === 'Escape') {
-    emitter.emit('close-editor');
+    emitter.emit(BusEvents['editor:close']);
   }
 });
 

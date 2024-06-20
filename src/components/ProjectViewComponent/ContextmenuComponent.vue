@@ -53,7 +53,7 @@ function onmouseenter(i: number, j: number) {
   showIndex.value = count(i, j);
 }
 
-function onmouseleave(i: number, j: number) {
+function onmouseleave() {
   showIndex.value = -1;
 }
 
@@ -88,7 +88,7 @@ const nextY = computed(() => {
           class="item-wrapper"
           @click="value.action?.()"
           @mouseenter="() => onmouseenter(i, j)"
-          @mouseleave="() => onmouseleave(i, j)"
+          @mouseleave="() => onmouseleave()"
           :ref="setRef"
         >
           <div class="item hover" :data-hover="showIndex === count(i, j)">

@@ -6,5 +6,7 @@ export default emitter;
 
 export const BusEvents = {
   // 控制右键菜单显示
-  'graph:contextmenu': Symbol()
+  'graph:contextmenu': Symbol(),
+  'editor:open': Symbol(),
+  'editor:close': Symbol()
 };

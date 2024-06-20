@@ -172,17 +172,20 @@ const nodeOptions: OptionType[] = [
     name: '操作',
     group: [
       {
+        title: '编辑',
+        action() {
+          emitter.emit(BusEvents['editor:open'], {
+            event: event.value,
+            id: (event.value.target as Element).getAttribute('data-key'),
+            shapeType: itemType.value
+          });
+          visible.value = false;
+        }
+      },
+      {
         title: '标记完成',
         icon: 'solar:check-read-line-duotone',
         action: handleCompletedTask
-      },
-      {
-        title: '追加节点',
-        action: handleAppendNode
-      },
-      {
-        title: '插入节点',
-        action: insertNode
       }
     ]
   },
@@ -190,41 +193,45 @@ const nodeOptions: OptionType[] = [
     name: '移动操作',
     group: [
       {
+        title: '追加节点',
+        action: handleAppendNode
+      },
+      {
+        title: '插入节点',
+        action: insertNode
+      },
+      {
         title: '移动节点..',
         children: [
           {
             group: [
-              { title: 'test2' },
               {
-                title: 'test3'
+                title: '向上推动',
+                action: handleMoveUpWhole
+              },
+              {
+                title: '向下推动',
+                action: handleMoveDownWhole
+              },
+              {
+                title: '向右移动',
+                action: tryMoveRightNode
+              },
+              {
+                title: '向左移动',
+                action: tryMoveLeftNode
+              },
+              {
+                title: '向上移动',
+                action: tryMoveUpNode
+              },
+              {
+                title: '向下移动',
+                action: tryMoveDownNode
               }
             ]
           }
         ]
-      },
-      {
-        title: '向上推动',
-        action: handleMoveUpWhole
-      },
-      {
-        title: '向下推动',
-        action: handleMoveDownWhole
-      },
-      {
-        title: '向右移动',
-        action: tryMoveRightNode
-      },
-      {
-        title: '向左移动',
-        action: tryMoveLeftNode
-      },
-      {
-        title: '向上移动',
-        action: tryMoveUpNode
-      },
-      {
-        title: '向下移动',
-        action: tryMoveDownNode
       }
     ]
   },
