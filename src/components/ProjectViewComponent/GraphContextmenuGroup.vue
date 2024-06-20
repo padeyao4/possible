@@ -190,13 +190,21 @@ const nodeOptions: OptionType[] = [
     name: '移动操作',
     group: [
       {
-        title: '向上推动',
-        action: handleMoveUpWhole
+        title: '移动节点..',
+        children: [
+          {
+            group: [
+              { title: 'test2' },
+              {
+                title: 'test3'
+              }
+            ]
+          }
+        ]
       },
       {
-        title: '测试',
-        action: undefined,
-        children: [{ name: 'test1', group: [] }]
+        title: '向上推动',
+        action: handleMoveUpWhole
       },
       {
         title: '向下推动',
@@ -268,7 +276,7 @@ const options = {
 };
 
 const items = computed(() => {
-  return options[itemType.value];
+  return options[itemType.value] ?? [];
 });
 
 emitter.on(
@@ -293,7 +301,13 @@ onBeforeUnmount(() => {
 <template>
   <teleport to="body">
     <div v-if="visible" @blur="visible = false" tabindex="0" ref="container" class="container">
-      <contextmenu-component :items="items" :canvas="canvas.svg" :x="event.x" :y="event.y" />"
+      <contextmenu-component
+        :items="items"
+        :canvas="canvas.svg"
+        :x="event.x"
+        :y="event.y"
+        :parents="[]"
+      />"
     </div>
   </teleport>
 </template>
@@ -301,6 +315,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .container {
   position: fixed;
+  z-index: 4;
   background-color: #3a8ee6;
 }
 </style>
