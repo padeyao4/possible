@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ModeDialog from '@/components/common/ModeDialog.vue';
+import EDialog from '@/components/common/EDialog.vue';
 import { useProjectStore } from '@/stores/project';
 import { useRoute } from '@/stores/route';
 import { computed, ref } from 'vue';
@@ -76,7 +76,7 @@ const isActive = computed(() => {
         <Icon icon="iconoir:menu" class="move" />
       </div>
     </div>
-    <mode-dialog
+    <e-dialog
       v-if="visible"
       :ok="okCallback"
       :cancel="
@@ -85,14 +85,14 @@ const isActive = computed(() => {
         }
       "
     >
-      <div class="solt-container">
+      <div class="slot-container">
         <div>删除</div>
         <div class="text-content">
           {{ project.name }}
         </div>
         <div>项目吗?</div>
       </div>
-    </mode-dialog>
+    </e-dialog>
   </div>
 </template>
 
@@ -107,21 +107,28 @@ const isActive = computed(() => {
   }
 }
 
-.solt-container {
+.slot-container {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   padding: 0 8px;
   overflow: hidden;
   white-space: nowrap;
-}
-
-.text-content {
-  display: block;
-  overflow: hidden;
-  color: red;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  & > * {
+    font-weight: lighter;
+    font-size: 16px;
+  }
+  .text-content {
+    display: block;
+    overflow: hidden;
+    color: red;
+    font-weight: bold;
+    font-style: italic;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }
 
 .project-item {

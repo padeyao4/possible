@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { useEventListener } from '@vueuse/core'
+import { useEventListener } from '@vueuse/core';
+import EButton from './EButton.vue';
 
 const props = defineProps<{
-  ok?: () => void
-  cancel?: () => void
-}>()
+  ok?: () => void;
+  cancel?: () => void;
+}>();
 
 useEventListener(document, 'keydown', (e) => {
   if (e.code === 'Escape') {
-    props.cancel?.()
+    props.cancel?.();
   }
-})
+});
 </script>
 
 <template>
@@ -21,8 +22,8 @@ useEventListener(document, 'keydown', (e) => {
           <slot></slot>
         </main>
         <footer>
-          <div @click="ok">确定</div>
-          <div @click="cancel">取消</div>
+          <e-button @click="ok">确定</e-button>
+          <e-button @click="cancel">取消</e-button>
         </footer>
       </div>
     </div>
@@ -45,8 +46,8 @@ useEventListener(document, 'keydown', (e) => {
   .dialog {
     display: flex;
     flex-direction: column;
-    width: 350px;
-    height: 250px;
+    width: 320px;
+    height: 200px;
     background-color: #fdfdfd;
     border: solid 1px #00000030;
     border-radius: 8px;
