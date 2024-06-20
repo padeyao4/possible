@@ -23,6 +23,10 @@ const nameWatchHandle = ref();
 const detailWatchHandle = ref();
 const recordWatchHandle = ref();
 
+watch([nameInput, detailInput, recordInput], () => {
+  emitter.emit(BusEvents['node:updated']);
+});
+
 onMounted(() => {
   emitter.on(
     BusEvents['editor:open'],

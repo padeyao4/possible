@@ -1,6 +1,7 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { clampMin } from '@/graph/math';
 import Node from '@/core/Node';
+import emitter, { BusEvents } from '@/utils/emitter';
 
 export class ResizeCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -48,6 +49,7 @@ export class ResizeCard extends BaseBehavior {
         node.height = Math.round(node.height);
         node.x = Math.round(node.x);
         node.y = Math.round(node.y);
+        emitter.emit(BusEvents['node:resized']);
       } else {
         node.width = this.oldNode.width;
         node.height = this.oldNode.height;

@@ -3,23 +3,9 @@ import SettingsItem from '@/components/SettingsViewComponent/SettingsItem.vue';
 import EButton from '@/components/common/EButton.vue';
 import EText from '@/components/common/EText.vue';
 import { useAccount } from '@/stores/account';
-import { ref } from 'vue';
 import LoginModel from './LoginModel.vue';
-import { AccountControllerApi } from '@/openapi';
-import { config } from '@/service/client';
 
 const account = useAccount();
-
-const logoutLoading = ref();
-
-async function handleLogout() {
-  logoutLoading.value = true;
-  new AccountControllerApi(config()).logout().finally(() => {
-    account.token = null;
-    logoutLoading.value = false;
-    account.online = false;
-  });
-}
 
 function handleRegister() {
   window.open(import.meta.env.VITE_REGISTER_URL, '_blank');
@@ -44,7 +30,7 @@ const isDev = import.meta.env.VITE_DEV;
     </template>
     <template #option>
       <template v-if="account.online">
-        <e-button @click="handleLogout" :loading="logoutLoading">退出登录</e-button>
+        <e-button @click="account.logout()" :loading="account.logoutLoading">退出登录</e-button>
       </template>
       <template v-else>
         <LoginModel />

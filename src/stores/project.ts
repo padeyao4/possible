@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { useRoute } from './route';
 import { useSettings } from './settings';
 import { getDaysBetweenDates, getIndexByDate } from './timer';
@@ -7,9 +7,13 @@ import Project from '@/core/Project';
 import Node from '@/core/Node';
 import type { ID } from '@/core/types';
 import Edge from '@/core/Edge';
+import { StorageControllerApi } from '@/openapi';
+import { config } from '@/service/client';
+import emitter, { BusEvents } from '@/utils/emitter';
 
 export const useProjectStore = defineStore('projects', () => {
   const mapper = reactive<Map<ID, Project>>(new Map());
+  const dataVersion = ref(0);
 
   const sortProjects = computed(() => {
     return Array.from(mapper.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex);
@@ -104,10 +108,6 @@ export const useProjectStore = defineStore('projects', () => {
     mapper.set(project.id, project);
   }
 
-  function removeProject(projectId: ID): void {
-    mapper.delete(projectId);
-  }
-
   function addNode(project: Project, node: Node): void {
     const { nodeMap, inMap, outMap } = project;
     node.projectId = project.id;
@@ -177,6 +177,57 @@ export const useProjectStore = defineStore('projects', () => {
     return mapper.get(projectId);
   }
 
+  const fetchLoading = ref(false);
+  async function fetch() {
+    try {
+      fetchLoading.value = true;
+      const response = await new StorageControllerApi(config()).get();
+      const data = response.data.payload;
+      deserialize(JSON.parse(data.content));
+      dataVersion.value = data.id;
+    } catch (e) {
+      emitter.emit(BusEvents['error:message'], e);
+    } finally {
+      fetchLoading.value = false;
+    }
+  }
+
+  const pushLoading = ref(false);
+  async function push() {
+    try {
+      pushLoading.value = true;
+      const response = await new StorageControllerApi(config()).put({
+        dataVersion: dataVersion.value,
+        content: JSON.stringify(serialize()),
+        uploadAt: new Date().toJSON()
+      });
+      dataVersion.value = response.data.payload;
+      emitter.emit(BusEvents['project:push:success']);
+    } catch (e) {
+      emitter.emit(BusEvents['project:push:failed'], e);
+    } finally {
+      pushLoading.value = false;
+    }
+  }
+
+  /**
+   * 加载本地localStorage数据
+   */
+  const loading = ref(false);
+  async function load() {
+    try {
+      loading.value = true;
+      const data = localStorage.getItem('data');
+      if (data) {
+        deserialize(JSON.parse(data));
+      }
+    } catch (e) {
+      emitter.emit(BusEvents['error:message'], e);
+    } finally {
+      loading.value = false;
+    }
+  }
+
   return {
     mapper,
     todoList,
@@ -184,15 +235,20 @@ export const useProjectStore = defineStore('projects', () => {
     sortProjects,
     getProjectById,
     addProject,
-    removeProject,
     addNode,
     removeNode,
     addEdge,
     removeEdge,
     deserialize,
-    serialize,
     setOffsetByDate,
     getCurrentProject,
-    faker
+    faker,
+    fetch,
+    fetchLoading,
+    loading,
+    load,
+    dataVersion,
+    pushLoading,
+    push
   };
 });

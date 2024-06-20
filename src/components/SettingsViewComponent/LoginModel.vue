@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import { useAccount } from '@/stores/account';
 import CloseIconButton from '@/components/common/CloseIconButton.vue';
-import { ref, watch } from 'vue';
-import { AccountControllerApi } from '@/openapi';
-import { config } from '@/service/client';
+import { onMounted, ref, watch } from 'vue';
+import emitter, { BusEvents } from '@/utils/emitter';
 
 const visible = ref(false);
 
 const username = defineModel<string>('username');
 const password = defineModel<string>('password');
-const loginLoading = ref(false);
 const account = useAccount();
 
 function handleClose() {
@@ -20,6 +18,12 @@ function handleClose() {
 
 const loginMessage = ref();
 
+onMounted(() => {
+  emitter.on(BusEvents['account:login:failed'], (error: any) => {
+    loginMessage.value = error.message;
+  });
+});
+
 watch(
   visible,
   () => {
@@ -29,29 +33,6 @@ watch(
   },
   { immediate: true }
 );
-
-async function handleLogin() {
-  if (loginLoading.value === true) return;
-
-  loginLoading.value = true;
-  new AccountControllerApi(config())
-    .login({ username: username.value, password: password.value })
-    .then((response) => {
-      return response.data;
-    })
-    .then((data) => {
-      visible.value = false;
-      account.online = true;
-      account.token = data.payload;
-    })
-    .catch((error) => {
-      console.error(error);
-      loginMessage.value = error.message;
-    })
-    .finally(() => {
-      loginLoading.value = false;
-    });
-}
 
 const forgetUrl = import.meta.env.VITE_FORGET_URL ?? '/forget';
 </script>
@@ -82,8 +63,12 @@ const forgetUrl = import.meta.env.VITE_FORGET_URL ?? '/forget';
         </div>
         <div class="footer">
           <a class="forget" :href="forgetUrl" target="_blank">忘记密码?</a>
-          <button @click="handleLogin" class="submit-button" :data-disabled="loginLoading">
-            {{ loginLoading ? '登录中...' : '登录' }}
+          <button
+            @click="account.login(username, password)"
+            class="submit-button"
+            :data-disabled="account.loginLoading"
+          >
+            {{ account.loginLoading ? '登录中...' : '登录' }}
           </button>
         </div>
       </main>
