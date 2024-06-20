@@ -1,5 +1,5 @@
 import type { ID, Point } from './types';
-import { markRaw } from 'vue';
+import { markRaw, toRaw } from 'vue';
 import Node from './Node';
 import { v4 } from 'uuid';
 import { faker } from '@faker-js/faker';
@@ -127,6 +127,11 @@ export default class Project {
     return edge;
   }
 
+  public getEdge(source: ID, target: ID) {
+    const { inMap } = this;
+    return Array.from(inMap.get(target)).find((edge) => edge.source === source);
+  }
+
   /**
    * 删除一个节点，包括和该节点相关的所有边
    * @param nodeId
@@ -155,8 +160,9 @@ export default class Project {
     const { edgeMap, inMap, outMap } = this;
     const sourceNodeId = edge.source;
     const targetNodeId = edge.target;
-    inMap.get(targetNodeId).delete(edge);
-    outMap.get(sourceNodeId).delete(edge);
+
+    inMap.get(targetNodeId).delete(toRaw(edge));
+    outMap.get(sourceNodeId).delete(toRaw(edge));
     edgeMap.delete(edge.id);
   }
 

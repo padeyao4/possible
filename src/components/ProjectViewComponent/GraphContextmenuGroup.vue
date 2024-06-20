@@ -120,8 +120,8 @@ function handleDeleteTask() {
 function handleDeleteEdge() {
   const project = currentProject();
   const el = event.value.target as Element;
-  const key = el.getAttribute('data-key');
-  project.removeEdge(key);
+  const edgeId = el.getAttribute('data-key');
+  project.removeEdge(edgeId);
   visible.value = false;
 }
 

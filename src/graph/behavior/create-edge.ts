@@ -67,9 +67,13 @@ export class CreateEdge extends BaseBehavior {
       if (key == path.nodeId) return;
       path.opacity = 0;
       if (path.dummy === 'source') {
-        this.project.addEdge(path.nodeId, key);
+        if (!this.project.getEdge(path.nodeId, key)) {
+          this.project.addEdge(path.nodeId, key);
+        }
       } else {
-        this.project.addEdge(key, path.nodeId);
+        if (!this.project.getEdge(key, path.nodeId)) {
+          this.project.addEdge(key, path.nodeId);
+        }
       }
     }
   }
