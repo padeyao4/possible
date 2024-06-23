@@ -4,17 +4,21 @@ import ECheckbox from '@/components/common/ECheckbox.vue';
 import { useAccount } from '@/stores/account';
 import { KEYS, useNotify } from '@/stores/notity';
 import { computed } from 'vue';
+import emitter, { BusEvents } from '@/utils/emitter';
 
 const account = useAccount();
 const notify = useNotify();
 
 const checked = computed({
   get: () => {
-    return account.online && account.enableSync;
+    return account.enable;
   },
   set: (value) => {
     if (account.online) {
-      account.enableSync = value;
+      account.sync = value;
+      if (value) {
+        emitter.emit(BusEvents['project:fetch']);
+      }
     }
   }
 });

@@ -108,6 +108,10 @@ export const useProjectStore = defineStore('projects', () => {
     mapper.set(project.id, project);
   }
 
+  function removeProject(projectId: ID): void {
+    mapper.delete(projectId);
+  }
+
   function addNode(project: Project, node: Node): void {
     const { nodeMap, inMap, outMap } = project;
     node.projectId = project.id;
@@ -181,7 +185,7 @@ export const useProjectStore = defineStore('projects', () => {
   async function fetch() {
     try {
       fetchLoading.value = true;
-      const response = await new StorageControllerApi(config()).get();
+      const response = await new StorageControllerApi(config()).fetch();
       const data = response.data.payload;
       deserialize(JSON.parse(data.content));
       dataVersion.value = data.id;
@@ -196,7 +200,7 @@ export const useProjectStore = defineStore('projects', () => {
   async function push() {
     try {
       pushLoading.value = true;
-      const response = await new StorageControllerApi(config()).put({
+      const response = await new StorageControllerApi(config()).push({
         dataVersion: dataVersion.value,
         content: JSON.stringify(serialize()),
         uploadAt: new Date().toJSON()
@@ -235,6 +239,7 @@ export const useProjectStore = defineStore('projects', () => {
     sortProjects,
     getProjectById,
     addProject,
+    removeProject,
     addNode,
     removeNode,
     addEdge,

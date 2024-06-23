@@ -1,6 +1,6 @@
 import { AccountControllerApi, type User, UserControllerApi } from '@/openapi';
 import { defineStore } from 'pinia';
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { config } from '@/service/client';
 import emitter, { BusEvents } from '@/utils/emitter';
 
@@ -8,11 +8,14 @@ export const useAccount = defineStore(
   'account',
   () => {
     const online = ref(false);
-    const enableSync = ref(false);
+    const sync = ref(false);
     const token = ref<string>();
     const user = reactive<User>({});
     const fetchUserLoading = ref(false);
 
+    const enable = computed(() => {
+      return online.value && sync.value;
+    });
     async function fetchUser() {
       try {
         fetchUserLoading.value = true;
@@ -62,13 +65,14 @@ export const useAccount = defineStore(
       user,
       token,
       online,
-      enableSync,
+      sync,
       fetchUser,
       fetchUserLoading,
       login,
       loginLoading,
       logout,
-      logoutLoading
+      logoutLoading,
+      enable
     };
   },
   {

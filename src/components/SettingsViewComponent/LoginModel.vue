@@ -16,6 +16,10 @@ function handleClose() {
   password.value = '';
 }
 
+async function handleLogin() {
+  await account.login(username.value, password.value);
+}
+
 const loginMessage = ref();
 
 onMounted(() => {
@@ -63,11 +67,7 @@ const forgetUrl = import.meta.env.VITE_FORGET_URL ?? '/forget';
         </div>
         <div class="footer">
           <a class="forget" :href="forgetUrl" target="_blank">忘记密码?</a>
-          <button
-            @click="account.login(username, password)"
-            class="submit-button"
-            :data-disabled="account.loginLoading"
-          >
+          <button @click="handleLogin" class="submit-button" :data-disabled="account.loginLoading">
             {{ account.loginLoading ? '登录中...' : '登录' }}
           </button>
         </div>
