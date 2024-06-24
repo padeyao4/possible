@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { computed, inject } from 'vue';
+import { computed, type ComputedRef, inject } from 'vue';
 import { useSettings } from '@/stores/settings';
 import type { Point } from '@/core/types';
 import { useTempPaths } from '@/stores/temp-path';
 import CanvasTheTempPath from '@/components/ProjectViewComponent/CanvasTheTempPath.vue';
 import type Project from '@/core/Project';
 
-const project = inject<Project>('project');
+const project = inject<ComputedRef<Project>>('project');
 const setting = useSettings();
 const tempPaths = useTempPaths();
 
 const edges = computed<{ id: string; from: Point; to: Point; opacity: number }[]>(() => {
-  const { nodeMap } = project;
+  const { nodeMap } = project.value;
   const { paths } = tempPaths;
   const ans = [];
   const { unitWidth, unitHeight } = setting;

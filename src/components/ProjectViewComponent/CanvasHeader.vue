@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, ref, watchEffect } from 'vue';
+import { computed, type ComputedRef, inject, ref, watchEffect } from 'vue';
 import { useSettings } from '@/stores/settings';
 import CanvasHeaderItem from '@/components/ProjectViewComponent/CanvasHeaderItem.vue';
 import { getDaysBetweenDates, useTimer } from '@/stores/timer';
@@ -8,7 +8,7 @@ import type Project from '@/core/Project';
 
 const settings = useSettings();
 const indexes = ref<number[]>([]);
-const project = inject<Project>('project');
+const project = inject<ComputedRef<Project>>('project');
 const timer = useTimer();
 
 const { width } = useWindowSize();
@@ -18,15 +18,15 @@ watchEffect(() => {
   indexes.value = Array.from({ length: count }, (_, i) => i + 1);
 });
 
-const x = computed(() => Math.floor(-project.offset.x / settings.unitWidth) - 2);
+const x = computed(() => Math.floor(-project.value.offset.x / settings.unitWidth) - 2);
 
 const translateX = computed(
-  () => (project.offset.x % settings.unitWidth) - settings.unitWidth + 'px'
+  () => (project.value.offset.x % settings.unitWidth) - settings.unitWidth + 'px'
 );
 
 const unitWidth = computed(() => settings.unitWidth + 'px');
 
-const todayIndex = computed(() => getDaysBetweenDates(timer.timestamp, project.createTime));
+const todayIndex = computed(() => getDaysBetweenDates(timer.timestamp, project.value.createTime));
 </script>
 
 <template>

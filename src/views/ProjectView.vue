@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ProjectGroupComponent from '@/components/ProjectViewComponent/ProjectGroupComponent.vue';
 import ProjectFooter from '@/components/ProjectViewComponent/TheFooter.vue';
-import { provide } from 'vue';
+import { computed, provide } from 'vue';
 import EditorComponent from '@/components/ProjectViewComponent/EditorComponent.vue';
 import { useProjectStore } from '@/stores/project';
 import type { ID } from '@/core/types';
@@ -9,7 +9,7 @@ import type { ID } from '@/core/types';
 const { id } = defineProps<{ id: ID }>();
 
 const store = useProjectStore();
-const project = store.getProject(id);
+const project = computed(() => store.getProject(id));
 
 provide('project', project);
 </script>

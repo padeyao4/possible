@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import emitter, { BusEvents } from '@/utils/emitter';
 import { useEventListener, useTextareaAutosize } from '@vueuse/core';
-import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, type ComputedRef, inject, onMounted, onUnmounted, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import type Project from '@/core/Project';
 
@@ -17,7 +17,7 @@ const widthStyle = computed(() => {
   return (visible.value ? width.value : 16) + 'px';
 });
 
-const project = inject<Project>('project');
+const project = inject<ComputedRef<Project>>('project');
 const nameWatchHandle = ref();
 const detailWatchHandle = ref();
 const recordWatchHandle = ref();
@@ -40,7 +40,7 @@ onMounted(() => {
       console.log(id, shapeType);
       contentType.value = shapeType;
       visible.value = true;
-      const node = project.nodeMap.get(id);
+      const node = project.value.nodeMap.get(id);
       nameInput.value = node.name;
       detailInput.value = node.detail;
       recordInput.value = node.record;

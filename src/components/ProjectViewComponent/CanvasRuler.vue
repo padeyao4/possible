@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed, inject, ref, watchEffect } from 'vue';
+import { computed, type ComputedRef, inject, ref, watchEffect } from 'vue';
 import { useWindowSize } from '@vueuse/core';
 import { useSettings } from '@/stores/settings';
 import type Project from '@/core/Project';
 
-const project = inject<Project>('project');
+const project = inject<ComputedRef<Project>>('project');
 const settings = useSettings();
 
 const rulers = ref<number[]>([]);
@@ -17,12 +17,12 @@ watchEffect(() => {
 });
 
 const y = computed(() => {
-  const absY = Math.abs(project.offset.y);
+  const absY = Math.abs(project.value.offset.y);
   return Math.floor(absY / settings.unitHeight) - 2;
 });
 
 const translateY = computed(
-  () => (project.offset.y % settings.unitHeight) - settings.unitHeight + 'px'
+  () => (project.value.offset.y % settings.unitHeight) - settings.unitHeight + 'px'
 );
 </script>
 

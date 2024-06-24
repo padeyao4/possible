@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { computed, inject } from 'vue';
+import { computed, type ComputedRef, inject } from 'vue';
 import { useSettings } from '@/stores/settings';
 import type { Path } from '@/core/types';
 import CanvasThePath from '@/components/ProjectViewComponent/CanvasThePath.vue';
 import type Project from '@/core/Project';
 
-const project = inject<Project>('project');
+const project = inject<ComputedRef<Project>>('project');
 const setting = useSettings();
 
 const edges = computed<Path[]>(() => {
-  const { nodeMap, edgeMap } = project;
+  const { nodeMap, edgeMap } = project.value;
   const ans = [];
   const { unitWidth, unitHeight } = setting;
   for (let edge of edgeMap.values()) {

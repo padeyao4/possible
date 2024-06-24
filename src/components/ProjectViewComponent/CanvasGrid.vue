@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { useSettings } from '@/stores/settings';
-import { computed, inject } from 'vue';
+import { computed, type ComputedRef, inject } from 'vue';
 import type Project from '@/core/Project';
 
 const settings = useSettings();
-const project = inject<Project>('project');
+const project = inject<ComputedRef<Project>>('project');
 
 const translateX = computed(
-  () => (project.offset.x % settings.unitWidth) - settings.unitWidth + 'px'
+  () => (project.value.offset.x % settings.unitWidth) - settings.unitWidth + 'px'
 );
 
 const translateY = computed(
-  () => (project.offset.y % settings.unitHeight) - settings.unitHeight + 'px'
+  () => (project.value.offset.y % settings.unitHeight) - settings.unitHeight + 'px'
 );
 
 const width = computed(() => settings.unitWidth + 'px');

@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import { useTimer } from '@/stores/timer';
-import { inject, ref } from 'vue';
+import { type ComputedRef, inject, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import type Project from '@/core/Project';
 
-const project = inject<Project>('project');
+const project = inject<ComputedRef<Project>>('project');
 const timer = useTimer();
 
 function handleBackHome() {
-  project.offset.x = 0;
-  project.offset.y = 0;
+  project.value.offset.x = 0;
+  project.value.offset.y = 0;
 }
 
 function handleToday() {
-  project.setOffsetIndex(timer.timestamp);
+  project.value.setOffsetIndex(timer.timestamp);
 }
 
 function handleTest() {
-  console.log(project.offset);
+  console.log(project.value.offset);
 }
 
 function handleMoveRight() {}
@@ -33,7 +33,7 @@ const dateInputValue = defineModel();
 function handleDateChange() {
   const date = dateInputValue.value as string;
   if (date !== '' && date !== null) {
-    project.setOffsetIndex(date);
+    project.value.setOffsetIndex(date);
   }
 }
 </script>

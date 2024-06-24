@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CanvasPaths from '@/components/ProjectViewComponent/CanvasPaths.vue';
 import CanvasCards from '@/components/ProjectViewComponent/CanvasCards.vue';
-import { computed, inject, onMounted, ref } from 'vue';
+import { computed, type ComputedRef, inject, onMounted, ref, watchEffect } from 'vue';
 import { Register } from '@/graph/base';
 import CanvasTempPaths from '@/components/ProjectViewComponent/CanvasTempPaths.vue';
 import { useCanvas } from '@/stores/canvas';
@@ -17,26 +17,30 @@ import type Project from '@/core/Project';
 
 const svg = ref();
 const canvas = useCanvas();
-const project = inject<Project>('project');
+const project = inject<ComputedRef<Project>>('project');
 
 onMounted(() => {
-  canvas.set(svg.value);
-  const register = new Register(svg.value, project);
-  register.addBehaviors(
-    DefaultBehavior,
-    DragCanvas,
-    DragCard,
-    ResizeCard,
-    DoubleClickCard,
-    CreateEdge,
-    Contextmenu,
-    WheelCanvas
-  );
-  register.listen();
+  watchEffect(() => {
+    if (project.value.name) {
+      canvas.set(svg.value);
+      const register = new Register(svg.value, project.value);
+      register.addBehaviors(
+        DefaultBehavior,
+        DragCanvas,
+        DragCard,
+        ResizeCard,
+        DoubleClickCard,
+        CreateEdge,
+        Contextmenu,
+        WheelCanvas
+      );
+      register.listen();
+    }
+  });
 });
 
-const translateX = computed(() => project?.offset.x);
-const translateY = computed(() => project?.offset.y);
+const translateX = computed(() => project.value.offset.x);
+const translateY = computed(() => project.value.offset.y);
 </script>
 
 <template>

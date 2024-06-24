@@ -15,27 +15,26 @@ import { useProjectStore } from '@/stores/project';
 import { useSettings } from '@/stores/settings';
 import type Project from '@/core/Project';
 import type { ItemType } from '@/graph/types';
-import { computed, inject, onBeforeUnmount, ref } from 'vue';
+import { computed, type ComputedRef, inject, onBeforeUnmount, ref } from 'vue';
 import ContextmenuComponent from '@/components/ProjectViewComponent/ContextmenuComponent.vue';
 import type { OptionType } from '@/components/types';
 
-const projectStore = useProjectStore();
 const container = ref<HTMLElement>();
 const visible = ref(false);
 const canvas = useCanvas();
 const cursor = useCursor();
 const itemType = ref<ItemType>('node');
 const event = ref<PointerEvent>();
-const project = inject<Project>('project');
+const project = inject<ComputedRef<Project>>('project');
 
 function createNode() {
   const settings = useSettings();
-  const x = event.value.offsetX - project.offset.x;
-  const y = event.value.offsetY - project.offset.y;
+  const x = event.value.offsetX - project.value.offset.x;
+  const y = event.value.offsetY - project.value.offset.y;
   const node = new Node();
   node.x = Math.floor(x / settings.unitWidth);
   node.y = Math.floor(y / settings.unitHeight);
-  project.addNode(node);
+  project.value.addNode(node);
   visible.value = false;
   emitter.emit(BusEvents['node:created']);
 }
@@ -43,8 +42,8 @@ function createNode() {
 function handleAppendNode() {
   const el = event.value.target as Element;
   const key = el.getAttribute('data-key');
-  const node = project.nodeMap.get(key);
-  project.addNode(node);
+  const node = project.value.nodeMap.get(key);
+  project.value.addNode(node);
   visible.value = false;
   emitter.emit(BusEvents['node:created']);
 }
@@ -52,16 +51,16 @@ function handleAppendNode() {
 function handleMoveUpWhole() {
   const el = event.value.target as Element;
   const key = el.getAttribute('data-key');
-  const node = project.nodeMap.get(key);
-  tryMoveUpWhole(<Project>project, node);
+  const node = project.value.nodeMap.get(key);
+  tryMoveUpWhole(<Project>project.value, node);
   visible.value = false;
   emitter.emit(BusEvents['node:updated']);
 }
 function handleMoveDownWhole() {
   const el = event.value.target as Element;
   const key = el.getAttribute('data-key');
-  const node = project.nodeMap.get(key);
-  tryMoveDownWhole(<Project>project, node);
+  const node = project.value.nodeMap.get(key);
+  tryMoveDownWhole(<Project>project.value, node);
   visible.value = false;
   emitter.emit(BusEvents['node:updated']);
 }
@@ -69,7 +68,7 @@ function handleMoveDownWhole() {
 function tryMoveRightNode() {
   const target = event.value.target as Element;
   const nodeId = target.getAttribute('data-key');
-  moveRight(<Project>project, project.nodeMap.get(nodeId));
+  moveRight(<Project>project.value, project.value.nodeMap.get(nodeId));
   visible.value = false;
   emitter.emit(BusEvents['node:updated']);
 }
@@ -77,7 +76,7 @@ function tryMoveRightNode() {
 function tryMoveLeftNode() {
   const target = event.value.target as Element;
   const nodeId = target.getAttribute('data-key');
-  moveLeft(<Project>project, project.nodeMap.get(nodeId));
+  moveLeft(<Project>project.value, project.value.nodeMap.get(nodeId));
   visible.value = false;
   emitter.emit(BusEvents['node:updated']);
 }
@@ -85,7 +84,7 @@ function tryMoveLeftNode() {
 function tryMoveDownNode() {
   const target = event.value.target as Element;
   const nodeId = target.getAttribute('data-key');
-  moveDown(<Project>project, project.nodeMap.get(nodeId));
+  moveDown(<Project>project.value, project.value.nodeMap.get(nodeId));
   visible.value = false;
   emitter.emit(BusEvents['node:updated']);
 }
@@ -93,7 +92,7 @@ function tryMoveDownNode() {
 function tryMoveUpNode() {
   const target = event.value.target as Element;
   const nodeId = target.getAttribute('data-key');
-  tryMoveUp(<Project>project, project.nodeMap.get(nodeId));
+  tryMoveUp(<Project>project.value, project.value.nodeMap.get(nodeId));
   visible.value = false;
   emitter.emit(BusEvents['node:updated']);
 }
@@ -101,7 +100,7 @@ function tryMoveUpNode() {
 function handleCompletedTask() {
   const target = event.value.target as Element;
   const nodeId = target.getAttribute('data-key');
-  const node = project.nodeMap.get(nodeId);
+  const node = project.value.nodeMap.get(nodeId);
   node.completed = !node.completed;
   visible.value = false;
   emitter.emit(BusEvents['node:updated']);
@@ -110,7 +109,7 @@ function handleCompletedTask() {
 function handleDeleteTask() {
   const el = event.value.target as Element;
   const key = el.getAttribute('data-key');
-  project.removeNode(key);
+  project.value.removeNode(key);
   visible.value = false;
   emitter.emit('home-editor');
   emitter.emit(BusEvents['node:deleted']);
@@ -119,7 +118,7 @@ function handleDeleteTask() {
 function handleDeleteEdge() {
   const el = event.value.target as Element;
   const edgeId = el.getAttribute('data-key');
-  project.removeEdge(edgeId);
+  project.value.removeEdge(edgeId);
   visible.value = false;
   emitter.emit(BusEvents['edge:deleted']);
 }
@@ -129,17 +128,17 @@ function breakAwayFromRelation() {
   const nodeId = el.getAttribute('data-key');
 
   // 找到左侧关系节点
-  const leftNodes = project.getRelationLeftNodes(nodeId);
+  const leftNodes = project.value.getRelationLeftNodes(nodeId);
   // 找到右侧关系节点
-  const rightNodes = project.getRelationRightNodes(nodeId);
+  const rightNodes = project.value.getRelationRightNodes(nodeId);
   // 左侧和右侧一一建立关系
   leftNodes.forEach((leftNode) => {
     rightNodes.forEach((rightNode) => {
-      project.addEdge(leftNode, rightNode);
+      project.value.addEdge(leftNode, rightNode);
     });
   });
   // 删除当前节点所有边
-  project.removeRelations(nodeId);
+  project.value.removeRelations(nodeId);
   visible.value = false;
   emitter.emit(BusEvents['node:updated']);
 }
@@ -147,21 +146,21 @@ function breakAwayFromRelation() {
 function insertNode() {
   const el = event.value.target as Element;
   const nodeId = el.getAttribute('data-key');
-  const rightNode = project.getNode(nodeId);
-  const sources = project.getRelationLeftNodes(nodeId);
-  moveRight(<Project>project, rightNode);
+  const rightNode = project.value.getNode(nodeId);
+  const sources = project.value.getRelationLeftNodes(nodeId);
+  moveRight(<Project>project.value, rightNode);
   const newNode = new Node();
   newNode.name = '新节点';
   newNode.x = rightNode.x - 1;
   newNode.y = rightNode.y;
-  project.addNode(newNode);
+  project.value.addNode(newNode);
   // 删除旧边
-  project.removeLeftRelations(nodeId);
+  project.value.removeLeftRelations(nodeId);
   // 添加新边
   sources.forEach((source) => {
-    project.addEdge(source, newNode);
+    project.value.addEdge(source, newNode);
   });
-  project.addEdge(newNode, rightNode);
+  project.value.addEdge(newNode, rightNode);
   visible.value = false;
   emitter.emit(BusEvents['node:updated']);
 }

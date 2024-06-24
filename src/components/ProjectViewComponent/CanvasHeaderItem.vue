@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject } from 'vue';
+import { computed, type ComputedRef, inject } from 'vue';
 import { showWeek, timeFormat } from '@/stores/timer';
 import type Project from '@/core/Project';
 
@@ -8,10 +8,10 @@ const props = defineProps<{
   isToday: boolean;
 }>();
 
-const project = inject<Project>('project');
+const project = inject<ComputedRef<Project>>('project');
 
 const date = computed(() => {
-  const startTimestamp = project.createTime;
+  const startTimestamp = project.value.createTime;
   const indexTimestamp = startTimestamp + props.idx * 86400_000;
   return new Date(indexTimestamp);
 });
