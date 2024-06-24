@@ -4,10 +4,10 @@ import AsideFooter from '@/components/IndexViewComponent/AsideFooter.vue';
 import AsideHeader from '@/components/IndexViewComponent/AsideHeader.vue';
 import { useCursor } from '@/stores/cursor';
 
-const mouseStyle = useCursor();
+const cursor = useCursor();
 
 function onmouseover(event: MouseEvent) {
-  mouseStyle.refresh(event);
+  cursor.refresh(event);
 }
 </script>
 

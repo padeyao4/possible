@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CanvasPaths from '@/components/ProjectViewComponent/CanvasPaths.vue';
 import CanvasCards from '@/components/ProjectViewComponent/CanvasCards.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, inject, onMounted, ref } from 'vue';
 import { Register } from '@/graph/base';
 import CanvasTempPaths from '@/components/ProjectViewComponent/CanvasTempPaths.vue';
 import { useCanvas } from '@/stores/canvas';
@@ -13,16 +13,15 @@ import { DoubleClickCard } from '@/graph/behavior/double-click-card';
 import { CreateEdge } from '@/graph/behavior/create-edge';
 import { Contextmenu } from '@/graph/behavior/contextmenu';
 import WheelCanvas from '@/graph/behavior/wheel-canvas';
-import { useProjectStore } from '@/stores/project';
+import type Project from '@/core/Project';
 
 const svg = ref();
 const canvas = useCanvas();
-const projectStore = useProjectStore();
-const project = projectStore.getCurrentProject();
+const project = inject<Project>('project');
 
 onMounted(() => {
   canvas.set(svg.value);
-  const register = new Register(svg.value);
+  const register = new Register(svg.value, project);
   register.addBehaviors(
     DefaultBehavior,
     DragCanvas,

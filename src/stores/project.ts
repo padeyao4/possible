@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { computed, reactive, ref } from 'vue';
-import { useRoute } from './route';
 import { getIndexByDate } from './timer';
 import Project from '@/core/Project';
 import Node from '@/core/Node';
@@ -166,11 +165,6 @@ export const useProjectStore = defineStore('projects', () => {
     return Array.from(mapper).map(([_, value]) => value.plainObject());
   }
 
-  function getCurrentProject() {
-    const { active } = useRoute();
-    return mapper.get(active.param) ?? new Project();
-  }
-
   function getProjectById(projectId: ID) {
     return mapper.get(projectId);
   }
@@ -232,6 +226,10 @@ export const useProjectStore = defineStore('projects', () => {
     });
   }
 
+  function getProject(projectId: ID) {
+    return mapper.get(projectId) ?? new Project();
+  }
+
   return {
     mapper,
     todoList,
@@ -245,7 +243,6 @@ export const useProjectStore = defineStore('projects', () => {
     addEdge,
     removeEdge,
     deserialize,
-    getCurrentProject,
     faker,
     fetch,
     fetchLoading,
@@ -254,6 +251,7 @@ export const useProjectStore = defineStore('projects', () => {
     dataVersion,
     pushLoading,
     push,
-    dailyUpdate
+    dailyUpdate,
+    getProject
   };
 });

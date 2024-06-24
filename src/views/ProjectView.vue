@@ -1,20 +1,23 @@
 <script setup lang="ts">
 import ProjectGroupComponent from '@/components/ProjectViewComponent/ProjectGroupComponent.vue';
 import ProjectFooter from '@/components/ProjectViewComponent/TheFooter.vue';
-import { computed } from 'vue';
+import { provide } from 'vue';
 import EditorComponent from '@/components/ProjectViewComponent/EditorComponent.vue';
 import { useProjectStore } from '@/stores/project';
+import type { ID } from '@/core/types';
+
+const { id } = defineProps<{ id: ID }>();
 
 const store = useProjectStore();
-const project = store.getCurrentProject();
+const project = store.getProject(id);
 
-const projectName = computed(() => (project?.name === '' ? '未命名项目' : project.name));
+provide('project', project);
 </script>
 
 <template>
   <div class="project-view">
     <header>
-      <div class="title">{{ projectName }}</div>
+      <div class="title">{{ project.name ?? '未命名' }}</div>
     </header>
     <main class="project-group">
       <project-group-component />

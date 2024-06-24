@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { currentProject } from '@/service/project.service';
 import { useTimer } from '@/stores/timer';
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import { Icon } from '@iconify/vue';
+import type Project from '@/core/Project';
 
-const project = currentProject();
+const project = inject<Project>('project');
 const timer = useTimer();
 
 function handleBackHome() {

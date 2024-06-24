@@ -1,8 +1,7 @@
-import { type CursorStoreType, useCursor } from '@/stores/cursor';
-import { type SettingsType, useSettings } from '@/stores/settings';
+import { useCursor } from '@/stores/cursor';
+import { useSettings } from '@/stores/settings';
 import { useEventListener } from '@vueuse/core';
-import type Project from '@/core/Project';
-import { useProjectStore } from '@/stores/project';
+import Project from '@/core/Project';
 
 const eventTypes = [
   'mouseover',
@@ -34,10 +33,13 @@ export type EventDispatch = {
 };
 
 export abstract class BaseBehavior {
-  store = useProjectStore();
   mouseStyle = useCursor();
   settings = useSettings();
-  project = this.store.getCurrentProject();
+  project: Project;
+
+  constructor(project: Project) {
+    this.project = project;
+  }
 
   abstract getEventDispatch(): EventDispatch;
 
@@ -56,15 +58,17 @@ export class Register {
   behaviors: BaseBehavior[];
   container: Element;
   globalListenerCleanup: any;
+  project: Project;
 
-  constructor(container: Element) {
+  constructor(container: Element, project: Project) {
     this.behaviors = [];
     this.container = container;
+    this.project = project;
   }
 
   public addBehaviors(...behaviors: (typeof BaseBehavior)[]) {
     behaviors.forEach((b) => {
-      this.behaviors.push(Reflect.construct(b, []));
+      this.behaviors.push(Reflect.construct(b, [this.project]));
     });
   }
 

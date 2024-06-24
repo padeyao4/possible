@@ -1,35 +1,34 @@
 <script setup lang="ts">
-import { currentProject } from '@/service/project.service'
-import { computed } from 'vue'
-import { useSettings } from '@/stores/settings'
-import type { Path } from '@/stores/types'
-import CanvasThePath from '@/components/ProjectViewComponent/CanvasThePath.vue'
+import { computed, inject } from 'vue';
+import { useSettings } from '@/stores/settings';
+import type { Path } from '@/core/types';
+import CanvasThePath from '@/components/ProjectViewComponent/CanvasThePath.vue';
+import type Project from '@/core/Project';
 
-const project = currentProject()
-const setting = useSettings()
+const project = inject<Project>('project');
+const setting = useSettings();
 
 const edges = computed<Path[]>(() => {
-  const { nodeMap, edgeMap } = project
-  const ans = []
-  const { unitWidth, unitHeight } = setting
+  const { nodeMap, edgeMap } = project;
+  const ans = [];
+  const { unitWidth, unitHeight } = setting;
   for (let edge of edgeMap.values()) {
-    const sourceNode = nodeMap.get(edge.source)
-    const sx = (sourceNode.x + sourceNode.width) * unitWidth - setting.offsetCardX
-    const sy = (sourceNode.y + sourceNode.height / 2) * unitHeight
+    const sourceNode = nodeMap.get(edge.source);
+    const sx = (sourceNode.x + sourceNode.width) * unitWidth - setting.offsetCardX;
+    const sy = (sourceNode.y + sourceNode.height / 2) * unitHeight;
 
-    const targetNode = nodeMap.get(edge.target)
-    const tx = (targetNode.x) * unitWidth + setting.offsetCardX
-    const ty = (targetNode.y + targetNode.height / 2) * unitHeight
+    const targetNode = nodeMap.get(edge.target);
+    const tx = targetNode.x * unitWidth + setting.offsetCardX;
+    const ty = (targetNode.y + targetNode.height / 2) * unitHeight;
 
     ans.push({
       id: edge.id,
       from: { x: sx, y: sy },
       to: { x: tx, y: ty }
-    })
+    });
   }
-  return ans
-})
-
+  return ans;
+});
 </script>
 
 <template>

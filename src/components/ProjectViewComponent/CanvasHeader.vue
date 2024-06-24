@@ -1,32 +1,32 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue'
-import { useSettings } from '@/stores/settings'
-import { currentProject } from '@/service/project.service'
-import CanvasHeaderItem from '@/components/ProjectViewComponent/CanvasHeaderItem.vue'
-import { getDaysBetweenDates, useTimer } from '@/stores/timer'
-import { useWindowSize } from '@vueuse/core'
+import { computed, inject, ref, watchEffect } from 'vue';
+import { useSettings } from '@/stores/settings';
+import CanvasHeaderItem from '@/components/ProjectViewComponent/CanvasHeaderItem.vue';
+import { getDaysBetweenDates, useTimer } from '@/stores/timer';
+import { useWindowSize } from '@vueuse/core';
+import type Project from '@/core/Project';
 
-const settings = useSettings()
-const indexes = ref<number[]>([])
-const project = currentProject()
-const timer = useTimer()
+const settings = useSettings();
+const indexes = ref<number[]>([]);
+const project = inject<Project>('project');
+const timer = useTimer();
 
-const { width } = useWindowSize()
+const { width } = useWindowSize();
 
 watchEffect(() => {
-  const count = Math.ceil(width.value / settings.unitWidth)
-  indexes.value = Array.from({ length: count }, (_, i) => i + 1)
-})
+  const count = Math.ceil(width.value / settings.unitWidth);
+  indexes.value = Array.from({ length: count }, (_, i) => i + 1);
+});
 
-const x = computed(() => Math.floor(-project.offset.x / settings.unitWidth) - 2)
+const x = computed(() => Math.floor(-project.offset.x / settings.unitWidth) - 2);
 
 const translateX = computed(
   () => (project.offset.x % settings.unitWidth) - settings.unitWidth + 'px'
-)
+);
 
-const unitWidth = computed(() => settings.unitWidth + 'px')
+const unitWidth = computed(() => settings.unitWidth + 'px');
 
-const todayIndex = computed(() => getDaysBetweenDates(timer.timestamp, project.createTime))
+const todayIndex = computed(() => getDaysBetweenDates(timer.timestamp, project.createTime));
 </script>
 
 <template>

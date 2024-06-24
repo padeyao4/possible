@@ -3,14 +3,11 @@ import AccountInfo from '@/components/SettingsViewComponent/AccountInfo.vue';
 import SyncSettingsComponent from '@/components/SettingsViewComponent/SyncSettingsComponent.vue';
 import AboutComponent from '@/components/SettingsViewComponent/AboutComponent.vue';
 import { Icon } from '@iconify/vue';
-import { useRoute } from '@/stores/route';
-
-const { back } = useRoute();
 </script>
 <template>
   <div class="settings">
     <header>
-      <Icon icon="solar:arrow-left-linear" class="back-button" @click="back()" /> 设置
+      <Icon icon="solar:arrow-left-linear" class="back-button" @click="$router.back()" /> 设置
     </header>
     <div class="container">
       <AccountInfo />

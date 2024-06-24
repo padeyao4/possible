@@ -1,29 +1,28 @@
 <script setup lang="ts">
-import { currentProject } from '@/service/project.service'
-import { computed } from 'vue'
-import { showWeek, timeFormat } from '@/stores/timer'
+import { computed, inject } from 'vue';
+import { showWeek, timeFormat } from '@/stores/timer';
+import type Project from '@/core/Project';
 
 const props = defineProps<{
-  idx: number,
-  isToday: boolean
-}>()
+  idx: number;
+  isToday: boolean;
+}>();
 
-const project = currentProject()
+const project = inject<Project>('project');
 
 const date = computed(() => {
-  const startTimestamp = project.createTime
-  const indexTimestamp = startTimestamp + props.idx * 86400_000
-  return new Date(indexTimestamp)
-})
+  const startTimestamp = project.createTime;
+  const indexTimestamp = startTimestamp + props.idx * 86400_000;
+  return new Date(indexTimestamp);
+});
 
 const info = computed(() => {
-  return timeFormat.format(date.value) + ' ' + showWeek(date.value)
-})
-
+  return timeFormat.format(date.value) + ' ' + showWeek(date.value);
+});
 </script>
 
 <template>
-  <div :class="['time-cell',{'today':isToday}]">
+  <div :class="['time-cell', { today: isToday }]">
     {{ info }}
   </div>
 </template>
@@ -31,8 +30,8 @@ const info = computed(() => {
 <style scoped>
 .time-cell {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   width: 100%;
   height: 100%;
   font-weight: lighter;

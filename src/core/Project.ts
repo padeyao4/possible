@@ -22,7 +22,7 @@ export default class Project {
 
   public constructor() {
     this.id = v4();
-    this.name = '';
+    this.name = undefined;
     this.nodeMap = new Map();
     this.edgeMap = new Map();
     this.inMap = markRaw(new Map());

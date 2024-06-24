@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { handleNewProject } from '@/service/project.service';
 import { useNotify } from '@/stores/notity';
-import { useRoute } from '@/stores/route';
 import { Icon } from '@iconify/vue/dist/iconify.js';
 
-const { linkTo } = useRoute();
 const notify = useNotify();
 </script>
 
@@ -15,7 +13,7 @@ const notify = useNotify();
       <div class="side-item-text">创建项目</div>
     </div>
     <div class="icon-button">
-      <div class="side-list-item icon-warp" @click="linkTo('settings')">
+      <div class="side-list-item icon-warp" @click="$router.push({ name: 'settings' })">
         <Icon icon="solar:settings-broken" class="settings-icon" />
         <div class="notify" v-show="notify.hasNotify"></div>
       </div>

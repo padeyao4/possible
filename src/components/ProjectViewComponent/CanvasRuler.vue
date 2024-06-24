@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue';
+import { computed, inject, ref, watchEffect } from 'vue';
 import { useWindowSize } from '@vueuse/core';
 import { useSettings } from '@/stores/settings';
-import { currentProject } from '@/service/project.service';
+import type Project from '@/core/Project';
 
-const project = currentProject();
+const project = inject<Project>('project');
 const settings = useSettings();
 
 const rulers = ref<number[]>([]);

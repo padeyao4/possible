@@ -3,12 +3,11 @@ import CanvasCardItem from '@/components/ProjectViewComponent/CanvasCardItem.vue
 import { isCross } from '@/graph/math';
 import { useSettings } from '@/stores/settings';
 import { useWindowSize } from '@vueuse/core';
-import { computed } from 'vue';
-import { useProjectStore } from '@/stores/project';
+import { computed, inject } from 'vue';
+import type Project from '@/core/Project';
 
-const projectStore = useProjectStore();
 const settings = useSettings();
-const project = projectStore.getCurrentProject();
+const project = inject<Project>('project');
 
 const { width: windowWidth, height: windowHeight } = useWindowSize();
 

@@ -1,22 +1,17 @@
 <script setup lang="ts">
 import EDialog from '@/components/common/EDialog.vue';
 import { useProjectStore } from '@/stores/project';
-import { useRoute } from '@/stores/route';
 import { computed, ref } from 'vue';
 import type Project from '@/core/Project';
 import { Icon } from '@iconify/vue';
 import emitter, { BusEvents } from '@/utils/emitter';
+import { useRoute } from 'vue-router';
+import router from '@/router';
 
-const props = defineProps<{ project: Project }>();
-const { project } = props;
-
-const route = useRoute();
+const { project } = defineProps<{ project: Project }>();
+const { id } = useRoute().query;
 
 const visible = ref(false);
-
-async function onclick(projectId: string) {
-  await route.linkTo('project', projectId);
-}
 
 function handleInputRef(e: HTMLElement) {
   setTimeout(() => {
@@ -34,9 +29,9 @@ function handleClickDelete(e: Event) {
 }
 
 function okCallback() {
-  const { removeProject, getCurrentProject } = useProjectStore();
-  if (getCurrentProject().id === project.id) {
-    route.linkTo('today');
+  const { removeProject } = useProjectStore();
+  if (id === project.id) {
+    router.push({ name: 'today' });
   }
   removeProject(project.id);
   visible.value = false;
@@ -48,13 +43,8 @@ function handleUpdateEnd() {
   emitter.emit(BusEvents['project:updated']);
 }
 
-const projectName = computed(() => {
-  const name = project.name.trim();
-  return name === '' ? '未命名项目' : name;
-});
-
 const isActive = computed(() => {
-  return route.active.name === 'project' && project.id === route.active.param;
+  return id === project.id;
 });
 </script>
 
@@ -71,12 +61,12 @@ const isActive = computed(() => {
     />
     <div
       v-else
-      @click="onclick(project.id.toString())"
+      @click="$router.push({ name: 'project', query: { id: project.id } })"
       class="side-list-item project-item"
       data-hover
       :data-active="isActive"
     >
-      <div class="info">{{ projectName }}</div>
+      <div class="info">{{ project.name ?? '未命名' }}</div>
       <div class="operation" :data-project-id="project.id">
         <Icon icon="iconoir:edit-pencil" @click="handleEdit" />
         <Icon icon="iconoir:trash" @click="handleClickDelete" />
@@ -95,7 +85,7 @@ const isActive = computed(() => {
       <div class="slot-container">
         <div>删除</div>
         <div class="text-content">
-          {{ project.name }}
+          {{ project.name?.trim() ?? '未命名' }}
         </div>
         <div>项目吗?</div>
       </div>

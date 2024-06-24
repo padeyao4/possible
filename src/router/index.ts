@@ -1,10 +1,10 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import TodayView from '@/views/TodayView.vue'
-import ProjectView from '@/views/ProjectView.vue'
-import BacklogView from '@/views/BacklogView.vue'
-import ManageView from '@/views/ManageView.vue'
-import IndexView from '@/views/IndexView.vue'
-import SettingsView from '@/views/SettingsView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import TodayView from '@/views/TodayView.vue';
+import ProjectView from '@/views/ProjectView.vue';
+import BacklogView from '@/views/BacklogView.vue';
+import ManageView from '@/views/ManageView.vue';
+import IndexView from '@/views/IndexView.vue';
+import SettingsView from '@/views/SettingsView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,9 +29,9 @@ const router = createRouter({
           component: ManageView
         },
         {
-          path: 'project/:param',
+          path: 'project',
           name: 'project',
-          props: true,
+          props: (route) => ({ id: route.query.id }),
           component: ProjectView
         }
       ]
@@ -43,6 +43,6 @@ const router = createRouter({
     },
     { path: '/', redirect: '/index/today' }
   ]
-})
+});
 
-export default router
+export default router;

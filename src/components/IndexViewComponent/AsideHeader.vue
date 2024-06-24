@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { useRoute } from '@/stores/route';
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useCounter } from '@/stores/counter';
 
-const route = useRoute();
 const counter = useCounter();
 const showCounter = computed(() => {
   return counter.count > 0;
@@ -15,9 +13,9 @@ const showCounter = computed(() => {
   <div class="side-header">
     <div
       class="side-list-item"
-      :data-active="route.active.name === 'today'"
+      :data-active="$route.name === 'today'"
       data-hover
-      @click="route.linkTo('today')"
+      @click="$router.push({ name: 'today' })"
     >
       <Icon icon="solar:sun-2-broken" class="side-icon" />
       <div class="side-item-text my-day">我的一天</div>
@@ -25,18 +23,18 @@ const showCounter = computed(() => {
     </div>
     <div
       class="side-list-item"
-      :data-active="route.active.name === 'backlog'"
+      :data-active="$route.name === 'backlog'"
       data-hover
-      @click="route.linkTo('backlog')"
+      @click="$router.push({ name: 'backlog' })"
     >
       <Icon icon="solar:pallete-2-broken" class="side-icon" />
       <div class="side-item-text">备忘录</div>
     </div>
     <div
       class="side-list-item"
-      :data-active="route.active.name === 'manage'"
+      :data-active="$route.name === 'manage'"
       data-hover
-      @click="route.linkTo('manage')"
+      @click="$router.push({ name: 'manage' })"
     >
       <Icon icon="solar:checklist-minimalistic-broken" class="side-icon" />
       <div class="side-item-text">任务管理</div>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import emitter, { BusEvents } from '@/utils/emitter';
-import { currentProject } from '@/service/project.service';
 import { useEventListener, useTextareaAutosize } from '@vueuse/core';
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, inject, onMounted, onUnmounted, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
+import type Project from '@/core/Project';
 
 const width = ref(300);
 const visible = ref(false);
@@ -17,8 +17,7 @@ const widthStyle = computed(() => {
   return (visible.value ? width.value : 16) + 'px';
 });
 
-const project = currentProject();
-
+const project = inject<Project>('project');
 const nameWatchHandle = ref();
 const detailWatchHandle = ref();
 const recordWatchHandle = ref();

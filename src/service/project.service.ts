@@ -1,12 +1,9 @@
 import { isCross } from '@/graph/math';
 import { useProjectStore } from '@/stores/project';
-import { useRoute } from '@/stores/route';
 import Node from '@/core/Node';
 import Project from '@/core/Project';
-
-export function currentProject() {
-  return useProjectStore().getCurrentProject();
-}
+import router from '@/router';
+import emitter, { BusEvents } from '@/utils/emitter';
 
 export function moveDown(project: Project, node: Node) {
   node.y += 1;
@@ -106,12 +103,11 @@ export function tryMoveDownWhole(project: Project, node: Node) {
 /**
  * 创建项目按钮
  */
-export function handleNewProject() {
+export async function handleNewProject() {
   const project = new Project();
-  const { linkTo } = useRoute();
+  project.editable = true;
   useProjectStore().addProject(project);
-  setTimeout(() => {
-    linkTo('project', project.id.toString()).then();
-    project.editable = true;
+  router.push({ name: 'project', query: { id: project.id } }).then(() => {
+    emitter.emit(BusEvents['project:created']);
   });
 }
