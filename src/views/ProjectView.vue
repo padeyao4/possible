@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { currentProject } from '@/service/project.service'
-import ProjectGroupComponent from '@/components/ProjectViewComponent/ProjectGroupComponent.vue'
-import ProjectFooter from '@/components/ProjectViewComponent/TheFooter.vue'
-import { computed } from 'vue'
-import EditorComponent from '@/components/ProjectViewComponent/EditorComponent.vue'
+import ProjectGroupComponent from '@/components/ProjectViewComponent/ProjectGroupComponent.vue';
+import ProjectFooter from '@/components/ProjectViewComponent/TheFooter.vue';
+import { computed } from 'vue';
+import EditorComponent from '@/components/ProjectViewComponent/EditorComponent.vue';
+import { useProjectStore } from '@/stores/project';
 
-const project = currentProject()
+const store = useProjectStore();
+const project = store.getCurrentProject();
 
-const projectName = computed(() => (project?.name === '' ? '未命名项目' : project.name))
+const projectName = computed(() => (project?.name === '' ? '未命名项目' : project.name));
 </script>
 
 <template>
