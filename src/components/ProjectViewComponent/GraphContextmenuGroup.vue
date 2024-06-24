@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import emitter, { BusEvents } from '@/utils/emitter';
 import {
-  appendNode,
-  currentProject,
   moveDown,
   moveLeft,
   moveRight,
@@ -31,7 +29,7 @@ const event = ref<PointerEvent>();
 
 function createNode() {
   const settings = useSettings();
-  const project = currentProject();
+  const project = projectStore.getCurrentProject();
   const x = event.value.offsetX - project.offset.x;
   const y = event.value.offsetY - project.offset.y;
   const node = new Node();
@@ -43,17 +41,17 @@ function createNode() {
 }
 
 function handleAppendNode() {
-  const project = currentProject();
+  const project = projectStore.getCurrentProject();
   const el = event.value.target as Element;
   const key = el.getAttribute('data-key');
   const node = project.nodeMap.get(key);
-  appendNode(<Project>project, node);
+  project.addNode(node);
   visible.value = false;
   emitter.emit(BusEvents['node:created']);
 }
 
 function handleMoveUpWhole() {
-  const project = currentProject();
+  const project = projectStore.getCurrentProject();
   const el = event.value.target as Element;
   const key = el.getAttribute('data-key');
   const node = project.nodeMap.get(key);
@@ -62,7 +60,7 @@ function handleMoveUpWhole() {
   emitter.emit(BusEvents['node:updated']);
 }
 function handleMoveDownWhole() {
-  const project = currentProject();
+  const project = projectStore.getCurrentProject();
   const el = event.value.target as Element;
   const key = el.getAttribute('data-key');
   const node = project.nodeMap.get(key);
@@ -74,7 +72,7 @@ function handleMoveDownWhole() {
 function tryMoveRightNode() {
   const target = event.value.target as Element;
   const nodeId = target.getAttribute('data-key');
-  const project = currentProject();
+  const project = projectStore.getCurrentProject();
   moveRight(<Project>project, project.nodeMap.get(nodeId));
   visible.value = false;
   emitter.emit(BusEvents['node:updated']);
@@ -83,7 +81,7 @@ function tryMoveRightNode() {
 function tryMoveLeftNode() {
   const target = event.value.target as Element;
   const nodeId = target.getAttribute('data-key');
-  const project = currentProject();
+  const project = projectStore.getCurrentProject();
   moveLeft(<Project>project, project.nodeMap.get(nodeId));
   visible.value = false;
   emitter.emit(BusEvents['node:updated']);
@@ -92,7 +90,7 @@ function tryMoveLeftNode() {
 function tryMoveDownNode() {
   const target = event.value.target as Element;
   const nodeId = target.getAttribute('data-key');
-  const project = currentProject();
+  const project = projectStore.getCurrentProject();
   moveDown(<Project>project, project.nodeMap.get(nodeId));
   visible.value = false;
   emitter.emit(BusEvents['node:updated']);
@@ -101,7 +99,7 @@ function tryMoveDownNode() {
 function tryMoveUpNode() {
   const target = event.value.target as Element;
   const nodeId = target.getAttribute('data-key');
-  const project = currentProject();
+  const project = projectStore.getCurrentProject();
   tryMoveUp(<Project>project, project.nodeMap.get(nodeId));
   visible.value = false;
   emitter.emit(BusEvents['node:updated']);
@@ -110,7 +108,7 @@ function tryMoveUpNode() {
 function handleCompletedTask() {
   const target = event.value.target as Element;
   const nodeId = target.getAttribute('data-key');
-  const project = currentProject();
+  const project = projectStore.getCurrentProject();
   const node = project.nodeMap.get(nodeId);
   node.completed = !node.completed;
   visible.value = false;
@@ -118,7 +116,7 @@ function handleCompletedTask() {
 }
 
 function handleDeleteTask() {
-  const project = currentProject();
+  const project = projectStore.getCurrentProject();
   const el = event.value.target as Element;
   const key = el.getAttribute('data-key');
   project.removeNode(key);
@@ -128,7 +126,7 @@ function handleDeleteTask() {
 }
 
 function handleDeleteEdge() {
-  const project = currentProject();
+  const project = projectStore.getCurrentProject();
   const el = event.value.target as Element;
   const edgeId = el.getAttribute('data-key');
   project.removeEdge(edgeId);
@@ -137,7 +135,7 @@ function handleDeleteEdge() {
 }
 
 function breakAwayFromRelation() {
-  const project = currentProject();
+  const project = projectStore.getCurrentProject();
   const el = event.value.target as Element;
   const nodeId = el.getAttribute('data-key');
 

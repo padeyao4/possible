@@ -1,22 +1,23 @@
 <script setup lang="ts">
-import { useSettings } from '@/stores/settings'
-import { currentProject } from '@/service/project.service'
-import { computed } from 'vue'
+import { useSettings } from '@/stores/settings';
+import { computed } from 'vue';
+import { useProjectStore } from '@/stores/project';
 
-const settings = useSettings()
-const project = currentProject()
+const settings = useSettings();
+const projectStore = useProjectStore();
+const project = projectStore.getCurrentProject();
 
 const translateX = computed(
   () => (project.offset.x % settings.unitWidth) - settings.unitWidth + 'px'
-)
+);
 
 const translateY = computed(
   () => (project.offset.y % settings.unitHeight) - settings.unitHeight + 'px'
-)
+);
 
-const width = computed(() => settings.unitWidth + 'px')
+const width = computed(() => settings.unitWidth + 'px');
 
-const height = computed(() => settings.unitHeight + 'px')
+const height = computed(() => settings.unitHeight + 'px');
 </script>
 
 <template>

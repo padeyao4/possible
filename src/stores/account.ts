@@ -1,7 +1,7 @@
 import { AccountControllerApi, type User, UserControllerApi } from '@/openapi';
 import { defineStore } from 'pinia';
 import { computed, reactive, ref } from 'vue';
-import { config } from '@/service/client';
+import { config } from '@/service';
 import emitter, { BusEvents } from '@/utils/emitter';
 
 export const useAccount = defineStore(

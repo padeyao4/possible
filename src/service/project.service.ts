@@ -1,7 +1,6 @@
 import { isCross } from '@/graph/math';
 import { useProjectStore } from '@/stores/project';
 import { useRoute } from '@/stores/route';
-import { getDaysBetweenDates, useTimer } from '@/stores/timer';
 import Node from '@/core/Node';
 import Project from '@/core/Project';
 
@@ -84,32 +83,6 @@ export function moveLeft(project: Project, node: Node) {
   });
 }
 
-function updateProjectByIndex(project: Project, index: number) {
-  const { nodeMap } = project;
-  const nodes = Array.from(nodeMap.values());
-
-  const filterFunc = (n: Node) => n.x + n.width <= index && n.completed === false;
-
-  let tempNodes = nodes.filter(filterFunc);
-  while (tempNodes.length > 0) {
-    tempNodes.forEach((node) => moveRight(project, node));
-    tempNodes = nodes.filter(filterFunc);
-  }
-}
-
-/**
- * 每日更新任务项目状态,
- * todo
- */
-export function updateProjects() {
-  const projects = useProjectStore();
-  const timer = useTimer();
-  for (const iterator of projects.sortProjects) {
-    const index = getDaysBetweenDates(timer.timestamp, iterator.createTime);
-    updateProjectByIndex(<Project>iterator, index);
-  }
-}
-
 export function tryMoveUpWhole(project: Project, node: Node) {
   if (node.y <= 0) {
     return;
@@ -128,22 +101,6 @@ export function tryMoveDownWhole(project: Project, node: Node) {
   project.collides(node).forEach((collideNode) => {
     tryMoveDownWhole(project, collideNode);
   });
-}
-
-export function appendNode(project: Project, node: Node) {
-  moveRight(project, node);
-  node.x -= 1;
-  const newNode = new Node();
-  newNode.x = node.x + 1;
-  newNode.y = node.y;
-  useProjectStore().addNode(project, newNode);
-  const { outMap } = project;
-  const projects = useProjectStore();
-  outMap.get(node.id).forEach((edge) => {
-    projects.addEdge(project, { id: newNode.id }, { id: edge.target });
-    projects.removeEdge(project, edge.id);
-  });
-  projects.addEdge(project, { id: node.id }, { id: newNode.id });
 }
 
 /**

@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref, type Ref } from 'vue';
-import { useProjectStore } from './project';
 import Project from '@/core/Project';
-import type Node from '@/core/Node';
 
 export function showWeek(date: Date | number): string {
   const arr = ['日', '一', '二', '三', '四', '五', '六'];
@@ -29,6 +27,11 @@ function days(date: Date | number | string) {
   return Math.ceil((d.getTime() - d.getTimezoneOffset() * ONE_MINUTE_MS) / ONE_DAY_MS);
 }
 
+/**
+ * 计算两个日期之间相差的天数
+ * @param startDate
+ * @param endDate
+ */
 export function getDaysBetweenDates(
   startDate: Date | number | string,
   endDate: Date | number | string
@@ -39,12 +42,6 @@ export function getDaysBetweenDates(
 export function getIndexByDate(project: Project): number {
   const timer = useTimer();
   return getDaysBetweenDates(timer.timestamp, project.createTime);
-}
-
-export function getIndex(node: Node) {
-  const projects = useProjectStore();
-  const project = projects.getProjectById(node.projectId);
-  return node.x + getDaysBetweenDates(project.createTime, 0);
 }
 
 export function scheduleMidnightTask(clear: Ref<any>, callback: () => void) {

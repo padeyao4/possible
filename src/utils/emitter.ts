@@ -12,13 +12,15 @@ export const BusEvents = {
   // 账号登录成功后发出
   'account:login:success': Symbol(),
   'error:message': Symbol(),
+  'project:push': Symbol(),
   'project:fetch': Symbol(),
   // 项目开始加载
   'project:load': Symbol(),
-  // 登录失败
-  'account:login:failed': Symbol(),
+  'project:daily:update': Symbol(),
   'project:push:success': Symbol(),
   'project:push:failed': Symbol(),
+  // 登录失败
+  'account:login:failed': Symbol(),
   'edge:created': Symbol(),
   'node:dragend': Symbol(),
   'node:resized': Symbol(),

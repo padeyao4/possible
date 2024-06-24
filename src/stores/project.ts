@@ -232,6 +232,12 @@ export const useProjectStore = defineStore('projects', () => {
     }
   }
 
+  function dailyUpdate() {
+    Array.from(mapper.values()).forEach((project) => {
+      project.dailyUpdate();
+    });
+  }
+
   return {
     mapper,
     todoList,
@@ -254,6 +260,7 @@ export const useProjectStore = defineStore('projects', () => {
     load,
     dataVersion,
     pushLoading,
-    push
+    push,
+    dailyUpdate
   };
 });

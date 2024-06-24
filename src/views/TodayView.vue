@@ -19,22 +19,22 @@ function ondragend() {}
 
 function ondragstart() {}
 
-const projects = useProjectStore();
+const projectStore = useProjectStore();
 
 function onupdateTodoList() {
-  projects.todoList.forEach((item, index) => {
+  projectStore.todoList.forEach((item, index) => {
     item.sortedIndex = index;
   });
 }
 
 function onupdateCompletedList() {
-  projects.completedList.forEach((item, index) => {
+  projectStore.completedList.forEach((item, index) => {
     item.sortedIndex = index;
   });
 }
 
 const showWelcome = computed(() => {
-  return projects.todoList.length === 0 && projects.completedList.length === 0;
+  return projectStore.todoList.length === 0 && projectStore.completedList.length === 0;
 });
 </script>
 
@@ -54,7 +54,7 @@ const showWelcome = computed(() => {
     </div>
     <div v-else class="content">
       <draggable
-        :list="projects.todoList"
+        :list="projectStore.todoList"
         item-key="id"
         chosenClass="chosen-class"
         dragClass="drag-class"
@@ -71,13 +71,17 @@ const showWelcome = computed(() => {
           <item-component :node="element" />
         </template>
       </draggable>
-      <div class="show-button" v-if="projects.completedList.length > 0" @click="visible = !visible">
+      <div
+        class="show-button"
+        v-if="projectStore.completedList.length > 0"
+        @click="visible = !visible"
+      >
         <Icon :icon="visible ? 'solar:alt-arrow-down-bold' : 'solar:alt-arrow-right-bold'" />
-        已完成 {{ projects.completedList.length }}
+        已完成 {{ projectStore.completedList.length }}
       </div>
       <draggable
         v-if="visible"
-        :list="projects.completedList"
+        :list="projectStore.completedList"
         item-key="id"
         chosenClass="chosen-class"
         dragClass="drag-class"

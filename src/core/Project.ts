@@ -4,6 +4,7 @@ import Node from './Node';
 import { v4 } from 'uuid';
 import { faker } from '@faker-js/faker';
 import Edge from '@/core/Edge';
+import { getDaysBetweenDates, useTimer } from '@/stores/timer';
 
 export default class Project {
   id: ID;
@@ -218,5 +219,51 @@ export default class Project {
       return node.x + node.width <= target.x;
     });
     return leftAvailable && rightAvailable;
+  }
+
+  private getRightNeighborNodes(node: Node) {
+    return Array.from(this.outMap.get(node.id)).map((edge) => this.nodeMap.get(edge.target));
+  }
+
+  private getLeftNeighborNodes(node: Node) {
+    return Array.from(this.inMap.get(node.id)).map((edge) => this.nodeMap.get(edge.source));
+  }
+
+  private moveNodeDownToNextSpace(node: Node) {
+    node.moveDown();
+    while (this.collides(node).length !== 0) {
+      node.moveDown();
+    }
+  }
+
+  private moveRightWithRelationNode(node: Node) {
+    const rightNodes = this.getRightNeighborNodes(node).filter(
+      (rightNode) => rightNode.x - node.x === node.width
+    );
+    rightNodes.forEach((rightNode) => {
+      this.moveRightWithRelationNode(rightNode);
+    });
+    node.moveRight();
+    this.collides(node).forEach((collideNode) => {
+      while (node.cross(collideNode)) {
+        this.moveNodeDownToNextSpace(collideNode);
+      }
+    });
+  }
+
+  /**
+   * 每日更新
+   */
+  public dailyUpdate() {
+    const deltaIndex = getDaysBetweenDates(useTimer().timestamp, this.createTime);
+    let nodes = Array.from(this.nodeMap.values());
+    do {
+      nodes = nodes
+        .filter((node) => !node.completed)
+        .filter((node) => node.x + node.width <= deltaIndex);
+      nodes.forEach((node) => {
+        this.moveRightWithRelationNode(node);
+      });
+    } while (nodes.length > 0);
   }
 }
