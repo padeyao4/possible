@@ -9,19 +9,19 @@ const settings = useSettings();
 const { node } = props;
 
 const translateX = computed(() => {
-  return props.node.x * settings.unitWidth + settings.offsetCardX;
+  return node.x * settings.unitWidth + settings.offsetCardX;
 });
 
 const translateY = computed(() => {
-  return props.node.y * settings.unitHeight + settings.offsetCardY;
+  return node.y * settings.unitHeight + settings.offsetCardY;
 });
 
 const width = computed(() => {
-  return props.node.width * settings.unitWidth - settings.offsetCardX * 2;
+  return node.width * settings.unitWidth - settings.offsetCardX * 2;
 });
 
 const height = computed(() => {
-  return props.node.height * settings.unitHeight - settings.offsetCardY * 2;
+  return node.height * settings.unitHeight - settings.offsetCardY * 2;
 });
 
 const backgroundColor = computed(() => {
@@ -32,7 +32,7 @@ const taskName = computed(() => {
   return node.name.trim() === '' ? '未命名' : node.name;
 });
 
-const lienCount = computed(() => {
+const lineCount = computed(() => {
   return Math.floor(height.value / 20);
 });
 </script>
@@ -220,7 +220,7 @@ const lienCount = computed(() => {
     text-align: center;
     word-wrap: break-word;
     word-break: break-all;
-    -webkit-line-clamp: v-bind(lienCount);
+    -webkit-line-clamp: v-bind(lineCount);
     -webkit-box-orient: vertical;
   }
 }
