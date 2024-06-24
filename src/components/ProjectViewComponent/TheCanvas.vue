@@ -22,7 +22,7 @@ const project = projectStore.getCurrentProject();
 
 onMounted(() => {
   canvas.set(svg.value);
-  const register = new Register(svg.value, project);
+  const register = new Register(svg.value);
   register.addBehaviors(
     DefaultBehavior,
     DragCanvas,
