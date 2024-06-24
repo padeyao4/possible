@@ -10,7 +10,9 @@ export const BusEvents = {
   'editor:open': Symbol(),
   'editor:close': Symbol(),
   // 账号登录成功后发出
-  'account:login:success': Symbol(),
+  'login:success': Symbol(),
+  'login:failed': Symbol(),
+
   'error:message': Symbol(),
   'project:push': Symbol(),
   'project:fetch': Symbol(),
@@ -19,23 +21,25 @@ export const BusEvents = {
   'project:daily:update': Symbol(),
   'project:push:success': Symbol(),
   'project:push:failed': Symbol(),
-  // 登录失败
-  'account:login:failed': Symbol(),
-  'edge:created': Symbol(),
-  'node:dragend': Symbol(),
-  'node:resized': Symbol(),
+  'project:updated': Symbol(),
+  'project:deleted': Symbol(),
+  'project:created': Symbol(),
+
   'node:created': Symbol(),
   'node:updated': Symbol(),
   'node:deleted': Symbol(),
-  'edge:deleted': Symbol()
+  'edge:deleted': Symbol(),
+  'edge:created': Symbol(),
+  'time:updated': Symbol()
 };
 
 export const dataChangeEvents = new Set([
   BusEvents['node:created'],
   BusEvents['node:updated'],
   BusEvents['node:deleted'],
-  BusEvents['node:dragend'],
-  BusEvents['node:resized'],
   BusEvents['edge:created'],
-  BusEvents['edge:deleted']
+  BusEvents['edge:deleted'],
+  BusEvents['project:updated'],
+  BusEvents['project:created'],
+  BusEvents['project:deleted']
 ]);

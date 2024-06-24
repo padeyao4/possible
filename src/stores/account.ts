@@ -39,9 +39,9 @@ export const useAccount = defineStore(
         });
         online.value = true;
         token.value = response.data.payload;
-        emitter.emit(BusEvents['account:login:success']);
+        emitter.emit(BusEvents['login:success']);
       } catch (e) {
-        emitter.emit(BusEvents['account:login:failed'], e);
+        emitter.emit(BusEvents['login:failed'], e);
       } finally {
         loginLoading.value = false;
       }

@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { currentProject } from '@/service/project.service';
-import { useProjectStore } from '@/stores/project';
 import { useTimer } from '@/stores/timer';
 import { ref } from 'vue';
 import { Icon } from '@iconify/vue';
-import type Project from '@/core/Project';
 
 const project = currentProject();
 const timer = useTimer();
-const { setOffsetByDate } = useProjectStore();
 
 function handleBackHome() {
   project.offset.x = 0;
@@ -16,7 +13,7 @@ function handleBackHome() {
 }
 
 function handleToday() {
-  setOffsetByDate(<Project>project, timer.timestamp);
+  project.setOffsetIndex(timer.timestamp);
 }
 
 function handleTest() {
@@ -36,7 +33,7 @@ const dateInputValue = defineModel();
 function handleDateChange() {
   const date = dateInputValue.value as string;
   if (date !== '' && date !== null) {
-    setOffsetByDate(<Project>project, date);
+    project.setOffsetIndex(date);
   }
 }
 </script>

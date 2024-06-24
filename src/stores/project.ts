@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia';
 import { computed, reactive, ref } from 'vue';
 import { useRoute } from './route';
-import { useSettings } from './settings';
-import { getDaysBetweenDates, getIndexByDate } from './timer';
+import { getIndexByDate } from './timer';
 import Project from '@/core/Project';
 import Node from '@/core/Node';
 import type { ID } from '@/core/types';
@@ -139,11 +138,6 @@ export const useProjectStore = defineStore('projects', () => {
     nodeMap.delete(nodeId);
   }
 
-  function setOffsetByDate(project: Project, date: Date | string | number) {
-    const settings = useSettings();
-    project.offset.x = getDaysBetweenDates(project.createTime, new Date(date)) * settings.unitWidth;
-  }
-
   function addEdge(project: Project, node1: Partial<Node>, node2: Partial<Node>, id?: ID): void {
     const { edgeMap, inMap, outMap } = project;
     const edge = new Edge(node1.id, node2.id, id);
@@ -251,7 +245,6 @@ export const useProjectStore = defineStore('projects', () => {
     addEdge,
     removeEdge,
     deserialize,
-    setOffsetByDate,
     getCurrentProject,
     faker,
     fetch,

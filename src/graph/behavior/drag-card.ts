@@ -50,7 +50,7 @@ export class DragCard extends BaseBehavior {
         node.x = this.oldNode.x;
         node.y = this.oldNode.y;
       } else {
-        emitter.emit(BusEvents['node:dragend']);
+        emitter.emit(BusEvents['node:updated']);
       }
       this.mouseStyle.unlock();
       this.toggleMouseOver(e);

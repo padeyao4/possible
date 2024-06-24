@@ -1,46 +1,51 @@
 <script setup lang="ts">
 import GithubCorner from '@/components/other/GithubCorner.vue';
 import emitter, { BusEvents, dataChangeEvents } from '@/utils/emitter';
-import { onBeforeUnmount, onMounted } from 'vue';
+import { onBeforeMount, onBeforeUnmount } from 'vue';
 import { useAccount } from '@/stores/account';
 import { useProjectStore } from '@/stores/project';
 import { useDebounceFn } from '@vueuse/core';
 import { useScheduler, useUpdateDate } from '@/service';
+import { useCounter } from '@/stores/counter';
 
 const account = useAccount();
 const projectStore = useProjectStore();
+const counter = useCounter();
 useScheduler();
 useUpdateDate();
 
-onMounted(() => {
+onBeforeMount(() => {
   const debounceDataPushFnc = useDebounceFn(() => {
     console.info('data push', new Date());
     projectStore.push();
   }, 1000);
 
-  emitter.on(BusEvents['account:login:success'], async () => {
-    console.info('account login success and start to fetch user info');
+  emitter.on(BusEvents['login:success'], async () => {
+    console.info('login success');
     await account.fetchUser();
+    console.info('start to fetch project');
     emitter.emit(BusEvents['project:fetch']);
   });
-  emitter.on(BusEvents['project:fetch'], () => {
+  emitter.on(BusEvents['project:fetch'], async () => {
     if (account.enable) {
-      projectStore.fetch();
+      await projectStore.fetch();
     }
+    projectStore.dailyUpdate();
+    counter.countTodos();
   });
-  emitter.on(BusEvents['project:load'], () => {
-    projectStore.load();
-  });
-  emitter.on(BusEvents['project:push'], () => {
-    if (account.enable) debounceDataPushFnc();
-  });
-  emitter.on(BusEvents['project:daily:update'], () => {
+  emitter.on(BusEvents['time:updated'], () => {
     console.info('daily update');
     projectStore.dailyUpdate();
+    emitter.emit(BusEvents['project:updated']);
   });
   emitter.on('*', (event: any) => {
-    if (dataChangeEvents.has(event) && account.enable) {
-      debounceDataPushFnc();
+    if (dataChangeEvents.has(event)) {
+      console.info('data change', event);
+      counter.countTodos();
+      if (account.enable) {
+        debounceDataPushFnc();
+      }
+      counter.countTodos();
     }
   });
 
@@ -48,9 +53,6 @@ onMounted(() => {
   if (account.enable) {
     account.fetchUser().then(() => emitter.emit(BusEvents['project:fetch']));
   }
-  // 更新项目
-  emitter.emit(BusEvents['project:daily:update']);
-  emitter.emit(BusEvents['project:push']);
 });
 
 onBeforeUnmount(() => {

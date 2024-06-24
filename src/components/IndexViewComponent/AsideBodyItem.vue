@@ -5,6 +5,7 @@ import { useRoute } from '@/stores/route';
 import { computed, ref } from 'vue';
 import type Project from '@/core/Project';
 import { Icon } from '@iconify/vue';
+import emitter, { BusEvents } from '@/utils/emitter';
 
 const props = defineProps<{ project: Project }>();
 const { project } = props;
@@ -27,7 +28,7 @@ function handleEdit() {
   project.editable = true;
 }
 
-function handleDelete(e: Event) {
+function handleClickDelete(e: Event) {
   visible.value = true;
   e.stopPropagation();
 }
@@ -39,6 +40,12 @@ function okCallback() {
   }
   removeProject(project.id);
   visible.value = false;
+  emitter.emit(BusEvents['project:deleted']);
+}
+
+function handleUpdateEnd() {
+  project.editable = false;
+  emitter.emit(BusEvents['project:updated']);
 }
 
 const projectName = computed(() => {
@@ -58,8 +65,8 @@ const isActive = computed(() => {
       v-model="project.name"
       class="side-list-item project-item"
       :data-active="isActive"
-      @blur="project.editable = false"
-      @keydown.enter="project.editable = false"
+      @blur="handleUpdateEnd"
+      @keydown.enter="handleUpdateEnd"
       :ref="handleInputRef"
     />
     <div
@@ -72,7 +79,7 @@ const isActive = computed(() => {
       <div class="info">{{ projectName }}</div>
       <div class="operation" :data-project-id="project.id">
         <Icon icon="iconoir:edit-pencil" @click="handleEdit" />
-        <Icon icon="iconoir:trash" @click="handleDelete" />
+        <Icon icon="iconoir:trash" @click="handleClickDelete" />
         <Icon icon="iconoir:menu" class="move" />
       </div>
     </div>

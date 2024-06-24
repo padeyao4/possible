@@ -5,6 +5,7 @@ import { v4 } from 'uuid';
 import { faker } from '@faker-js/faker';
 import Edge from '@/core/Edge';
 import { getDaysBetweenDates, useTimer } from '@/stores/timer';
+import { useSettings } from '@/stores/settings';
 
 export default class Project {
   id: ID;
@@ -265,5 +266,13 @@ export default class Project {
         this.moveRightWithRelationNode(node);
       });
     } while (nodes.length > 0);
+  }
+
+  /**
+   * 根据日期修改offset x
+   * @param date
+   */
+  public setOffsetIndex(date: any) {
+    this.offset.x = getDaysBetweenDates(this.createTime, date) * useSettings().unitWidth;
   }
 }

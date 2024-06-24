@@ -23,7 +23,7 @@ async function handleLogin() {
 const loginMessage = ref();
 
 onMounted(() => {
-  emitter.on(BusEvents['account:login:failed'], (error: any) => {
+  emitter.on(BusEvents['login:failed'], (error: any) => {
     loginMessage.value = error.message;
   });
 });

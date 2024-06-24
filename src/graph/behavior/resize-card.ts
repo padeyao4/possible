@@ -49,7 +49,7 @@ export class ResizeCard extends BaseBehavior {
         node.height = Math.round(node.height);
         node.x = Math.round(node.x);
         node.y = Math.round(node.y);
-        emitter.emit(BusEvents['node:resized']);
+        emitter.emit(BusEvents['node:updated']);
       } else {
         node.width = this.oldNode.width;
         node.height = this.oldNode.height;
