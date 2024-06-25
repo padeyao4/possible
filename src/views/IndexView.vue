@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import TheSide from '@/components/IndexViewComponent/TheSide.vue'
-import TheSeparation from '@/components/common/TheSeparation.vue'
-import { useSettings } from '@/stores/settings'
-import { computed } from 'vue'
+import TheSide from '@/components/IndexViewComponent/TheSide.vue';
+import TheSeparation from '@/components/common/TheSeparation.vue';
+import { useSettings } from '@/stores/settings';
+import { computed } from 'vue';
 
-const settings = useSettings()
+const settings = useSettings();
 
-const width = computed(() => settings.sideWidth + 'px')
+const width = computed(() => settings.sideWidth + 'px');
 </script>
 
 <template>
@@ -22,8 +22,6 @@ const width = computed(() => settings.sideWidth + 'px')
   position: relative;
   display: flex;
   flex-direction: row;
-  width: 100vw;
-  height: 100vh;
   background-color: var(--background-bottom-color);
 }
 
@@ -35,6 +33,7 @@ const width = computed(() => settings.sideWidth + 'px')
   width: calc(100vw - v-bind(width));
   overflow: hidden;
   background-color: var(--background-middle-color);
+  border-top: 1px solid #00000020;
   border-left: 1px solid #00000020;
   border-radius: 8px 0 0 0;
 }

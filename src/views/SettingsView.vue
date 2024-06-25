@@ -21,8 +21,6 @@ import { Icon } from '@iconify/vue';
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100vw;
-  height: 100vh;
   background-color: var(--background-bottom-color);
 
   header {
@@ -30,9 +28,9 @@ import { Icon } from '@iconify/vue';
     align-items: center;
     width: 100%;
     height: 64px;
-    margin-top: 12px;
     font-size: 24px;
     border-bottom: var(--border-default-style);
+    -webkit-app-region: drag;
 
     .back-button {
       display: flex;
@@ -42,6 +40,7 @@ import { Icon } from '@iconify/vue';
       height: 40px;
       margin: 8px;
       padding: 4px;
+      -webkit-app-region: no-drag;
 
       &:hover {
         background-color: var(--background-top-color);

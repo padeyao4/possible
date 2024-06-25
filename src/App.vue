@@ -63,8 +63,20 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <router-view :key="$route.fullPath" />
-  <github-corner />
+  <div class="title-bar"></div>
+  <router-view :key="$route.fullPath" class="container" />
 </template>
 
-<style scoped></style>
+<style scoped>
+.title-bar {
+  width: 100%;
+  height: 35px;
+  background-color: var(--background-bottom-color);
+  user-select: none;
+  -webkit-app-region: drag;
+}
+
+.container {
+  height: calc(100vh - 35px);
+}
+</style>
