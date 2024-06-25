@@ -30,3 +30,4 @@ coverage
 *.tsbuildinfo
 dist/
 dist-electron/
+release/

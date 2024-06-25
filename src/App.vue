@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import GithubCorner from '@/components/other/GithubCorner.vue';
 import emitter, { BusEvents, dataChangeEvents } from '@/utils/emitter';
 import { onBeforeUnmount } from 'vue';
 import { useAccount } from '@/stores/account';

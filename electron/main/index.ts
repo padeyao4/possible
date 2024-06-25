@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain, Menu } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, Menu, globalShortcut } from 'electron';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -53,6 +53,7 @@ async function createWindow() {
     titleBarStyle: 'hidden',
     width: 1200,
     height: 800,
+    minWidth: 620,
     titleBarOverlay: {
       color: 'rgba(0,0,0,0)',
       height: 35,
@@ -91,7 +92,14 @@ async function createWindow() {
   // win.webContents.on('will-navigate', (event, url) => { }) #344
 }
 
-app.whenReady().then(createWindow);
+app
+  .whenReady()
+  .then(() => {
+    globalShortcut.register('Ctrl+Alt+I', () => {
+      win.webContents.openDevTools();
+    });
+  })
+  .then(createWindow);
 
 app.on('window-all-closed', () => {
   win = null;
@@ -111,7 +119,7 @@ app.on('activate', () => {
   if (allWindows.length) {
     allWindows[0].focus();
   } else {
-    createWindow();
+    createWindow().then();
   }
 });
 

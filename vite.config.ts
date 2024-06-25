@@ -78,7 +78,7 @@ export default defineConfig(({ command }) => {
         };
       })(),
     clearScreen: false,
-    base: '/',
+    base: './',
     build: {
       chunkSizeWarningLimit: 10000
     }
