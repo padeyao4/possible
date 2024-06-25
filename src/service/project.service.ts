@@ -55,7 +55,7 @@ export function moveRight(project: Project, node: Node) {
   rightNodes.forEach((rightNode) => {
     moveRight(project, rightNode);
   });
-  node.x += 1;
+  node.moveRight();
   project.collides(node).forEach((collideNode) => {
     while (isCross(node, collideNode)) {
       moveDown(project, collideNode);
@@ -91,6 +91,21 @@ export function tryMoveUpWhole(project: Project, node: Node) {
   if (project.collides(node).length !== 0) {
     node.y += 1;
   }
+}
+
+export function appendNode(project: Project, node: Node) {
+  moveRight(project, node);
+  node.moveLeft();
+  const newNode = new Node();
+  newNode.x = node.x + 1;
+  newNode.y = node.y;
+  project.addNode(newNode);
+  const { outMap } = project;
+  outMap.get(node.id).forEach((edge) => {
+    project.addEdge(newNode.id, edge.target);
+    project.removeEdge(edge.id);
+  });
+  project.addEdge(node.id, newNode.id);
 }
 
 export function tryMoveDownWhole(project: Project, node: Node) {

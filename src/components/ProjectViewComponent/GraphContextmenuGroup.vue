@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import emitter, { BusEvents } from '@/utils/emitter';
 import {
+  appendNode,
   moveDown,
   moveLeft,
   moveRight,
@@ -43,7 +44,7 @@ function handleAppendNode() {
   const el = event.value.target as Element;
   const key = el.getAttribute('data-key');
   const node = project.value.nodeMap.get(key);
-  project.value.addNode(node);
+  appendNode(project.value, node);
   visible.value = false;
   emitter.emit(BusEvents['node:created']);
 }

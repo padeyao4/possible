@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import TodayView from '@/views/TodayView.vue';
 import ProjectView from '@/views/ProjectView.vue';
 import BacklogView from '@/views/BacklogView.vue';
