@@ -1,9 +1,8 @@
-import { app, BrowserWindow, shell, ipcMain, Menu, globalShortcut } from 'electron';
+import { app, BrowserWindow, globalShortcut, ipcMain, Menu, shell, Tray } from 'electron';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import os from 'node:os';
-import electron from 'vite-plugin-electron/simple';
 
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -49,7 +48,7 @@ Menu.setApplicationMenu(null);
 async function createWindow() {
   win = new BrowserWindow({
     title: 'Main window',
-    icon: path.join(process.env.VITE_PUBLIC, 'favicon.ico'),
+    icon: path.join(process.env.VITE_PUBLIC, 'icon.png'),
     titleBarStyle: 'hidden',
     width: 1200,
     height: 800,
@@ -92,14 +91,48 @@ async function createWindow() {
   // win.webContents.on('will-navigate', (event, url) => { }) #344
 }
 
+let tray = null;
+
 app
   .whenReady()
   .then(() => {
-    globalShortcut.register('Ctrl+Alt+I', () => {
+    globalShortcut.register('Ctrl+Shift+I', () => {
       win.webContents.openDevTools();
     });
   })
-  .then(createWindow);
+  .then(createWindow)
+  .then(() => {
+    win.on('close', (e) => {
+      e.preventDefault();
+      win?.hide();
+    });
+  })
+  .then(() => {
+    const icon = path.join(process.env.VITE_PUBLIC, '32x32.png');
+    tray = new Tray(icon);
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: '打开',
+        click: () => {
+          if (win.isMinimized()) win.restore();
+          if (!win.isVisible()) win.show();
+          win.focus();
+        }
+      },
+      {
+        label: '退出',
+        click: () => {
+          app.quit();
+        }
+      }
+    ]);
+    tray.setContextMenu(contextMenu);
+    tray.on('click', () => {
+      if (win.isMinimized()) win.restore();
+      if (!win.isVisible()) win.show();
+      win.focus();
+    });
+  });
 
 app.on('window-all-closed', () => {
   win = null;
