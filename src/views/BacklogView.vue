@@ -2,6 +2,7 @@
 import { computed, reactive, ref } from 'vue';
 import ECounterButton from '@/components/common/ECounterButton.vue';
 import EDraggable from '@/components/common/EDraggable.vue';
+import BacklogItem from '@/components/backlog/BacklogItem.vue';
 
 type TodoItem = {
   id: number;
@@ -47,15 +48,15 @@ const visible = ref(false);
   <div class="backlog">
     <div class="title">备忘录</div>
     <div class="todos">
-      <e-draggable v-model="todos">
+      <e-draggable v-model="todos" class="wrapper">
         <template #default="{ item }">
-          <div class="todo-item">{{ item.title + '111' }}</div>
+          <backlog-item :item="item" />
         </template>
       </e-draggable>
     </div>
     <e-counter-button :count="completed.length" v-model="visible" class="count-class" />
     <div class="completed" v-show="visible">
-      <div v-for="item in completed" class="todo-item">{{ item.title }}</div>
+      <backlog-item v-for="item in completed" :item="item" />
     </div>
   </div>
 </template>
@@ -76,17 +77,16 @@ const visible = ref(false);
 }
 .completed {
   margin: 0 24px;
-}
-.todo-item {
-  display: flex;
-  align-items: center;
-  height: 58px;
-  margin: 4px 0;
-  padding: 8px;
-  background-color: var(--background-middle-color);
-  border-radius: 4px;
+  & > * {
+    margin: 4px 0;
+  }
 }
 .count-class {
   margin: 0 24px;
+}
+.wrapper {
+  & > * {
+    margin: 4px 0;
+  }
 }
 </style>

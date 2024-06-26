@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useProjectStore } from '@/stores/project';
-import { computed, ref } from 'vue';
-import { Icon } from '@iconify/vue';
+import { computed } from 'vue';
 import Node from '@/core/Node';
+import CheckButton from '@/components/common/CheckButton.vue';
+import DraggableIcon from '@/components/icon/DraggableIcon.vue';
 
 const props = defineProps<{
   node: Node;
@@ -13,18 +14,9 @@ const { node } = props;
 const projectStore = useProjectStore();
 
 const project = projectStore.getProjectById(node.projectId);
-const over = ref(false);
 
 const textDecoration = computed(() => {
   return node.completed ? 'line-through' : 'none';
-});
-
-const iconStyle = computed(() => {
-  if (node.completed) {
-    return !over.value ? 'solar:check-circle-linear' : 'solar:record-line-duotone';
-  } else {
-    return over.value ? 'solar:check-circle-linear' : 'solar:record-line-duotone';
-  }
 });
 
 function onclick() {
@@ -43,7 +35,7 @@ const projectName = computed(() => {
 <template>
   <div class="item">
     <div class="icon" @click="onclick">
-      <Icon :icon="iconStyle" @mouseenter="over = true" @mouseleave="over = false" />
+      <check-button :checked="node.completed" />
     </div>
     <div class="content">
       <div class="one">
@@ -53,7 +45,7 @@ const projectName = computed(() => {
         {{ projectName }}
       </div>
     </div>
-    <Icon icon="iconoir:menu" class="operation move" />
+    <DraggableIcon class="operation move" />
   </div>
 </template>
 <style scoped>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useTimer } from '@/stores/timer';
 import { type ComputedRef, inject, ref } from 'vue';
-import { Icon } from '@iconify/vue';
 import type Project from '@/core/Project';
 import HomeIcon from '@/components/icon/HomeIcon.vue';
 import MapPointIcon from '@/components/icon/MapPointIcon.vue';

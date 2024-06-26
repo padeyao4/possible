@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "author": "guojian_k@qq.com",
-  "description": "A plan app",
+  "description": "...",
   "debug": {
     "env": {
       "VITE_DEV_SERVER_URL": "http://127.0.0.1:3344/"
