@@ -43,6 +43,10 @@ body {
   overscroll-behavior: none;
 }
 
+svg {
+  font-size: unset;
+}
+
 #app {
   font-weight: normal;
 }

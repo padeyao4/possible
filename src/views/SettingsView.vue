@@ -2,12 +2,13 @@
 import AccountInfo from '@/components/SettingsViewComponent/AccountInfo.vue';
 import SyncSettingsComponent from '@/components/SettingsViewComponent/SyncSettingsComponent.vue';
 import AboutComponent from '@/components/SettingsViewComponent/AboutComponent.vue';
-import { Icon } from '@iconify/vue';
+import { Back } from '@element-plus/icons-vue';
 </script>
 <template>
   <div class="settings">
     <header>
-      <Icon icon="solar:arrow-left-linear" class="back-button" @click="$router.back()" /> 设置
+      <el-icon @click="$router.back()" class="back-button" :size="30"><Back /></el-icon>
+      设置
     </header>
     <div class="container">
       <AccountInfo />

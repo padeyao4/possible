@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Icon } from '@iconify/vue';
+import { ArrowDownBold, ArrowRightBold } from '@element-plus/icons-vue';
 
 defineProps<{
   count: number;
@@ -10,7 +10,10 @@ const visible = defineModel();
 
 <template>
   <div class="counter-button" @click="visible = !visible">
-    <Icon :icon="visible ? 'solar:alt-arrow-down-bold' : 'solar:alt-arrow-right-bold'" />
+    <el-icon class="icon">
+      <ArrowDownBold v-if="visible" />
+      <ArrowRightBold v-else />
+    </el-icon>
     已完成 {{ count }}
   </div>
 </template>
@@ -27,5 +30,8 @@ const visible = defineModel();
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: 4px;
   user-select: none;
+}
+.icon {
+  margin-right: 4px;
 }
 </style>

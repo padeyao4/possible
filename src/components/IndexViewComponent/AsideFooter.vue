@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { handleNewProject } from '@/service/project.service';
 import { useNotify } from '@/stores/notity';
-import { Icon } from '@iconify/vue/dist/iconify.js';
+import SettingsIcon from '@/components/icon/SettingsIcon.vue';
+import { Plus } from '@element-plus/icons-vue';
 
 const notify = useNotify();
 </script>
@@ -9,12 +10,12 @@ const notify = useNotify();
 <template>
   <div id="aside-footer">
     <div class="side-list-item add" data-hover @click="handleNewProject">
-      <Icon icon="solar:add-square-broken" class="side-icon" />
+      <el-icon class="side-icon" :size="20"><Plus /></el-icon>
       <div class="side-item-text">创建项目</div>
     </div>
     <div class="icon-button">
       <div class="side-list-item icon-warp" @click="$router.push({ name: 'settings' })">
-        <Icon icon="solar:settings-broken" class="settings-icon" />
+        <settings-icon class="settings-icon" />
         <div class="notify" v-show="notify.hasNotify"></div>
       </div>
     </div>

@@ -24,11 +24,13 @@
     "deploy": "pnpm gh-pages -d dist -b page"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
     "@faker-js/faker": "^8.4.1",
     "@vueuse/core": "^10.11.0",
     "@vueuse/router": "^10.11.0",
     "axios": "^1.7.2",
     "default-passive-events": "^2.0.0",
+    "element-plus": "^2.7.6",
     "loglevel": "^1.9.1",
     "mitt": "^3.0.1",
     "pinia": "^2.1.7",
@@ -62,6 +64,8 @@
     "prettier-plugin-style-order": "^0.2.2",
     "stylelint": "^16.6.1",
     "typescript": "~5.3.3",
+    "unplugin-auto-import": "^0.17.6",
+    "unplugin-vue-components": "^0.27.2",
     "vite": "^5.3.1",
     "vite-plugin-electron": "^0.28.7",
     "vite-plugin-electron-renderer": "^0.14.5",
