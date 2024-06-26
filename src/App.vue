@@ -6,6 +6,7 @@ import { useProjectStore } from '@/stores/project';
 import { useDebounceFn } from '@vueuse/core';
 import { useScheduler, useUpdateDate } from '@/service';
 import { useCounter } from '@/stores/counter';
+import SystemTitlebar from '@/components/SystemTitlebar.vue';
 
 const account = useAccount();
 const store = useProjectStore();
@@ -62,20 +63,12 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="title-bar"></div>
+  <system-titlebar />
   <router-view :key="$route.fullPath" class="container" />
 </template>
 
 <style scoped>
-.title-bar {
-  width: 100%;
-  height: 35px;
-  background-color: var(--background-bottom-color);
-  user-select: none;
-  -webkit-app-region: drag;
-}
-
 .container {
-  height: calc(100vh - 35px);
+  height: calc(100vh);
 }
 </style>
