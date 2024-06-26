@@ -3,6 +3,11 @@ import { useTimer } from '@/stores/timer';
 import { type ComputedRef, inject, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import type Project from '@/core/Project';
+import HomeIcon from '@/components/icon/HomeIcon.vue';
+import MapPointIcon from '@/components/icon/MapPointIcon.vue';
+import TestTubeIcon from '@/components/icon/TestTubeIcon.vue';
+import CalendarSearchIcon from '@/components/icon/CalendarSearchIcon.vue';
+import ArrowRightIcon from '@/components/icon/ArrowRightIcon.vue';
 
 const project = inject<ComputedRef<Project>>('project');
 const timer = useTimer();
@@ -40,16 +45,11 @@ function handleDateChange() {
 
 <template>
   <div class="the-footer">
-    <Icon icon="solar:home-2-broken" @click="handleBackHome" />
-    <Icon icon="solar:map-point-broken" @click="handleToday" />
-    <Icon icon="solar:test-tube-broken" @click="handleTest" />
+    <HomeIcon @click="handleBackHome" />
+    <MapPointIcon @click="handleToday" />
+    <TestTubeIcon @click="handleTest" />
     <div>
-      <Icon
-        icon="solar:calendar-search-broken"
-        for="calendar-input"
-        class="calendar-icon"
-        @click="handleCalendar"
-      />
+      <CalendarSearchIcon for="calendar-input" class="calendar-icon" @click="handleCalendar" />
       <input
         type="date"
         v-model="dateInputValue"
@@ -60,7 +60,7 @@ function handleDateChange() {
         @change="handleDateChange"
       />
     </div>
-    <Icon icon="solar:round-alt-arrow-right-broken" @click="handleMoveRight" />
+    <ArrowRightIcon @click="handleMoveRight" />
   </div>
 </template>
 
