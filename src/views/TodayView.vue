@@ -5,7 +5,7 @@ import { useProjectStore } from '@/stores/project';
 import { showWeekAndLocalDate, useTimer } from '@/stores/timer';
 import { computed, ref } from 'vue';
 import draggable from 'vuedraggable';
-import { Icon } from '@iconify/vue';
+import ECounterButton from '@/components/common/ECounterButton.vue';
 
 const visible = ref(false);
 
@@ -64,21 +64,18 @@ const showWelcome = computed(() => {
         animation="300"
         @end="ondragend"
         @start="ondragstart"
-        class="todo-class"
+        class="wrapper-class"
         @update="onupdateTodoList"
       >
         <template #item="{ element }">
           <item-component :node="element" />
         </template>
       </draggable>
-      <div
-        class="show-button"
-        v-if="projectStore.completedList.length > 0"
-        @click="visible = !visible"
-      >
-        <Icon :icon="visible ? 'solar:alt-arrow-down-bold' : 'solar:alt-arrow-right-bold'" />
-        已完成 {{ projectStore.completedList.length }}
-      </div>
+      <e-counter-button
+        :count="projectStore.completedList.length"
+        v-model="visible"
+        class="count-class"
+      />
       <draggable
         v-if="visible"
         :list="projectStore.completedList"
@@ -91,7 +88,7 @@ const showWelcome = computed(() => {
         animation="300"
         @end="ondragend"
         @start="ondragstart"
-        class="todo-class"
+        class="wrapper-class"
         @update="onupdateCompletedList"
       >
         <template #item="{ element }">
@@ -141,18 +138,20 @@ const showWelcome = computed(() => {
   box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
 }
 
-.show-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: max-content;
-  height: 32px;
-  margin: 8px 0 8px 0;
-  padding: 0 8px;
-  text-align: center;
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 4px;
-  user-select: none;
+.wrapper-class {
+  & > * {
+    margin: 4px 0;
+  }
+  & > *:first-child {
+    margin-top: 0;
+  }
+  & > *:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.count-class {
+  margin: 4px 0;
 }
 
 .home-view {

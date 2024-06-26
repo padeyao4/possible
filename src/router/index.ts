@@ -3,7 +3,7 @@ import TodayView from '@/views/TodayView.vue';
 import ProjectView from '@/views/ProjectView.vue';
 import BacklogView from '@/views/BacklogView.vue';
 import ManageView from '@/views/ManageView.vue';
-import IndexView from '@/views/IndexView.vue';
+import LayoutView from '@/views/LayoutView.vue';
 import SettingsView from '@/views/SettingsView.vue';
 
 const router = createRouter({
@@ -11,7 +11,7 @@ const router = createRouter({
   routes: [
     {
       path: '/index',
-      component: IndexView,
+      component: LayoutView,
       children: [
         {
           path: 'today',

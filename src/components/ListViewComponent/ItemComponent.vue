@@ -62,7 +62,6 @@ const projectName = computed(() => {
   grid-row: 1;
   align-items: center;
   height: 56px;
-  margin-bottom: 4px;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 4px;
 
