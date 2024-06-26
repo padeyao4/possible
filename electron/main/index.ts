@@ -121,7 +121,7 @@ app
       {
         label: '退出',
         click: () => {
-          app.quit();
+          app.exit(0);
         }
       }
     ]);

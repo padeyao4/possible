@@ -11,7 +11,7 @@ const errorCode = {
 };
 
 export function axiosConfig() {
-  axios.defaults.baseURL = import.meta.env.VITE_BASE_PATH ?? '/';
+  // axios.defaults.baseURL = import.meta.env.VITE_BASE_PATH ?? '/';
 
   axios.interceptors.response.use((config) => {
     // todo token 处理

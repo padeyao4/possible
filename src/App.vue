@@ -22,6 +22,7 @@ const debounceDataPushFnc = useDebounceFn(() => {
 emitter.on(BusEvents['login:success'], async () => {
   console.info('login success');
   await account.fetchUser();
+  // todo
   console.info('start to fetch project');
   emitter.emit(BusEvents['project:fetch']);
 });
