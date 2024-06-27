@@ -65,11 +65,14 @@ onBeforeUnmount(() => {
 
 <template>
   <system-titlebar />
-  <router-view :key="$route.fullPath" class="container" />
+  <router-view :key="$route.fullPath" style="height: 100vh" />
 </template>
 
 <style scoped>
-.container {
-  height: calc(100vh);
+/**
+ * 滚动条样式
+ */
+:deep(.el-scrollbar__thumb) {
+  background: #000000;
 }
 </style>

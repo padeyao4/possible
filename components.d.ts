@@ -39,6 +39,7 @@ declare module 'vue' {
     EditorComponent: typeof import('./src/components/ProjectViewComponent/EditorComponent.vue')['default']
     EDraggable: typeof import('./src/components/common/EDraggable.vue')['default']
     ElIcon: typeof import('element-plus/es')['ElIcon']
+    ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
     EText: typeof import('./src/components/common/EText.vue')['default']
     GithubCorner: typeof import('./src/components/other/GithubCorner.vue')['default']
     GraphContextmenuGroup: typeof import('./src/components/ProjectViewComponent/GraphContextmenuGroup.vue')['default']
