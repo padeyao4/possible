@@ -53,6 +53,7 @@ async function createWindow() {
     width: 1200,
     height: 800,
     minWidth: 620,
+    minHeight: 450,
     titleBarOverlay: {
       color: 'rgba(0,0,0,0)',
       height: 35
