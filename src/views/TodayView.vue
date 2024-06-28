@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import ItemComponent from '@/components/ListViewComponent/ItemComponent.vue';
+import ItemComponent from '@/components/TodayList/ItemComponent.vue';
 import { handleNewProject } from '@/service/project.service';
 import { useProjectStore } from '@/stores/project';
 import { showWeekAndLocalDate, useTimer } from '@/stores/timer';
 import { computed, ref } from 'vue';
 import draggable from 'vuedraggable';
 import ECounterButton from '@/components/common/ECounterButton.vue';
+import EDraggable from '@/components/common/EDraggable.vue';
+import Node from '@/core/Node';
 
 const visible = ref(false);
 
@@ -15,23 +17,18 @@ const dateTime = computed(() => {
   return showWeekAndLocalDate(timer.localTimestamp);
 });
 
-function ondragend() {}
-
-function ondragstart() {}
-
 const projectStore = useProjectStore();
 
-function onupdateTodoList() {
-  projectStore.todoList.forEach((item, index) => {
-    item.sortedIndex = index;
-  });
+function onUpdate(n1: Node, n2: Node) {
+  console.log(n1, n2);
+  [n1.sortedIndex, n2.sortedIndex] = [n2.sortedIndex, n1.sortedIndex];
 }
 
-function onupdateCompletedList() {
-  projectStore.completedList.forEach((item, index) => {
-    item.sortedIndex = index;
-  });
-}
+// function onupdateCompletedList() {
+//   projectStore.completedList.forEach((item, index) => {
+//     item.sortedIndex = index;
+//   });
+// }
 
 const showWelcome = computed(() => {
   return projectStore.todoList.length === 0 && projectStore.completedList.length === 0;
@@ -53,48 +50,51 @@ const showWelcome = computed(() => {
       </div>
     </div>
     <el-scrollbar v-else class="content">
-      <draggable
+      <e-draggable
+        :update="onUpdate"
         :list="projectStore.todoList"
-        item-key="id"
-        chosenClass="chosen-class"
-        dragClass="drag-class"
-        handle=".move"
-        ghostClass="ghost-class"
-        :forceFallback="true"
-        animation="300"
-        @end="ondragend"
-        @start="ondragstart"
         class="wrapper-class"
-        @update="onupdateTodoList"
+        handle="data-move"
       >
-        <template #item="{ element }">
-          <item-component :node="element" />
+        <template #default="{ item }">
+          <item-component :node="item" />
         </template>
-      </draggable>
+      </e-draggable>
       <e-counter-button
         :count="projectStore.completedList.length"
         v-model="visible"
         class="count-class"
       />
-      <draggable
-        v-if="visible"
+      <!--      <draggable-->
+      <!--        v-if="visible"-->
+      <!--        :list="projectStore.completedList"-->
+      <!--        item-key="id"-->
+      <!--        chosenClass="chosen-class"-->
+      <!--        dragClass="drag-class"-->
+      <!--        handle=".move"-->
+      <!--        ghostClass="ghost-class"-->
+      <!--        :forceFallback="true"-->
+      <!--        animation="300"-->
+      <!--        @end="ondragend"-->
+      <!--        @start="ondragstart"-->
+      <!--        class="wrapper-class"-->
+      <!--        @update="onupdateCompletedList"-->
+      <!--      >-->
+      <!--        <template #item="{ element }">-->
+      <!--          <item-component :node="element" />-->
+      <!--        </template>-->
+      <!--      </draggable>-->
+      <e-draggable
+        v-show="visible"
+        :update="onUpdate"
         :list="projectStore.completedList"
-        item-key="id"
-        chosenClass="chosen-class"
-        dragClass="drag-class"
-        handle=".move"
-        ghostClass="ghost-class"
-        :forceFallback="true"
-        animation="300"
-        @end="ondragend"
-        @start="ondragstart"
         class="wrapper-class"
-        @update="onupdateCompletedList"
+        handle="data-move"
       >
-        <template #item="{ element }">
-          <item-component :node="element" />
+        <template #default="{ item }">
+          <item-component :node="item" />
         </template>
-      </draggable>
+      </e-draggable>
     </el-scrollbar>
   </div>
 </template>

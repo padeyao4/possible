@@ -26,21 +26,18 @@ export const useProjectStore = defineStore('projects', () => {
           return node.x <= curX && curX < node.x + node.width;
         });
       })
-      .flat();
-  });
-
-  const todoList = computed(() => {
-    return nodes.value
-      .filter((node) => node.completed === false)
+      .flat()
       .sort((a, b) => {
         return a.sortedIndex - b.sortedIndex;
       });
   });
 
+  const todoList = computed(() => {
+    return nodes.value.filter((node) => node.completed === false);
+  });
+
   const completedList = computed(() => {
-    return nodes.value
-      .filter((node) => node.completed === true)
-      .sort((a, b) => a.sortedIndex - b.sortedIndex);
+    return nodes.value.filter((node) => node.completed === true);
   });
 
   function faker() {

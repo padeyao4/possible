@@ -4,33 +4,27 @@ import { computed } from 'vue';
 import Node from '@/core/Node';
 import CheckButton from '@/components/common/CheckButton.vue';
 import DraggableIcon from '@/components/icon/DraggableIcon.vue';
+import { useCursor } from '@/stores/cursor';
 
-const props = defineProps<{
+const { node } = defineProps<{
   node: Node;
 }>();
-
-const { node } = props;
 
 const projectStore = useProjectStore();
 
 const project = projectStore.getProjectById(node.projectId);
 
-const textDecoration = computed(() => {
-  return node.completed ? 'line-through' : 'none';
-});
+const textDecoration = computed(() => (node.completed ? 'line-through' : 'none'));
 
 function onclick() {
   node.completed = !node.completed;
-  node.sortedIndex = -1;
 }
 
-const taskName = computed(() => {
-  return node.name.trim() === '' ? '未命名' : node.name;
-});
+const taskName = computed(() => (node.name.trim() === '' ? '未命名' : node.name));
 
-const projectName = computed(() => {
-  return project?.name?.trim?.() === '' ? '未命名' : project?.name;
-});
+const projectName = computed(() => (project?.name?.trim?.() === '' ? '未命名' : project?.name));
+
+const cursor = useCursor();
 </script>
 <template>
   <div class="item">
@@ -45,7 +39,12 @@ const projectName = computed(() => {
         {{ projectName }}
       </div>
     </div>
-    <DraggableIcon class="operation move" />
+    <DraggableIcon
+      class="operation"
+      data-move
+      @pointerenter="cursor.setWithUnlock('pointer')"
+      @pointerleave="cursor.setWithUnlock('default')"
+    />
   </div>
 </template>
 <style scoped>

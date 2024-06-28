@@ -25,7 +25,7 @@ export default class Node {
     this.detail = '';
     this.record = '';
     this.completed = false;
-    this.sortedIndex = -1;
+    this.sortedIndex = new Date().getTime();
     this.projectId = null;
   }
 

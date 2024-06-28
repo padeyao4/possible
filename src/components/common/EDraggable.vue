@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { reactive, ref } from 'vue';
+<script setup lang="ts" generic="T extends DraggableType">
+import { computed, reactive, ref } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import type { RectLike } from '@/graph/math';
 import type { ID } from '@/core/types';
@@ -12,16 +12,16 @@ import { useCursor } from '@/stores/cursor';
  * @param list 列表
  * @param handle 指定拖拽元素的属性,默认所有元素都可以拖拽
  */
-const { update, list, handle } = defineProps<{
+const props = defineProps<{
   update: (current: DraggableType, other: DraggableType) => void;
-  list: DraggableType[];
+  list: T[];
   handle?: string;
 }>();
 
-let mapper = new Map<ID, DraggableType>();
+const { update, handle } = props;
 
-list.forEach((item) => {
-  mapper.set(item.id, item);
+const mapper = computed(() => {
+  return new Map(props.list.map((item) => [item.id, item]));
 });
 
 const cursor = useCursor();
@@ -71,8 +71,8 @@ useEventListener(
 
         if (el) {
           update(
-            mapper.get(target.value.getAttribute('data-draggable')),
-            mapper.get(el.getAttribute('data-draggable'))
+            mapper.value.get(target.value.getAttribute('data-draggable')),
+            mapper.value.get(el.getAttribute('data-draggable'))
           );
         }
       }
@@ -95,7 +95,6 @@ useEventListener(
 function onPointerDown(e: PointerEvent) {
   const tmp = e.target as HTMLElement;
   if (tmp.hasAttribute('data-draggable')) {
-    console.log('handle', handle);
     if (handle && !tmp.hasAttribute(handle)) {
       return;
     }

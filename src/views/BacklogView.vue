@@ -6,48 +6,15 @@ import { Plus } from '@element-plus/icons-vue';
 import BDraggable from '@/components/common/EDraggable.vue';
 import type { DraggableType } from '@/components/types';
 
-const list = reactive<DraggableType[]>([
-  {
-    id: '1',
-    name: '吃饭',
+const list = reactive<DraggableType[]>([]);
+
+for (let i = 0; i < 10; i++) {
+  list.push({
+    id: i.toString(),
+    name: `备忘录${i}`,
     done: false
-  },
-  {
-    id: '2',
-    name: '吃饭1',
-    done: false
-  },
-  {
-    id: '3',
-    name: '吃饭2',
-    done: true
-  },
-  {
-    id: '4',
-    name: '吃饭3',
-    done: false
-  },
-  {
-    id: '5',
-    name: '吃饭',
-    done: false
-  },
-  {
-    id: '6',
-    name: '吃饭1',
-    done: false
-  },
-  {
-    id: '7',
-    name: '吃饭2',
-    done: true
-  },
-  {
-    id: '8',
-    name: '吃饭3',
-    done: false
-  }
-]);
+  });
+}
 
 const todos = computed(() => {
   return list.filter((todo) => !todo.done);
@@ -63,7 +30,7 @@ const visible = ref(false);
 <template>
   <div class="backlog">
     <div class="title">备忘录</div>
-    <el-scrollbar>
+    <el-scrollbar :always="false">
       <div class="content">
         <div class="todos">
           <b-draggable

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends Project">
 import EDialog from '@/components/common/EDialog.vue';
 import { useProjectStore } from '@/stores/project';
 import { computed, ref } from 'vue';
@@ -43,9 +43,7 @@ function handleUpdateEnd() {
   emitter.emit(BusEvents['project:updated']);
 }
 
-const isActive = computed(() => {
-  return id === project.id;
-});
+const active = computed(() => id === project.id);
 </script>
 
 <template>
@@ -54,7 +52,7 @@ const isActive = computed(() => {
       v-if="project.editable"
       v-model="project.name"
       class="side-list-item project-item"
-      :data-active="isActive"
+      :data-active="active"
       @blur="handleUpdateEnd"
       @keydown.enter="handleUpdateEnd"
       :ref="handleInputRef"
@@ -64,13 +62,13 @@ const isActive = computed(() => {
       @click="$router.push({ name: 'project', query: { id: project.id } })"
       class="side-list-item project-item"
       data-hover
-      :data-active="isActive"
+      :data-active="active"
     >
       <div class="info">{{ project.name ?? '未命名' }}</div>
       <div class="operation" :data-project-id="project.id">
         <Icon icon="iconoir:edit-pencil" @click="handleEdit" />
         <Icon icon="iconoir:trash" @click="handleClickDelete" />
-        <Icon icon="iconoir:menu" class="move" />
+        <Icon icon="iconoir:menu" class="move" data-side-move />
       </div>
     </div>
     <e-dialog
@@ -97,11 +95,6 @@ const isActive = computed(() => {
 .draggable-item {
   display: flex;
   width: 100%;
-  padding: 2px 8px;
-
-  &:first-child {
-    margin-top: 2px;
-  }
 }
 
 .slot-container {
@@ -130,8 +123,6 @@ const isActive = computed(() => {
 
 .project-item {
   position: relative;
-  /*  todo*/
-  z-index: 3;
   display: flex;
   align-items: center;
   width: 100%;

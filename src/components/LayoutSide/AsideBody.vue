@@ -1,94 +1,34 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import Draggable from 'vuedraggable/src/vuedraggable';
 import { useProjectStore } from '@/stores/project';
 import AsideBodyItem from '@/components/LayoutSide/AsideBodyItem.vue';
-import { useCursor } from '@/stores/cursor';
+import EDraggable from '@/components/common/EDraggable.vue';
+import type Project from '@/core/Project';
 
 const projectStore = useProjectStore();
-const draggableRef = ref<{ targetDomElement: Element }>();
 
-function onstart() {
-  draggableRef.value.targetDomElement.toggleAttribute('data-show', true);
-  const cursor = useCursor();
-  cursor.lock('move');
-  const els = document.getElementsByClassName('side-list-item');
-  for (let el of els) {
-    el.toggleAttribute('data-hover', false);
-  }
-}
-
-function onend(e: any) {
-  draggableRef.value.targetDomElement.toggleAttribute('data-show', false);
-  const cursor = useCursor();
-  cursor.unlock();
-  const els = document.getElementsByClassName('side-list-item');
-  for (let el of els) {
-    el.toggleAttribute('data-hover', true);
-  }
-  cursor.refresh(e.originalEvent);
-}
-
-function onupdate() {
-  projectStore.sortProjects.forEach((value, index) => {
-    value.sortIndex = index;
-  });
+function onUpdate(p1: Project, p2: Project) {
+  [p1.sortIndex, p2.sortIndex] = [p2.sortIndex, p1.sortIndex];
 }
 </script>
 <template>
   <el-scrollbar>
-    <draggable
+    <e-draggable
+      :update="onUpdate"
       :list="projectStore.sortProjects"
-      class="aside-body"
-      ref="draggableRef"
-      item-key="id"
-      chosenClass="chosen-class"
-      dragClass="drag-class"
-      handle=".move"
-      ghostClass="ghost-class"
-      :forceFallback="true"
-      animation="300"
-      @start="onstart"
-      @end="onend"
-      @update="onupdate"
+      handle="data-side-move"
+      class="item-layout"
     >
-      <template #item="{ element }">
-        <aside-body-item :project="element" :key="element.id" />
+      <template #default="{ item }">
+        <aside-body-item :project="item as Project" :key="item.id" />
       </template>
-    </draggable>
+    </e-draggable>
   </el-scrollbar>
 </template>
 
 <style scoped>
-.aside-body {
-  flex-direction: column;
-  width: 100%;
-  overflow-y: auto;
-
-  &[data-show]::before {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 2;
-    width: 100vw;
-    height: 100vh;
-    background-color: #b88230;
-    opacity: 0;
-    content: '';
+.item-layout {
+  & > * {
+    margin: 4px 8px;
   }
-}
-
-.ghost-class {
-  opacity: 0;
-}
-
-.drag-class {
-  background: #e5ebef;
-  border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
-}
-
-.grabbing * {
-  cursor: grabbing !important;
 }
 </style>

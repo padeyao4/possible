@@ -6,8 +6,9 @@ import { faker } from '@faker-js/faker';
 import Edge from '@/core/Edge';
 import { getDaysBetweenDates, useTimer } from '@/stores/timer';
 import { useSettings } from '@/stores/settings';
+import type { DraggableType } from '@/components/types';
 
-export default class Project {
+export default class Project implements DraggableType {
   id: ID;
   name: string;
   nodeMap: Map<ID, Node>;

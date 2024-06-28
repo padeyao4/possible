@@ -43,7 +43,7 @@ declare module 'vue' {
     GithubCorner: typeof import('./src/components/other/GithubCorner.vue')['default']
     GraphContextmenuGroup: typeof import('./src/components/ProjectViewComponent/GraphContextmenuGroup.vue')['default']
     HomeIcon: typeof import('./src/components/icon/HomeIcon.vue')['default']
-    ItemComponent: typeof import('./src/components/ListViewComponent/ItemComponent.vue')['default']
+    ItemComponent: typeof import('./src/components/TodayList/ItemComponent.vue')['default']
     LoginModel: typeof import('./src/components/SettingsViewComponent/LoginModel.vue')['default']
     MapPointIcon: typeof import('./src/components/icon/MapPointIcon.vue')['default']
     NotCheckIcon: typeof import('./src/components/icon/NotCheckIcon.vue')['default']
