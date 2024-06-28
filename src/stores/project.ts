@@ -6,7 +6,6 @@ import Node from '@/core/Node';
 import type { ID } from '@/core/types';
 import Edge from '@/core/Edge';
 import { StorageControllerApi } from '@/openapi';
-import { config } from '@/service/client';
 import emitter, { BusEvents } from '@/utils/emitter';
 
 export const useProjectStore = defineStore('projects', () => {
@@ -170,7 +169,7 @@ export const useProjectStore = defineStore('projects', () => {
   async function fetch() {
     try {
       fetchLoading.value = true;
-      const response = await new StorageControllerApi(config()).fetch();
+      const response = await new StorageControllerApi().fetch();
       const data = response.data.payload;
       deserialize(JSON.parse(data.content));
       dataVersion.value = data.id;
@@ -185,7 +184,7 @@ export const useProjectStore = defineStore('projects', () => {
   async function push() {
     try {
       pushLoading.value = true;
-      const response = await new StorageControllerApi(config()).push({
+      const response = await new StorageControllerApi().push({
         dataVersion: dataVersion.value,
         content: JSON.stringify(serialize()),
         uploadAt: new Date().toJSON()

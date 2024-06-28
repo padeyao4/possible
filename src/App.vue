@@ -7,6 +7,9 @@ import { useDebounceFn } from '@vueuse/core';
 import { useScheduler, useUpdateDate } from '@/service';
 import { useCounter } from '@/stores/counter';
 import SystemTitlebar from '@/components/SystemTitlebar.vue';
+import { axiosConfig } from '@/core/config';
+
+axiosConfig();
 
 const account = useAccount();
 const store = useProjectStore();

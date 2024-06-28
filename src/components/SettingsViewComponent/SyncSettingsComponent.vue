@@ -38,7 +38,7 @@ const notifyShow = computed(() => {
       <p v-show="notifyShow" class="error">同步数据失败,请检查网络配置</p>
     </template>
     <template #option>
-      <e-checkbox v-model="checked" :disabled="!account.online" />
+      <el-switch v-model="checked" size="large" inline-prompt active-text="开" inactive-text="关" />
     </template>
   </SettingsItem>
 </template>

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useAccount } from '@/stores/account';
 
 const errorCode = {
   ERR_NETWORK: '网络错误',
@@ -11,14 +12,13 @@ const errorCode = {
 };
 
 export function axiosConfig() {
-  // axios.defaults.baseURL = import.meta.env.VITE_BASE_PATH ?? '/';
+  axios.defaults.baseURL = import.meta.env.VITE_API_URL ?? '/';
 
-  axios.interceptors.response.use((config) => {
-    // todo token 处理
-    // const token = useAccount().token;
-    // if (token) {
-    //   config.headers['Token'] = token;
-    // }
+  axios.interceptors.request.use((config) => {
+    const token = useAccount().token;
+    if (token) {
+      config.headers['Token'] = token;
+    }
     return config;
   });
 

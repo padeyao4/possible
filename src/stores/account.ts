@@ -1,7 +1,6 @@
 import { AccountControllerApi, type User, UserControllerApi } from '@/openapi';
 import { defineStore } from 'pinia';
 import { computed, reactive, ref } from 'vue';
-import { config } from '@/service';
 import emitter, { BusEvents } from '@/utils/emitter';
 
 export const useAccount = defineStore(
@@ -19,7 +18,7 @@ export const useAccount = defineStore(
     async function fetchUser() {
       try {
         fetchUserLoading.value = true;
-        const response = await new UserControllerApi(config()).userInfo();
+        const response = await new UserControllerApi().userInfo();
         const remoteUser = response.data.payload;
         Object.assign(user, remoteUser);
       } catch (e) {
@@ -33,7 +32,7 @@ export const useAccount = defineStore(
     async function login(username: string, password: string) {
       try {
         loginLoading.value = true;
-        const response = await new AccountControllerApi(config()).login({
+        const response = await new AccountControllerApi().login({
           username,
           password
         });
@@ -51,7 +50,7 @@ export const useAccount = defineStore(
     async function logout() {
       try {
         logoutLoading.value = true;
-        await new AccountControllerApi(config()).logout();
+        await new AccountControllerApi().logout();
       } catch (e) {
         emitter.emit(BusEvents['error:message'], e);
       } finally {
