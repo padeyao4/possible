@@ -38,8 +38,7 @@
     "pinia-plugin-persistedstate": "^3.2.1",
     "uuid": "^9.0.1",
     "vue": "^3.4.30",
-    "vue-router": "^4.4.0",
-    "vuedraggable": "^4.1.0"
+    "vue-router": "^4.4.0"
   },
   "devDependencies": {
     "@iconify/vue": "^4.1.2",

@@ -4,7 +4,6 @@ import { handleNewProject } from '@/service/project.service';
 import { useProjectStore } from '@/stores/project';
 import { showWeekAndLocalDate, useTimer } from '@/stores/timer';
 import { computed, ref } from 'vue';
-import draggable from 'vuedraggable';
 import ECounterButton from '@/components/common/ECounterButton.vue';
 import EDraggable from '@/components/common/EDraggable.vue';
 import Node from '@/core/Node';
@@ -13,22 +12,13 @@ const visible = ref(false);
 
 const timer = useTimer();
 
-const dateTime = computed(() => {
-  return showWeekAndLocalDate(timer.localTimestamp);
-});
+const dateTime = computed(() => showWeekAndLocalDate(timer.localTimestamp));
 
 const projectStore = useProjectStore();
 
 function onUpdate(n1: Node, n2: Node) {
-  console.log(n1, n2);
   [n1.sortedIndex, n2.sortedIndex] = [n2.sortedIndex, n1.sortedIndex];
 }
-
-// function onupdateCompletedList() {
-//   projectStore.completedList.forEach((item, index) => {
-//     item.sortedIndex = index;
-//   });
-// }
 
 const showWelcome = computed(() => {
   return projectStore.todoList.length === 0 && projectStore.completedList.length === 0;
@@ -65,25 +55,6 @@ const showWelcome = computed(() => {
         v-model="visible"
         class="count-class"
       />
-      <!--      <draggable-->
-      <!--        v-if="visible"-->
-      <!--        :list="projectStore.completedList"-->
-      <!--        item-key="id"-->
-      <!--        chosenClass="chosen-class"-->
-      <!--        dragClass="drag-class"-->
-      <!--        handle=".move"-->
-      <!--        ghostClass="ghost-class"-->
-      <!--        :forceFallback="true"-->
-      <!--        animation="300"-->
-      <!--        @end="ondragend"-->
-      <!--        @start="ondragstart"-->
-      <!--        class="wrapper-class"-->
-      <!--        @update="onupdateCompletedList"-->
-      <!--      >-->
-      <!--        <template #item="{ element }">-->
-      <!--          <item-component :node="element" />-->
-      <!--        </template>-->
-      <!--      </draggable>-->
       <e-draggable
         v-show="visible"
         :update="onUpdate"
