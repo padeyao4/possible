@@ -9,6 +9,7 @@ import { useRoute } from 'vue-router';
 import router from '@/router';
 
 const { project } = defineProps<{ project: Project }>();
+const projectStore = useProjectStore();
 const { id } = useRoute().query;
 
 const visible = ref(false);
@@ -38,8 +39,14 @@ function okCallback() {
   emitter.emit(BusEvents['project:deleted']);
 }
 
+const len = computed(() => projectStore.sortProjects.length);
+
+const suffix = computed(() => (len.value === 0 ? '' : `(${len.value})`));
+
 function handleUpdateEnd() {
   project.editable = false;
+  const name = project.name.trim();
+  project.name = name === '' ? `无标题项目${suffix.value}` : name;
   emitter.emit(BusEvents['project:updated']);
 }
 

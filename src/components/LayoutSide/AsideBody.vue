@@ -28,7 +28,11 @@ function onUpdate(p1: Project, p2: Project) {
 <style scoped>
 .item-layout {
   & > * {
-    margin: 4px 8px;
+    margin: 0 4px 4px 5px;
+  }
+
+  & > *:first-child {
+    margin-top: 5px;
   }
 }
 </style>

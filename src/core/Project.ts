@@ -23,7 +23,7 @@ export default class Project implements DraggableType {
 
   public constructor() {
     this.id = v4();
-    this.name = undefined;
+    this.name = '';
     this.nodeMap = new Map();
     this.edgeMap = new Map();
     this.inMap = markRaw(new Map());
