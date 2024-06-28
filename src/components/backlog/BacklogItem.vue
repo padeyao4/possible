@@ -2,13 +2,16 @@
 import CheckButton from '@/components/common/CheckButton.vue';
 import { computed } from 'vue';
 import DraggableIcon from '@/components/icon/DraggableIcon.vue';
+import type { DraggableType } from '@/components/types';
 
 const { item } = defineProps<{
-  item: {
-    id: number;
-    title: string;
-    done: boolean;
-  };
+  item:
+    | {
+        id: number;
+        title: string;
+        done: boolean;
+      }
+    | DraggableType;
 }>();
 
 const textDecoration = computed(() => (item.done ? 'line-through' : 'none'));

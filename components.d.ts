@@ -32,7 +32,6 @@ declare module 'vue' {
     CheckIcon: typeof import('./src/components/icon/CheckIcon.vue')['default']
     CloseIconButton: typeof import('./src/components/common/CloseIconButton.vue')['default']
     ContextmenuComponent: typeof import('./src/components/ProjectViewComponent/ContextmenuComponent.vue')['default']
-    DragableIcon: typeof import('./src/components/icon/DragableIcon.vue')['default']
     DraggableIcon: typeof import('./src/components/icon/DraggableIcon.vue')['default']
     EButton: typeof import('./src/components/common/EButton.vue')['default']
     ECheckbox: typeof import('./src/components/common/ECheckbox.vue')['default']

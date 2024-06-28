@@ -30,6 +30,7 @@
 
 body {
   min-height: 100vh;
+  overflow: hidden;
   font-size: 15px;
   background: rgba(255, 255, 255, 0);
   transition:
@@ -152,6 +153,5 @@ svg {
   backdrop-filter: blur(5px);
 } */
 
-.drag-class{
-
+.drag-class {
 }

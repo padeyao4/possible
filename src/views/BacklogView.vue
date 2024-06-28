@@ -1,55 +1,50 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue';
 import ECounterButton from '@/components/common/ECounterButton.vue';
-import EDraggable from '@/components/common/EDraggable.vue';
 import BacklogItem from '@/components/backlog/BacklogItem.vue';
 import { Plus } from '@element-plus/icons-vue';
+import BDraggable from '@/components/common/BDraggable.vue';
+import type { DraggableType } from '@/components/types';
 
-type TodoItem = {
-  id: number;
-  title: string;
-  done: boolean;
-};
-
-const list = reactive<TodoItem[]>([
+const list = reactive<DraggableType[]>([
   {
-    id: 1,
-    title: '吃饭',
+    id: '1',
+    name: '吃饭',
     done: false
   },
   {
-    id: 2,
-    title: '吃饭1',
+    id: '2',
+    name: '吃饭1',
     done: false
   },
   {
-    id: 3,
-    title: '吃饭2',
+    id: '3',
+    name: '吃饭2',
     done: true
   },
   {
-    id: 4,
-    title: '吃饭3',
+    id: '4',
+    name: '吃饭3',
     done: false
   },
   {
-    id: 5,
-    title: '吃饭',
+    id: '5',
+    name: '吃饭',
     done: false
   },
   {
-    id: 6,
-    title: '吃饭1',
+    id: '6',
+    name: '吃饭1',
     done: false
   },
   {
-    id: 7,
-    title: '吃饭2',
+    id: '7',
+    name: '吃饭2',
     done: true
   },
   {
-    id: 8,
-    title: '吃饭3',
+    id: '8',
+    name: '吃饭3',
     done: false
   }
 ]);
@@ -71,11 +66,22 @@ const visible = ref(false);
     <el-scrollbar>
       <div class="content">
         <div class="todos">
-          <e-draggable v-model="todos" class="wrapper">
+          <b-draggable
+            :list="list"
+            class="wrapper"
+            :update="
+              (current, other) => {
+                const index = list.findIndex((item) => item.id === current.id);
+                const otherIndex = list.findIndex((item) => item.id === other.id);
+                list.splice(index, 1);
+                list.splice(otherIndex, 0, current);
+              }
+            "
+          >
             <template #default="{ item }">
               <backlog-item :item="item" />
             </template>
-          </e-draggable>
+          </b-draggable>
         </div>
         <e-counter-button :count="completed.length" v-model="visible" class="count-class" />
         <div class="completed" v-show="visible">

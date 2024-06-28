@@ -1,9 +1,23 @@
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue';
+import { reactive, ref } from 'vue';
 import { useEventListener } from '@vueuse/core';
+import type { RectLike } from '@/graph/math';
+import type { ID } from '@/core/types';
+import type { DraggableType } from '@/components/types';
 
-const list = defineModel();
-const refs = reactive<HTMLElement[]>([]);
+const { update, list } = defineProps<{
+  update: (current: DraggableType, other: DraggableType) => void;
+  list: DraggableType[];
+}>();
+
+let mapper = new Map<ID, DraggableType>();
+
+list.forEach((item) => {
+  mapper.set(item.id, item);
+});
+
+const data = defineModel<Map<ID, DraggableType>>();
+const refs = reactive<Map<ID, HTMLElement>>(new Map());
 
 const origin = reactive({ x: 0, y: 0 });
 const start = reactive({ x: 0, y: 0 });
@@ -12,64 +26,106 @@ const end = reactive({ x: 0, y: 0 });
 const target = ref<HTMLElement | null>();
 const clone = ref<HTMLElement | null>();
 
-function setRefs(e: any) {
-  console.dir(e);
-  if (e) {
-    const el = e as HTMLElement;
-    el.toggleAttribute('data-draggable', true);
-    refs.push(el);
+function setAttributeRecursively(element: Element, attributeName: string, attributeValue: string) {
+  element.setAttribute(attributeName, attributeValue);
+
+  for (let child of element.children) {
+    setAttributeRecursively(child, attributeName, attributeValue);
   }
 }
 
+function setRefs(e: any) {
+  if (e) {
+    const el = e as HTMLElement;
+    setAttributeRecursively(el, 'data-draggable', el.id);
+    refs.set(el.id, el);
+  }
+}
+
+function collide(r1: RectLike, x: number, y: number) {
+  return !(x < r1.x || x > r1.x + r1.width || y < r1.y || y > r1.y + r1.height);
+}
+
 useEventListener(
-  ['pointerdown', 'pointerup', 'pointermove', 'pointercancel'],
+  ['pointerup', 'pointermove', 'pointercancel'],
   (e: PointerEvent) => {
-    if (e.type === 'pointerdown') {
-      const el = e.target as HTMLElement;
-      if (el.getAttribute('data-draggable')) {
-        e.preventDefault();
-        start.x = e.clientX;
-        start.y = e.clientY;
-        end.x = e.clientX;
-        end.y = e.clientY;
-        const bound = el.getBoundingClientRect();
-        origin.x = bound.left;
-        origin.y = bound.top;
-
-        clone.value = el.cloneNode(true) as HTMLElement;
-        clone.value.style.position = 'absolute';
-        clone.value.style.top = `${bound.top}px`;
-        clone.value.style.left = `${bound.left}px`;
-        clone.value.style.width = `${bound.width}px`;
-        document.body.appendChild(clone.value);
-
-        el.style.opacity = '0';
-      }
-    }
-
     if (e.type === 'pointermove') {
       if (target.value && clone.value) {
         end.x = e.clientX;
         end.y = e.clientY;
         clone.value.style.top = `${origin.y + end.y - start.y}px`;
         clone.value.style.left = `${origin.x + end.x - start.x}px`;
+
+        const el = Array.from(refs.values())
+          .filter((el) => el.id !== target.value?.id)
+          .find((el) => collide(el.getBoundingClientRect(), e.clientX, e.clientY));
+
+        if (el) {
+          update(
+            mapper.get(target.value.getAttribute('data-draggable')),
+            mapper.get(el.getAttribute('data-draggable'))
+          );
+        }
       }
     }
 
     if (e.type === 'pointerup' || e.type === 'pointercancel') {
       if (target.value && clone.value) {
+        document.body.removeChild(clone.value);
+        target.value.style.opacity = '1';
         target.value = null;
         clone.value = null;
       }
     }
-  }
+  },
+  { passive: true }
 );
+
+function onPointerDown(e: PointerEvent) {
+  console.log('onPointerDown', e);
+  const tmp = e.target as HTMLElement;
+  if (tmp.hasAttribute('data-draggable')) {
+    console.log('onPointerDown2', e);
+    start.x = e.clientX;
+    start.y = e.clientY;
+    end.x = e.clientX;
+    end.y = e.clientY;
+    const el = refs.get(tmp.getAttribute('data-draggable'));
+    const bound = el.getBoundingClientRect();
+    origin.x = bound.left;
+    origin.y = bound.top;
+
+    clone.value = el.cloneNode(true) as HTMLElement;
+    clone.value.style.position = 'fixed';
+    clone.value.style.top = `${bound.top}px`;
+    clone.value.style.left = `${bound.left}px`;
+    clone.value.style.width = `${bound.width}px`;
+    document.body.appendChild(clone.value);
+
+    target.value = el;
+
+    el.style.opacity = '0';
+  }
+}
 </script>
 
 <template>
-  <div>
-    <slot :setRefs="setRefs"></slot>
+  <div class="b-draggable">
+    <div
+      v-for="item in list"
+      :key="item.id"
+      :id="item.id"
+      :ref="setRefs"
+      class="draggable-item"
+      @pointerdown="onPointerDown"
+    >
+      <slot name="default" :item="item" />
+    </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.b-draggable {
+  overflow: hidden;
+}
+</style>

@@ -1,3 +1,5 @@
+import type { ID } from '@/core/types';
+
 export type OptionType = {
   name?: string;
   group: {
@@ -7,4 +9,10 @@ export type OptionType = {
     shortcut?: string;
     children?: OptionType[];
   }[];
+};
+
+export type DraggableType = {
+  id: ID;
+  name: string;
+  [key: string]: any;
 };
