@@ -4,6 +4,7 @@ import { useEventListener } from '@vueuse/core';
 import type { RectLike } from '@/graph/math';
 import type { ID } from '@/core/types';
 import type { DraggableType } from '@/components/types';
+import { useCursor } from '@/stores/cursor';
 
 /**
  * props
@@ -22,6 +23,8 @@ let mapper = new Map<ID, DraggableType>();
 list.forEach((item) => {
   mapper.set(item.id, item);
 });
+
+const cursor = useCursor();
 
 const refs = reactive<Map<ID, HTMLElement>>(new Map());
 
@@ -81,6 +84,7 @@ useEventListener(
         target.value.style.opacity = '1';
         target.value = null;
         clone.value = null;
+        cursor.unlock();
       }
     }
   },
@@ -94,6 +98,7 @@ function onPointerDown(e: PointerEvent) {
     if (handle && !tmp.hasAttribute(handle)) {
       return;
     }
+    cursor.lock('move');
     start.x = e.clientX;
     start.y = e.clientY;
     end.x = e.clientX;
@@ -108,6 +113,7 @@ function onPointerDown(e: PointerEvent) {
     clone.value.style.top = `${bound.top}px`;
     clone.value.style.left = `${bound.left}px`;
     clone.value.style.width = `${bound.width}px`;
+    clone.value.style.boxShadow = '0 0 5px 2px rgba(0, 0, 0, 0.2)';
     document.body.appendChild(clone.value);
 
     target.value = el;
