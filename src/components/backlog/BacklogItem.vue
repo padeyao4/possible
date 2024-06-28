@@ -2,23 +2,34 @@
 import CheckButton from '@/components/common/CheckButton.vue';
 import { computed } from 'vue';
 import DraggableIcon from '@/components/icon/DraggableIcon.vue';
+import type { DraggableType } from '@/components/types';
+import { useCursor } from '@/stores/cursor';
 
 const { item } = defineProps<{
-  item: {
-    id: number;
-    title: string;
-    done: boolean;
-  };
+  item:
+    | {
+        id: number;
+        title: string;
+        done: boolean;
+      }
+    | DraggableType;
 }>();
 
 const textDecoration = computed(() => (item.done ? 'line-through' : 'none'));
+
+const cursor = useCursor();
 </script>
 
 <template>
   <div class="backlog-item">
     <check-button :checked="item.done" class="icon-button" />
     <div class="text">{{ item.title }}</div>
-    <draggable-icon class="draggable-icon move" />
+    <draggable-icon
+      class="draggable-icon"
+      data-move
+      @pointerenter="cursor.setWithUnlock('move')"
+      @pointerleave="cursor.setWithUnlock('default')"
+    />
   </div>
 </template>
 
