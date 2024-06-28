@@ -5,9 +5,16 @@ import type { RectLike } from '@/graph/math';
 import type { ID } from '@/core/types';
 import type { DraggableType } from '@/components/types';
 
-const { update, list } = defineProps<{
+/**
+ * props
+ * @param update 更新列表
+ * @param list 列表
+ * @param handle 指定拖拽元素的属性,默认所有元素都可以拖拽
+ */
+const { update, list, handle } = defineProps<{
   update: (current: DraggableType, other: DraggableType) => void;
   list: DraggableType[];
+  handle?: string;
 }>();
 
 let mapper = new Map<ID, DraggableType>();
@@ -16,7 +23,6 @@ list.forEach((item) => {
   mapper.set(item.id, item);
 });
 
-const data = defineModel<Map<ID, DraggableType>>();
 const refs = reactive<Map<ID, HTMLElement>>(new Map());
 
 const origin = reactive({ x: 0, y: 0 });
@@ -82,10 +88,12 @@ useEventListener(
 );
 
 function onPointerDown(e: PointerEvent) {
-  console.log('onPointerDown', e);
   const tmp = e.target as HTMLElement;
   if (tmp.hasAttribute('data-draggable')) {
-    console.log('onPointerDown2', e);
+    console.log('handle', handle);
+    if (handle && !tmp.hasAttribute(handle)) {
+      return;
+    }
     start.x = e.clientX;
     start.y = e.clientY;
     end.x = e.clientX;

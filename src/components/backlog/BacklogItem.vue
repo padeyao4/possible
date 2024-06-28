@@ -21,7 +21,7 @@ const textDecoration = computed(() => (item.done ? 'line-through' : 'none'));
   <div class="backlog-item">
     <check-button :checked="item.done" class="icon-button" />
     <div class="text">{{ item.title }}</div>
-    <draggable-icon class="draggable-icon move" />
+    <draggable-icon class="draggable-icon" data-move />
   </div>
 </template>
 

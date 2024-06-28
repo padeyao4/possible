@@ -3,7 +3,7 @@ import { computed, reactive, ref } from 'vue';
 import ECounterButton from '@/components/common/ECounterButton.vue';
 import BacklogItem from '@/components/backlog/BacklogItem.vue';
 import { Plus } from '@element-plus/icons-vue';
-import BDraggable from '@/components/common/BDraggable.vue';
+import BDraggable from '@/components/common/EDraggable.vue';
 import type { DraggableType } from '@/components/types';
 
 const list = reactive<DraggableType[]>([
@@ -69,6 +69,7 @@ const visible = ref(false);
           <b-draggable
             :list="list"
             class="wrapper"
+            handle="data-move"
             :update="
               (current, other) => {
                 const index = list.findIndex((item) => item.id === current.id);

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BDraggable from '@/components/common/BDraggable.vue';
+import BDraggable from '@/components/common/EDraggable.vue';
 import { ref } from 'vue';
 
 const list = ref([
