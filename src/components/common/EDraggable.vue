@@ -85,6 +85,7 @@ useEventListener(
         target.value = null;
         clone.value = null;
         cursor.unlock();
+        cursor.setWithUnlock('default');
       }
     }
   },
@@ -124,7 +125,7 @@ function onPointerDown(e: PointerEvent) {
 </script>
 
 <template>
-  <div class="b-draggable">
+  <transition-group tag="div" class="b-draggable" name="list">
     <div
       v-for="item in list"
       :key="item.id"
@@ -135,11 +136,15 @@ function onPointerDown(e: PointerEvent) {
     >
       <slot name="default" :item="item" />
     </div>
-  </div>
+  </transition-group>
 </template>
 
 <style scoped>
 .b-draggable {
   overflow: hidden;
+}
+
+.list-move {
+  /*  todo*/
 }
 </style>

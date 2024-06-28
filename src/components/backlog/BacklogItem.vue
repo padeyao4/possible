@@ -6,13 +6,7 @@ import type { DraggableType } from '@/components/types';
 import { useCursor } from '@/stores/cursor';
 
 const { item } = defineProps<{
-  item:
-    | {
-        id: number;
-        title: string;
-        done: boolean;
-      }
-    | DraggableType;
+  item: DraggableType;
 }>();
 
 const textDecoration = computed(() => (item.done ? 'line-through' : 'none'));
@@ -23,11 +17,11 @@ const cursor = useCursor();
 <template>
   <div class="backlog-item">
     <check-button :checked="item.done" class="icon-button" />
-    <div class="text">{{ item.title }}</div>
+    <div class="text">{{ item.name }}</div>
     <draggable-icon
       class="draggable-icon"
       data-move
-      @pointerenter="cursor.setWithUnlock('move')"
+      @pointerenter="cursor.setWithUnlock('pointer')"
       @pointerleave="cursor.setWithUnlock('default')"
     />
   </div>

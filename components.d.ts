@@ -15,8 +15,6 @@ declare module 'vue' {
     AsideFooter: typeof import('./src/components/LayoutSide/AsideFooter.vue')['default']
     AsideHeader: typeof import('./src/components/LayoutSide/AsideHeader.vue')['default']
     BacklogItem: typeof import('./src/components/backlog/BacklogItem.vue')['default']
-    BDraggable: typeof import('./src/components/common/EDraggable.vue')['default']
-    BItem: typeof import('./src/components/common/BItem.vue')['default']
     CalendarSearchIcon: typeof import('./src/components/icon/CalendarSearchIcon.vue')['default']
     CanvasCardItem: typeof import('./src/components/ProjectViewComponent/CanvasCardItem.vue')['default']
     CanvasCards: typeof import('./src/components/ProjectViewComponent/CanvasCards.vue')['default']
