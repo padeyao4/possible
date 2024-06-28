@@ -52,7 +52,7 @@ const showWelcome = computed(() => {
         </div>
       </div>
     </div>
-    <div v-else class="content">
+    <el-scrollbar v-else class="content">
       <draggable
         :list="projectStore.todoList"
         item-key="id"
@@ -95,7 +95,7 @@ const showWelcome = computed(() => {
           <item-component :node="element" />
         </template>
       </draggable>
-    </div>
+    </el-scrollbar>
   </div>
 </template>
 

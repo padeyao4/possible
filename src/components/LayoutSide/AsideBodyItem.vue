@@ -97,7 +97,7 @@ const isActive = computed(() => {
 .draggable-item {
   display: flex;
   width: 100%;
-  padding: 2px 4px;
+  padding: 2px 8px;
 
   &:first-child {
     margin-top: 2px;
@@ -130,6 +130,7 @@ const isActive = computed(() => {
 
 .project-item {
   position: relative;
+  /*  todo*/
   z-index: 3;
   display: flex;
   align-items: center;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TheSide from '@/components/IndexViewComponent/TheSide.vue';
+import TheSide from '@/components/LayoutSide/TheSide.vue';
 import TheSeparation from '@/components/common/TheSeparation.vue';
 import { useSettings } from '@/stores/settings';
 import { computed } from 'vue';

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import AsideBody from '@/components/IndexViewComponent/AsideBody.vue';
-import AsideFooter from '@/components/IndexViewComponent/AsideFooter.vue';
-import AsideHeader from '@/components/IndexViewComponent/AsideHeader.vue';
+import AsideBody from '@/components/LayoutSide/AsideBody.vue';
+import AsideFooter from '@/components/LayoutSide/AsideFooter.vue';
+import AsideHeader from '@/components/LayoutSide/AsideHeader.vue';
 import { useCursor } from '@/stores/cursor';
 
 const cursor = useCursor();

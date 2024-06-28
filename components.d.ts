@@ -10,10 +10,10 @@ declare module 'vue' {
     AboutComponent: typeof import('./src/components/SettingsViewComponent/AboutComponent.vue')['default']
     AccountInfo: typeof import('./src/components/SettingsViewComponent/AccountInfo.vue')['default']
     ArrowRightIcon: typeof import('./src/components/icon/ArrowRightIcon.vue')['default']
-    AsideBody: typeof import('./src/components/IndexViewComponent/AsideBody.vue')['default']
-    AsideBodyItem: typeof import('./src/components/IndexViewComponent/AsideBodyItem.vue')['default']
-    AsideFooter: typeof import('./src/components/IndexViewComponent/AsideFooter.vue')['default']
-    AsideHeader: typeof import('./src/components/IndexViewComponent/AsideHeader.vue')['default']
+    AsideBody: typeof import('./src/components/LayoutSide/AsideBody.vue')['default']
+    AsideBodyItem: typeof import('./src/components/LayoutSide/AsideBodyItem.vue')['default']
+    AsideFooter: typeof import('./src/components/LayoutSide/AsideFooter.vue')['default']
+    AsideHeader: typeof import('./src/components/LayoutSide/AsideHeader.vue')['default']
     BacklogItem: typeof import('./src/components/backlog/BacklogItem.vue')['default']
     CalendarSearchIcon: typeof import('./src/components/icon/CalendarSearchIcon.vue')['default']
     CanvasCardItem: typeof import('./src/components/ProjectViewComponent/CanvasCardItem.vue')['default']
@@ -60,6 +60,6 @@ declare module 'vue' {
     TheCanvas: typeof import('./src/components/ProjectViewComponent/TheCanvas.vue')['default']
     TheFooter: typeof import('./src/components/ProjectViewComponent/TheFooter.vue')['default']
     TheSeparation: typeof import('./src/components/common/TheSeparation.vue')['default']
-    TheSide: typeof import('./src/components/IndexViewComponent/TheSide.vue')['default']
+    TheSide: typeof import('./src/components/LayoutSide/TheSide.vue')['default']
   }
 }

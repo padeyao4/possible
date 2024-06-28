@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import Draggable from 'vuedraggable/src/vuedraggable';
 import { useProjectStore } from '@/stores/project';
-import AsideBodyItem from '@/components/IndexViewComponent/AsideBodyItem.vue';
+import AsideBodyItem from '@/components/LayoutSide/AsideBodyItem.vue';
 import { useCursor } from '@/stores/cursor';
 
 const projectStore = useProjectStore();
@@ -36,25 +36,27 @@ function onupdate() {
 }
 </script>
 <template>
-  <draggable
-    :list="projectStore.sortProjects"
-    class="aside-body"
-    ref="draggableRef"
-    item-key="id"
-    chosenClass="chosen-class"
-    dragClass="drag-class"
-    handle=".move"
-    ghostClass="ghost-class"
-    :forceFallback="true"
-    animation="300"
-    @start="onstart"
-    @end="onend"
-    @update="onupdate"
-  >
-    <template #item="{ element }">
-      <aside-body-item :project="element" :key="element.id" />
-    </template>
-  </draggable>
+  <el-scrollbar>
+    <draggable
+      :list="projectStore.sortProjects"
+      class="aside-body"
+      ref="draggableRef"
+      item-key="id"
+      chosenClass="chosen-class"
+      dragClass="drag-class"
+      handle=".move"
+      ghostClass="ghost-class"
+      :forceFallback="true"
+      animation="300"
+      @start="onstart"
+      @end="onend"
+      @update="onupdate"
+    >
+      <template #item="{ element }">
+        <aside-body-item :project="element" :key="element.id" />
+      </template>
+    </draggable>
+  </el-scrollbar>
 </template>
 
 <style scoped>
