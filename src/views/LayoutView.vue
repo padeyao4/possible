@@ -5,7 +5,6 @@ import { useSettings } from '@/stores/settings';
 import { computed } from 'vue';
 
 const settings = useSettings();
-
 const width = computed(() => settings.sideWidth + 'px');
 </script>
 

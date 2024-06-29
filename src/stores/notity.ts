@@ -7,7 +7,7 @@ export const KEYS = {
 };
 
 // 定义一个通知存储
-export const useNotify = defineStore('notity', () => {
+export const useNotify = defineStore('notify', () => {
   const notifies = reactive<Map<string | Symbol, string>>(new Map());
 
   const hasNotify = computed(() => {

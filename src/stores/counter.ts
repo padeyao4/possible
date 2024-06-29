@@ -4,6 +4,7 @@ import { getIndexByDate } from '@/stores/timer';
 import Project from '@/core/Project';
 import { useProjectStore } from '@/stores/project';
 
+// 用于显示当前未完成的todo数量
 export const useCounter = defineStore('counter', () => {
   const count = ref(0);
   const store = useProjectStore();

@@ -9,6 +9,7 @@ export interface CursorStoreType {
   refresh: (event: MouseEvent) => void;
 }
 
+// 鼠标状态
 export const useCursor = defineStore('cursor', () => {
   const isLock = ref(false);
 

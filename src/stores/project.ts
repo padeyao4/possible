@@ -50,7 +50,7 @@ export const useProjectStore = defineStore('projects', () => {
     }
   }
 
-  function bfsTraverseOutEdge(project: Project, nodeId: ID, callback: (node: Node) => void): void {
+  function bfsOutEdge(project: Project, nodeId: ID, callback: (node: Node) => void): void {
     const queue = [nodeId];
     const visited = new Set<ID>();
     while (queue.length > 0) {
@@ -65,7 +65,7 @@ export const useProjectStore = defineStore('projects', () => {
     }
   }
 
-  function bfsTraverseInEdge(project: Project, nodeId: ID, callback: (node: Node) => void): void {
+  function bfsInEdge(project: Project, nodeId: ID, callback: (node: Node) => void): void {
     const queue = [nodeId];
     const visited = new Set<ID>();
     while (queue.length > 0) {
@@ -80,7 +80,7 @@ export const useProjectStore = defineStore('projects', () => {
     }
   }
 
-  function bfsTraverseNode(project: Project, nodeId: ID, callback: (node: Node) => void): void {
+  function bfsNode(project: Project, nodeId: ID, callback: (node: Node) => void): void {
     const queue = [nodeId];
     const visited = new Set<ID>();
     while (queue.length > 0) {
