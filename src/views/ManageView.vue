@@ -28,6 +28,11 @@ const onGetValue = async () => {
   });
   console.log(ans);
 };
+
+const onGetStoreFilePath = async () => {
+  const path = await window.ipcRenderer.invoke('get-store-path');
+  console.log(path);
+};
 </script>
 <template>
   <div class="manage-view">
@@ -49,6 +54,7 @@ const onGetValue = async () => {
     </b-draggable>
     <el-button @click="onSetValue">set</el-button>
     <el-button @click="onGetValue">get</el-button>
+    <el-button @click="onGetStoreFilePath">show path</el-button>
   </div>
 </template>
 

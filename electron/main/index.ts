@@ -10,7 +10,7 @@ process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const store = new Store() as Record<any, any>;
+const store = new Store() as any;
 
 // The built directory structure
 //
@@ -181,9 +181,14 @@ ipcMain.handle('open-win', (_, arg) => {
 ipcMain.on('set-value', (_, arg) => {
   console.log('set-value', arg);
   store.set(arg.key, arg.value);
+  store.openInEditor().then();
 });
 
 ipcMain.handle('get-value', (_, arg) => {
   console.log('get-value', store.get(arg.key));
   return store.get(arg.key);
+});
+
+ipcMain.handle('get-store-path', () => {
+  return app.getPath('userData');
 });
