@@ -3,11 +3,14 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import os from 'node:os';
+import Store from 'electron-store';
 
 // 消除安全告警
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const store = new Store() as Record<any, any>;
 
 // The built directory structure
 //
@@ -173,4 +176,14 @@ ipcMain.handle('open-win', (_, arg) => {
   } else {
     childWindow.loadFile(indexHtml, { hash: arg }).then();
   }
+});
+
+ipcMain.on('set-value', (_, arg) => {
+  console.log('set-value', arg);
+  store.set(arg.key, arg.value);
+});
+
+ipcMain.handle('get-value', (_, arg) => {
+  console.log('get-value', store.get(arg.key));
+  return store.get(arg.key);
 });

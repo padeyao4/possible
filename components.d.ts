@@ -37,6 +37,7 @@ declare module 'vue' {
     EDialog: typeof import('./src/components/common/EDialog.vue')['default']
     EditorComponent: typeof import('./src/components/ProjectViewComponent/EditorComponent.vue')['default']
     EDraggable: typeof import('./src/components/common/EDraggable.vue')['default']
+    ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckboxButton: typeof import('element-plus/es')['ElCheckboxButton']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']

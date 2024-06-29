@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import BDraggable from '@/components/common/EDraggable.vue';
 import { ref } from 'vue';
+import type { DraggableType } from '@/components/types';
 
-const list = ref([
+const list = ref<DraggableType[]>([
   { name: 'item1', id: '1' },
   { name: 'item1', id: '2' },
   { name: 'item1', id: '3' },
@@ -13,6 +14,20 @@ const list = ref([
   { name: 'item1', id: '8' },
   { name: 'item1', id: '9' }
 ]);
+
+const onSetValue = () => {
+  window.ipcRenderer.send('set-value', {
+    key: 'hello',
+    value: 'world'
+  });
+};
+
+const onGetValue = async () => {
+  const ans = await window.ipcRenderer.invoke('get-value', {
+    key: 'hello'
+  });
+  console.log(ans);
+};
 </script>
 <template>
   <div class="manage-view">
@@ -32,6 +47,8 @@ const list = ref([
         <div class="item">{{ item.id }}</div>
       </template>
     </b-draggable>
+    <el-button @click="onSetValue">set</el-button>
+    <el-button @click="onGetValue">get</el-button>
   </div>
 </template>
 
