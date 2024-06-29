@@ -122,7 +122,8 @@ export async function handleNewProject() {
   const project = new Project();
   project.editable = true;
   useProjectStore().addProject(project);
-  router.push({ name: 'project', query: { id: project.id } }).then(() => {
+  setTimeout(async () => {
+    await router.push({ name: 'project', query: { id: project.id } });
     emitter.emit(BusEvents['project:created']);
   });
 }
