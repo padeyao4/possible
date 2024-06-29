@@ -6,7 +6,15 @@ declare module '*.vue' {
   export default component;
 }
 
-interface Window {
-  // expose in the `electron/preload/index.ts`
-  ipcRenderer: import('electron').IpcRenderer;
+declare global {
+  interface Window {
+    ipcRenderer: {
+      send: (channel: string, ...args: any[]) => void;
+      on: (channel: string, func: (...args: any[]) => void) => import('electron').IpcRenderer;
+      off: (channel: string, func: (...args: any[]) => void) => import('electron').IpcRenderer;
+      invoke: (channel: string, ...args: any[]) => Promise<any>;
+    };
+  }
 }
+
+export {};
