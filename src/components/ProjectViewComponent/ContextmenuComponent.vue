@@ -1,33 +1,33 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
-import { computed, ref } from 'vue';
+import { computed, inject, type Ref, ref } from 'vue';
 import type { OptionType } from '@/components/types';
 import { clampMax } from '@/graph/math';
 
-const { x, y, canvas, items, parents } = defineProps<{
+const { x, y, items, parents } = defineProps<{
   items: OptionType[];
   x: number;
   y: number;
-  canvas: Element;
   parents: Element[];
 }>();
 
 const element = ref<HTMLDivElement>();
 const width = 200;
+const canvasContainer = inject<Ref<HTMLElement>>('canvasContainer');
 
 const top = computed(() => {
-  const canvasBound = canvas.getBoundingClientRect();
+  const canvasContainerBound = canvasContainer.value.getBoundingClientRect();
   const elementBound = element.value?.getBoundingClientRect() ?? { height: 0 };
-  return clampMax(y, canvasBound.bottom - elementBound.height);
+  return clampMax(y, canvasContainerBound.bottom - elementBound.height);
 });
 
 const left = computed(() => {
-  const canvasBound = canvas.getBoundingClientRect();
+  const canvasContainerBound = canvasContainer.value.getBoundingClientRect();
 
   if (parents.length === 0) {
-    return clampMax(x, canvasBound.right - width);
+    return clampMax(x, canvasContainerBound.right - width);
   } else {
-    if (x + width > canvasBound.right) {
+    if (x + width > canvasContainerBound.right) {
       return x - width - parents.length * width;
     } else {
       return x;
@@ -102,7 +102,6 @@ const nextY = computed(() => {
           </div>
           <contextmenu-component
             v-if="value?.children && showIndex === count(i, j)"
-            :canvas="canvas"
             :x="left + width"
             :y="nextY"
             :parents="[...parents, element]"

@@ -4,7 +4,6 @@ import CanvasCards from '@/components/ProjectViewComponent/CanvasCards.vue';
 import { computed, type ComputedRef, inject, onMounted, ref, watchEffect } from 'vue';
 import { Register } from '@/graph/base';
 import CanvasTempPaths from '@/components/ProjectViewComponent/CanvasTempPaths.vue';
-import { useCanvas } from '@/stores/canvas';
 import DragCanvas from '@/graph/behavior/drag-canvas';
 import { DragCard } from '@/graph/behavior/drag-card';
 import { ResizeCard } from '@/graph/behavior/resize-card';
@@ -16,13 +15,11 @@ import WheelCanvas from '@/graph/behavior/wheel-canvas';
 import type Project from '@/core/Project';
 
 const svg = ref();
-const canvas = useCanvas();
 const project = inject<ComputedRef<Project>>('project');
 
 onMounted(() => {
   watchEffect(() => {
     if (project.value.name) {
-      canvas.set(svg.value);
       const register = new Register(svg.value, project.value);
       register.addBehaviors(
         DefaultBehavior,

@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import type { Path } from '@/stores/types'
+import { computed } from 'vue';
+import type { Path } from '@/core/types';
 
-const props = defineProps<{ edge: Path }>()
+const props = defineProps<{ edge: Path }>();
 
 const disX = computed(() => {
-  return Math.abs(props.edge.from.x - props.edge.to.x)
-})
+  return Math.abs(props.edge.from.x - props.edge.to.x);
+});
 
 const ctl1 = computed(() => {
   return {
     x: props.edge.from.x + disX.value / 2,
     y: props.edge.from.y
-  }
-})
+  };
+});
 
 const ctl2 = computed(() => {
   return {
     x: props.edge.to.x - disX.value / 2,
     y: props.edge.to.y
-  }
-})
+  };
+});
 </script>
 
 <template>

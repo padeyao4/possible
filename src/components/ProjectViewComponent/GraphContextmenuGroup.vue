@@ -10,9 +10,7 @@ import {
   tryMoveUpWhole
 } from '@/service/project.service';
 import Node from '@/core/Node';
-import { useCanvas } from '@/stores/canvas';
 import { useCursor } from '@/stores/cursor';
-import { useProjectStore } from '@/stores/project';
 import { useSettings } from '@/stores/settings';
 import type Project from '@/core/Project';
 import type { ItemType } from '@/graph/types';
@@ -22,7 +20,6 @@ import type { OptionType } from '@/components/types';
 
 const container = ref<HTMLElement>();
 const visible = ref(false);
-const canvas = useCanvas();
 const cursor = useCursor();
 const itemType = ref<ItemType>('node');
 const event = ref<PointerEvent>();
@@ -307,13 +304,7 @@ onBeforeUnmount(() => {
 <template>
   <teleport to="body">
     <div v-if="visible" @blur="visible = false" tabindex="0" ref="container" class="container">
-      <contextmenu-component
-        :items="items"
-        :canvas="canvas.svg"
-        :x="event.x"
-        :y="event.y"
-        :parents="[]"
-      />"
+      <contextmenu-component :items="items" :x="event.x" :y="event.y" :parents="[]" />"
     </div>
   </teleport>
 </template>
