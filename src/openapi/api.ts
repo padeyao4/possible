@@ -77,6 +77,31 @@ export interface RegisterRequest {
 /**
  * 
  * @export
+ * @interface RestResponseBoolean
+ */
+export interface RestResponseBoolean {
+    /**
+     * 
+     * @type {string}
+     * @memberof RestResponseBoolean
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof RestResponseBoolean
+     */
+    'code'?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RestResponseBoolean
+     */
+    'payload'?: boolean;
+}
+/**
+ * 
+ * @export
  * @interface RestResponseLong
  */
 export interface RestResponseLong {
@@ -320,7 +345,7 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    'accountNonLocked'?: boolean;
+    'credentialsNonExpired'?: boolean;
     /**
      * 
      * @type {boolean}
@@ -332,7 +357,7 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
-    'credentialsNonExpired'?: boolean;
+    'accountNonLocked'?: boolean;
 }
 
 /**
@@ -341,6 +366,42 @@ export interface User {
  */
 export const AccountControllerApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * 
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        checkUsername: async (username: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'username' is not null or undefined
+            assertParamExists('checkUsername', 'username', username)
+            const localVarPath = `/account/username`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (username !== undefined) {
+                localVarQueryParameter['username'] = username;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * 
          * @param {LoginRequest} loginRequest 
@@ -452,6 +513,18 @@ export const AccountControllerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async checkUsername(username: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseBoolean>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.checkUsername(username, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AccountControllerApi.checkUsername']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {LoginRequest} loginRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -497,6 +570,15 @@ export const AccountControllerApiFactory = function (configuration?: Configurati
     return {
         /**
          * 
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        checkUsername(username: string, options?: any): AxiosPromise<RestResponseBoolean> {
+            return localVarFp.checkUsername(username, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {LoginRequest} loginRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -531,6 +613,17 @@ export const AccountControllerApiFactory = function (configuration?: Configurati
  * @extends {BaseAPI}
  */
 export class AccountControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {string} username 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AccountControllerApi
+     */
+    public checkUsername(username: string, options?: RawAxiosRequestConfig) {
+        return AccountControllerApiFp(this.configuration).checkUsername(username, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @param {LoginRequest} loginRequest 

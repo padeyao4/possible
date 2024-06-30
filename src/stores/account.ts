@@ -68,7 +68,32 @@ export const useAccount = defineStore('account', () => {
   }
 
   const registerLoading = ref(false);
-  async function register(username: string, password: string) {}
+  async function register(username: string, password: string) {
+    try {
+      registerLoading.value = true;
+      await new AccountControllerApi().register({
+        username,
+        password
+      });
+      emitter.emit(BusEvents['register:success']);
+    } catch (e) {
+      emitter.emit(BusEvents['register:failed'], e);
+    } finally {
+      registerLoading.value = false;
+    }
+  }
+
+  const checkUsernameLoading = ref(false);
+  async function checkUsername(username: string) {
+    try {
+      checkUsernameLoading.value = true;
+      return await new AccountControllerApi().checkUsername(username);
+    } catch (e) {
+      emitter.emit(BusEvents['error:message'], e);
+    } finally {
+      checkUsernameLoading.value = false;
+    }
+  }
 
   return {
     user,
@@ -84,6 +109,8 @@ export const useAccount = defineStore('account', () => {
     isAuth,
     register,
     registerLoading,
+    checkUsername,
+    checkUsernameLoading,
     $reset
   };
 });

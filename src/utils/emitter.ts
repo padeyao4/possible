@@ -30,7 +30,10 @@ export const BusEvents = {
   'node:deleted': Symbol(),
   'edge:deleted': Symbol(),
   'edge:created': Symbol(),
-  'time:updated': Symbol()
+  'time:updated': Symbol(),
+  // 注册
+  'register:success': Symbol(),
+  'register:failed': Symbol()
 };
 
 export const dataChangeEvents = new Set([

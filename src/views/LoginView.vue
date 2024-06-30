@@ -1,36 +1,85 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { useAccount } from '@/stores/account';
 import router from '@/router';
 import type { FormRules } from 'element-plus';
+import emitter, { BusEvents } from '@/utils/emitter';
+import { Close } from '@element-plus/icons-vue';
 
 const account = useAccount();
 
-const form = reactive({
+const isRegister = ref(false);
+
+const loginForm = reactive({
   username: '',
   password: '',
-  checkPassword: ''
+  loginError: ''
 });
 
-const onSubmit = async () => {
-  await account.login(form.username, form.password);
+const registerForm = reactive({
+  username: '',
+  password: '',
+  checkPassword: '',
+  registerError: ''
+});
+
+function handleResetRegister() {
+  isRegister.value = false;
+  Object.assign(registerForm, {
+    username: '',
+    password: '',
+    checkPassword: '',
+    registerError: ''
+  });
+}
+
+emitter.on(BusEvents['login:failed'], (e: any) => {
+  loginForm.loginError = e.message;
+});
+
+emitter.on(BusEvents['register:success'], () => {
+  isRegister.value = true;
+});
+
+emitter.on(BusEvents['register:failed'], (e: any) => {
+  registerForm.registerError = e.message;
+});
+
+const onLogin = async () => {
+  await account.login(loginForm.username, loginForm.password);
   await router.push({ name: 'today' });
 };
 
 const onRegister = async () => {
-  await account.register(form.username, form.password);
+  await account.register(registerForm.username, registerForm.password);
 };
 
-const rules = reactive<FormRules<typeof form>>({
+const loginRules = reactive<FormRules<typeof loginForm>>({
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+});
+
+const registerRules = reactive<FormRules<typeof registerForm>>({
+  username: [
+    {
+      required: true,
+      message: '请输入用户名',
+      trigger: 'blur'
+    }
+  ],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
   checkPassword: [
     {
       required: true,
-      message: '请确认密码',
       trigger: 'blur',
-      validator: () => {
-        return form.checkPassword === form.password;
+      validator: (rule, value, callback, source, options) => {
+        if (value === '') {
+          callback(new Error('Please input the password again'));
+        } else if (value !== registerForm.password) {
+          callback(new Error("Two inputs don't match!"));
+        } else {
+          callback();
+        }
       }
     }
   ]
@@ -45,39 +94,63 @@ const rules = reactive<FormRules<typeof form>>({
         <div>
           <el-tabs>
             <el-tab-pane label="Login">
-              <el-form :model="form" class="login-form" :rules="rules">
-                <el-form-item prop="username">
-                  <el-input v-model="form.username" placeholder="username" />
+              <el-form :model="loginForm" class="login-form" :rules="loginRules">
+                <el-form-item prop="username" inline-message>
+                  <el-input v-model="loginForm.username" placeholder="username" />
                 </el-form-item>
                 <el-form-item prop="password">
-                  <el-input v-model="form.password" placeholder="password" type="password" />
+                  <el-input v-model="loginForm.password" placeholder="password" type="password" />
+                </el-form-item>
+                <el-form-item :error="loginForm.loginError">
+                  <template #default>
+                    <div class="operations">
+                      <div>
+                        <el-text tag="ins" class="forget-text">忘记密码?</el-text>
+                      </div>
+
+                      <el-button type="primary" @click="onLogin" :loading="account.loginLoading"
+                        >Login</el-button
+                      >
+                    </div>
+                  </template>
                 </el-form-item>
               </el-form>
-              <div class="operations">
-                <el-link type="info">忘记密码?</el-link>
-                <el-button type="primary" @click="onSubmit" :loading="account.loginLoading"
-                  >Login</el-button
-                >
-              </div>
             </el-tab-pane>
             <el-tab-pane label="Register">
-              <el-form :model="form" class="login-form" :rules="rules">
+              <el-card v-if="isRegister">
+                <template #default>
+                  <div style="display: flex; justify-content: space-between">
+                    <el-text type="success">
+                      <b
+                        ><i>{{ registerForm.username }}</i></b
+                      >
+                      register success</el-text
+                    >
+                    <el-button :icon="Close" size="small" @click="handleResetRegister" />
+                  </div>
+                </template>
+              </el-card>
+              <el-form v-else :model="registerForm" class="login-form" :rules="registerRules">
                 <el-form-item prop="username">
-                  <el-input v-model="form.username" placeholder="username" />
+                  <el-input v-model="registerForm.username" placeholder="username" />
                 </el-form-item>
                 <el-form-item prop="password">
-                  <el-input v-model="form.password" placeholder="password" type="password" />
+                  <el-input
+                    v-model="registerForm.password"
+                    placeholder="password"
+                    type="password"
+                  />
                 </el-form-item>
                 <el-form-item prop="checkPassword">
                   <el-input
-                    v-model="form.checkPassword"
+                    v-model="registerForm.checkPassword"
                     autocomplete="off"
                     placeholder="confirm password"
                     type="password"
                   />
                 </el-form-item>
-                <el-form-item>
-                  <el-button type="primary" @click="onRegister" :loading="false"
+                <el-form-item :error="registerForm.registerError">
+                  <el-button type="primary" @click="onRegister" :loading="account.registerLoading"
                     >register</el-button
                   >
                 </el-form-item>
@@ -118,8 +191,9 @@ const rules = reactive<FormRules<typeof form>>({
     }
     .operations {
       display: flex;
+      align-items: end !important;
       justify-content: space-between;
-      margin-top: 15px;
+      width: 100%;
     }
   }
 }
