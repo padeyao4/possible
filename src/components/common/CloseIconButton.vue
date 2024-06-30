@@ -14,6 +14,7 @@ import { Icon } from '@iconify/vue';
   width: 24px;
   height: 24px;
   border-radius: 2px;
+  opacity: 0.6;
   &:hover {
     background-color: #ff000010;
   }

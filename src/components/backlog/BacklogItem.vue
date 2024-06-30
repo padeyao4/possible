@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import DraggableIcon from '@/components/icon/DraggableIcon.vue';
 import type { DraggableType } from '@/components/types';
 import { useCursor } from '@/stores/cursor';
+import emitter, { BusEvents } from '@/utils/emitter';
 
 const { item } = defineProps<{
   item: DraggableType;
@@ -12,12 +13,16 @@ const { item } = defineProps<{
 const textDecoration = computed(() => (item.done ? 'line-through' : 'none'));
 
 const cursor = useCursor();
+
+const onClick = (id: string) => {
+  emitter.emit(BusEvents['backlog:event'], { id });
+};
 </script>
 
 <template>
   <div class="backlog-item">
     <check-button :checked="item.done" class="icon-button" @click="item.done = !item.done" />
-    <div class="text">{{ item.title }}</div>
+    <el-text @click="onClick(item.id)" truncated class="text">{{ item.title }}</el-text>
     <draggable-icon
       class="draggable-icon"
       data-move
@@ -45,9 +50,10 @@ const cursor = useCursor();
 
 .text {
   flex: 1;
+  align-content: center;
+  height: 100%;
   margin-left: 12px;
   font-size: 16px;
-  line-height: 24px;
   text-decoration-line: v-bind(textDecoration);
 }
 

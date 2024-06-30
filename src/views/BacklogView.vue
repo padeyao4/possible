@@ -6,6 +6,7 @@ import { Plus } from '@element-plus/icons-vue';
 import EDraggable from '@/components/common/EDraggable.vue';
 import { useBacklog } from '@/stores';
 import { Backlog } from '@/core';
+import BacklogEditor from '@/components/backlog/BacklogEditor.vue';
 
 const backlog = useBacklog();
 
@@ -13,7 +14,8 @@ const onUpdate = (current: Backlog, other: Backlog) => {
   [current.orderIndex, other.orderIndex] = [other.orderIndex, current.orderIndex];
 };
 
-const visible = ref(false);
+const showComplete = ref(false);
+const showRight = ref(false);
 
 const inputRef = ref<HTMLInputElement>();
 
@@ -26,34 +28,53 @@ const addNew = () => {
 
 <template>
   <div class="backlog">
-    <div class="title">备忘录</div>
-    <el-scrollbar :always="false">
-      <div class="content">
-        <div class="todos">
-          <e-draggable :list="backlog.todos" class="wrapper" handle="data-move" :update="onUpdate">
-            <template #default="{ item }">
-              <backlog-item :item="item" />
-            </template>
-          </e-draggable>
+    <div class="left">
+      <div class="title">备忘录</div>
+      <el-scrollbar :always="false">
+        <div class="content">
+          <div class="todos">
+            <e-draggable
+              :list="backlog.todos"
+              class="wrapper"
+              handle="data-move"
+              :update="onUpdate"
+            >
+              <template #default="{ item }">
+                <backlog-item :item="item" />
+              </template>
+            </e-draggable>
+          </div>
+          <e-counter-button
+            :count="backlog.completesCount"
+            v-model="showComplete"
+            class="count-class"
+          />
+          <div class="completed" v-show="showComplete">
+            <backlog-item v-for="item in backlog.completes" :item="item" />
+          </div>
         </div>
-        <e-counter-button :count="backlog.completesCount" v-model="visible" class="count-class" />
-        <div class="completed" v-show="visible">
-          <backlog-item v-for="item in backlog.completes" :item="item" />
+      </el-scrollbar>
+      <div class="footer">
+        <div class="input-item">
+          <el-icon :size="24" class="input-head-icon">
+            <Plus />
+          </el-icon>
+          <input placeholder="添加备忘录" ref="inputRef" @keydown.enter="addNew" />
         </div>
-      </div>
-    </el-scrollbar>
-    <div class="footer">
-      <div class="input-item">
-        <el-icon :size="24" class="input-head-icon">
-          <Plus />
-        </el-icon>
-        <input placeholder="添加备忘录" ref="inputRef" @keydown.enter="addNew" />
       </div>
     </div>
+    <backlog-editor v-model="showRight" />
   </div>
 </template>
 
 <style scoped>
+.left {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+}
+
 .input-item {
   position: relative;
   display: flex;
@@ -99,8 +120,7 @@ const addNew = () => {
 
 .backlog {
   display: flex;
-  flex-direction: column;
-  height: 100vh !important;
+  flex-direction: row;
   background-color: #5c83ab90 !important;
 }
 .title {

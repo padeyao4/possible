@@ -40,6 +40,10 @@ export const useBacklog = defineStore('backlog', () => {
     return completes.value.length;
   });
 
+  function get(id: ID) {
+    return backlogs.get(id) ?? new Backlog('', 0, new Date());
+  }
+
   return {
     backlogs,
     add,
@@ -48,6 +52,7 @@ export const useBacklog = defineStore('backlog', () => {
     completes,
     todosCount,
     completesCount,
+    get,
     $reset
   };
 });

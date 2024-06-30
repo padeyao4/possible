@@ -33,7 +33,9 @@ export const BusEvents = {
   'time:updated': Symbol(),
   // 注册
   'register:success': Symbol(),
-  'register:failed': Symbol()
+  'register:failed': Symbol(),
+  // backlog
+  'backlog:event': Symbol()
 };
 
 export const dataChangeEvents = new Set([

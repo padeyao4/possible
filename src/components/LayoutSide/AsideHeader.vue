@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useCounter } from '@/stores/counter';
+import { useBacklog } from '@/stores';
+import CountLabel from '@/components/common/CountLabel.vue';
 
 const counter = useCounter();
-const showCounter = computed(() => {
-  return counter.count > 0;
-});
+const backlog = useBacklog();
 </script>
 
 <template>
@@ -19,7 +18,7 @@ const showCounter = computed(() => {
     >
       <Icon icon="solar:sun-2-broken" class="side-icon" />
       <div class="side-item-text my-day">我的一天</div>
-      <div class="todo-count" v-show="showCounter">{{ counter.count }}</div>
+      <count-label :count="counter.count" />
     </div>
     <div
       class="side-list-item"
@@ -29,6 +28,7 @@ const showCounter = computed(() => {
     >
       <Icon icon="solar:pallete-2-broken" class="side-icon" />
       <div class="side-item-text">备忘录</div>
+      <count-label :count="backlog.todosCount" style="margin-left: auto" />
     </div>
     <div
       class="side-list-item"
@@ -70,7 +70,7 @@ const showCounter = computed(() => {
     width: 100%;
   }
 
-  .todo-count {
+  .count-label {
     display: flex;
     flex-shrink: 0;
     align-items: center;
