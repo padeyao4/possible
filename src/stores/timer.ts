@@ -72,10 +72,13 @@ export const useTimer = defineStore('timestamp', () => {
     timestamp.value = new Date().valueOf();
   }
 
+  function $reset() {}
+
   return {
     timestamp,
     localTimestamp,
     currentDays,
-    update
+    update,
+    $reset
   };
 });

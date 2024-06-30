@@ -30,12 +30,17 @@ export const useNotify = defineStore('notify', () => {
     notifies.clear();
   }
 
+  function $reset() {
+    clearNotify();
+  }
+
   return {
     notifies,
     hasNotify,
     addNotify,
     removeNotify,
     clearNotify,
-    getNotify
+    getNotify,
+    $reset
   };
 });

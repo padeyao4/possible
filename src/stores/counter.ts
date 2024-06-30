@@ -23,8 +23,11 @@ export const useCounter = defineStore('counter', () => {
     count.value = nodes.length;
   }
 
+  function $reset() {}
+
   return {
     count,
-    countTodos
+    countTodos,
+    $reset
   };
 });

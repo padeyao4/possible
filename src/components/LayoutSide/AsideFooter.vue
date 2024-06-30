@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { handleNewProject } from '@/service/project.service';
-import { useNotify } from '@/stores/notity';
+import { useNotify } from '@/stores/notify';
 import SettingsIcon from '@/components/icon/SettingsIcon.vue';
 import { Plus } from '@element-plus/icons-vue';
 

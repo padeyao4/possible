@@ -17,11 +17,20 @@ export const useSettings = defineStore('settings', () => {
   const offsetCardX = ref(10);
   const offsetCardY = ref(10);
 
+  function $reset() {
+    sideWidth.value = 240;
+    unitWidth.value = 120;
+    unitHeight.value = 80;
+    offsetCardX.value = 10;
+    offsetCardY.value = 10;
+  }
+
   return {
     sideWidth,
     unitHeight,
     unitWidth,
     offsetCardX,
-    offsetCardY
+    offsetCardY,
+    $reset
   };
 });

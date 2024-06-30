@@ -1,41 +1,26 @@
 <script setup lang="ts">
 import SettingsItem from '@/components/SettingsViewComponent/SettingsItem.vue';
-import EButton from '@/components/common/EButton.vue';
-import EText from '@/components/common/EText.vue';
-import { useAccount } from '@/stores/account';
-import LoginModel from './LoginModel.vue';
+import { useAccount, $resetPinia, useProjectStore } from '@/stores';
 
 const account = useAccount();
 
-function handleRegister() {
-  window.open(import.meta.env.VITE_REGISTER_URL, '_blank');
-}
-
-const isDev = import.meta.env.VITE_DEV;
+const logout = async () => {
+  await account.logout();
+  $resetPinia();
+};
 </script>
 
 <template>
   <SettingsItem>
     <template #title>你的账号</template>
-    <template #description>
-      <template v-if="account.online">
-        当前登录账号为 {{ account.user?.username ?? '未命名' }}
-      </template>
-      <template v-else>
-        <e-text data-info>你没有登录。使用同步服务、分享信息等都需要你登录账号 </e-text>
-        <e-text data-info v-show="isDev">
-          当前环境为<i>测试环境</i> 测试账号为:<i>user</i>,密码为:<i>user</i>
-        </e-text>
-      </template>
-    </template>
+    <template #description> 当前登录账号为 {{ account.user?.username ?? '未命名' }} </template>
     <template #option>
-      <template v-if="account.online">
-        <e-button @click="account.logout()" :loading="account.logoutLoading">退出登录</e-button>
-      </template>
-      <template v-else>
-        <LoginModel />
-        <e-button @click="handleRegister">注册</e-button>
-      </template>
+      <el-button
+        @click="logout"
+        :loading="account.logoutLoading"
+        style="background-color: #00000000"
+        >退出登录</el-button
+      >
     </template>
   </SettingsItem>
 </template>

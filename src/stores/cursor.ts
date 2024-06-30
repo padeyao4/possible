@@ -1,14 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
-export interface CursorStoreType {
-  isLock: boolean;
-  unlock: () => void;
-  lock: (style: string) => void;
-  setWithUnlock: (style: string) => void;
-  refresh: (event: MouseEvent) => void;
-}
-
 // 鼠标状态
 export const useCursor = defineStore('cursor', () => {
   const isLock = ref(false);
@@ -40,11 +32,14 @@ export const useCursor = defineStore('cursor', () => {
     setWithUnlock(style);
   }
 
+  function $reset() {}
+
   return {
     isLock,
     unlock,
     refresh,
     lock,
-    setWithUnlock
+    setWithUnlock,
+    $reset
   };
 });

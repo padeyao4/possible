@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import AccountInfo from '@/components/SettingsViewComponent/AccountInfo.vue';
-import SyncSettingsComponent from '@/components/SettingsViewComponent/SyncSettingsComponent.vue';
 import AboutComponent from '@/components/SettingsViewComponent/AboutComponent.vue';
 import { Back } from '@element-plus/icons-vue';
 </script>
@@ -12,7 +11,6 @@ import { Back } from '@element-plus/icons-vue';
     </header>
     <div class="container">
       <AccountInfo />
-      <SyncSettingsComponent />
       <AboutComponent />
     </div>
   </div>
@@ -50,8 +48,9 @@ import { Back } from '@element-plus/icons-vue';
   }
 
   .container {
-    display: flex;
+    display: grid;
     flex-direction: column;
+    grid-template-rows: min-content;
     width: 550px;
     height: 100%;
     margin-right: auto;

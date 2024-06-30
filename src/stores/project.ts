@@ -226,6 +226,11 @@ export const useProjectStore = defineStore('projects', () => {
     return mapper.get(projectId) ?? new Project();
   }
 
+  function $reset() {
+    mapper.clear();
+    dataVersion.value = 0;
+  }
+
   return {
     mapper,
     todoList,
@@ -248,6 +253,7 @@ export const useProjectStore = defineStore('projects', () => {
     pushLoading,
     push,
     dailyUpdate,
-    getProject
+    getProject,
+    $reset
   };
 });

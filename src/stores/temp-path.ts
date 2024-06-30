@@ -37,10 +37,13 @@ export const useTempPaths = defineStore('canvas-paths', () => {
     paths.value.delete(pathId);
   }
 
+  function $reset() {}
+
   return {
     paths,
     createTempPath,
     getPath,
-    deletePath
+    deletePath,
+    $reset
   };
 });

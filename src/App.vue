@@ -8,6 +8,7 @@ import { useScheduler, useUpdateDate } from '@/service';
 import { useCounter } from '@/stores/counter';
 import SystemTitlebar from '@/components/SystemTitlebar.vue';
 import { axiosConfig } from '@/core/config';
+import LoginView from '@/views/LoginView.vue';
 
 axiosConfig();
 
@@ -23,40 +24,30 @@ const debounceDataPushFnc = useDebounceFn(() => {
 }, 1000);
 
 emitter.on(BusEvents['login:success'], async () => {
-  console.info('login success');
   await account.fetchUser();
   // todo
-  console.info('start to fetch project');
   emitter.emit(BusEvents['project:fetch']);
 });
 emitter.on(BusEvents['project:fetch'], async () => {
-  if (account.enable) {
-    console.info('start to fetch project');
-    await store.fetch();
-  }
-  console.info('start daily update');
+  if (account.isLocal) return;
+  await store.fetch();
   store.dailyUpdate();
-  console.info('start count todos');
   counter.countTodos();
 });
 emitter.on(BusEvents['time:updated'], () => {
-  console.info('daily update');
   store.dailyUpdate();
   emitter.emit(BusEvents['project:updated']);
 });
 emitter.on('*', (event: any) => {
+  // 数据变化
   if (dataChangeEvents.has(event)) {
-    console.info('data change', event);
     counter.countTodos();
-    if (account.enable) {
-      debounceDataPushFnc();
-    }
-    counter.countTodos();
+    if (account.isRemote) debounceDataPushFnc();
   }
 });
 
 // 账号如果是登录的
-if (account.enable) {
+if (account.isAuth) {
   console.info('start to fetch user');
   account.fetchUser().then(() => emitter.emit(BusEvents['project:fetch']));
 }
@@ -68,7 +59,8 @@ onBeforeUnmount(() => {
 
 <template>
   <system-titlebar />
-  <router-view :key="$route.fullPath" style="height: 100vh" />
+  <router-view v-if="account.isAuth" :key="$route.fullPath" style="height: 100vh" />
+  <login-view v-else />
 </template>
 
 <style scoped>

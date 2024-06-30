@@ -4,15 +4,16 @@ import { computed, reactive, ref } from 'vue';
 import emitter, { BusEvents } from '@/utils/emitter';
 
 export const useAccount = defineStore('account', () => {
-  const online = ref(false);
-  const sync = ref(false);
+  const isAuth = ref(false);
+  const isLocal = ref(false);
   const token = ref<string>();
   const user = reactive<User>({});
   const fetchUserLoading = ref(false);
 
-  const enable = computed(() => {
-    return online.value && sync.value;
+  const isRemote = computed(() => {
+    return !isLocal.value;
   });
+
   async function fetchUser() {
     try {
       fetchUserLoading.value = true;
@@ -26,6 +27,13 @@ export const useAccount = defineStore('account', () => {
     }
   }
 
+  function $reset() {
+    isAuth.value = false;
+    isLocal.value = false;
+    token.value = undefined;
+    fetchUserLoading.value = false;
+  }
+
   const loginLoading = ref(false);
   async function login(username: string, password: string) {
     try {
@@ -34,10 +42,11 @@ export const useAccount = defineStore('account', () => {
         username,
         password
       });
-      online.value = true;
       token.value = response.data.payload;
+      isAuth.value = true;
       emitter.emit(BusEvents['login:success']);
     } catch (e) {
+      isAuth.value = false;
       emitter.emit(BusEvents['login:failed'], e);
     } finally {
       loginLoading.value = false;
@@ -53,22 +62,28 @@ export const useAccount = defineStore('account', () => {
       emitter.emit(BusEvents['error:message'], e);
     } finally {
       token.value = null;
-      online.value = false;
       logoutLoading.value = false;
+      isAuth.value = false;
     }
   }
+
+  const registerLoading = ref(false);
+  async function register(username: string, password: string) {}
 
   return {
     user,
     token,
-    online,
-    sync,
     fetchUser,
     fetchUserLoading,
     login,
     loginLoading,
     logout,
     logoutLoading,
-    enable
+    isLocal,
+    isRemote,
+    isAuth,
+    register,
+    registerLoading,
+    $reset
   };
 });

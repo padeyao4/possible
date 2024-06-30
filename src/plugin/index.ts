@@ -1,1 +1,1 @@
-export * from './pinia-plugin';
+export * from './pinia';

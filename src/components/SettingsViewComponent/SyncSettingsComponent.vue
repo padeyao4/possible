@@ -2,7 +2,7 @@
 import SettingsItem from '@/components/SettingsViewComponent/SettingsItem.vue';
 import ECheckbox from '@/components/common/ECheckbox.vue';
 import { useAccount } from '@/stores/account';
-import { KEYS, useNotify } from '@/stores/notity';
+import { KEYS, useNotify } from '@/stores/notify';
 import { computed } from 'vue';
 import emitter, { BusEvents } from '@/utils/emitter';
 

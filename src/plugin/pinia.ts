@@ -7,8 +7,8 @@ export function piniaPersisted({ store }: PiniaPluginContext) {
   }, true);*/
 
   store.$subscribe((params) => {
-    if (params.storeId === 'projects') {
-      console.log(params);
-    }
+    // if (params.storeId === 'projects') {
+    //   console.log(params);
+    // }
   });
 }
