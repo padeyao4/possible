@@ -9,6 +9,7 @@ export * from './project';
 export * from './settings';
 export * from './temp-path';
 export * from './timer';
+export * from './backlog';
 
 interface ExtendedPinia extends Pinia {
   _s: Map<string, Store>;

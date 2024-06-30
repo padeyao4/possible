@@ -1,30 +1,27 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue';
+import { ref } from 'vue';
 import ECounterButton from '@/components/common/ECounterButton.vue';
 import BacklogItem from '@/components/backlog/BacklogItem.vue';
 import { Plus } from '@element-plus/icons-vue';
-import BDraggable from '@/components/common/EDraggable.vue';
-import type { DraggableType } from '@/components/types';
+import EDraggable from '@/components/common/EDraggable.vue';
+import { useBacklog } from '@/stores';
+import { Backlog } from '@/core';
 
-const list = reactive<DraggableType[]>([]);
+const backlog = useBacklog();
 
-for (let i = 0; i < 10; i++) {
-  list.push({
-    id: i.toString(),
-    name: `备忘录${i}`,
-    done: false
-  });
-}
-
-const todos = computed(() => {
-  return list.filter((todo) => !todo.done);
-});
-
-const completed = computed(() => {
-  return list.filter((todo) => todo.done);
-});
+const onUpdate = (current: Backlog, other: Backlog) => {
+  [current.orderIndex, other.orderIndex] = [other.orderIndex, current.orderIndex];
+};
 
 const visible = ref(false);
+
+const inputRef = ref<HTMLInputElement>();
+
+const addNew = () => {
+  const value = inputRef.value.value;
+  backlog.add(value);
+  inputRef.value.value = '';
+};
 </script>
 
 <template>
@@ -33,27 +30,15 @@ const visible = ref(false);
     <el-scrollbar :always="false">
       <div class="content">
         <div class="todos">
-          <b-draggable
-            :list="list"
-            class="wrapper"
-            handle="data-move"
-            :update="
-              (current, other) => {
-                const index = list.findIndex((item) => item.id === current.id);
-                const otherIndex = list.findIndex((item) => item.id === other.id);
-                list.splice(index, 1);
-                list.splice(otherIndex, 0, current);
-              }
-            "
-          >
+          <e-draggable :list="backlog.todos" class="wrapper" handle="data-move" :update="onUpdate">
             <template #default="{ item }">
               <backlog-item :item="item" />
             </template>
-          </b-draggable>
+          </e-draggable>
         </div>
-        <e-counter-button :count="completed.length" v-model="visible" class="count-class" />
+        <e-counter-button :count="backlog.completesCount" v-model="visible" class="count-class" />
         <div class="completed" v-show="visible">
-          <backlog-item v-for="item in completed" :item="item" />
+          <backlog-item v-for="item in backlog.completes" :item="item" />
         </div>
       </div>
     </el-scrollbar>
@@ -62,7 +47,7 @@ const visible = ref(false);
         <el-icon :size="24" class="input-head-icon">
           <Plus />
         </el-icon>
-        <input placeholder="添加备忘录" />
+        <input placeholder="添加备忘录" ref="inputRef" @keydown.enter="addNew" />
       </div>
     </div>
   </div>

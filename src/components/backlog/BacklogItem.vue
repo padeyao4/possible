@@ -16,8 +16,8 @@ const cursor = useCursor();
 
 <template>
   <div class="backlog-item">
-    <check-button :checked="item.done" class="icon-button" />
-    <div class="text">{{ item.name }}</div>
+    <check-button :checked="item.done" class="icon-button" @click="item.done = !item.done" />
+    <div class="text">{{ item.title }}</div>
     <draggable-icon
       class="draggable-icon"
       data-move
