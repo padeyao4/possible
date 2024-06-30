@@ -16,10 +16,6 @@ const project = projectStore.getProjectById(node.projectId);
 
 const textDecoration = computed(() => (node.completed ? 'line-through' : 'none'));
 
-function onclick() {
-  node.completed = !node.completed;
-}
-
 const taskName = computed(() => (node.name.trim() === '' ? '未命名' : node.name));
 
 const projectName = computed(() => (project?.name?.trim?.() === '' ? '未命名' : project?.name));
@@ -28,7 +24,7 @@ const cursor = useCursor();
 </script>
 <template>
   <div class="item">
-    <div class="icon" @click="onclick">
+    <div class="icon" @click="node.completed = !node.completed">
       <check-button :checked="node.completed" />
     </div>
     <div class="content">
@@ -53,7 +49,7 @@ const cursor = useCursor();
   grid-row: 1;
   align-items: center;
   height: 56px;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--background-middle-color);
   border-radius: 4px;
 
   .icon {

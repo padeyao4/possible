@@ -45,7 +45,7 @@ const cursor = useCursor();
 
 .text {
   flex: 1;
-  margin-left: 8px;
+  margin-left: 12px;
   font-size: 16px;
   line-height: 24px;
   text-decoration-line: v-bind(textDecoration);
