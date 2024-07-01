@@ -1,38 +1,48 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import ProjectView from '@/views/ProjectView.vue'
-import CompletedView from '@/views/CompletedView.vue'
-import SettingsView from '@/views/SettingsView.vue'
+import { createRouter, createWebHashHistory } from 'vue-router';
+import TodayView from '@/views/TodayView.vue';
+import ProjectView from '@/views/ProjectView.vue';
+import BacklogView from '@/views/BacklogView.vue';
+import ManageView from '@/views/ManageView.vue';
+import LayoutView from '@/views/LayoutView.vue';
+import SettingsView from '@/views/SettingsView.vue';
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/today',
-      name: 'home',
-      component: HomeView
-    },
-    {
-      path: '/completed',
-      name: 'completed',
-      component: CompletedView
+      path: '/index',
+      component: LayoutView,
+      children: [
+        {
+          path: 'today',
+          name: 'today',
+          component: TodayView
+        },
+        {
+          path: 'backlog',
+          name: 'backlog',
+          component: BacklogView
+        },
+        {
+          path: 'manage',
+          name: 'manage',
+          component: ManageView
+        },
+        {
+          path: 'project',
+          name: 'project',
+          props: (route) => ({ id: route.query.id }),
+          component: ProjectView
+        }
+      ]
     },
     {
       path: '/settings',
       name: 'settings',
       component: SettingsView
     },
-    {
-      path: '/project/:id',
-      name: 'project',
-      props: true,
-      component: ProjectView
-    },
-    {
-      path: '/',
-      redirect: '/today'
-    }
+    { path: '/', redirect: '/index/today' }
   ]
-})
+});
 
-export default router
+export default router;

@@ -6,7 +6,9 @@
     "vitest.config.ts",
     "cypress.config.*",
     "nightwatch.conf.*",
-    "playwright.config.*"
+    "playwright.config.*",
+    "package.json",
+    "electron"
   ],
   "compilerOptions": {
     "composite": true,
@@ -17,9 +19,12 @@
     "strict": false,
     "noImplicitAny": false,
     "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "types": [
-      "node"
-    ]
+    "moduleResolution": "Node",
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "lib": ["ESNext", "DOM"],
+    "types": ["node"]
   }
 }

@@ -1,20 +1,16 @@
-import 'default-passive-events'
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
-import { createPinia } from 'pinia'
-import { createApp } from 'vue'
-import App from './App.vue'
-import './assets/main.css'
-import router from './router'
-import './utils/browser-patch'
-import log from 'loglevel'
+import { createPinia } from 'pinia';
+import { createApp } from 'vue';
+import App from './App.vue';
+import './assets/main.css';
+import ElementPlus from 'element-plus';
+import router from './router';
+import { piniaPersisted } from '@/plugin';
 
-log.setDefaultLevel(import.meta.env.DEV ? 'trace' : 'silent')
+const pinia = createPinia();
+pinia.use(piniaPersisted);
 
-const app = createApp(App)
-app.use(ElementPlus)
-app.use(createPinia())
-
-app.use(router)
-
-app.mount('#app')
+const app = createApp(App);
+app.use(ElementPlus, { zIndex: 3000 });
+app.use(pinia);
+app.use(router);
+app.mount('#app');

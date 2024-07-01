@@ -1,91 +1,77 @@
 <script setup lang="ts">
-import GraphContextmenu from '@/components/GraphContextmenu.vue'
-import GraphEditor from '@/components/GraphEditor.vue'
-import PickDateButton from '@/components/PickDateButton.vue'
-import ResetButton from '@/components/ResetButton.vue'
-import GraphTimerHeader from '@/components/GraphTimerHeader.vue'
-import { useStore } from '@/stores/store'
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import GraphRuler from '@/components/GraphRuler.vue'
-import GraphContainer from '@/components/GraphContainer.vue'
+import ProjectGroupComponent from '@/components/ProjectViewComponent/ProjectGroupComponent.vue';
+import ProjectFooter from '@/components/ProjectViewComponent/TheFooter.vue';
+import { computed, provide } from 'vue';
+import EditorComponent from '@/components/ProjectViewComponent/EditorComponent.vue';
+import { useProjectStore } from '@/stores/project';
+import type { ID } from '@/core/types';
 
-const store = useStore()
-const route = useRoute()
+const { id } = defineProps<{ id: ID }>();
 
-const currentProject = computed(() => store.projects[route.params.id as string])
+const store = useProjectStore();
+const project = computed(() => store.getProject(id));
+
+provide('project', project);
 </script>
 
 <template>
-  <div id="project-view">
-    <header data-tauri-drag-region>{{ currentProject.name }}</header>
-    <main>
-      <graph-container />
-      <graph-ruler />
-      <graph-timer-header />
-      <graph-editor />
-      <graph-contextmenu />
+  <div class="project-view">
+    <header>
+      <div class="title">{{ project.name ?? '未命名' }}</div>
+    </header>
+    <main class="project-group">
+      <project-group-component />
+      <editor-component class="editor" />
     </main>
-    <footer>
-      <reset-button />
-      <pick-date-button />
-    </footer>
+    <project-footer class="footer" />
   </div>
 </template>
 
 <style scoped>
-#project-view {
+.project-view {
   display: flex;
   flex-direction: column;
-  height: 100%;
   width: 100%;
+  height: 100%;
 }
 
 header {
   display: flex;
-  align-items: center;
-  outline: none;
-  height: 40px;
-  font-size: 20px;
-  margin: 24px;
-  white-space: nowrap;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
   flex-shrink: 0;
+  align-items: center;
+  height: 40px;
+  margin: 12px 16px;
+
+  .title {
+    display: block;
+    overflow: hidden;
+    font-size: var(--font-large-size);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }
 
 main {
-  position: relative;
-  display: flex;
   flex-grow: 1;
-  height: calc(100vh - 24px * 2 - 40px - 48px);
-  width: calc(100vw - 240px - 24px * 2);
-  margin: 0 24px;
-  border-radius: 4px 4px 0 0;
-  overflow: hidden;
-  background: #eef2f799;
 }
 
-footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.footer {
   flex-shrink: 0;
-  height: 48px;
-  box-shadow: rgba(27, 31, 35, 0.06) 0 -1px 0,
-  rgba(255, 255, 255, 0.25) 0 -1px 0 inset;
+  height: 48px !important;
+  background: transparent !important;
+  border-top: 1px solid #00000010;
+}
 
-  & > * {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 3px;
-    margin: 0 4px;
-    user-select: none;
-  }
+.project-group {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  background-color: var(--background-canvas-color);
+  border-top: 1px solid #00000010;
+}
 
-  & > *:hover {
-    background: rgba(0, 0, 0, 0.1);
-  }
+.editor {
+  overflow-y: auto;
+  border-left: #00000010 1px solid;
 }
 </style>
