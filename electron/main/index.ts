@@ -55,8 +55,8 @@ async function createWindow() {
     title: 'Main window',
     icon: path.join(process.env.VITE_PUBLIC, 'icon.png'),
     titleBarStyle: 'hidden',
-    width: 1200,
-    height: 800,
+    width: 850,
+    height: 600,
     minWidth: 620,
     minHeight: 450,
     titleBarOverlay: {
