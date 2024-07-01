@@ -35,7 +35,8 @@ export const BusEvents = {
   'register:success': Symbol(),
   'register:failed': Symbol(),
   // backlog
-  'backlog:event': Symbol()
+  'backlog:event': Symbol(),
+  'app:reload': Symbol()
 };
 
 export const dataChangeEvents = new Set([

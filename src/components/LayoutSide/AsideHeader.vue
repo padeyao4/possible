@@ -31,6 +31,7 @@ const backlog = useBacklog();
       <count-label :count="backlog.todosCount" style="margin-left: auto" />
     </div>
     <div
+      v-if="false"
       class="side-list-item"
       :data-active="$route.name === 'manage'"
       data-hover

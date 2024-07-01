@@ -1,5 +1,3 @@
-import type { ID } from '@/core/types';
-
 export type OptionType = {
   name?: string;
   group: {
@@ -12,6 +10,5 @@ export type OptionType = {
 };
 
 export interface DraggableType {
-  id: ID;
   [key: string]: any;
 }

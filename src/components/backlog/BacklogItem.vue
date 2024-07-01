@@ -2,12 +2,12 @@
 import CheckButton from '@/components/common/CheckButton.vue';
 import { computed } from 'vue';
 import DraggableIcon from '@/components/icon/DraggableIcon.vue';
-import type { DraggableType } from '@/components/types';
 import { useCursor } from '@/stores/cursor';
 import emitter, { BusEvents } from '@/utils/emitter';
+import { Backlog } from '@/core';
 
 const { item } = defineProps<{
-  item: DraggableType;
+  item: Backlog;
 }>();
 
 const textDecoration = computed(() => (item.done ? 'line-through' : 'none'));
@@ -22,7 +22,7 @@ const onClick = (id: string) => {
 <template>
   <div class="backlog-item">
     <check-button :checked="item.done" class="icon-button" @click="item.done = !item.done" />
-    <el-text @click="onClick(item.id)" truncated class="text">{{ item.title }}</el-text>
+    <el-text @click="onClick(item.uid)" truncated class="text">{{ item.title }}</el-text>
     <draggable-icon
       class="draggable-icon"
       data-move
