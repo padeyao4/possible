@@ -26,13 +26,15 @@
         ]
       }
     ],
+    "icon": "public/icon.ico",
     "artifactName": "${productName}-Windows-${version}-Setup.${ext}"
   },
   "nsis": {
     "oneClick": false,
     "perMachine": false,
     "allowToChangeInstallationDirectory": true,
-    "deleteAppDataOnUninstall": false
+    "deleteAppDataOnUninstall": false,
+    "installerIcon": "public/icon.ico",
   },
   "linux": {
     "target": [
