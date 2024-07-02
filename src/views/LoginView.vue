@@ -93,13 +93,13 @@ const registerRules = reactive<FormRules<typeof registerForm>>({
       <div class="container">
         <div>
           <el-tabs>
-            <el-tab-pane label="Login">
+            <el-tab-pane label="登录">
               <el-form :model="loginForm" class="login-form" :rules="loginRules">
                 <el-form-item prop="username" inline-message>
-                  <el-input v-model="loginForm.username" placeholder="username" />
+                  <el-input v-model="loginForm.username" placeholder="请输入账号" />
                 </el-form-item>
                 <el-form-item prop="password">
-                  <el-input v-model="loginForm.password" placeholder="password" type="password" />
+                  <el-input v-model="loginForm.password" placeholder="请输入密码" type="password" />
                 </el-form-item>
                 <el-form-item :error="loginForm.loginError">
                   <template #default>
@@ -107,16 +107,21 @@ const registerRules = reactive<FormRules<typeof registerForm>>({
                       <div>
                         <el-text tag="ins" class="forget-text">忘记密码?</el-text>
                       </div>
-
-                      <el-button type="primary" @click="onLogin" :loading="account.loginLoading"
-                        >Login</el-button
+                      <el-button
+                        type="primary"
+                        @click="onLogin"
+                        :loading="account.loginLoading"
+                        size="small"
+                        >登录</el-button
                       >
                     </div>
                   </template>
                 </el-form-item>
               </el-form>
+              <el-divider><el-text size="small">其他登录方式</el-text></el-divider>
+              <el-button size="small" round><el-text size="small">本地</el-text></el-button>
             </el-tab-pane>
-            <el-tab-pane label="Register">
+            <el-tab-pane label="注册">
               <el-card v-if="isRegister">
                 <template #default>
                   <div style="display: flex; justify-content: space-between">
