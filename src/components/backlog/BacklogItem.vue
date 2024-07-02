@@ -22,7 +22,7 @@ const onClick = (id: string) => {
 <template>
   <div class="backlog-item">
     <check-button :checked="item.done" class="icon-button" @click="item.done = !item.done" />
-    <el-text @click="onClick(item.uid)" truncated class="text">{{ item.title }}</el-text>
+    <el-text @click="onClick(item.id)" truncated class="text">{{ item.title }}</el-text>
     <draggable-icon
       class="draggable-icon"
       data-move

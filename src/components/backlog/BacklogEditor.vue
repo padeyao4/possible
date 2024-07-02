@@ -14,12 +14,11 @@ const item = computed(() => {
   return backlog.get(backlogId.value);
 });
 
-emitter.on(BusEvents['backlog:event'], ({ id }) => {
-  if (id === backlogId.value) {
+emitter.on(BusEvents['backlog:event'], ({ id }: { id: string }) => {
+  if (id === backlogId.value || visible.value === false) {
     visible.value = !visible.value;
-  } else {
-    backlogId.value = id;
   }
+  backlogId.value = id;
 });
 
 defineExpose({ visible: visible });
@@ -40,7 +39,17 @@ useEventListener(window, 'keydown', (e) => {
     <div style="margin-top: 35px; border-top: 1px solid #00000015">
       <close-icon-button style="margin-left: auto" @click="visible = false" />
     </div>
-    <el-card shadow="never"> {{ item?.title }} </el-card>
+    <div>
+      <el-input
+        type="textarea"
+        size="large"
+        v-model="item.title"
+        autosize
+        resize="none"
+        placeholder="请输入内容"
+        input-style="padding: 16px;"
+      />
+    </div>
   </div>
 </template>
 

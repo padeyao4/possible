@@ -94,8 +94,8 @@ export const useBacklog = defineStore('backlog', () => {
       });
   }
 
-  function get(uid: ID) {
-    return backlogs.get(uid) ?? Backlog.default();
+  function get(id: ID) {
+    return backlogs.get(id) ?? Backlog.default();
   }
 
   return {
