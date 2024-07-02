@@ -276,4 +276,26 @@ export default class Project implements DraggableType {
   public setOffsetIndex(date: any) {
     this.offset.x = getDaysBetweenDates(this.createTime, date) * useSettings().unitWidth;
   }
+
+  /**
+   * 拉取右边的关联的节点,
+   *
+   * 右边关联节点和它做关系节点距离一格以上，则它向左移动一格
+   * @param item
+   */
+  public pullRightNode(item: Node | ID) {
+    const nodeId = typeof item === 'string' ? item : item.id;
+    const { nodeMap, inMap, outMap } = this;
+    const node = nodeMap.get(nodeId);
+    Array.from(outMap.get(node.id))
+      .map((edge) => nodeMap.get(edge.target))
+      .filter((rightNode) =>
+        Array.from(inMap.get(rightNode.id))
+          .map((edge) => nodeMap.get(edge.source))
+          .every((leftNode) => rightNode.x - leftNode.x > 1)
+      )
+      .forEach((rightNode) => {
+        rightNode.moveLeft();
+      });
+  }
 }

@@ -163,6 +163,14 @@ function insertNode() {
   emitter.emit(BusEvents['node:updated']);
 }
 
+function pullRightNodes() {
+  const el = event.value.target as Element;
+  const nodeId = el.getAttribute('data-key');
+  project.value.pullRightNode(nodeId);
+  visible.value = false;
+  emitter.emit(BusEvents['node:updated']);
+}
+
 const nodeOptions: OptionType[] = [
   {
     name: '操作',
@@ -201,6 +209,10 @@ const nodeOptions: OptionType[] = [
         children: [
           {
             group: [
+              {
+                title: '拉取',
+                action: pullRightNodes
+              },
               {
                 title: '向上推动',
                 action: handleMoveUpWhole
