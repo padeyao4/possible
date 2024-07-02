@@ -113,7 +113,9 @@ function onPointerDown(e: PointerEvent) {
     clone.value.style.top = `${bound.top}px`;
     clone.value.style.left = `${bound.left}px`;
     clone.value.style.width = `${bound.width}px`;
-    clone.value.style.boxShadow = '0 0 5px 2px rgba(0, 0, 0, 0.2)';
+    for (let child of clone.value.children) {
+      (<HTMLElement>child).style.boxShadow = '0 0 5px 2px rgba(0, 0, 0, 0.2)';
+    }
     document.body.appendChild(clone.value);
 
     target.value = el;
@@ -130,7 +132,6 @@ function onPointerDown(e: PointerEvent) {
       :key="item.id"
       :id="item.id"
       :ref="setRefs"
-      class="draggable-item"
       @pointerdown="onPointerDown"
     >
       <slot name="default" :item="item" />
@@ -141,9 +142,5 @@ function onPointerDown(e: PointerEvent) {
 <style scoped>
 .b-draggable {
   overflow: hidden;
-}
-
-.list-move {
-  /*  todo*/
 }
 </style>

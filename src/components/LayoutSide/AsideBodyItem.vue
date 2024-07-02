@@ -102,6 +102,7 @@ const active = computed(() => id === project.id);
 .draggable-item {
   display: flex;
   width: 100%;
+  border-radius: 4px;
 }
 
 .slot-container {
