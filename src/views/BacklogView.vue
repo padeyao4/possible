@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import ECounterButton from '@/components/common/ECounterButton.vue';
 import BacklogItem from '@/components/backlog/BacklogItem.vue';
 import { Plus } from '@element-plus/icons-vue';
 import EDraggable from '@/components/common/EDraggable.vue';
-import { useBacklog } from '@/stores';
+import { useBacklog, useSettings } from '@/stores';
 import { Backlog } from '@/core';
 import BacklogEditor from '@/components/backlog/BacklogEditor.vue';
 
@@ -16,6 +16,7 @@ const onUpdate = (current: Backlog, other: Backlog) => {
 
 const showComplete = ref(false);
 const showRight = ref(false);
+const settings = useSettings();
 
 const inputRef = ref<HTMLInputElement>();
 
@@ -24,13 +25,17 @@ const addNew = () => {
   backlog.add(value);
   inputRef.value.value = '';
 };
+
+const width = computed(() => {
+  return showRight.value ? `calc( 100vw - ${settings.sideWidth}px - 300px )` : '100%';
+});
 </script>
 
 <template>
   <div class="backlog">
     <div class="left">
       <div class="title">备忘录</div>
-      <el-scrollbar :always="false">
+      <el-scrollbar :always="false" wrap-style="overflow-x: hidden;">
         <div class="content">
           <div class="todos">
             <e-draggable
@@ -63,7 +68,7 @@ const addNew = () => {
         </div>
       </div>
     </div>
-    <backlog-editor v-model="showRight" />
+    <backlog-editor v-model="showRight" style="flex-shrink: 0" />
   </div>
 </template>
 
@@ -71,7 +76,7 @@ const addNew = () => {
 .left {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: v-bind(width);
   height: 100vh;
 }
 

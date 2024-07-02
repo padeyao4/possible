@@ -50,7 +50,7 @@ export const useBacklog = defineStore('backlog', () => {
     entity.delete = true;
     entity.sync = false;
     backlogController
-      ._delete(entity.dbId)
+      .remove(entity.dbId)
       .then((response) => response.data)
       .then((data) => data.payload)
       .then(() => {
@@ -94,8 +94,8 @@ export const useBacklog = defineStore('backlog', () => {
       });
   }
 
-  function get(id: ID) {
-    return backlogs.get(id) ?? Backlog.default();
+  function get(id: ID): Backlog | undefined {
+    return backlogs.get(id);
   }
 
   return {
