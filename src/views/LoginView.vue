@@ -2,11 +2,14 @@
 import { reactive, ref } from 'vue';
 import { useAccount } from '@/stores/account';
 import router from '@/router';
-import type { FormRules } from 'element-plus';
+import type { FormInstance, FormRules } from 'element-plus';
 import emitter, { BusEvents } from '@/utils/emitter';
 import { Close } from '@element-plus/icons-vue';
 
 const account = useAccount();
+
+const loginFormEl = ref<FormInstance>();
+const registerFormEl = ref<FormInstance>();
 
 const isRegister = ref(false);
 
@@ -45,13 +48,27 @@ emitter.on(BusEvents['register:failed'], (e: any) => {
   registerForm.registerError = e.message;
 });
 
-const onLogin = async () => {
-  await account.login(loginForm.username, loginForm.password);
-  await router.push({ name: 'today' });
+const submitLogin = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  await formEl.validate(async (valid, fields) => {
+    if (valid) {
+      await account.login(loginForm.username, loginForm.password);
+      await router.push({ name: 'today' });
+    } else {
+      console.log('error submit!', fields);
+    }
+  });
 };
 
-const onRegister = async () => {
-  await account.register(registerForm.username, registerForm.password);
+const submitRegister = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  await formEl.validate(async (valid, fields) => {
+    if (valid) {
+      await account.register(registerForm.username, registerForm.password);
+    } else {
+      console.log('error submit!', fields);
+    }
+  });
 };
 
 const loginRules = reactive<FormRules<typeof loginForm>>({
@@ -74,9 +91,9 @@ const registerRules = reactive<FormRules<typeof registerForm>>({
       trigger: 'blur',
       validator: (rule, value, callback, source, options) => {
         if (value === '') {
-          callback(new Error('Please input the password again'));
+          callback(new Error('请再次输入密码'));
         } else if (value !== registerForm.password) {
-          callback(new Error("Two inputs don't match!"));
+          callback(new Error('两次密码不相同!'));
         } else {
           callback();
         }
@@ -94,8 +111,8 @@ const registerRules = reactive<FormRules<typeof registerForm>>({
         <div>
           <el-tabs>
             <el-tab-pane label="登录">
-              <el-form :model="loginForm" class="login-form" :rules="loginRules">
-                <el-form-item prop="username" inline-message>
+              <el-form ref="loginFormEl" :model="loginForm" class="login-form" :rules="loginRules">
+                <el-form-item prop="username">
                   <el-input v-model="loginForm.username" placeholder="请输入账号" />
                 </el-form-item>
                 <el-form-item prop="password">
@@ -109,7 +126,7 @@ const registerRules = reactive<FormRules<typeof registerForm>>({
                       </div>
                       <el-button
                         type="primary"
-                        @click="onLogin"
+                        @click="submitLogin(loginFormEl)"
                         :loading="account.loginLoading"
                         size="small"
                         >登录</el-button
@@ -135,14 +152,20 @@ const registerRules = reactive<FormRules<typeof registerForm>>({
                   </div>
                 </template>
               </el-card>
-              <el-form v-else :model="registerForm" class="login-form" :rules="registerRules">
+              <el-form
+                ref="registerFormEl"
+                v-else
+                :model="registerForm"
+                class="login-form"
+                :rules="registerRules"
+              >
                 <el-form-item prop="username">
-                  <el-input v-model="registerForm.username" placeholder="username" />
+                  <el-input v-model="registerForm.username" placeholder="请输入用户名" />
                 </el-form-item>
                 <el-form-item prop="password">
                   <el-input
                     v-model="registerForm.password"
-                    placeholder="password"
+                    placeholder="请输入密码"
                     type="password"
                   />
                 </el-form-item>
@@ -150,13 +173,17 @@ const registerRules = reactive<FormRules<typeof registerForm>>({
                   <el-input
                     v-model="registerForm.checkPassword"
                     autocomplete="off"
-                    placeholder="confirm password"
+                    placeholder="确认密码"
                     type="password"
                   />
                 </el-form-item>
                 <el-form-item :error="registerForm.registerError">
-                  <el-button type="primary" @click="onRegister" :loading="account.registerLoading"
-                    >register</el-button
+                  <el-button
+                    type="primary"
+                    @click="submitRegister(registerFormEl)"
+                    :loading="account.registerLoading"
+                    size="small"
+                    >注册</el-button
                   >
                 </el-form-item>
               </el-form>
