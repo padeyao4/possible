@@ -1,7 +1,7 @@
+import './assets/main.css';
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 import App from './App.vue';
-import './assets/main.css';
 import ElementPlus from 'element-plus';
 import router from './router';
 import { piniaPersisted } from '@/plugin';

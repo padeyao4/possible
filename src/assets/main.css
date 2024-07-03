@@ -1,4 +1,7 @@
 @import './default-theme.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 *,
 *::before,
