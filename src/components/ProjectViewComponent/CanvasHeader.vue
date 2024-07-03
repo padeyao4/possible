@@ -4,7 +4,7 @@ import { useSettings } from '@/stores/settings';
 import CanvasHeaderItem from '@/components/ProjectViewComponent/CanvasHeaderItem.vue';
 import { getDaysBetweenDates, useTimer } from '@/stores/timer';
 import { useWindowSize } from '@vueuse/core';
-import type Project from '@/core/Project';
+import type { Project } from '@/core';
 
 const settings = useSettings();
 const indexes = ref<number[]>([]);

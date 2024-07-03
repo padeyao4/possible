@@ -2,7 +2,7 @@
 import EDialog from '@/components/common/EDialog.vue';
 import { useProjectStore } from '@/stores/project';
 import { computed, ref } from 'vue';
-import type Project from '@/core/Project';
+import type { Project } from '@/core/Project';
 import { Icon } from '@iconify/vue';
 import emitter, { BusEvents } from '@/utils/emitter';
 import { useRoute } from 'vue-router';

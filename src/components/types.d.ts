@@ -10,5 +10,6 @@ export type OptionType = {
 };
 
 export interface DraggableType {
+  id: any;
   [key: string]: any;
 }

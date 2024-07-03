@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import CheckButton from '@/components/common/CheckButton.vue';
 import { computed } from 'vue';
-import DraggableIcon from '@/components/icon/DraggableIcon.vue';
 import { useCursor } from '@/stores/cursor';
 import emitter, { BusEvents } from '@/utils/emitter';
 import { Backlog } from '@/core';
+import { Check } from '@element-plus/icons-vue';
 
 const { item } = defineProps<{
   item: Backlog;
@@ -20,45 +19,12 @@ const onClick = (id: string) => {
 </script>
 
 <template>
-  <div class="backlog-item">
-    <check-button :checked="item.done" class="icon-button" @click="item.done = !item.done" />
-    <el-text @click="onClick(item.id)" truncated class="text">{{ item.title }}</el-text>
-    <draggable-icon
-      class="draggable-icon"
-      data-move
-      @pointerenter="cursor.setWithUnlock('pointer')"
-      @pointerleave="cursor.setWithUnlock('default')"
-    />
+  <div
+    class="flex h-14 w-full flex-row items-center rounded-lg border border-gray-200 bg-amber-100"
+  >
+    <div class="flex h-6 w-6 items-center justify-center rounded-full border border-gray-500">
+      <el-icon size="16"><Check /></el-icon>
+    </div>
+    <el-text truncated>{{ item.title }}</el-text>
   </div>
 </template>
-
-<style scoped>
-.backlog-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  height: 58px;
-  padding: 0 12px;
-  background-color: var(--background-middle-color);
-  border-radius: 4px;
-}
-
-.icon-button {
-  width: 24px;
-  height: 24px;
-}
-
-.text {
-  flex: 1;
-  align-content: center;
-  height: 100%;
-  margin-left: 12px;
-  font-size: 16px;
-  text-decoration-line: v-bind(textDecoration);
-}
-
-.draggable-icon {
-  width: 24px;
-  height: 24px;
-}
-</style>

@@ -12,7 +12,7 @@ import { DoubleClickCard } from '@/graph/behavior/double-click-card';
 import { CreateEdge } from '@/graph/behavior/create-edge';
 import { Contextmenu } from '@/graph/behavior/contextmenu';
 import WheelCanvas from '@/graph/behavior/wheel-canvas';
-import type Project from '@/core/Project';
+import { Project } from '@/core';
 
 const svg = ref();
 const project = inject<ComputedRef<Project>>('project');

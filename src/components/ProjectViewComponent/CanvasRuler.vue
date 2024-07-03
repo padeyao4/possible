@@ -2,7 +2,7 @@
 import { computed, type ComputedRef, inject, ref, watchEffect } from 'vue';
 import { useWindowSize } from '@vueuse/core';
 import { useSettings } from '@/stores/settings';
-import type Project from '@/core/Project';
+import type { Project } from '@/core';
 
 const project = inject<ComputedRef<Project>>('project');
 const settings = useSettings();

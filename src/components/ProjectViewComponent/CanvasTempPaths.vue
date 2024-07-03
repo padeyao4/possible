@@ -4,7 +4,7 @@ import { useSettings } from '@/stores/settings';
 import type { Point } from '@/core/types';
 import { useTempPaths } from '@/stores/temp-path';
 import CanvasTheTempPath from '@/components/ProjectViewComponent/CanvasTheTempPath.vue';
-import type Project from '@/core/Project';
+import type { Project } from '@/core';
 
 const project = inject<ComputedRef<Project>>('project');
 const setting = useSettings();

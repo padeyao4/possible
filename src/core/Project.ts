@@ -1,14 +1,14 @@
 import type { ID, Point } from './types';
 import { markRaw, toRaw } from 'vue';
-import Node from './Node';
+import { Node } from './Node';
 import { v4 } from 'uuid';
 import { faker } from '@faker-js/faker';
-import Edge from '@/core/Edge';
-import { getDaysBetweenDates, useTimer } from '@/stores/timer';
-import { useSettings } from '@/stores/settings';
+import { Edge } from './Edge';
+import { getDaysBetweenDates, useTimer } from '@/stores';
+import { useSettings } from '@/stores';
 import type { DraggableType } from '@/components/types';
 
-export default class Project implements DraggableType {
+export class Project implements DraggableType {
   id: ID;
   name: string;
   nodeMap: Map<ID, Node>;

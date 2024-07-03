@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useSettings } from '@/stores/settings';
 import { computed, type ComputedRef, inject } from 'vue';
-import type Project from '@/core/Project';
+import type { Project } from '@/core';
 
 const settings = useSettings();
 const project = inject<ComputedRef<Project>>('project');

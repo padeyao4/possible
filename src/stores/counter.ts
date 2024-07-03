@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { getIndexByDate } from '@/stores/timer';
-import Project from '@/core/Project';
+import { Project } from '@/core';
 import { useProjectStore } from '@/stores/project';
 
 // 用于显示当前未完成的todo数量

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, type ComputedRef, inject } from 'vue';
 import { showWeek, timeFormat } from '@/stores/timer';
-import type Project from '@/core/Project';
+import type { Project } from '@/core';
 
 const props = defineProps<{
   idx: number;

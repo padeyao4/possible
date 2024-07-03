@@ -2,7 +2,7 @@ import { v4 } from 'uuid';
 import { faker } from '@faker-js/faker';
 import type { ID } from '@/core/types';
 
-export default class Node {
+export class Node {
   id: ID;
   name: string;
   x: number;

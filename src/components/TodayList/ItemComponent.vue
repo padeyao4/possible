@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useProjectStore } from '@/stores/project';
 import { computed } from 'vue';
-import Node from '@/core/Node';
+import { Node } from '@/core';
 import CheckButton from '@/components/common/CheckButton.vue';
 import DraggableIcon from '@/components/icon/DraggableIcon.vue';
 import { useCursor } from '@/stores/cursor';
@@ -28,7 +28,7 @@ const cursor = useCursor();
       <check-button :checked="node.completed" />
     </div>
     <div class="content">
-      <div class="one">
+      <div class="side-style">
         {{ taskName }}
       </div>
       <div class="two">
@@ -72,7 +72,7 @@ const cursor = useCursor();
     flex-grow: 1;
     overflow: hidden;
 
-    .one {
+    .side-style {
       display: flex;
       flex-grow: 1;
       align-items: end;

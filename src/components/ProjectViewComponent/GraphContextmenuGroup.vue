@@ -9,10 +9,10 @@ import {
   tryMoveUp,
   tryMoveUpWhole
 } from '@/service/project.service';
-import Node from '@/core/Node';
-import { useCursor } from '@/stores/cursor';
-import { useSettings } from '@/stores/settings';
-import type Project from '@/core/Project';
+import { Node } from '@/core';
+import { useCursor } from '@/stores';
+import { useSettings } from '@/stores';
+import type { Project } from '@/core';
 import type { ItemType } from '@/graph/types';
 import { computed, type ComputedRef, inject, onBeforeUnmount, ref } from 'vue';
 import ContextmenuComponent from '@/components/ProjectViewComponent/ContextmenuComponent.vue';

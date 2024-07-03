@@ -3,7 +3,7 @@ import emitter, { BusEvents } from '@/utils/emitter';
 import { useEventListener, useTextareaAutosize } from '@vueuse/core';
 import { computed, type ComputedRef, inject, onMounted, onUnmounted, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
-import type Project from '@/core/Project';
+import type { Project } from '@/core';
 
 const width = ref(300);
 const visible = ref(false);

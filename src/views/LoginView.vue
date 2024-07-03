@@ -104,129 +104,89 @@ const registerRules = reactive<FormRules<typeof registerForm>>({
 </script>
 
 <template>
-  <div class="login">
-    <div class="left"></div>
-    <div class="right">
-      <div class="container">
-        <div>
-          <el-tabs>
-            <el-tab-pane label="登录">
-              <el-form ref="loginFormEl" :model="loginForm" class="login-form" :rules="loginRules">
-                <el-form-item prop="username">
-                  <el-input v-model="loginForm.username" placeholder="请输入账号" />
-                </el-form-item>
-                <el-form-item prop="password">
-                  <el-input v-model="loginForm.password" placeholder="请输入密码" type="password" />
-                </el-form-item>
-                <el-form-item :error="loginForm.loginError">
-                  <template #default>
-                    <div class="operations">
-                      <div>
-                        <el-text tag="ins" class="forget-text">忘记密码?</el-text>
-                      </div>
-                      <el-button
-                        type="primary"
-                        @click="submitLogin(loginFormEl)"
-                        :loading="account.loginLoading"
-                        size="small"
-                        >登录</el-button
-                      >
-                    </div>
-                  </template>
-                </el-form-item>
-              </el-form>
-              <el-divider><el-text size="small">其他登录方式</el-text></el-divider>
-              <el-button size="small" round><el-text size="small">本地</el-text></el-button>
-            </el-tab-pane>
-            <el-tab-pane label="注册">
-              <el-card v-if="isRegister">
+  <div class="flex h-screen w-screen flex-row">
+    <div class="h-screen w-1/2 bg-blue-400"></div>
+    <div class="flex h-screen w-1/2 items-center justify-center bg-white">
+      <div class="h-fit w-60">
+        <el-tabs>
+          <el-tab-pane label="登录">
+            <el-form ref="loginFormEl" :model="loginForm" class="login-form" :rules="loginRules">
+              <el-form-item prop="username">
+                <el-input v-model="loginForm.username" placeholder="请输入账号" />
+              </el-form-item>
+              <el-form-item prop="password">
+                <el-input v-model="loginForm.password" placeholder="请输入密码" type="password" />
+              </el-form-item>
+              <el-form-item :error="loginForm.loginError">
                 <template #default>
-                  <div style="display: flex; justify-content: space-between">
-                    <el-text type="success">
-                      <b
-                        ><i>{{ registerForm.username }}</i></b
-                      >
-                      register success</el-text
+                  <div class="flex w-full flex-row justify-between">
+                    <el-text tag="ins" class="forget-text">忘记密码?</el-text>
+                    <el-button
+                      type="primary"
+                      @click="submitLogin(loginFormEl)"
+                      :loading="account.loginLoading"
+                      size="small"
+                      >登录</el-button
                     >
-                    <el-button :icon="Close" size="small" @click="handleResetRegister" />
                   </div>
                 </template>
-              </el-card>
-              <el-form
-                ref="registerFormEl"
-                v-else
-                :model="registerForm"
-                class="login-form"
-                :rules="registerRules"
-              >
-                <el-form-item prop="username">
-                  <el-input v-model="registerForm.username" placeholder="请输入用户名" />
-                </el-form-item>
-                <el-form-item prop="password">
-                  <el-input
-                    v-model="registerForm.password"
-                    placeholder="请输入密码"
-                    type="password"
-                  />
-                </el-form-item>
-                <el-form-item prop="checkPassword">
-                  <el-input
-                    v-model="registerForm.checkPassword"
-                    autocomplete="off"
-                    placeholder="确认密码"
-                    type="password"
-                  />
-                </el-form-item>
-                <el-form-item :error="registerForm.registerError">
-                  <el-button
-                    type="primary"
-                    @click="submitRegister(registerFormEl)"
-                    :loading="account.registerLoading"
-                    size="small"
-                    >注册</el-button
+              </el-form-item>
+            </el-form>
+            <el-divider><el-text size="small">其他登录方式</el-text></el-divider>
+            <el-button size="small" round><el-text size="small">本地</el-text></el-button>
+          </el-tab-pane>
+          <el-tab-pane label="注册">
+            <el-card v-if="isRegister">
+              <template #default>
+                <div style="display: flex; justify-content: space-between">
+                  <el-text type="success">
+                    <b
+                      ><i>{{ registerForm.username }}</i></b
+                    >
+                    注册成功.</el-text
                   >
-                </el-form-item>
-              </el-form>
-            </el-tab-pane>
-          </el-tabs>
-        </div>
+                  <el-button :icon="Close" size="small" @click="handleResetRegister" />
+                </div>
+              </template>
+            </el-card>
+            <el-form
+              ref="registerFormEl"
+              v-else
+              :model="registerForm"
+              class="login-form"
+              :rules="registerRules"
+            >
+              <el-form-item prop="username">
+                <el-input v-model="registerForm.username" placeholder="请输入用户名" />
+              </el-form-item>
+              <el-form-item prop="password">
+                <el-input
+                  v-model="registerForm.password"
+                  placeholder="请输入密码"
+                  type="password"
+                />
+              </el-form-item>
+              <el-form-item prop="checkPassword">
+                <el-input
+                  v-model="registerForm.checkPassword"
+                  autocomplete="off"
+                  placeholder="确认密码"
+                  type="password"
+                />
+              </el-form-item>
+              <el-form-item :error="registerForm.registerError">
+                <el-button
+                  type="primary"
+                  @click="submitRegister(registerFormEl)"
+                  :loading="account.registerLoading"
+                  size="small"
+                  >注册</el-button
+                >
+              </el-form-item>
+            </el-form>
+          </el-tab-pane>
+        </el-tabs>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.login {
-  display: flex;
-  flex-direction: row;
-  width: 100vw;
-  height: 100vh;
-  background-color: #3a8ee6;
-}
-.left {
-  width: 50%;
-  height: 100%;
-  background-color: rgb(23, 153, 255);
-}
-.right {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 50%;
-  height: 100%;
-  background-color: #ffffff;
-  .container {
-    width: 250px;
-    .login-form {
-      display: grid;
-      grid-template-rows: 1fr 1fr;
-    }
-    .operations {
-      display: flex;
-      align-items: end !important;
-      justify-content: space-between;
-      width: 100%;
-    }
-  }
-}
-</style>

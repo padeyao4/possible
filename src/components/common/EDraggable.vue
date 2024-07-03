@@ -126,17 +126,15 @@ function onPointerDown(e: PointerEvent) {
 </script>
 
 <template>
-  <transition-group tag="div" class="b-draggable" name="list">
-    <div
-      v-for="item in list"
-      :key="item.id"
-      :id="item.id"
-      :ref="setRefs"
-      @pointerdown="onPointerDown"
-    >
-      <slot name="default" :item="item" />
-    </div>
-  </transition-group>
+  <div
+    v-for="item in list"
+    :key="item.id"
+    :id="item.id"
+    :ref="setRefs"
+    @pointerdown="onPointerDown"
+  >
+    <slot name="default" :item="item" />
+  </div>
 </template>
 
 <style scoped>

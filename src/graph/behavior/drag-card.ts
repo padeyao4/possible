@@ -1,7 +1,7 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { clampMin } from '../math';
 import type { Point } from '@/core/types';
-import type Node from '@/core/Node';
+import type { Node } from '@/core/Node';
 import emitter, { BusEvents } from '@/utils/emitter';
 
 export class DragCard extends BaseBehavior {

@@ -1,7 +1,7 @@
 import { useCursor } from '@/stores/cursor';
 import { useSettings } from '@/stores/settings';
 import { useEventListener } from '@vueuse/core';
-import Project from '@/core/Project';
+import { Project } from '@/core';
 
 const eventTypes = [
   'mouseover',

@@ -1,7 +1,7 @@
 import type { ID } from '@/core/types';
 import { v4 } from 'uuid';
 
-export default class Edge {
+export class Edge {
   id: ID;
   source: ID;
   target: ID;

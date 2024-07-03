@@ -8,7 +8,7 @@ import { useBacklog, useSettings } from '@/stores';
 import { Backlog } from '@/core';
 import BacklogEditor from '@/components/backlog/BacklogEditor.vue';
 
-const backlog = useBacklog();
+const backlogs = useBacklog();
 
 const onUpdate = (current: Backlog, other: Backlog) => {
   [current.orderIndex, other.orderIndex] = [other.orderIndex, current.orderIndex];
@@ -22,7 +22,7 @@ const inputRef = ref<HTMLInputElement>();
 
 const addNew = () => {
   const value = inputRef.value.value;
-  backlog.add(value);
+  backlogs.add(value);
   inputRef.value.value = '';
 };
 
@@ -32,43 +32,31 @@ const width = computed(() => {
 </script>
 
 <template>
-  <div class="backlog">
-    <div class="left">
-      <div class="title">备忘录</div>
-      <el-scrollbar :always="false" wrap-style="overflow-x: hidden;">
-        <div class="content">
-          <div class="todos">
-            <e-draggable
-              :list="backlog.todos"
-              class="wrapper"
-              handle="data-move"
-              :update="onUpdate"
-            >
-              <template #default="{ item }">
-                <backlog-item :item="item" />
-              </template>
-            </e-draggable>
-          </div>
-          <e-counter-button
-            :count="backlog.completesCount"
-            v-model="showComplete"
-            class="count-class"
-          />
-          <div class="completed" v-show="showComplete">
-            <backlog-item v-for="item in backlog.completes" :item="item" />
-          </div>
-        </div>
+  <div class="flex h-screen w-full flex-row">
+    <div class="flex h-screen w-full flex-col p-3">
+      <div class="drag-region flex h-12 w-full shrink-0 items-end bg-amber-100 text-2xl">
+        备忘录
+      </div>
+      <el-scrollbar class="w-full">
+        <e-draggable :update="() => {}" :list="backlogs.todos" class="w-full">
+          <template #default="{ item }">
+            <backlog-item :item="item" />
+          </template>
+        </e-draggable>
+        <e-counter-button :count="backlogs.completes.length" />
+        <e-draggable :update="() => {}" :list="backlogs.completes">
+          <template #default="{ item }">
+            <backlog-item :item="item" />
+          </template>
+        </e-draggable>
       </el-scrollbar>
-      <div class="footer">
-        <div class="input-item">
-          <el-icon :size="24" class="input-head-icon">
-            <Plus />
-          </el-icon>
-          <input placeholder="添加备忘录" ref="inputRef" @keydown.enter="addNew" />
+      <div class="flex h-12 shrink-0 flex-row items-center rounded-md border border-gray-200">
+        <div class="flex h-10 w-10 items-center justify-center">
+          <el-icon size="26"><Plus /></el-icon>
         </div>
+        <input class="h-full w-full bg-amber-100 p-1" />
       </div>
     </div>
-    <backlog-editor v-model="showRight" style="flex-shrink: 0" />
   </div>
 </template>
 
@@ -149,3 +137,41 @@ const width = computed(() => {
   }
 }
 </style>
+<!--  <div class="backlog">
+    <div class="left">
+      <div class="title">备忘录</div>
+      <el-scrollbar :always="false" wrap-style="overflow-x: hidden;">
+        <div class="content">
+          <div class="todos">
+            <e-draggable
+              :list="backlog.todos"
+              class="wrapper"
+              handle="data-move"
+              :update="onUpdate"
+            >
+              <template #default="{ item }">
+                <backlog-item :item="item" />
+              </template>
+            </e-draggable>
+          </div>
+          <e-counter-button
+            :count="backlog.completesCount"
+            v-model="showComplete"
+            class="count-class"
+          />
+          <div class="completed" v-show="showComplete">
+            <backlog-item v-for="item in backlog.completes" :item="item" />
+          </div>
+        </div>
+      </el-scrollbar>
+      <div class="footer">
+        <div class="input-item">
+          <el-icon :size="24" class="input-head-icon">
+            <Plus />
+          </el-icon>
+          <input placeholder="添加备忘录" ref="inputRef" @keydown.enter="addNew" />
+        </div>
+      </div>
+    </div>
+    <backlog-editor v-model="showRight" style="flex-shrink: 0" />
+  </div>-->

@@ -47,6 +47,7 @@ declare module 'vue' {
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElInput: typeof import('element-plus/es')['ElInput']
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
+    ElSpace: typeof import('element-plus/es')['ElSpace']
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElText: typeof import('element-plus/es')['ElText']
@@ -63,12 +64,13 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     SettingsIcon: typeof import('./src/components/icon/SettingsIcon.vue')['default']
     SettingsItem: typeof import('./src/components/SettingsViewComponent/SettingsItem.vue')['default']
-    SyncSettingsComponent: typeof import('./src/components/SettingsViewComponent/SyncSettingsComponent.vue')['default']
+    SideItem: typeof import('./src/components/SideItem.vue')['default']
     SystemTitlebar: typeof import('./src/components/SystemTitlebar.vue')['default']
     TestTubeIcon: typeof import('./src/components/icon/TestTubeIcon.vue')['default']
     TheCanvas: typeof import('./src/components/ProjectViewComponent/TheCanvas.vue')['default']
     TheFooter: typeof import('./src/components/ProjectViewComponent/TheFooter.vue')['default']
     TheSeparation: typeof import('./src/components/common/TheSeparation.vue')['default']
     TheSide: typeof import('./src/components/LayoutSide/TheSide.vue')['default']
+    TodayItem: typeof import('./src/components/TodayItem.vue')['default']
   }
 }

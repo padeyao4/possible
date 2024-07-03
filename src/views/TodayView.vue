@@ -6,7 +6,9 @@ import { showWeekAndLocalDate, useTimer } from '@/stores/timer';
 import { computed, ref } from 'vue';
 import ECounterButton from '@/components/common/ECounterButton.vue';
 import EDraggable from '@/components/common/EDraggable.vue';
-import Node from '@/core/Node';
+import { Node } from '@/core';
+import { Plus } from '@element-plus/icons-vue';
+import TodayItem from '@/components/TodayItem.vue';
 
 const visible = ref(false);
 
@@ -14,56 +16,31 @@ const timer = useTimer();
 
 const dateTime = computed(() => showWeekAndLocalDate(timer.localTimestamp));
 
-const projectStore = useProjectStore();
+const projects = useProjectStore();
 
 function onUpdate(n1: Node, n2: Node) {
   [n1.sortedIndex, n2.sortedIndex] = [n2.sortedIndex, n1.sortedIndex];
 }
 
 const showWelcome = computed(() => {
-  return projectStore.todoList.length === 0 && projectStore.completedList.length === 0;
+  return projects.todoList.length === 0 && projects.completedList.length === 0;
 });
 </script>
 
 <template>
-  <div class="home-view">
-    <header>
-      <div>我的一天</div>
-      <div>{{ dateTime }}</div>
-    </header>
-    <div v-if="showWelcome" class="content empty-class">
-      <div>
-        <div class="empty-info">今日空闲,享受悠闲时光~</div>
-        <div class="empty-next">
-          或者开始<i @click="handleNewProject" class="empty-new">新的计划</i>
-        </div>
-      </div>
-    </div>
-    <el-scrollbar v-else class="content">
-      <e-draggable
-        :update="onUpdate"
-        :list="projectStore.todoList"
-        class="wrapper-class"
-        handle="data-move"
-      >
+  <div class="flex h-screen flex-col p-3">
+    <div class="drag-region flex h-12 w-full items-end bg-amber-100 text-2xl">我的一天</div>
+    <el-text class="w-full" size="small">{{ dateTime }}</el-text>
+    <el-scrollbar class="grow bg-blue-100">
+      <e-draggable :update="() => {}" :list="projects.todoList">
         <template #default="{ item }">
-          <item-component :node="item" />
+          <today-item :node="item" />
         </template>
       </e-draggable>
-      <e-counter-button
-        :count="projectStore.completedList.length"
-        v-model="visible"
-        class="count-class"
-      />
-      <e-draggable
-        v-show="visible"
-        :update="onUpdate"
-        :list="projectStore.completedList"
-        class="wrapper-class"
-        handle="data-move"
-      >
+      <e-counter-button :count="projects.completedList.length" />
+      <e-draggable :update="() => {}" :list="projects.completedList">
         <template #default="{ item }">
-          <item-component :node="item" />
+          <today-item :node="item" />
         </template>
       </e-draggable>
     </el-scrollbar>
@@ -165,3 +142,45 @@ header {
   overflow-y: auto;
 }
 </style>
+<!--  <div class="home-view">-->
+<!--    <header>-->
+<!--      <div>我的一天</div>-->
+<!--      <div>{{ dateTime }}</div>-->
+<!--    </header>-->
+<!--    <div v-if="showWelcome" class="content empty-class">-->
+<!--      <div>-->
+<!--        <div class="empty-info">今日空闲,享受悠闲时光~</div>-->
+<!--        <div class="empty-next">-->
+<!--          或者开始<i @click="handleNewProject" class="empty-new">新的计划</i>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <el-scrollbar v-else class="content">-->
+<!--      <e-draggable-->
+<!--        :update="onUpdate"-->
+<!--        :list="projectStore.todoList"-->
+<!--        class="wrapper-class"-->
+<!--        handle="data-move"-->
+<!--      >-->
+<!--        <template #default="{ item }">-->
+<!--          <item-component :node="item" />-->
+<!--        </template>-->
+<!--      </e-draggable>-->
+<!--      <e-counter-button-->
+<!--        :count="projectStore.completedList.length"-->
+<!--        v-model="visible"-->
+<!--        class="count-class"-->
+<!--      />-->
+<!--      <e-draggable-->
+<!--        v-show="visible"-->
+<!--        :update="onUpdate"-->
+<!--        :list="projectStore.completedList"-->
+<!--        class="wrapper-class"-->
+<!--        handle="data-move"-->
+<!--      >-->
+<!--        <template #default="{ item }">-->
+<!--          <item-component :node="item" />-->
+<!--        </template>-->
+<!--      </e-draggable>-->
+<!--    </el-scrollbar>-->
+<!--  </div>-->

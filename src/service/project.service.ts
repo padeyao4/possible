@@ -1,7 +1,7 @@
 import { isCross } from '@/graph/math';
 import { useProjectStore } from '@/stores/project';
-import Node from '@/core/Node';
-import Project from '@/core/Project';
+import { Node } from '@/core/Node';
+import { Project } from '@/core/Project';
 import router from '@/router';
 import emitter, { BusEvents } from '@/utils/emitter';
 

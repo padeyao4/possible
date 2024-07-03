@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
 import { computed, reactive, ref } from 'vue';
 import { getIndexByDate } from './timer';
-import Project from '@/core/Project';
-import Node from '@/core/Node';
+import { Project } from '@/core';
+import { Node } from '@/core';
 import type { ID } from '@/core/types';
-import Edge from '@/core/Edge';
+import { Edge } from '@/core/';
 import { StorageControllerApi } from '@/openapi';
 import emitter, { BusEvents } from '@/utils/emitter';
 
@@ -13,7 +13,7 @@ export const useProjectStore = defineStore('projects', () => {
   const dataVersion = ref(0);
 
   const sortProjects = computed(() => {
-    return Array.from(mapper.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex);
+    return Array.from(mapper.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex) as Project[];
   });
 
   const nodes = computed<Node[]>(() => {

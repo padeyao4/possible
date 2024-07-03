@@ -2,7 +2,7 @@
 import { useProjectStore } from '@/stores/project';
 import AsideBodyItem from '@/components/LayoutSide/AsideBodyItem.vue';
 import EDraggable from '@/components/common/EDraggable.vue';
-import type Project from '@/core/Project';
+import type { Project } from '@/core/Project';
 
 const projectStore = useProjectStore();
 

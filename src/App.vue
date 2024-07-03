@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import emitter, { BusEvents, dataChangeEvents } from '@/utils/emitter';
-import { onBeforeUnmount } from 'vue';
-import { useAccount } from '@/stores';
-import { useProjectStore } from '@/stores';
+import { useAccount, useBacklog, useProjectStore } from '@/stores';
 import { useDebounceFn } from '@vueuse/core';
 import { useScheduler, useUpdateDate } from '@/service';
 import { useCounter } from '@/stores/counter';
 import SystemTitlebar from '@/components/SystemTitlebar.vue';
 import { axiosConfig } from '@/core/config';
 import LoginView from '@/views/LoginView.vue';
-import { useBacklog } from '@/stores';
+import { RouterView } from 'vue-router';
+import { onBeforeUnmount } from 'vue';
 
 axiosConfig();
 
@@ -61,16 +60,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <system-titlebar />
-    <router-view v-if="account.isAuth" :key="$route.fullPath" style="height: 100vh" />
-    <login-view v-else />
+  <system-titlebar />
+  <router-view v-if="account.isAuth" :key="$route.fullPath" style="height: 100vh" />
+  <login-view v-else />
 </template>
-
-<style scoped>
-/**
- * 滚动条样式
- */
-:deep(.el-scrollbar__thumb) {
-  background: #000000;
-}
-</style>

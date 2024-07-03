@@ -4,7 +4,7 @@ import { isCross } from '@/graph/math';
 import { useSettings } from '@/stores/settings';
 import { useWindowSize } from '@vueuse/core';
 import { computed, type ComputedRef, inject } from 'vue';
-import type Project from '@/core/Project';
+import type { Project } from '@/core';
 
 const settings = useSettings();
 const project = inject<ComputedRef<Project>>('project');

@@ -1,6 +1,6 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { clampMin } from '@/graph/math';
-import Node from '@/core/Node';
+import { Node } from '@/core/Node';
 import emitter, { BusEvents } from '@/utils/emitter';
 
 export class ResizeCard extends BaseBehavior {
