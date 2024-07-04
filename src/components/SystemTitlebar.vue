@@ -7,7 +7,7 @@ const { width } = storeToRefs(side);
 </script>
 
 <template>
-  <div class="fixed top-0 z-50 flex w-screen flex-row" style="height: 35px">
+  <div class="pointer-events-none fixed top-0 z-50 flex w-screen flex-row" style="height: 35px">
     <div class="drag-region" :style="{ height: '15px', width: `${width}px` }"></div>
     <div class="drag-region flex-grow"></div>
     <div class="h-full" style="width: 137px"></div>

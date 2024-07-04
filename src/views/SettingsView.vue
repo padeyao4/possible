@@ -4,57 +4,16 @@ import AboutComponent from '@/components/SettingsViewComponent/AboutComponent.vu
 import { Back } from '@element-plus/icons-vue';
 </script>
 <template>
-  <div class="settings">
-    <header>
-      <el-icon @click="$router.back()" class="back-button" :size="30"><Back /></el-icon>
-      设置
+  <div class="flex flex-col items-center">
+    <header class="flex h-16 w-screen items-center justify-start border-b border-gray-300">
+      <div class="m-4 flex h-10 w-10 items-center justify-center hover:bg-blue-100">
+        <el-icon @click="$router.back()" class="h-10 w-10" :size="30"><Back /></el-icon>
+      </div>
+      <div class="text-xl text-gray-600">设置</div>
     </header>
-    <div class="container">
+    <div class="" style="width: 550px">
       <AccountInfo />
       <AboutComponent />
     </div>
   </div>
 </template>
-<style scoped>
-.settings {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: var(--background-bottom-color);
-
-  header {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 64px;
-    font-size: 24px;
-    border-bottom: var(--border-default-style);
-    -webkit-app-region: drag;
-
-    .back-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      margin: 8px;
-      padding: 4px;
-      -webkit-app-region: no-drag;
-
-      &:hover {
-        background-color: var(--background-top-color);
-      }
-    }
-  }
-
-  .container {
-    display: grid;
-    flex-direction: column;
-    grid-template-rows: min-content;
-    width: 550px;
-    height: 100%;
-    margin-right: auto;
-    margin-left: auto;
-  }
-}
-</style>

@@ -70,6 +70,7 @@ const swapProjects = (from: Project, to: Project) => {
         </div>
         <div
           class="ml-1 flex h-full w-10 items-center justify-center rounded-md border border-gray-200"
+          @click="$router.push({ name: 'settings' })"
         >
           <el-icon :size="26"><Setting /></el-icon>
         </div>
