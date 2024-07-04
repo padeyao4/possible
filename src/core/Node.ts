@@ -1,6 +1,7 @@
 import { v4 } from 'uuid';
 import { faker } from '@faker-js/faker';
 import type { ID } from '@/core/types';
+import emitter, { BusEvents } from '@/utils/emitter';
 
 export class Node {
   id: ID;
@@ -100,5 +101,10 @@ export class Node {
 
   public static fromPlainObject(node: any) {
     return Object.assign(new Node(), node);
+  }
+
+  public set(node: Partial<Node>) {
+    Object.assign(this, node);
+    emitter.emit(BusEvents['node:updated']);
   }
 }

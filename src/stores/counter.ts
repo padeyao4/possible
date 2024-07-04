@@ -7,10 +7,10 @@ import { useProjectStore } from '@/stores/project';
 // 用于显示当前未完成的todo数量
 export const useCounter = defineStore('counter', () => {
   const count = ref(0);
-  const store = useProjectStore();
+  const projects = useProjectStore();
 
   function countTodos() {
-    const nodes = Array.from(store.mapper.values())
+    const nodes = Array.from(projects.mapper.values())
       .map((project) => {
         const curX = getIndexByDate(<Project>project);
         const { nodeMap } = project;

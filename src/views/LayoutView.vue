@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useProjectStore, useSide } from '@/stores';
+import { useBacklog, useCounter, useProjectStore, useSide } from '@/stores';
 import { useEventListener } from '@vueuse/core';
 import { RouterView } from 'vue-router';
 import { Notebook, Plus, Setting, Sunny } from '@element-plus/icons-vue';
@@ -8,6 +8,8 @@ import EDraggable from '@/components/common/EDraggable.vue';
 import { Project } from '@/core';
 
 const side = useSide();
+const counter = useCounter();
+const backlogs = useBacklog();
 
 const handlePointerDown = (e: PointerEvent) => side.onPointerDown(e.clientX);
 
@@ -37,7 +39,7 @@ const swapProjects = (from: Project, to: Project) => {
           <el-icon class="mx-1.5" :size="24"><Sunny /></el-icon>
           <el-text class="grow">我的一天</el-text>
           <div class="mx-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-gray-200">
-            <el-text>8</el-text>
+            <el-text>{{ counter.count }}</el-text>
           </div>
         </div>
         <div
@@ -47,7 +49,7 @@ const swapProjects = (from: Project, to: Project) => {
           <el-icon class="mx-1.5" :size="24"><Notebook /></el-icon>
           <el-text class="grow">备忘录</el-text>
           <div class="mx-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-gray-200">
-            <el-text>8</el-text>
+            <el-text>{{ backlogs.todos.length }}</el-text>
           </div>
         </div>
       </header>

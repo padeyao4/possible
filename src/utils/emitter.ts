@@ -49,3 +49,7 @@ export const dataChangeEvents = new Set([
   BusEvents['project:created'],
   BusEvents['project:deleted']
 ]);
+
+export enum EventTypes {
+  'node:change'
+}

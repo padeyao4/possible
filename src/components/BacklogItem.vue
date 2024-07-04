@@ -1,21 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useCursor } from '@/stores/cursor';
-import emitter, { BusEvents } from '@/utils/emitter';
+import { ref } from 'vue';
 import { Backlog } from '@/core';
 import { Check } from '@element-plus/icons-vue';
 
 const { item } = defineProps<{
   item: Backlog;
 }>();
-
-const textDecoration = computed(() => (item.done ? 'line-through' : 'none'));
-
-const cursor = useCursor();
-
-const onClick = (id: string) => {
-  emitter.emit(BusEvents['backlog:event'], { id });
-};
 
 const showIcon = ref(false);
 </script>
@@ -28,7 +18,7 @@ const showIcon = ref(false);
   >
     <div
       class="mx-3 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-gray-500"
-      @click="item.done = !item.done"
+      @click="item.set({ done: !item.done })"
     >
       <el-icon v-show="item.done" size="16"><Check /></el-icon>
     </div>

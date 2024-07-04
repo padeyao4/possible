@@ -1,6 +1,7 @@
 import type { DraggableType } from '@/components/types';
 import { v4 } from 'uuid';
 import type { Backlog as BacklogType } from '@/openapi';
+import emitter, { BusEvents } from '@/utils/emitter';
 
 export class Backlog implements DraggableType {
   title: string;
@@ -63,5 +64,10 @@ export class Backlog implements DraggableType {
       id: this.dbId,
       uid: this.id
     };
+  }
+
+  public set(item: Partial<Backlog>) {
+    Object.assign(this, item);
+    emitter.emit(BusEvents['backlog:event'], this);
   }
 }

@@ -3,7 +3,7 @@ import { computed, ref } from 'vue';
 import ECounterButton from '@/components/common/ECounterButton.vue';
 import { Plus } from '@element-plus/icons-vue';
 import EDraggable from '@/components/common/EDraggable.vue';
-import { useBacklog, useSettings } from '@/stores';
+import { useBacklog } from '@/stores';
 import { Backlog } from '@/core';
 import BacklogItem from '@/components/BacklogItem.vue';
 import BacklogEditor from '@/components/BacklogEditor.vue';
@@ -11,6 +11,7 @@ import BacklogEditor from '@/components/BacklogEditor.vue';
 const backlogs = useBacklog();
 
 const onUpdate = (current: Backlog, other: Backlog) => {
+  // todo 设置emitter
   [current.orderIndex, other.orderIndex] = [other.orderIndex, current.orderIndex];
 };
 
@@ -28,23 +29,31 @@ const width = computed(() => {
 });
 
 const editorVisible = ref(true);
+
+const counterVisible = ref(false);
 </script>
 
 <template>
   <div class="flex h-screen w-full flex-row">
     <div class="flex h-screen flex-col pt-3" :style="{ width }">
-      <div class="drag-region mx-3 flex h-10 shrink-0 items-end text-xl text-gray-600">备忘录</div>
-      <div class="mx-3 h-2 shrink-0" />
+      <div class="drag-region mx-3 mb-2 flex h-10 shrink-0 items-end text-xl text-gray-600">
+        备忘录
+      </div>
       <el-scrollbar class="grow px-3">
-        <e-draggable :update="() => {}" :list="backlogs.todos" handle="data-move">
+        <e-draggable :update="onUpdate" :list="backlogs.todos" handle="data-move">
           <template #default="{ item }">
             <backlog-item :item="item" class="my-1 overflow-x-hidden" />
           </template>
         </e-draggable>
-        <e-counter-button :count="backlogs.completes.length" />
-        <e-draggable :update="() => {}" :list="backlogs.completes">
+        <e-counter-button :count="backlogs.completes.length" v-model="counterVisible" />
+        <e-draggable
+          v-if="counterVisible"
+          :update="onUpdate"
+          :list="backlogs.completes"
+          handle="data-move"
+        >
           <template #default="{ item }">
-            <backlog-item :item="item" />
+            <backlog-item :item="item" class="my-1 overflow-x-hidden" />
           </template>
         </e-draggable>
       </el-scrollbar>

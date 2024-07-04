@@ -3,6 +3,7 @@ import { Node } from '@/core/';
 import { Check } from '@element-plus/icons-vue';
 import { useProjectStore } from '@/stores';
 import { ref } from 'vue';
+import emitter, { BusEvents } from '@/utils/emitter';
 
 const { node } = defineProps<{
   node: Node;
@@ -13,6 +14,10 @@ const projects = useProjectStore();
 const project = projects.getProject(node.projectId);
 
 const showIcon = ref(false);
+
+const handleChange = () => {
+  node.set({ completed: !node.completed });
+};
 </script>
 
 <template>
@@ -23,7 +28,7 @@ const showIcon = ref(false);
   >
     <div
       class="mx-3 flex h-6 w-6 items-center justify-center rounded-full border border-gray-500"
-      @click="node.completed = !node.completed"
+      @click="handleChange"
     >
       <el-icon v-show="node.completed" size="16"><Check /></el-icon>
     </div>
