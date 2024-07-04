@@ -1,11 +1,29 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { inject, provide, type Ref, ref } from 'vue';
 import { Backlog } from '@/core';
 import { Check } from '@element-plus/icons-vue';
+import emitter from '@/utils/emitter';
+import type BacklogEditor from '@/components/BacklogEditor.vue';
 
 const { item } = defineProps<{
   item: Backlog;
 }>();
+
+const handleIconClick = () => {
+  item.set({ done: !item.done });
+};
+
+const editorVisible = inject<Ref<boolean>>('editorVisible');
+const backlogEditorEl = inject<Ref<typeof BacklogEditor>>('backlogEditorEl');
+
+const handleTextClick = () => {
+  const current: Backlog = backlogEditorEl.value.current;
+  if (editorVisible.value) {
+    emitter.emit(current.id === item.id ? 'backlog:close' : 'backlog:open', item);
+  } else {
+    emitter.emit('backlog:open', item);
+  }
+};
 
 const showIcon = ref(false);
 </script>
@@ -18,11 +36,11 @@ const showIcon = ref(false);
   >
     <div
       class="mx-3 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-gray-500"
-      @click="item.set({ done: !item.done })"
+      @click="handleIconClick"
     >
       <el-icon v-show="item.done" size="16"><Check /></el-icon>
     </div>
-    <div class="flex h-full grow">
+    <div class="flex h-full grow" @click="handleTextClick">
       <div class="flex items-center overflow-x-hidden">
         <el-text truncated class="overflow-x-hidden"> {{ item.title }} </el-text>
       </div>

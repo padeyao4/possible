@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, provide, ref } from 'vue';
 import ECounterButton from '@/components/common/ECounterButton.vue';
 import { Plus } from '@element-plus/icons-vue';
 import EDraggable from '@/components/common/EDraggable.vue';
-import { useBacklog } from '@/stores';
+import { useBacklogs } from '@/stores';
 import { Backlog } from '@/core';
 import BacklogItem from '@/components/BacklogItem.vue';
 import BacklogEditor from '@/components/BacklogEditor.vue';
 
-const backlogs = useBacklog();
+const backlogs = useBacklogs();
 
 const onUpdate = (current: Backlog, other: Backlog) => {
   // todo 设置emitter
@@ -29,6 +29,11 @@ const width = computed(() => {
 });
 
 const editorVisible = ref(true);
+
+const backlogEditorEl = ref<typeof BacklogEditor>();
+
+provide('editorVisible', editorVisible);
+provide('backlogEditorEl', backlogEditorEl);
 
 const counterVisible = ref(false);
 </script>
@@ -76,7 +81,11 @@ const counterVisible = ref(false);
         />
       </div>
     </div>
-    <backlog-editor v-model="editorVisible" class="shrink-0 border-l border-gray-300" />
+    <backlog-editor
+      v-model="editorVisible"
+      ref="backlogEditorEl"
+      class="shrink-0 border-l border-gray-300"
+    />
   </div>
 </template>
 

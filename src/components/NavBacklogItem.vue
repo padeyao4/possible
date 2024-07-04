@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { Notebook } from '@element-plus/icons-vue';
-import { useBacklog } from '@/stores';
+import { useBacklogs } from '@/stores';
 
-const backlogs = useBacklog();
+const backlogs = useBacklogs();
 </script>
 
 <template>

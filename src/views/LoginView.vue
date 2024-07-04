@@ -3,7 +3,7 @@ import { reactive, ref } from 'vue';
 import { useAccount } from '@/stores/account';
 import router from '@/router';
 import type { FormInstance, FormRules } from 'element-plus';
-import emitter, { BusEvents } from '@/utils/emitter';
+import emitter from '@/utils/emitter';
 import { Close } from '@element-plus/icons-vue';
 
 const account = useAccount();
@@ -36,15 +36,15 @@ function handleResetRegister() {
   });
 }
 
-emitter.on(BusEvents['login:failed'], (e: any) => {
+emitter.on('login:failed', (e) => {
   loginForm.loginError = e.message;
 });
 
-emitter.on(BusEvents['register:success'], () => {
+emitter.on('register:success', () => {
   isRegister.value = true;
 });
 
-emitter.on(BusEvents['register:failed'], (e: any) => {
+emitter.on('register:failed', (e) => {
   registerForm.registerError = e.message;
 });
 

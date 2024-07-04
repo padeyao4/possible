@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import emitter, { BusEvents, dataChangeEvents } from '@/utils/emitter';
-import { useAccount, useBacklog, useProjectStore } from '@/stores';
+import emitter, { dataChangeEvents } from '@/utils/emitter';
+import { useAccount, useBacklogs, useProjectStore } from '@/stores';
 import { useDebounceFn } from '@vueuse/core';
 import { useScheduler, useUpdateDate } from '@/service';
 import { useCounter } from '@/stores/counter';
@@ -15,7 +15,7 @@ axiosConfig();
 const account = useAccount();
 const store = useProjectStore();
 const counter = useCounter();
-const backlog = useBacklog();
+const backlog = useBacklogs();
 useScheduler();
 useUpdateDate();
 
@@ -24,7 +24,7 @@ const debounceDataPushFnc = useDebounceFn(() => {
   store.push();
 }, 1000);
 
-emitter.on(BusEvents['app:reload'], async () => {
+emitter.on('login:success', async () => {
   await account.fetchUser();
   await store.fetch();
   await backlog.reload();
@@ -32,13 +32,8 @@ emitter.on(BusEvents['app:reload'], async () => {
   counter.countTodos();
 });
 
-emitter.on(BusEvents['login:success'], async () => {
-  emitter.emit(BusEvents['app:reload']);
-});
-
-emitter.on(BusEvents['time:updated'], () => {
+emitter.on('date:update', () => {
   store.dailyUpdate();
-  emitter.emit(BusEvents['project:updated']);
 });
 emitter.on('*', (event: any) => {
   // 数据变化
@@ -50,8 +45,7 @@ emitter.on('*', (event: any) => {
 
 // 账号如果是登录的
 if (account.isAuth) {
-  console.info('start to fetch user');
-  account.fetchUser().then(() => emitter.emit(BusEvents['app:reload']));
+  account.fetchUser().then(() => emitter.emit('login:success'));
 }
 
 onBeforeUnmount(() => {

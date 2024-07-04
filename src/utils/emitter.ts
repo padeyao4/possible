@@ -1,6 +1,33 @@
 import mitt from 'mitt';
+import { Backlog, Edge, Node, Project } from '@/core';
 
-const emitter = mitt();
+export type ErrorMessage = { message: string };
+
+type Events = {
+  'node:update': Node;
+  'node:create': Node;
+  'node:delete': Node;
+  'edge:update': Edge;
+  'edge:create': Edge;
+  'edge:delete': Edge;
+  'project:create': Project;
+  'project:update': Project;
+  'project:delete': Project;
+  'backlog:create': Backlog;
+  'backlog:update': Backlog;
+  'backlog:delete': Backlog;
+  'backlog:open': Backlog;
+  'backlog:close': Backlog;
+  'graph:contextmenu': any;
+  'login:success': any;
+  'login:failed': ErrorMessage;
+  'register:success': null;
+  'register:failed': ErrorMessage;
+  'date:update': null;
+  [key: symbol]: any;
+};
+
+const emitter = mitt<Events>();
 
 export default emitter;
 

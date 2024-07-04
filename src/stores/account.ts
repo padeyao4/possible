@@ -44,10 +44,10 @@ export const useAccount = defineStore('account', () => {
       });
       token.value = response.data.payload;
       isAuth.value = true;
-      emitter.emit(BusEvents['login:success']);
+      emitter.emit('login:success');
     } catch (e) {
       isAuth.value = false;
-      emitter.emit(BusEvents['login:failed'], e);
+      emitter.emit('login:failed', e);
     } finally {
       loginLoading.value = false;
     }
@@ -75,9 +75,9 @@ export const useAccount = defineStore('account', () => {
         username,
         password
       });
-      emitter.emit(BusEvents['register:success']);
+      emitter.emit('register:success');
     } catch (e) {
-      emitter.emit(BusEvents['register:failed'], e);
+      emitter.emit('register:failed', e);
     } finally {
       registerLoading.value = false;
     }

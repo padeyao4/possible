@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
 import { useCounter } from '@/stores/counter';
-import { useBacklog } from '@/stores';
+import { useBacklogs } from '@/stores';
 import CountLabel from '@/components/common/CountLabel.vue';
 
 const counter = useCounter();
-const backlog = useBacklog();
+const backlog = useBacklogs();
 </script>
 
 <template>

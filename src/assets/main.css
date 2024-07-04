@@ -12,9 +12,6 @@
 }
 
 * {
-  color: var(--text-default-color);
-  font-weight: var(--font-default-weight);
-  font-size: var(--font-middle-size);
   font-family:
     Inter,
     -apple-system,
@@ -57,53 +54,6 @@ svg {
 
 #app {
   font-weight: normal;
-}
-
-:root {
-  ---background: #004fec;
-}
-
-.side-list-item {
-  &[data-hover]:hover {
-    background: #e5ebef;
-    border-radius: 4px;
-
-    .operation {
-      display: flex;
-      align-items: center;
-      padding: 2px;
-
-      & > * {
-        display: flex;
-        align-content: center;
-        justify-content: center;
-        width: 20px;
-        height: 20px;
-        padding: 2px;
-        color: #00000050;
-
-        &:hover {
-          background: rgba(0, 0, 0, 0.06);
-          border-radius: 3px;
-        }
-      }
-    }
-  }
-
-  &[data-active='true'] {
-    background: #e5ebef;
-    border-radius: 4px;
-  }
-}
-
-.side-icon {
-  width: 20px;
-  height: 20px;
-  margin: 0 8px;
-}
-
-.side-item-text {
-  margin: 0 4px;
 }
 
 /*-------------canvas contextmenu-----------*/

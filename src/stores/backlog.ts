@@ -4,7 +4,7 @@ import type { ID } from '@/core/types';
 import { BacklogControllerApi } from '@/openapi';
 import { Backlog } from '@/core';
 
-export const useBacklog = defineStore('backlog', () => {
+export const useBacklogs = defineStore('backlog', () => {
   const backlogs = reactive<Map<ID, Backlog>>(new Map());
 
   const backlogController = new BacklogControllerApi();

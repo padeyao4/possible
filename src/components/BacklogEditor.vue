@@ -1,36 +1,39 @@
 <script setup lang="ts">
-import emitter, { BusEvents } from '@/utils/emitter';
+import emitter from '@/utils/emitter';
 import CloseIconButton from '@/components/common/CloseIconButton.vue';
 import { computed, onBeforeUnmount, ref } from 'vue';
-import { useBacklog } from '@/stores';
+import { useBacklogs } from '@/stores';
 import { useEventListener } from '@vueuse/core';
 import { Delete } from '@element-plus/icons-vue';
 import type { ID } from '@/core/types';
 
-const visible = defineModel();
+const visible = defineModel({ default: false });
 
-const backlog = useBacklog();
+const backlogs = useBacklogs();
 const backlogId = ref<string>('');
 
 const item = computed(() => {
-  return backlog.get(backlogId.value);
+  return backlogs.get(backlogId.value);
 });
+
+defineExpose({ current: item });
 
 const show = computed(() => {
   return item.value && !item.value.delete && backlogId.value !== '';
 });
 
-emitter.on(BusEvents['backlog:event'], ({ id }: { id: string }) => {
-  if (id === backlogId.value || visible.value === false) {
-    visible.value = !visible.value;
-  }
-  backlogId.value = id;
+emitter.on('backlog:open', (e) => {
+  visible.value = true;
+  backlogId.value = e.id;
 });
 
-defineExpose({ visible: visible });
+emitter.on('backlog:close', () => {
+  visible.value = false;
+});
 
 onBeforeUnmount(() => {
-  emitter.off(BusEvents['backlog:event']);
+  emitter.off('backlog:open');
+  emitter.off('backlog:close');
 });
 
 useEventListener(window, 'keydown', (e) => {
@@ -40,7 +43,7 @@ useEventListener(window, 'keydown', (e) => {
 });
 
 const onDelete = (id: ID) => {
-  backlog.remove(id);
+  backlogs.remove(id);
 };
 </script>
 
