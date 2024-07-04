@@ -45,7 +45,7 @@ const onDelete = (id: ID) => {
 </script>
 
 <template>
-  <div class="right" v-show="visible">
+  <div class="h-screen w-80" v-show="visible">
     <div
       style="
         margin-top: 35px;
@@ -83,16 +83,6 @@ const onDelete = (id: ID) => {
 </template>
 
 <style scoped>
-.right {
-  display: grid;
-  grid-auto-rows: min-content;
-  gap: 4px;
-  width: 300px !important;
-  min-width: 300px !important;
-  height: 100vh;
-  background-color: var(--background-middle-color);
-  border-right: solid 1px #00000030;
-}
 .footer {
   display: flex;
   align-items: center;

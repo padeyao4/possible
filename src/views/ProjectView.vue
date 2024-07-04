@@ -8,16 +8,18 @@ import type { ID } from '@/core/types';
 
 const { id } = defineProps<{ id: ID }>();
 
-const store = useProjectStore();
-const project = computed(() => store.getProject(id));
+console.log(id);
+
+const projects = useProjectStore();
+const project = computed(() => projects.getProject(id));
 
 provide('project', project);
 </script>
 
 <template>
-  <div class="project-view">
-    <header>
-      <div class="title">{{ project.name ?? '未命名' }}</div>
+  <div class="flex h-screen w-full flex-col">
+    <header class="m-3 flex h-10 shrink-0 items-end justify-start text-xl text-gray-600">
+      {{ project.name ?? '未命名' }}
     </header>
     <main class="project-group">
       <project-group-component />
@@ -28,29 +30,6 @@ provide('project', project);
 </template>
 
 <style scoped>
-.project-view {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-}
-
-header {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  height: 40px;
-  margin: 12px 16px;
-
-  .title {
-    display: block;
-    overflow: hidden;
-    font-size: var(--font-large-size);
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-}
-
 main {
   flex-grow: 1;
 }

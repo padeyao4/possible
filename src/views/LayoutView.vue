@@ -5,7 +5,7 @@ import { RouterView } from 'vue-router';
 import { Notebook, Plus, Setting, Sunny } from '@element-plus/icons-vue';
 import SideItem from '@/components/SideItem.vue';
 import EDraggable from '@/components/common/EDraggable.vue';
-import type Project from '@/core/Project';
+import { Project } from '@/core';
 
 const side = useSide();
 
@@ -57,13 +57,13 @@ const swapProjects = (from: Project, to: Project) => {
         </div>
       </div>
       <div class="flex-grow p-1">
-        <e-draggable :update="swapProjects" :list="projects.sortProjects">
+        <e-draggable :update="swapProjects" :list="projects.sortProjects" handle="data-move">
           <template #default="{ item }">
             <side-item :project="item" />
           </template>
         </e-draggable>
       </div>
-      <div class="flex h-12 items-center border-t border-t-gray-300 p-1">
+      <div class="flex h-12 items-center border-t border-t-gray-200 p-1">
         <div class="flex h-full grow flex-row items-center rounded-md border border-gray-200">
           <el-icon class="mx-1.5" :size="26"><Plus /></el-icon>
           <el-text>新建项目</el-text>
@@ -77,8 +77,7 @@ const swapProjects = (from: Project, to: Project) => {
     </div>
     <router-view
       :key="$route.fullPath"
-      class="flex-grow overflow-hidden bg-gray-50 shadow"
-      style="border-radius: 8px 0 0 0"
+      class="flex-grow overflow-hidden rounded-tl-lg border border-gray-300"
     />
   </div>
   <hr

@@ -29,16 +29,20 @@ const showWelcome = computed(() => {
 
 <template>
   <div class="flex h-screen flex-col p-3">
-    <div class="drag-region flex h-12 w-full items-end bg-amber-100 text-2xl">我的一天</div>
-    <el-text class="w-full" size="small">{{ dateTime }}</el-text>
-    <el-scrollbar class="grow bg-blue-100">
-      <e-draggable :update="() => {}" :list="projects.todoList">
+    <div class="drag-region flex h-10 w-full shrink-0 items-end text-xl text-gray-600">
+      我的一天
+    </div>
+    <div class="mb-2">
+      <el-text size="small">{{ dateTime }}</el-text>
+    </div>
+    <el-scrollbar class="grow">
+      <e-draggable :update="() => {}" :list="projects.todoList" handle="data-move">
         <template #default="{ item }">
           <today-item :node="item" />
         </template>
       </e-draggable>
       <e-counter-button :count="projects.completedList.length" />
-      <e-draggable :update="() => {}" :list="projects.completedList">
+      <e-draggable :update="() => {}" :list="projects.completedList" handle="data-move">
         <template #default="{ item }">
           <today-item :node="item" />
         </template>
@@ -46,141 +50,3 @@ const showWelcome = computed(() => {
     </el-scrollbar>
   </div>
 </template>
-
-<style scoped>
-.empty-class {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.empty-info {
-  color: #00000070;
-  font-weight: bold;
-  font-size: large;
-  font-style: italic;
-}
-
-.empty-next {
-  margin-top: 8px;
-  color: #00000070;
-  font-size: 15px;
-  font-style: italic;
-}
-
-.empty-new {
-  margin-left: 2px;
-  color: #00000080;
-  font-weight: 700;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.ghost-class {
-  opacity: 0;
-}
-
-.drag-class {
-  display: flex;
-  background: #e5ebef;
-  box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
-}
-
-.wrapper-class {
-  & > * {
-    margin: 4px 0;
-  }
-  & > *:first-child {
-    margin-top: 0;
-  }
-  & > *:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.count-class {
-  margin: 4px 0;
-}
-
-.home-view {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #82bbb5 !important;
-}
-
-header {
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  justify-content: center;
-  height: 58px;
-  padding: 36px 24px;
-  overflow-y: hidden;
-
-  & > * {
-    display: flex;
-    align-items: center;
-  }
-
-  & div:first-child {
-    font-size: var(--font-large-size);
-  }
-
-  & div:nth-child(2) {
-    font-weight: var(--font-light-weight);
-    font-size: var(--font-small-size);
-  }
-}
-
-.content {
-  height: 100%;
-  padding: 0 24px 24px 24px;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-</style>
-<!--  <div class="home-view">-->
-<!--    <header>-->
-<!--      <div>我的一天</div>-->
-<!--      <div>{{ dateTime }}</div>-->
-<!--    </header>-->
-<!--    <div v-if="showWelcome" class="content empty-class">-->
-<!--      <div>-->
-<!--        <div class="empty-info">今日空闲,享受悠闲时光~</div>-->
-<!--        <div class="empty-next">-->
-<!--          或者开始<i @click="handleNewProject" class="empty-new">新的计划</i>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <el-scrollbar v-else class="content">-->
-<!--      <e-draggable-->
-<!--        :update="onUpdate"-->
-<!--        :list="projectStore.todoList"-->
-<!--        class="wrapper-class"-->
-<!--        handle="data-move"-->
-<!--      >-->
-<!--        <template #default="{ item }">-->
-<!--          <item-component :node="item" />-->
-<!--        </template>-->
-<!--      </e-draggable>-->
-<!--      <e-counter-button-->
-<!--        :count="projectStore.completedList.length"-->
-<!--        v-model="visible"-->
-<!--        class="count-class"-->
-<!--      />-->
-<!--      <e-draggable-->
-<!--        v-show="visible"-->
-<!--        :update="onUpdate"-->
-<!--        :list="projectStore.completedList"-->
-<!--        class="wrapper-class"-->
-<!--        handle="data-move"-->
-<!--      >-->
-<!--        <template #default="{ item }">-->
-<!--          <item-component :node="item" />-->
-<!--        </template>-->
-<!--      </e-draggable>-->
-<!--    </el-scrollbar>-->
-<!--  </div>-->

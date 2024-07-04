@@ -18,27 +18,30 @@ const showComplete = ref(false);
 const showRight = ref(false);
 const settings = useSettings();
 
-const inputRef = ref<HTMLInputElement>();
+const inputEl = ref<HTMLInputElement>();
 
 const addNew = () => {
-  const value = inputRef.value.value;
+  const value = inputEl.value.value.trim();
+  if (!value) return;
   backlogs.add(value);
-  inputRef.value.value = '';
+  inputEl.value.value = '';
 };
 
 const width = computed(() => {
   return showRight.value ? `calc( 100vw - ${settings.sideWidth}px - 300px )` : '100%';
 });
+
+const editorVisible = ref(true);
 </script>
 
 <template>
   <div class="flex h-screen w-full flex-row">
     <div class="flex h-screen w-full flex-col p-3">
-      <div class="drag-region flex h-12 w-full shrink-0 items-end bg-amber-100 text-2xl">
+      <div class="drag-region flex h-10 w-full shrink-0 items-end text-xl text-gray-600">
         备忘录
       </div>
       <el-scrollbar class="w-full">
-        <e-draggable :update="() => {}" :list="backlogs.todos" class="w-full">
+        <e-draggable :update="() => {}" :list="backlogs.todos" class="w-full" handle="data-move">
           <template #default="{ item }">
             <backlog-item :item="item" />
           </template>
@@ -54,9 +57,10 @@ const width = computed(() => {
         <div class="flex h-10 w-10 items-center justify-center">
           <el-icon size="26"><Plus /></el-icon>
         </div>
-        <input class="h-full w-full bg-amber-100 p-1" />
+        <input @keydown.enter="addNew" ref="inputEl" class="h-full w-full bg-amber-100 p-1" />
       </div>
     </div>
+    <backlog-editor v-model="editorVisible" class="shrink-0" />
   </div>
 </template>
 

@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import { useSettings } from '@/stores/settings';
 import { storeToRefs } from 'pinia';
 import { useSide } from '@/stores';
-
-const settings = useSettings();
-const { sideWidth } = storeToRefs(settings);
 
 const side = useSide();
 const { width } = storeToRefs(side);

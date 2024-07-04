@@ -136,9 +136,3 @@ function onPointerDown(e: PointerEvent) {
     <slot name="default" :item="item" />
   </div>
 </template>
-
-<style scoped>
-.b-draggable {
-  overflow: hidden;
-}
-</style>

@@ -4,6 +4,7 @@ import { useCursor } from '@/stores/cursor';
 import emitter, { BusEvents } from '@/utils/emitter';
 import { Backlog } from '@/core';
 import { Check } from '@element-plus/icons-vue';
+import DraggableIcon from '@/components/icon/DraggableIcon.vue';
 
 const { item } = defineProps<{
   item: Backlog;
@@ -26,5 +27,6 @@ const onClick = (id: string) => {
       <el-icon size="16"><Check /></el-icon>
     </div>
     <el-text truncated>{{ item.title }}</el-text>
+    <span class="icon-[icon-park-outline--drag] ml-auto text-xl text-gray-600"></span>
   </div>
 </template>
