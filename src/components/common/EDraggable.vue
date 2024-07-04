@@ -24,6 +24,8 @@ const mapper = computed(() => {
   return new Map(props.list.map((item) => [item.id, item]));
 });
 
+const attr = 'data-draggable';
+
 const cursor = useCursor();
 
 const refs = reactive<Map<ID, HTMLElement>>(new Map());
@@ -37,7 +39,6 @@ const clone = ref<HTMLElement | null>();
 
 function setAttributeRecursively(element: Element, attributeName: string, attributeValue: string) {
   element.setAttribute(attributeName, attributeValue);
-
   for (let child of element.children) {
     setAttributeRecursively(child, attributeName, attributeValue);
   }
@@ -92,36 +93,43 @@ useEventListener(
   { passive: true }
 );
 
-function onPointerDown(e: PointerEvent) {
-  const tmp = e.target as HTMLElement;
-  if (tmp.hasAttribute('data-draggable')) {
-    if (handle && !tmp.hasAttribute(handle)) {
-      return;
-    }
-    cursor.lock('move');
-    start.x = e.clientX;
-    start.y = e.clientY;
-    end.x = e.clientX;
-    end.y = e.clientY;
-    const el = refs.get(tmp.getAttribute('data-draggable'));
-    const bound = el.getBoundingClientRect();
-    origin.x = bound.left;
-    origin.y = bound.top;
-
-    clone.value = el.cloneNode(true) as HTMLElement;
-    clone.value.style.position = 'fixed';
-    clone.value.style.top = `${bound.top}px`;
-    clone.value.style.left = `${bound.left}px`;
-    clone.value.style.width = `${bound.width}px`;
-    for (let child of clone.value.children) {
-      (<HTMLElement>child).style.boxShadow = '0 0 5px 2px rgba(0, 0, 0, 0.2)';
-    }
-    document.body.appendChild(clone.value);
-
-    target.value = el;
-
-    el.style.opacity = '0';
+function getAttributeRecursively(element: Element) {
+  if (element.hasAttribute(attr)) {
+    return element.getAttribute(attr);
+  } else {
+    return getAttributeRecursively(element.parentElement);
   }
+}
+
+function onPointerDown(e: PointerEvent) {
+  if (e.button !== 0) return;
+  const tmp = e.target as HTMLElement;
+  if (handle && !tmp.hasAttribute(handle)) {
+    return;
+  }
+  cursor.lock('move');
+  start.x = e.clientX;
+  start.y = e.clientY;
+  end.x = e.clientX;
+  end.y = e.clientY;
+  const el = refs.get(getAttributeRecursively(tmp));
+  const bound = el.getBoundingClientRect();
+  origin.x = bound.left;
+  origin.y = bound.top;
+
+  clone.value = el.cloneNode(true) as HTMLElement;
+  clone.value.style.position = 'fixed';
+  clone.value.style.top = `${bound.top}px`;
+  clone.value.style.left = `${bound.left}px`;
+  clone.value.style.width = `${bound.width}px`;
+  for (let child of clone.value.children) {
+    (<HTMLElement>child).style.boxShadow = '0 0 5px 2px rgba(0, 0, 0, 0.2)';
+  }
+  document.body.appendChild(clone.value);
+
+  target.value = el;
+
+  el.style.opacity = '0';
 }
 </script>
 
@@ -131,6 +139,7 @@ function onPointerDown(e: PointerEvent) {
     :key="item.id"
     :id="item.id"
     :ref="setRefs"
+    :data-draggable="item.id"
     @pointerdown="onPointerDown"
   >
     <slot name="default" :item="item" />
