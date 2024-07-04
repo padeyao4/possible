@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { useBacklog, useCounter, useProjectStore, useSide } from '@/stores';
+import { useProjectStore, useSide } from '@/stores';
 import { useEventListener } from '@vueuse/core';
 import { RouterView } from 'vue-router';
-import { Notebook, Plus, Setting, Sunny } from '@element-plus/icons-vue';
+import { Plus, Setting } from '@element-plus/icons-vue';
 import SideItem from '@/components/SideItem.vue';
 import EDraggable from '@/components/common/EDraggable.vue';
 import { Project } from '@/core';
+import { handleNewProject } from '@/service/project.service';
+import NavTodayItem from '@/components/NavTodayItem.vue';
+import NavBacklogItem from '@/components/NavBacklogItem.vue';
 
+// todo 当调整边框时 侧边栏跟随改变
 const side = useSide();
-const counter = useCounter();
-const backlogs = useBacklog();
 
 const handlePointerDown = (e: PointerEvent) => side.onPointerDown(e.clientX);
 
@@ -31,39 +33,21 @@ const swapProjects = (from: Project, to: Project) => {
 <template>
   <div class="grid h-screen w-screen" :style="{ gridTemplateColumns: `${side.width}px 1fr` }">
     <div class="flex h-screen w-full flex-col">
-      <header class="mt-4 flex h-fit flex-col border-b border-b-gray-300 p-1">
-        <div
-          @click="$router.push({ name: 'today' })"
-          class="flex h-12 flex-row items-center rounded-md hover:border"
-        >
-          <el-icon class="mx-1.5" :size="24"><Sunny /></el-icon>
-          <el-text class="grow">我的一天</el-text>
-          <div class="mx-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-gray-200">
-            <el-text>{{ counter.count }}</el-text>
-          </div>
-        </div>
-        <div
-          @click="$router.push({ name: 'backlog' })"
-          class="flex h-12 flex-row items-center rounded-md hover:border"
-        >
-          <el-icon class="mx-1.5" :size="24"><Notebook /></el-icon>
-          <el-text class="grow">备忘录</el-text>
-          <div class="mx-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-gray-200">
-            <el-text>{{ backlogs.todos.length }}</el-text>
-          </div>
-        </div>
+      <header class="mt-4 flex h-fit flex-col border-b border-b-gray-300 pb-1">
+        <nav-today-item />
+        <nav-backlog-item />
       </header>
-      <el-scrollbar class="flex-grow p-1">
+      <el-scrollbar class="flex-grow p-1.5">
         <e-draggable :update="swapProjects" :list="projects.sortProjects" handle="data-move">
           <template #default="{ item }">
-            <side-item :project="item" />
+            <side-item :project="item" class="px-1.5" />
           </template>
         </e-draggable>
       </el-scrollbar>
       <footer class="flex h-12 shrink-0 items-center border-t border-t-gray-200 p-1">
         <div
           class="flex h-full grow flex-row items-center rounded-md border-gray-200 hover:border"
-          @click=""
+          @click="handleNewProject"
         >
           <el-icon class="mx-1.5" :size="26"><Plus /></el-icon>
           <el-text>新建项目</el-text>

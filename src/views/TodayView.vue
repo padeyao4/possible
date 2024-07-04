@@ -34,7 +34,7 @@ const showWelcome = computed(() => {
     </div>
     <div v-if="showWelcome" class="grow px-3" />
     <el-scrollbar v-else class="grow px-3" always>
-      <e-draggable :update="() => {}" :list="projects.todoList" handle="data-move">
+      <e-draggable :update="onUpdate" :list="projects.todoList" handle="data-move">
         <template #default="{ item }">
           <today-item :node="item" class="odd:my-1" />
         </template>

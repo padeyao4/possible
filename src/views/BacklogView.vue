@@ -58,12 +58,22 @@ const counterVisible = ref(false);
         </e-draggable>
       </el-scrollbar>
       <div
-        class="mx-3 my-4 flex h-12 shrink-0 flex-row items-center rounded-md border border-gray-200"
+        class="mx-3 my-4 flex h-12 shrink-0 flex-row items-center overflow-hidden rounded-md border border-gray-200"
       >
-        <div class="flex h-10 w-10 items-center justify-center">
+        <div class="flex h-full w-14 items-center justify-center border-r border-gray-200">
           <el-icon size="26"><Plus /></el-icon>
         </div>
-        <input @keydown.enter="addNew" ref="inputEl" class="h-full w-full bg-amber-100 p-1" />
+        <input
+          @keydown.enter="addNew"
+          ref="inputEl"
+          class="h-full w-full p-2 text-base text-gray-600"
+          style="
+            :focus {
+              border: none;
+              outline: none;
+            }
+          "
+        />
       </div>
     </div>
     <backlog-editor v-model="editorVisible" class="shrink-0 border-l border-gray-300" />
