@@ -3,7 +3,6 @@ import { Node } from '@/core/';
 import { Check } from '@element-plus/icons-vue';
 import { useProjectStore } from '@/stores';
 import { ref } from 'vue';
-import emitter, { BusEvents } from '@/utils/emitter';
 
 const { node } = defineProps<{
   node: Node;

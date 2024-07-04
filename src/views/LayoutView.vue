@@ -9,6 +9,7 @@ import { Project } from '@/core';
 import { handleNewProject } from '@/service/project.service';
 import NavTodayItem from '@/components/NavTodayItem.vue';
 import NavBacklogItem from '@/components/NavBacklogItem.vue';
+import WarningDialog from '@/components/WarningDialog.vue';
 
 // todo 当调整边框时 侧边栏跟随改变
 const side = useSide();
@@ -37,16 +38,17 @@ const swapProjects = (from: Project, to: Project) => {
         <nav-today-item />
         <nav-backlog-item />
       </header>
-      <el-scrollbar class="flex-grow p-1.5">
+      <el-scrollbar class="flex-grow px-2.5 py-1.5">
         <e-draggable :update="swapProjects" :list="projects.sortProjects" handle="data-move">
           <template #default="{ item }">
             <side-item :project="item" class="px-1.5" />
           </template>
         </e-draggable>
+        <warning-dialog />
       </el-scrollbar>
       <footer class="flex h-12 shrink-0 items-center border-t border-t-gray-200 p-1">
         <div
-          class="flex h-full grow flex-row items-center rounded-md border-gray-200 hover:border"
+          class="flex h-full grow flex-row items-center rounded-md border-gray-200 hover:bg-blue-100"
           @click="handleNewProject"
         >
           <el-icon class="mx-1.5" :size="26"><Plus /></el-icon>

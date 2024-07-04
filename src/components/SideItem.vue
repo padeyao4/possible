@@ -2,6 +2,7 @@
 import type { Project } from '@/core';
 import { ref } from 'vue';
 import { useProjectStore } from '@/stores';
+import emitter from '@/utils/emitter';
 
 const { project } = defineProps<{ project: Project }>();
 const showIcon = ref(false);
@@ -18,6 +19,14 @@ const handleRef = (e: Element) => {
   setTimeout(() => {
     (<HTMLElement>e)?.focus?.();
   });
+};
+
+const handleDelete = () => {
+  emitter.emit('project:open', project);
+};
+
+const handleEdit = () => {
+  project.editable = true;
 };
 </script>
 
@@ -39,18 +48,40 @@ const handleRef = (e: Element) => {
   />
   <div
     v-else
-    class="flex h-12 w-full flex-row items-center rounded-md border-gray-200 hover:border"
+    class="flex h-12 w-full flex-row items-center overflow-hidden rounded-md border-gray-200 hover:bg-blue-100"
     @pointerover="showIcon = true"
     @pointerleave="showIcon = false"
   >
     <div
-      class="flex h-full w-full items-center justify-start pl-1.5"
+      class="flex h-full grow items-center justify-start pl-1.5"
       @click="$router.push({ name: 'project', query: { id: project.id } })"
     >
-      <el-text>{{ project.name }}</el-text>
+      <el-text truncated>{{ project.name }}</el-text>
     </div>
-    <div class="flex h-full w-fit items-center justify-center" data-move v-show="showIcon">
-      <span class="icon-[icon-park-outline--drag] m-1.5 text-xl" data-move />
+    <div
+      class="flex h-full w-fit shrink-0 items-center justify-center overflow-hidden"
+      v-show="showIcon"
+    >
+      <div
+        class="icon-[uiw--delete] m-1 bg-amber-800 text-base hover:cursor-pointer hover:bg-amber-950"
+        @click="handleDelete"
+      ></div>
+    </div>
+    <div
+      class="flex h-full w-fit shrink-0 items-center justify-center overflow-hidden"
+      v-show="showIcon"
+    >
+      <div
+        class="icon-[cil--pen] m-1 bg-amber-800 text-base hover:cursor-pointer hover:bg-amber-950"
+        @click="handleEdit"
+      ></div>
+    </div>
+    <div
+      class="flex h-full w-fit shrink-0 items-center justify-center overflow-hidden"
+      data-move
+      v-show="showIcon"
+    >
+      <div class="icon-[icon-park-outline--drag] m-1 bg-amber-800 text-base" data-move />
     </div>
   </div>
 </template>

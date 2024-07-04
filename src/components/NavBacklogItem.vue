@@ -8,7 +8,7 @@ const backlogs = useBacklogs();
 <template>
   <div
     @click="$router.push({ name: 'backlog' })"
-    class="mx-1.5 flex h-12 flex-row items-center rounded-md hover:border"
+    class="mx-2.5 flex h-12 flex-row items-center rounded-md hover:bg-blue-100"
   >
     <el-icon class="mx-2" :size="24"><Notebook /></el-icon>
     <el-text class="grow">备忘录</el-text>

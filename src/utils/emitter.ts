@@ -13,6 +13,14 @@ type Events = {
   'project:create': Project;
   'project:update': Project;
   'project:delete': Project;
+  /**
+   * 开启删除对话框
+   */
+  'project:open': Project;
+  /**
+   * 关闭删除对话框
+   */
+  'project:close': Project;
   'backlog:create': Backlog;
   'backlog:update': Backlog;
   'backlog:delete': Backlog;

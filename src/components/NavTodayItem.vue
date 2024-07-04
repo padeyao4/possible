@@ -8,7 +8,7 @@ const counter = useCounter();
 <template>
   <div
     @click="$router.push({ name: 'today' })"
-    class="mx-1.5 flex h-12 flex-row items-center rounded-md hover:border"
+    class="mx-2.5 flex h-12 flex-row items-center rounded-md hover:bg-blue-100"
   >
     <el-icon class="mx-2" :size="24"><Sunny /></el-icon>
     <el-text class="grow">我的一天</el-text>

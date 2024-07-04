@@ -42,6 +42,7 @@ declare module 'vue' {
     EDraggable: typeof import('./src/components/common/EDraggable.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
+    ElDialog: typeof import('element-plus/es')['ElDialog']
     ElDivider: typeof import('element-plus/es')['ElDivider']
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
@@ -77,5 +78,6 @@ declare module 'vue' {
     TheSeparation: typeof import('./src/components/common/TheSeparation.vue')['default']
     TheSide: typeof import('./src/components/LayoutSide/TheSide.vue')['default']
     TodayItem: typeof import('./src/components/TodayItem.vue')['default']
+    WarningDialog: typeof import('./src/components/WarningDialog.vue')['default']
   }
 }

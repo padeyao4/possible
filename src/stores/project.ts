@@ -161,10 +161,6 @@ export const useProjectStore = defineStore('projects', () => {
     return Array.from(mapper).map(([_, value]) => value.plainObject());
   }
 
-  function getProjectById(projectId: ID) {
-    return mapper.get(projectId);
-  }
-
   const fetchLoading = ref(false);
   async function fetch() {
     try {
@@ -236,7 +232,6 @@ export const useProjectStore = defineStore('projects', () => {
     todoList,
     completedList,
     sortProjects,
-    getProjectById,
     addProject,
     removeProject,
     addNode,
