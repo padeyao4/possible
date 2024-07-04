@@ -53,10 +53,10 @@ const handleEdit = () => {
     @pointerleave="showIcon = false"
   >
     <div
-      class="flex h-full grow items-center justify-start pl-1.5"
+      class="flex h-full grow items-center justify-start overflow-hidden pl-1.5"
       @click="$router.push({ name: 'project', query: { id: project.id } })"
     >
-      <el-text truncated>{{ project.name }}</el-text>
+      <el-text truncated size="default">{{ project.name }}</el-text>
     </div>
     <div
       class="flex h-full w-fit shrink-0 items-center justify-center overflow-hidden"

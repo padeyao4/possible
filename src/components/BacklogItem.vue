@@ -19,7 +19,7 @@ const backlogEditorEl = inject<Ref<typeof BacklogEditor>>('backlogEditorEl');
 const handleTextClick = () => {
   const current: Backlog = backlogEditorEl.value.current;
   if (editorVisible.value) {
-    emitter.emit(current.id === item.id ? 'backlog:close' : 'backlog:open', item);
+    emitter.emit(current?.id === item.id ? 'backlog:close' : 'backlog:open', item);
   } else {
     emitter.emit('backlog:open', item);
   }
@@ -40,10 +40,8 @@ const showIcon = ref(false);
     >
       <el-icon v-show="item.done" size="16"><Check /></el-icon>
     </div>
-    <div class="flex h-full grow" @click="handleTextClick">
-      <div class="flex items-center overflow-x-hidden">
-        <el-text truncated class="overflow-x-hidden"> {{ item.title }} </el-text>
-      </div>
+    <div class="flex h-full grow items-center overflow-hidden" @click="handleTextClick">
+      <el-text truncated> {{ item.title }} </el-text>
     </div>
     <div
       v-show="showIcon"

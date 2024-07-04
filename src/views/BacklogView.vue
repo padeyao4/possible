@@ -28,7 +28,7 @@ const width = computed(() => {
   return editorVisible.value ? 'calc( 100% - 320px )' : '100%';
 });
 
-const editorVisible = ref(true);
+const editorVisible = ref(false);
 
 const backlogEditorEl = ref<typeof BacklogEditor>();
 

@@ -64,7 +64,7 @@ const swapProjects = (from: Project, to: Project) => {
     </div>
     <router-view
       :key="$route.fullPath"
-      class="flex-grow overflow-hidden rounded-tl-lg border border-gray-300"
+      class="min-w-48 flex-grow overflow-hidden rounded-tl-lg border border-gray-300"
     />
   </div>
   <hr

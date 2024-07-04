@@ -26,18 +26,22 @@ const handleChange = () => {
     @pointerleave="showIcon = false"
   >
     <div
-      class="mx-3 flex h-6 w-6 items-center justify-center rounded-full border border-gray-500"
+      class="mx-3 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-gray-500"
       @click="handleChange"
     >
       <el-icon v-show="node.completed" size="16"><Check /></el-icon>
     </div>
-    <div class="flex h-full grow flex-col">
-      <div class="flex h-3/5 items-end text-base text-gray-600">{{ node.name }}</div>
+    <div class="flex h-full grow flex-col overflow-hidden">
+      <div
+        class="flex h-3/5 w-40 items-end justify-start overflow-hidden bg-amber-100 text-base text-gray-600"
+      >
+        {{ node.name }}
+      </div>
       <div class="flex h-2/5 items-start text-xs text-gray-600">{{ project.name }}</div>
     </div>
     <div
       v-show="showIcon"
-      class="icon-[icon-park-outline--drag] ml-auto mr-2 block border border-black text-xl"
+      class="icon-[icon-park-outline--drag] ml-auto mr-2 block shrink-0 border border-black text-xl"
       data-move
     />
   </div>
