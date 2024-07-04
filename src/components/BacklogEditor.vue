@@ -45,21 +45,13 @@ const onDelete = (id: ID) => {
 </script>
 
 <template>
-  <div class="h-screen" v-show="visible">
-    <div
-      style="
-        margin-top: 35px;
-        border-top: 1px solid #00000015;
-        height: 40px;
-        display: flex;
-        align-items: center;
-      "
-    >
+  <div class="h-screen w-80" v-show="visible">
+    <div class="mt-9 flex h-10 w-full items-center justify-end border-t border-gray-100">
       <close-icon-button style="margin-left: auto; margin-right: 12px" @click="visible = false" />
     </div>
     <template v-if="show">
       <el-scrollbar
-        max-height="calc( 100vh - 35px - 40px - 58px)"
+        max-height="calc( 100vh - 35px - 40px - 48px)"
         style="height: calc(100vh - 35px - 40px - 58px)"
       >
         <div style="margin: 0 12px">
@@ -74,20 +66,10 @@ const onDelete = (id: ID) => {
           />
         </div>
       </el-scrollbar>
-      <div class="footer">
+      <div class="flex h-12 items-center justify-center border-t border-gray-100">
         <el-button :icon="Delete" size="small" @click="onDelete(item.id)" />
       </div>
     </template>
     <div v-else></div>
   </div>
 </template>
-
-<style scoped>
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 48px;
-  border-top: 1px solid #00000015;
-}
-</style>
