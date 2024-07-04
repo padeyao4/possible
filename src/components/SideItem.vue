@@ -8,7 +8,7 @@ const showIcon = ref(false);
 
 <template>
   <div
-    class="flex h-12 w-full flex-row items-center rounded-md border border-gray-200"
+    class="flex h-12 w-full flex-row items-center rounded-md border-gray-200 hover:border"
     @pointerover="showIcon = true"
     @pointerleave="showIcon = false"
   >

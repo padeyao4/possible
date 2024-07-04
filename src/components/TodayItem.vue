@@ -17,12 +17,15 @@ const showIcon = ref(false);
 
 <template>
   <div
-    class="flex h-14 w-full flex-row items-center rounded-lg border border-gray-200 bg-amber-100"
+    class="flex h-14 w-full flex-row items-center rounded-lg border border-gray-200 hover:bg-blue-100"
     @pointerover="showIcon = true"
     @pointerleave="showIcon = false"
   >
-    <div class="flex h-6 w-6 items-center justify-center rounded-full border border-gray-500">
-      <el-icon size="16"><Check /></el-icon>
+    <div
+      class="mx-3 flex h-6 w-6 items-center justify-center rounded-full border border-gray-500"
+      @click="node.completed = !node.completed"
+    >
+      <el-icon v-show="node.completed" size="16"><Check /></el-icon>
     </div>
     <div class="flex h-full grow flex-col">
       <div class="flex h-3/5 items-end text-base text-gray-600">{{ node.name }}</div>
@@ -30,7 +33,7 @@ const showIcon = ref(false);
     </div>
     <div
       v-show="showIcon"
-      class="icon-[icon-park-outline--drag] ml-auto mr-1.5 block border border-black bg-amber-300 text-xl"
+      class="icon-[icon-park-outline--drag] ml-auto mr-2 block border border-black text-xl"
       data-move
     />
   </div>

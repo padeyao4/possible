@@ -5,12 +5,12 @@ defineProps<{
   count: number;
 }>();
 
-const visible = defineModel();
+const visible = defineModel({ default: false });
 </script>
 
 <template>
   <div
-    class="flex h-8 w-fit select-none flex-row items-center justify-center rounded-md border border-gray-500 bg-gray-300 px-2"
+    class="flex h-8 w-fit select-none flex-row items-center justify-center rounded-md border border-gray-200 px-2"
     @click="visible = !visible"
   >
     <el-icon class="mr-1">

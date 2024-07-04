@@ -1,22 +1,18 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import ECounterButton from '@/components/common/ECounterButton.vue';
-import BacklogItem from '@/components/backlog/BacklogItem.vue';
 import { Plus } from '@element-plus/icons-vue';
 import EDraggable from '@/components/common/EDraggable.vue';
 import { useBacklog, useSettings } from '@/stores';
 import { Backlog } from '@/core';
-import BacklogEditor from '@/components/backlog/BacklogEditor.vue';
+import BacklogItem from '@/components/BacklogItem.vue';
+import BacklogEditor from '@/components/BacklogEditor.vue';
 
 const backlogs = useBacklog();
 
 const onUpdate = (current: Backlog, other: Backlog) => {
   [current.orderIndex, other.orderIndex] = [other.orderIndex, current.orderIndex];
 };
-
-const showComplete = ref(false);
-const showRight = ref(false);
-const settings = useSettings();
 
 const inputEl = ref<HTMLInputElement>();
 
@@ -28,7 +24,7 @@ const addNew = () => {
 };
 
 const width = computed(() => {
-  return showRight.value ? `calc( 100vw - ${settings.sideWidth}px - 300px )` : '100%';
+  return editorVisible.value ? 'calc( 100% - 320px )' : '100%';
 });
 
 const editorVisible = ref(true);
@@ -36,14 +32,13 @@ const editorVisible = ref(true);
 
 <template>
   <div class="flex h-screen w-full flex-row">
-    <div class="flex h-screen w-full flex-col p-3">
-      <div class="drag-region flex h-10 w-full shrink-0 items-end text-xl text-gray-600">
-        备忘录
-      </div>
-      <el-scrollbar class="w-full">
-        <e-draggable :update="() => {}" :list="backlogs.todos" class="w-full" handle="data-move">
+    <div class="flex h-screen flex-col pt-3" :style="{ width }">
+      <div class="drag-region mx-3 flex h-10 shrink-0 items-end text-xl text-gray-600">备忘录</div>
+      <div class="mx-3 h-2 shrink-0" />
+      <el-scrollbar class="grow px-3">
+        <e-draggable :update="() => {}" :list="backlogs.todos" handle="data-move">
           <template #default="{ item }">
-            <backlog-item :item="item" />
+            <backlog-item :item="item" class="my-1 overflow-x-hidden" />
           </template>
         </e-draggable>
         <e-counter-button :count="backlogs.completes.length" />
@@ -53,14 +48,16 @@ const editorVisible = ref(true);
           </template>
         </e-draggable>
       </el-scrollbar>
-      <div class="flex h-12 shrink-0 flex-row items-center rounded-md border border-gray-200">
+      <div
+        class="mx-3 my-4 flex h-12 shrink-0 flex-row items-center rounded-md border border-gray-200"
+      >
         <div class="flex h-10 w-10 items-center justify-center">
           <el-icon size="26"><Plus /></el-icon>
         </div>
         <input @keydown.enter="addNew" ref="inputEl" class="h-full w-full bg-amber-100 p-1" />
       </div>
     </div>
-    <backlog-editor v-model="editorVisible" class="shrink-0" />
+    <backlog-editor v-model="editorVisible" class="shrink-0 border-l border-gray-300" />
   </div>
 </template>
 

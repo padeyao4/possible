@@ -45,7 +45,7 @@ const onDelete = (id: ID) => {
 </script>
 
 <template>
-  <div class="h-screen w-80" v-show="visible">
+  <div class="h-screen" v-show="visible">
     <div
       style="
         margin-top: 35px;

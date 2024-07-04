@@ -1,16 +1,13 @@
 <script setup lang="ts">
-import ItemComponent from '@/components/TodayList/ItemComponent.vue';
-import { handleNewProject } from '@/service/project.service';
 import { useProjectStore } from '@/stores/project';
 import { showWeekAndLocalDate, useTimer } from '@/stores/timer';
 import { computed, ref } from 'vue';
 import ECounterButton from '@/components/common/ECounterButton.vue';
 import EDraggable from '@/components/common/EDraggable.vue';
 import { Node } from '@/core';
-import { Plus } from '@element-plus/icons-vue';
 import TodayItem from '@/components/TodayItem.vue';
 
-const visible = ref(false);
+const completeVisible = ref(false);
 
 const timer = useTimer();
 
@@ -28,25 +25,32 @@ const showWelcome = computed(() => {
 </script>
 
 <template>
-  <div class="flex h-screen flex-col p-3">
-    <div class="drag-region flex h-10 w-full shrink-0 items-end text-xl text-gray-600">
+  <div class="flex h-screen flex-col pt-3">
+    <div class="drag-region flex h-10 w-full shrink-0 items-end px-3 text-xl text-gray-600">
       我的一天
     </div>
-    <div class="mb-2">
+    <div class="mb-2 px-3">
       <el-text size="small">{{ dateTime }}</el-text>
     </div>
-    <el-scrollbar class="grow">
+    <div v-if="showWelcome" class="grow px-3" />
+    <el-scrollbar v-else class="grow px-3" always>
       <e-draggable :update="() => {}" :list="projects.todoList" handle="data-move">
         <template #default="{ item }">
-          <today-item :node="item" />
+          <today-item :node="item" class="odd:my-1" />
         </template>
       </e-draggable>
-      <e-counter-button :count="projects.completedList.length" />
-      <e-draggable :update="() => {}" :list="projects.completedList" handle="data-move">
+      <e-counter-button :count="projects.completedList.length" v-model="completeVisible" />
+      <e-draggable
+        v-if="completeVisible"
+        :update="() => {}"
+        :list="projects.completedList"
+        handle="data-move"
+      >
         <template #default="{ item }">
-          <today-item :node="item" />
+          <today-item :node="item" class="my-1" />
         </template>
       </e-draggable>
+      <div class="h-1" />
     </el-scrollbar>
   </div>
 </template>

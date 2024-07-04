@@ -9,9 +9,7 @@ import { Project } from '@/core';
 
 const side = useSide();
 
-const handlePointerDown = (e: PointerEvent) => {
-  side.onPointerDown(e.clientX);
-};
+const handlePointerDown = (e: PointerEvent) => side.onPointerDown(e.clientX);
 
 useEventListener(['pointerup', 'pointermove'], (e: PointerEvent) => {
   if (e.type === 'pointerup') {
@@ -29,15 +27,12 @@ const swapProjects = (from: Project, to: Project) => {
 </script>
 
 <template>
-  <div
-    class="relative grid h-screen w-screen"
-    :style="{ gridTemplateColumns: `${side.width}px 1fr` }"
-  >
+  <div class="grid h-screen w-screen" :style="{ gridTemplateColumns: `${side.width}px 1fr` }">
     <div class="flex h-screen w-full flex-col">
-      <div class="mt-4 flex h-fit flex-col border-b border-b-gray-300 p-1">
+      <header class="mt-4 flex h-fit flex-col border-b border-b-gray-300 p-1">
         <div
           @click="$router.push({ name: 'today' })"
-          class="flex h-12 flex-row items-center rounded-md border"
+          class="flex h-12 flex-row items-center rounded-md hover:border"
         >
           <el-icon class="mx-1.5" :size="24"><Sunny /></el-icon>
           <el-text class="grow">我的一天</el-text>
@@ -47,7 +42,7 @@ const swapProjects = (from: Project, to: Project) => {
         </div>
         <div
           @click="$router.push({ name: 'backlog' })"
-          class="flex h-12 flex-row items-center rounded-md border"
+          class="flex h-12 flex-row items-center rounded-md hover:border"
         >
           <el-icon class="mx-1.5" :size="24"><Notebook /></el-icon>
           <el-text class="grow">备忘录</el-text>
@@ -55,16 +50,19 @@ const swapProjects = (from: Project, to: Project) => {
             <el-text>8</el-text>
           </div>
         </div>
-      </div>
-      <div class="flex-grow p-1">
+      </header>
+      <el-scrollbar class="flex-grow p-1">
         <e-draggable :update="swapProjects" :list="projects.sortProjects" handle="data-move">
           <template #default="{ item }">
             <side-item :project="item" />
           </template>
         </e-draggable>
-      </div>
-      <div class="flex h-12 items-center border-t border-t-gray-200 p-1">
-        <div class="flex h-full grow flex-row items-center rounded-md border border-gray-200">
+      </el-scrollbar>
+      <footer class="flex h-12 shrink-0 items-center border-t border-t-gray-200 p-1">
+        <div
+          class="flex h-full grow flex-row items-center rounded-md border-gray-200 hover:border"
+          @click=""
+        >
           <el-icon class="mx-1.5" :size="26"><Plus /></el-icon>
           <el-text>新建项目</el-text>
         </div>
@@ -73,7 +71,7 @@ const swapProjects = (from: Project, to: Project) => {
         >
           <el-icon :size="26"><Setting /></el-icon>
         </div>
-      </div>
+      </footer>
     </div>
     <router-view
       :key="$route.fullPath"
