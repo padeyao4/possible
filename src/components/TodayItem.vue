@@ -31,13 +31,13 @@ const handleChange = () => {
     >
       <el-icon v-show="node.completed" size="16"><Check /></el-icon>
     </div>
-    <div class="flex h-full grow flex-col overflow-hidden">
-      <div
-        class="flex h-3/5 w-40 items-end justify-start overflow-hidden bg-amber-100 text-base text-gray-600"
-      >
+    <div class="flex h-full grow flex-col justify-center overflow-hidden">
+      <div class="block truncate align-bottom text-base text-gray-600">
         {{ node.name }}
       </div>
-      <div class="flex h-2/5 items-start text-xs text-gray-600">{{ project.name }}</div>
+      <div class="block h-fit items-start truncate text-xs text-gray-600">
+        {{ project.name }}
+      </div>
     </div>
     <div
       v-show="showIcon"
