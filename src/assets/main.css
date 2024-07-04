@@ -48,14 +48,6 @@ body {
   -webkit-app-region: drag;
 }
 
-svg {
-  font-size: unset;
-}
-
-#app {
-  font-weight: normal;
-}
-
 /*-------------canvas contextmenu-----------*/
 .canvas-contextmenu-list {
   display: flex;

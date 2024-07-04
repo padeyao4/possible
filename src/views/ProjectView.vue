@@ -8,8 +8,6 @@ import type { ID } from '@/core/types';
 
 const { id } = defineProps<{ id: ID }>();
 
-console.log(id);
-
 const projects = useProjectStore();
 const project = computed(() => projects.getProject(id));
 
