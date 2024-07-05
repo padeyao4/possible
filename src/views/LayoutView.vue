@@ -51,14 +51,14 @@ const swapProjects = (from: Project, to: Project) => {
           class="flex h-full grow flex-row items-center rounded-md border-gray-200 hover:bg-blue-100"
           @click="handleNewProject"
         >
-          <el-icon class="mx-1.5" :size="26"><Plus /></el-icon>
+          <span class="icon-[fe--plus] mx-1.5 bg-gray-600 text-2xl"></span>
           <el-text>新建项目</el-text>
         </div>
         <div
           class="ml-1 flex h-full w-10 items-center justify-center rounded-md border border-gray-200"
           @click="$router.push({ name: 'settings' })"
         >
-          <el-icon :size="26"><Setting /></el-icon>
+          <span class="icon-[cil--settings] bg-gray-600 text-2xl"></span>
         </div>
       </footer>
     </div>

@@ -35,7 +35,7 @@ const showIcon = ref(false);
     @pointerleave="showIcon = false"
   >
     <div
-      class="mx-3 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-gray-500"
+      class="mx-3 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-gray-500 hover:cursor-pointer"
       @click="handleIconClick"
     >
       <el-icon v-show="item.done" size="16"><Check /></el-icon>
@@ -45,7 +45,7 @@ const showIcon = ref(false);
     </div>
     <div
       v-show="showIcon"
-      class="icon-[icon-park-outline--drag] ml-auto mr-2 block shrink-0 border border-black text-xl"
+      class="icon-[icon-park-outline--drag] ml-auto mr-2 block shrink-0 border border-black bg-gray-500 text-xl"
       data-move
     />
   </div>

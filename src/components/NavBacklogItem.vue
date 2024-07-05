@@ -10,7 +10,7 @@ const backlogs = useBacklogs();
     @click="$router.push({ name: 'backlog' })"
     class="mx-2.5 flex h-12 flex-row items-center rounded-md hover:bg-blue-100"
   >
-    <el-icon class="mx-2" :size="24"><Notebook /></el-icon>
+    <span class="icon-[fluent--task-list-ltr-20-filled] mx-2 bg-gray-600 text-2xl"></span>
     <el-text class="grow">备忘录</el-text>
     <div class="mx-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-200">
       <el-text size="small">{{ backlogs.todos.length }}</el-text>

@@ -32,16 +32,16 @@ const handleChange = () => {
       <el-icon v-show="node.completed" size="16"><Check /></el-icon>
     </div>
     <div class="flex h-full grow flex-col justify-center overflow-hidden">
-      <div class="block truncate align-bottom text-base text-gray-600">
+      <div class="block truncate align-bottom text-base text-gray-500">
         {{ node.name }}
       </div>
-      <div class="block h-fit items-start truncate text-xs text-gray-600">
+      <div class="block h-fit items-start truncate text-xs text-gray-500">
         {{ project.name }}
       </div>
     </div>
     <div
       v-show="showIcon"
-      class="icon-[icon-park-outline--drag] ml-auto mr-2 block shrink-0 border border-black text-xl"
+      class="icon-[icon-park-outline--drag] ml-auto mr-2 block w-10 shrink-0 border border-black bg-gray-500 text-xl"
       data-move
     />
   </div>

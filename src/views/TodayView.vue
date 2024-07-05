@@ -26,7 +26,7 @@ const showWelcome = computed(() => {
 
 <template>
   <div class="flex h-screen flex-col pt-3">
-    <div class="drag-region flex h-10 w-full shrink-0 items-end px-3 text-xl text-gray-600">
+    <div class="drag-region flex h-10 w-full shrink-0 items-end px-3 text-xl text-gray-500">
       我的一天
     </div>
     <div class="mb-2 px-3">

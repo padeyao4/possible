@@ -32,7 +32,7 @@ const handleEdit = () => {
 
 <template>
   <input
-    class="flex h-12 w-full rounded-md border border-gray-200 pr-1 text-base text-gray-600"
+    class="flex h-12 w-full rounded-md border border-gray-200 pr-1 text-base text-gray-500"
     style="
       :focus {
         border-style: none;
@@ -63,7 +63,7 @@ const handleEdit = () => {
       v-show="showIcon"
     >
       <div
-        class="icon-[uiw--delete] m-1 bg-amber-800 text-base hover:cursor-pointer hover:bg-amber-950"
+        class="icon-[uiw--delete] m-1 bg-gray-400 text-base hover:cursor-pointer hover:bg-gray-500"
         @click="handleDelete"
       ></div>
     </div>
@@ -72,7 +72,7 @@ const handleEdit = () => {
       v-show="showIcon"
     >
       <div
-        class="icon-[cil--pen] m-1 bg-amber-800 text-base hover:cursor-pointer hover:bg-amber-950"
+        class="icon-[cil--pen] m-1 bg-gray-400 text-base hover:cursor-pointer hover:bg-gray-500"
         @click="handleEdit"
       ></div>
     </div>
@@ -81,7 +81,10 @@ const handleEdit = () => {
       data-move
       v-show="showIcon"
     >
-      <div class="icon-[icon-park-outline--drag] m-1 bg-amber-800 text-base" data-move />
+      <div
+        class="icon-[icon-park-outline--drag] m-1 bg-gray-400 text-base hover:bg-gray-500"
+        data-move
+      />
     </div>
   </div>
 </template>

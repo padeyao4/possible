@@ -16,7 +16,7 @@ provide('project', project);
 
 <template>
   <div class="flex h-screen w-full flex-col">
-    <header class="m-3 flex h-10 shrink-0 items-end justify-start text-xl text-gray-600">
+    <header class="m-3 flex h-10 shrink-0 items-end justify-start text-xl text-gray-500">
       {{ project.name ?? '未命名' }}
     </header>
     <main class="project-group">
@@ -43,7 +43,6 @@ main {
   display: flex;
   flex-direction: row;
   overflow: hidden;
-  background-color: var(--background-canvas-color);
   border-top: 1px solid #00000010;
 }
 

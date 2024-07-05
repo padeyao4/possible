@@ -12,7 +12,7 @@ import { Back } from '@element-plus/icons-vue';
       >
         <el-icon class="h-10 w-10" :size="30"><Back /></el-icon>
       </div>
-      <div class="text-xl text-gray-600">设置</div>
+      <div class="text-xl text-gray-500">设置</div>
     </header>
     <div class="" style="width: 550px">
       <AccountInfo />
