@@ -2,7 +2,6 @@
 import { useProjectStore, useSide } from '@/stores';
 import { useEventListener } from '@vueuse/core';
 import { RouterView } from 'vue-router';
-import { Plus, Setting } from '@element-plus/icons-vue';
 import SideItem from '@/components/SideItem.vue';
 import EDraggable from '@/components/common/EDraggable.vue';
 import { Project } from '@/core';

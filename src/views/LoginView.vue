@@ -105,9 +105,9 @@ const registerRules = reactive<FormRules<typeof registerForm>>({
 
 <template>
   <div class="flex h-screen w-screen flex-row">
-    <div class="h-screen w-1/2 bg-blue-400"></div>
-    <div class="flex h-screen w-1/2 items-center justify-center bg-white">
-      <div class="h-fit w-60">
+    <div class="drag-region h-screen w-1/2 bg-blue-400"></div>
+    <div class="drag-region flex h-screen w-1/2 items-center justify-center bg-white">
+      <div class="no-drag-region h-fit w-60">
         <el-tabs>
           <el-tab-pane label="登录">
             <el-form ref="loginFormEl" :model="loginForm" class="login-form" :rules="loginRules">
