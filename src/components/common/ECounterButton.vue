@@ -13,12 +13,12 @@ const visible = defineModel({ default: false });
     class="flex h-8 w-fit select-none flex-row items-center justify-center rounded-md border border-gray-200 px-2"
     @click="visible = !visible"
   >
-    <el-icon class="mr-1">
+    <el-icon class="mr-1 shrink-0">
       <ArrowDownBold v-if="visible" />
       <ArrowRightBold v-else />
     </el-icon>
-    <div>
-      <el-text> 已完成 {{ count }} </el-text>
+    <div class="flex w-fit items-center justify-center overflow-hidden">
+      <el-text truncated>已完成 {{ count }} </el-text>
     </div>
   </div>
 </template>

@@ -48,16 +48,23 @@ const onDelete = (id: ID) => {
 </script>
 
 <template>
-  <div class="h-screen w-80" v-show="visible">
-    <div class="mt-9 flex h-10 w-full items-center justify-end border-t border-gray-100">
-      <close-icon-button style="margin-left: auto; margin-right: 12px" @click="visible = false" />
+  <div class="flex h-screen w-80 flex-col" v-show="visible">
+    <div
+      class="drag-region mb-3 flex w-full shrink-0 items-end justify-between"
+      style="height: 36px"
+    >
+      <close-icon-button
+        class="no-drag-region ml-2.5 rounded-md border border-gray-300"
+        @click="visible = false"
+      />
+      <div
+        class="h-full rounded-bl-lg border border-b border-l border-gray-200"
+        style="width: 139px"
+      ></div>
     </div>
     <template v-if="show">
-      <el-scrollbar
-        max-height="calc( 100vh - 35px - 40px - 48px)"
-        style="height: calc(100vh - 35px - 40px - 58px)"
-      >
-        <div style="margin: 0 12px">
+      <el-scrollbar class="grow">
+        <div class="m-3">
           <el-input
             type="textarea"
             size="large"
@@ -69,10 +76,13 @@ const onDelete = (id: ID) => {
           />
         </div>
       </el-scrollbar>
-      <div class="flex h-12 items-center justify-center border-t border-gray-100">
+      <div class="flex h-12 shrink-0 items-center justify-center border-t border-gray-100">
         <el-button :icon="Delete" size="small" @click="onDelete(item.id)" />
       </div>
     </template>
     <div v-else></div>
   </div>
 </template>
+
+<!--max-height="calc( 100vh - 35px - 40px - 48px)"
+style="height: calc(100vh - 35px - 40px - 58px)"-->

@@ -48,6 +48,10 @@ body {
   -webkit-app-region: drag;
 }
 
+.no-drag-region {
+  -webkit-app-region: no-drag;
+}
+
 /*-------------canvas contextmenu-----------*/
 .canvas-contextmenu-list {
   display: flex;

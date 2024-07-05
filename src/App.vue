@@ -54,7 +54,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <system-titlebar />
+  <!--  <system-titlebar />-->
   <router-view v-if="account.isAuth" :key="$route.fullPath" />
   <login-view v-else />
 </template>

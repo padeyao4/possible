@@ -41,7 +41,9 @@ const counterVisible = ref(false);
 <template>
   <div class="flex h-screen w-full flex-row">
     <div class="flex h-screen flex-col pt-3" :style="{ width }">
-      <div class="drag-region mx-3 mb-2 flex h-10 shrink-0 items-end text-xl text-gray-500">
+      <div
+        class="drag-region mx-3 mb-2 flex h-10 shrink-0 items-end truncate text-xl text-gray-500"
+      >
         备忘录
       </div>
       <el-scrollbar class="grow px-3">
