@@ -25,12 +25,12 @@ const showWelcome = computed(() => {
 </script>
 
 <template>
-  <div class="flex h-screen flex-col pt-3">
-    <div class="drag-region flex h-10 w-full shrink-0 items-end px-3 text-xl text-gray-500">
-      我的一天
-    </div>
-    <div class="mb-2 px-3">
-      <el-text size="small">{{ dateTime }}</el-text>
+  <div class="flex h-screen flex-col">
+    <div class="drag-region mb-3">
+      <div class="flex w-full shrink-0 items-end px-3 text-xl text-gray-500" style="height: 52px">
+        我的一天
+      </div>
+      <div class="ml-3 text-xs text-gray-500">{{ dateTime }}</div>
     </div>
     <div v-if="showWelcome" class="grow px-3" />
     <el-scrollbar v-else class="grow px-3" always>

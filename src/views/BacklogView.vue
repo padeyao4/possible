@@ -40,9 +40,10 @@ const counterVisible = ref(false);
 
 <template>
   <div class="flex h-screen w-full flex-row">
-    <div class="flex h-screen flex-col pt-3" :style="{ width }">
+    <div class="flex h-screen flex-col" :style="{ width }">
       <div
-        class="drag-region mx-3 mb-2 flex h-10 shrink-0 items-end truncate text-xl text-gray-500"
+        class="drag-region flex shrink-0 items-end truncate px-3 pb-3 text-xl text-gray-500"
+        style="height: 64px"
       >
         备忘录
       </div>

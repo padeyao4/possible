@@ -16,7 +16,9 @@ provide('project', project);
 
 <template>
   <div class="flex h-screen w-full flex-col">
-    <header class="m-3 flex h-10 shrink-0 items-end justify-start text-xl text-gray-500">
+    <header
+      class="drag-region flex h-16 shrink-0 items-end justify-start px-3 pb-3 text-xl text-gray-500"
+    >
       {{ project.name ?? '未命名' }}
     </header>
     <main class="project-group">
