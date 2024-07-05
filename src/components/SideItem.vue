@@ -22,6 +22,7 @@ const handleRef = (e: Element) => {
 };
 
 const handleDelete = () => {
+  console.log('handle project open');
   emitter.emit('project:open', project);
 };
 
@@ -48,7 +49,7 @@ const handleEdit = () => {
   />
   <div
     v-else
-    class="flex h-12 w-full flex-row items-center overflow-hidden rounded-md border-gray-200 hover:bg-blue-100"
+    class="flex h-12 w-full flex-row items-center overflow-hidden rounded-md border-gray-200 hover:bg-blue-50"
     @pointerover="showIcon = true"
     @pointerleave="showIcon = false"
   >

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import emitter from '@/utils/emitter';
 import { useProjectStore } from '@/stores';
 import { Project } from '@/core';
@@ -9,9 +9,12 @@ const visible = ref(false);
 const projects = useProjectStore();
 const project = ref<Project>();
 
-emitter.on('project:open', (e) => {
-  project.value = e;
-  visible.value = true;
+onMounted(() => {
+  emitter.on('project:open', (e) => {
+    console.log('listen on project:open');
+    project.value = e;
+    visible.value = true;
+  });
 });
 
 const handleDelete = () => {
@@ -21,11 +24,18 @@ const handleDelete = () => {
 
 onUnmounted(() => {
   emitter.off('project:open');
+  console.log('off project:open');
 });
 </script>
 
 <template>
-  <el-dialog v-model="visible" title="删除" width="500" align-center class="rounded-md">
+  <el-dialog
+    v-model="visible"
+    title="删除"
+    width="500"
+    align-center
+    style="border-radius: 6px !important"
+  >
     <el-text truncated>确定删除{{ project?.name ?? '' }}项目吗</el-text>
     <template #footer>
       <div class="dialog-footer">
@@ -35,5 +45,3 @@ onUnmounted(() => {
     </template>
   </el-dialog>
 </template>
-
-<style scoped></style>

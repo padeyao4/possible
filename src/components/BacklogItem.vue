@@ -30,7 +30,7 @@ const showIcon = ref(false);
 
 <template>
   <div
-    class="flex h-14 w-full items-center rounded-lg border border-gray-200 hover:bg-blue-100"
+    class="flex h-14 w-full items-center rounded-lg border border-gray-200 hover:bg-blue-50"
     @pointerover="showIcon = true"
     @pointerleave="showIcon = false"
   >

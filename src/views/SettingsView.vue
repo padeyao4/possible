@@ -7,7 +7,7 @@ import { Back } from '@element-plus/icons-vue';
   <div class="flex flex-col items-center">
     <header class="flex h-16 w-screen items-center justify-start border-b border-gray-300">
       <div
-        class="m-4 flex h-10 w-10 items-center justify-center hover:bg-blue-100"
+        class="m-4 flex h-10 w-10 items-center justify-center hover:bg-blue-50"
         @click="$router.back()"
       >
         <el-icon class="h-10 w-10" :size="30"><Back /></el-icon>

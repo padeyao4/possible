@@ -48,17 +48,17 @@ const swapProjects = (from: Project, to: Project) => {
       </el-scrollbar>
       <footer class="flex h-12 shrink-0 items-center border-t border-t-gray-200 p-1">
         <div
-          class="flex h-full grow flex-row items-center rounded-md border-gray-200 hover:bg-blue-100"
+          class="flex h-full grow flex-row items-center rounded-md border-gray-200 hover:bg-blue-50"
           @click="handleNewProject"
         >
           <span class="icon-[fe--plus] mx-1.5 bg-gray-600 text-2xl"></span>
           <el-text>新建项目</el-text>
         </div>
         <div
-          class="ml-1 flex h-full w-10 items-center justify-center rounded-md border border-gray-200"
+          class="ml-1 flex h-full w-10 items-center justify-center rounded-md border border-gray-200 hover:bg-blue-50"
           @click="$router.push({ name: 'settings' })"
         >
-          <span class="icon-[cil--settings] bg-gray-600 text-2xl"></span>
+          <span class="icon-[cil--settings] bg-gray-500 text-2xl"></span>
         </div>
       </footer>
     </div>

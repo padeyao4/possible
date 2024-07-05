@@ -21,12 +21,12 @@ const handleChange = () => {
 
 <template>
   <div
-    class="flex h-14 w-full flex-row items-center rounded-lg border border-gray-200 hover:bg-blue-100"
+    class="flex h-14 w-full flex-row items-center rounded-lg border border-gray-200 hover:bg-blue-50"
     @pointerover="showIcon = true"
     @pointerleave="showIcon = false"
   >
     <div
-      class="mx-3 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-gray-500"
+      class="mx-3 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-gray-500 hover:cursor-pointer"
       @click="handleChange"
     >
       <el-icon v-show="node.completed" size="16"><Check /></el-icon>
