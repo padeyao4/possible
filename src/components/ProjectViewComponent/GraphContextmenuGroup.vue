@@ -109,7 +109,6 @@ function handleDeleteTask() {
   const key = el.getAttribute('data-key');
   project.value.removeNode(key);
   visible.value = false;
-  emitter.emit('home-editor');
   emitter.emit(BusEvents['node:deleted']);
 }
 
@@ -178,11 +177,9 @@ const nodeOptions: OptionType[] = [
       {
         title: '编辑',
         action() {
-          emitter.emit(BusEvents['editor:open'], {
-            event: event.value,
-            id: (event.value.target as Element).getAttribute('data-key'),
-            shapeType: itemType.value
-          });
+          const el = event.value.target as Element;
+          const nodeId = el.getAttribute('data-key');
+          emitter.emit('node:open', project.value.getNode(nodeId));
           visible.value = false;
         }
       },

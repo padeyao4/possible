@@ -61,6 +61,7 @@ declare module 'vue' {
     NavTodayItem: typeof import('./src/components/NavTodayItem.vue')['default']
     NotCheckIcon: typeof import('./src/components/icon/NotCheckIcon.vue')['default']
     PageLayout: typeof import('./src/components/PageLayout.vue')['default']
+    ProjectEditor: typeof import('./src/components/ProjectEditor.vue')['default']
     ProjectGroupComponent: typeof import('./src/components/ProjectViewComponent/ProjectGroupComponent.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

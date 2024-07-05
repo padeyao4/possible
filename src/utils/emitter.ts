@@ -7,6 +7,14 @@ type Events = {
   'node:update': Node;
   'node:create': Node;
   'node:delete': Node;
+  /**
+   * 打开node编辑器
+   */
+  'node:open': Node;
+  /**
+   * 关闭node编辑器
+   */
+  'node:close': Node;
   'edge:update': Edge;
   'edge:create': Edge;
   'edge:delete': Edge;
@@ -84,7 +92,3 @@ export const dataChangeEvents = new Set([
   BusEvents['project:created'],
   BusEvents['project:deleted']
 ]);
-
-export enum EventTypes {
-  'node:change'
-}

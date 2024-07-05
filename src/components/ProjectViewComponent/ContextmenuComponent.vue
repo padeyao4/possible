@@ -127,7 +127,8 @@ const nextY = computed(() => {
   z-index: 3;
   flex-direction: column;
   width: v-bind(styleWidth);
-  background-color: var(--background-middle-color);
+
+  background-color: #ffffff;
   border: 1px solid #00000020;
   border-radius: 5px;
   box-shadow:
@@ -141,7 +142,7 @@ const nextY = computed(() => {
       border-bottom: none;
     }
     .hover[data-hover='true'] {
-      background-color: var(--background-active-color);
+      background-color: rgba(209, 213, 219, 0.8);
     }
     .item-wrapper {
       &:first-child {

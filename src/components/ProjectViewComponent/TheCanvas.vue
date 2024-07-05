@@ -56,6 +56,5 @@ svg {
   height: calc(100% - 40px);
   margin-top: 40px;
   margin-left: 40px;
-  background-color: var(--background-canvas-color);
 }
 </style>

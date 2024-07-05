@@ -1,5 +1,5 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
-import emitter, { BusEvents } from '@/utils/emitter';
+import emitter from '@/utils/emitter';
 
 export class DoubleClickCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -10,10 +10,12 @@ export class DoubleClickCard extends BaseBehavior {
 
   onclick(e: MouseEvent, el: Element) {
     if (e.button !== 0) return;
-    emitter.emit(BusEvents['editor:open'], {
+    /*    emitter.emit(BusEvents['editor:open'], {
       event: e,
       id: el.getAttribute('data-key'),
       shapeType: el.getAttribute('data-el-type')
-    });
+    });*/
+    const node = this.project.getNode(el.getAttribute('data-key'));
+    emitter.emit('node:open', node);
   }
 }

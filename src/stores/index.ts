@@ -4,7 +4,6 @@ import { getActivePinia } from 'pinia';
 export * from './account';
 export * from './counter';
 export * from './cursor';
-export * from './notify';
 export * from './project';
 export * from './settings';
 export * from './temp-path';
