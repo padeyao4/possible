@@ -219,6 +219,9 @@ export const useProjectStore = defineStore('projects', () => {
     });
   }
 
+  /**
+   * @param projectId
+   */
   function getProject(projectId: ID) {
     return mapper.get(projectId) ?? new Project();
   }

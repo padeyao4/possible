@@ -41,25 +41,18 @@ const todayIndex = computed(() => getDaysBetweenDates(timer.timestamp, project.v
 
 <style scoped>
 .canvas-header {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
   display: flex;
   flex-direction: row;
   height: 40px;
   overflow-x: hidden;
   background-color: transparent;
   border-bottom: 1px solid #00000010;
-  clip-path: polygon(40px 0, 100% 0, 100% 40px, 40px 40px);
   pointer-events: none;
 }
 
 .container {
   display: flex;
   flex-direction: row;
-  width: calc(100% - 40px);
-  margin-left: 40px;
   transform: translateX(v-bind(translateX));
 }
 

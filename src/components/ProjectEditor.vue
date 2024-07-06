@@ -32,7 +32,7 @@ useEventListener(window, 'keydown', (e) => {
 
 <template>
   <div v-if="visible" class="flex h-screen w-80 flex-col border-l border-gray-300">
-    <div
+    <header
       class="drag-region mb-3 flex w-full shrink-0 items-end justify-between"
       style="height: 36px"
     >
@@ -44,7 +44,7 @@ useEventListener(window, 'keydown', (e) => {
         class="h-full rounded-bl-lg border border-b border-l border-gray-200"
         style="width: 139px"
       ></div>
-    </div>
+    </header>
     <template v-if="node">
       <el-scrollbar class="grow">
         <div class="m-3">
@@ -83,9 +83,9 @@ useEventListener(window, 'keydown', (e) => {
           />
         </div>
       </el-scrollbar>
-      <div class="flex h-12 shrink-0 items-center justify-center border-t border-gray-100">
+      <footer class="flex h-12 shrink-0 items-center justify-center border-t border-gray-200">
         <el-button :icon="Delete" size="small" @click="" />
-      </div>
+      </footer>
     </template>
   </div>
 </template>
