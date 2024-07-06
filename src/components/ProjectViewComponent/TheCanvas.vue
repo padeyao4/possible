@@ -13,7 +13,6 @@ import { CreateEdge } from '@/graph/behavior/create-edge';
 import { Contextmenu } from '@/graph/behavior/contextmenu';
 import WheelCanvas from '@/graph/behavior/wheel-canvas';
 import { Project } from '@/core';
-import CanvasGrid from '@/components/ProjectViewComponent/CanvasGrid.vue';
 import { useSettings } from '@/stores';
 import { storeToRefs } from 'pinia';
 

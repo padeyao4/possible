@@ -8,9 +8,6 @@ import CanvasRuler from '@/components/ProjectViewComponent/CanvasRuler.vue';
 import CanvasHeader from '@/components/ProjectViewComponent/CanvasHeader.vue';
 import GraphContextmenu from '@/components/ProjectViewComponent/GraphContextmenuGroup.vue';
 import TheCanvas from '@/components/ProjectViewComponent/TheCanvas.vue';
-import CanvasGrid from '@/components/ProjectViewComponent/CanvasGrid.vue';
-import { Icon } from '@iconify/vue';
-import { Lock } from '@element-plus/icons-vue';
 
 const { id } = defineProps<{ id: ID }>();
 
