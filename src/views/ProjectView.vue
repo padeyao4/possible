@@ -44,10 +44,10 @@ provide('project', project);
         <canvas-header />
         <canvas-ruler />
         <the-canvas />
-        <project-footer class="col-span-2 border-t border-gray-200 bg-transparent" />
+        <project-footer class="col-span-2" />
         <GraphContextmenu />
       </main>
     </div>
-    <project-editor />
+    <project-editor class="shrink-0" />
   </div>
 </template>

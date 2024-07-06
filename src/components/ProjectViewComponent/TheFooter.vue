@@ -43,7 +43,7 @@ function handleDateChange() {
 </script>
 
 <template>
-  <div class="the-footer">
+  <div class="the-footer border-t border-gray-200 bg-transparent">
     <HomeIcon @click="handleBackHome" />
     <MapPointIcon @click="handleToday" />
     <TestTubeIcon @click="handleTest" />

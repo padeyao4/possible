@@ -68,6 +68,5 @@ export class Backlog implements DraggableType {
 
   public set(item: Partial<Backlog>) {
     Object.assign(this, item);
-    emitter.emit(BusEvents['backlog:event'], this);
   }
 }

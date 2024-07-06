@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, provide, ref } from 'vue';
-import ECounterButton from '@/components/common/ECounterButton.vue';
+import ECounterButton from '@/components/common/CounterButton.vue';
 import { Plus } from '@element-plus/icons-vue';
-import EDraggable from '@/components/common/EDraggable.vue';
+import EDraggable from '@/components/common/MagicDraggable.vue';
 import { useBacklogs } from '@/stores';
 import { Backlog } from '@/core';
 import BacklogItem from '@/components/BacklogItem.vue';

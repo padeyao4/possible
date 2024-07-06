@@ -3,7 +3,7 @@ import { useProjectStore, useSide } from '@/stores';
 import { useEventListener } from '@vueuse/core';
 import { RouterView } from 'vue-router';
 import SideItem from '@/components/SideItem.vue';
-import EDraggable from '@/components/common/EDraggable.vue';
+import EDraggable from '@/components/common/MagicDraggable.vue';
 import { Project } from '@/core';
 import { handleNewProject } from '@/service/project.service';
 import NavTodayItem from '@/components/NavTodayItem.vue';

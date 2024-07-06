@@ -2,8 +2,8 @@
 import { useProjectStore } from '@/stores/project';
 import { showWeekAndLocalDate, useTimer } from '@/stores/timer';
 import { computed, ref } from 'vue';
-import ECounterButton from '@/components/common/ECounterButton.vue';
-import EDraggable from '@/components/common/EDraggable.vue';
+import ECounterButton from '@/components/common/CounterButton.vue';
+import EDraggable from '@/components/common/MagicDraggable.vue';
 import { Node } from '@/core';
 import TodayItem from '@/components/TodayItem.vue';
 

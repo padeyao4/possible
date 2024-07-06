@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BDraggable from '@/components/common/EDraggable.vue';
+import BDraggable from '@/components/common/MagicDraggable.vue';
 import { ref } from 'vue';
 import type { DraggableType } from '@/components/types';
 

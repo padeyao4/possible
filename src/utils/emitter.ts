@@ -40,6 +40,7 @@ type Events = {
   'register:success': null;
   'register:failed': ErrorMessage;
   'date:update': null;
+  exception: ErrorMessage;
   [key: symbol]: any;
 };
 
@@ -72,14 +73,8 @@ export const BusEvents = {
   'node:updated': Symbol(),
   'node:deleted': Symbol(),
   'edge:deleted': Symbol(),
-  'edge:created': Symbol(),
-  'time:updated': Symbol(),
+  'edge:created': Symbol()
   // 注册
-  'register:success': Symbol(),
-  'register:failed': Symbol(),
-  // backlog
-  'backlog:event': Symbol(),
-  'app:reload': Symbol()
 };
 
 export const dataChangeEvents = new Set([
