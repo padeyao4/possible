@@ -22,7 +22,6 @@ const handleRef = (e: Element) => {
 };
 
 const handleDelete = () => {
-  console.log('handle project open');
   emitter.emit('project:open', project);
 };
 
@@ -59,35 +58,28 @@ const handleEdit = () => {
     >
       <el-text truncated size="default">{{ project.name }}</el-text>
     </div>
-    <div
-      class="flex h-full w-fit shrink-0 items-center justify-center overflow-hidden"
-      v-show="showIcon"
-    >
+    <div v-show="showIcon" class="flex shrink-0 flex-row">
       <div
-        class="icon-[uiw--delete] m-1 bg-gray-400 text-base hover:cursor-pointer hover:bg-gray-500"
-        @click="handleDelete"
-      ></div>
-    </div>
-    <div
-      class="flex h-full w-fit shrink-0 items-center justify-center overflow-hidden"
-      v-show="showIcon"
-    >
+        class="flex h-6 w-6 items-center justify-center rounded hover:cursor-pointer hover:bg-blue-100"
+      >
+        <span
+          class="icon-[uiw--delete] text-gray-400"
+          style="height: 14px; width: 14px"
+          @click="handleDelete"
+        />
+      </div>
       <div
-        class="icon-[cil--pen] m-1 bg-gray-400 text-base hover:cursor-pointer hover:bg-gray-500"
-        @click="handleEdit"
-      ></div>
-    </div>
-    <div
-      class="flex h-full w-fit shrink-0 items-center justify-center overflow-hidden"
-      data-move
-      v-show="showIcon"
-    >
-      <div
-        class="icon-[icon-park-outline--drag] m-1 bg-gray-400 text-base hover:bg-gray-500"
-        data-move
-      />
+        class="flex h-6 w-6 items-center justify-center rounded hover:cursor-pointer hover:bg-blue-100"
+      >
+        <span
+          class="icon-[cil--pen] bg-gray-400"
+          style="height: 14px; width: 14px"
+          @click="handleEdit"
+        />
+      </div>
+      <div class="flex h-6 w-6 items-center justify-center rounded hover:bg-blue-100" data-move>
+        <div class="icon-[icon-park-outline--drag] bg-gray-400" data-move />
+      </div>
     </div>
   </div>
 </template>
-
-<style scoped></style>
