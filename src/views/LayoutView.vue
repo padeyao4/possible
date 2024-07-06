@@ -33,14 +33,14 @@ const swapProjects = (from: Project, to: Project) => {
 <template>
   <div class="grid h-screen w-screen" :style="{ gridTemplateColumns: `${side.width}px 1fr` }">
     <div class="flex h-screen w-full flex-col">
-      <header class="mt-4 flex h-fit flex-col border-b border-b-gray-300 pb-1">
-        <nav-today-item />
-        <nav-backlog-item />
+      <header class="mt-4 flex h-fit flex-col border-b border-b-gray-200 pb-1">
+        <nav-today-item class="my-1" />
+        <nav-backlog-item class="my-1" />
       </header>
       <el-scrollbar class="flex-grow px-2.5 py-1.5">
         <e-draggable :update="swapProjects" :list="projects.sortProjects" handle="data-move">
           <template #default="{ item }">
-            <side-item :project="item" class="px-1.5" />
+            <side-item :project="item" class="my-1 px-1.5" />
           </template>
         </e-draggable>
         <warning-dialog />

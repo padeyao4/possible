@@ -1,34 +1,30 @@
 <script setup lang="ts">
 import emitter from '@/utils/emitter';
 import CloseIconButton from '@/components/common/CloseIconButton.vue';
-import { computed, onBeforeUnmount, ref } from 'vue';
+import { computed, onBeforeUnmount } from 'vue';
 import { useBacklogs } from '@/stores';
 import { useEventListener } from '@vueuse/core';
 import { Delete } from '@element-plus/icons-vue';
 import type { ID } from '@/core/types';
 
-const visible = defineModel({ default: false });
+const visible = defineModel('visible', { default: false });
+
+const backlog = defineModel('backlog', { default: null });
 
 const backlogs = useBacklogs();
-const backlogId = ref<string>('');
-
-const item = computed(() => {
-  return backlogs.get(backlogId.value);
-});
-
-defineExpose({ current: item });
 
 const show = computed(() => {
-  return item.value && !item.value.delete && backlogId.value !== '';
+  return backlog.value && !backlog.value.delete;
 });
 
 emitter.on('backlog:open', (e) => {
   visible.value = true;
-  backlogId.value = e.id;
+  backlog.value = e;
 });
 
 emitter.on('backlog:close', () => {
   visible.value = false;
+  backlog.value = null;
 });
 
 onBeforeUnmount(() => {
@@ -68,7 +64,7 @@ const onDelete = (id: ID) => {
           <el-input
             type="textarea"
             size="large"
-            v-model="item.title"
+            v-model="backlog.title"
             autosize
             resize="none"
             placeholder="请输入内容"
@@ -77,7 +73,7 @@ const onDelete = (id: ID) => {
         </div>
       </el-scrollbar>
       <div class="flex h-12 shrink-0 items-center justify-center border-t border-gray-100">
-        <el-button :icon="Delete" size="small" @click="onDelete(item.id)" />
+        <el-button :icon="Delete" size="small" @click="onDelete(backlog.id)" />
       </div>
     </template>
     <div v-else></div>

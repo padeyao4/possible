@@ -33,6 +33,7 @@ const handleEdit = () => {
 <template>
   <input
     class="flex h-12 w-full rounded-md border border-gray-200 pr-1 text-base text-gray-500"
+    :class="{ 'bg-blue-50': $route.name === 'project' && $route.query.id === project.id }"
     style="
       :focus {
         border-style: none;
@@ -49,6 +50,7 @@ const handleEdit = () => {
   <div
     v-else
     class="flex h-12 w-full flex-row items-center overflow-hidden rounded-md border-gray-200 hover:bg-blue-50"
+    :class="{ 'bg-blue-50': $route.name === 'project' && $route.query.id === project.id }"
     @pointerover="showIcon = true"
     @pointerleave="showIcon = false"
   >
