@@ -1,9 +1,8 @@
-<script setup lang="ts" generic="T extends DraggableType">
+<script setup lang="ts" generic="T extends { id: ID; [key: string]: any }">
 import { computed, reactive, ref } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import type { RectLike } from '@/graph/math';
 import type { ID } from '@/core/types';
-import type { DraggableType } from '@/components/types';
 import { useCursor } from '@/stores/cursor';
 
 /**
@@ -13,7 +12,7 @@ import { useCursor } from '@/stores/cursor';
  * @param handle 指定拖拽元素的属性,默认所有元素都可以拖拽
  */
 const props = defineProps<{
-  update: (current: DraggableType, other: DraggableType) => void;
+  update: (current: T, other: T) => void;
   list: T[];
   handle?: string;
 }>();

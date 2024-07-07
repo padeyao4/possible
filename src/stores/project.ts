@@ -1,10 +1,8 @@
 import { defineStore } from 'pinia';
 import { computed, reactive, ref } from 'vue';
 import { getIndexByDate } from './timer';
-import { Project } from '@/core';
-import { Node } from '@/core';
+import { Node, Project } from '@/core';
 import type { ID } from '@/core/types';
-import { Edge } from '@/core/';
 import { StorageControllerApi } from '@/openapi';
 import emitter, { BusEvents } from '@/utils/emitter';
 
@@ -13,7 +11,6 @@ export const useProjectStore = defineStore('projects', () => {
   const dataVersion = ref(0);
 
   const sortProjects = computed(() => {
-    console.log('todo');
     return Array.from(mapper.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex) as Project[];
   });
 
@@ -51,105 +48,12 @@ export const useProjectStore = defineStore('projects', () => {
     }
   }
 
-  function bfsOutEdge(project: Project, nodeId: ID, callback: (node: Node) => void): void {
-    const queue = [nodeId];
-    const visited = new Set<ID>();
-    while (queue.length > 0) {
-      const nodeId = queue.shift() as ID;
-      if (!visited.has(nodeId)) {
-        callback(project.nodeMap.get(nodeId)!);
-        visited.add(nodeId);
-        project.outMap.get(nodeId)?.forEach((edge: Edge) => {
-          queue.push(edge.target);
-        });
-      }
-    }
-  }
-
-  function bfsInEdge(project: Project, nodeId: ID, callback: (node: Node) => void): void {
-    const queue = [nodeId];
-    const visited = new Set<ID>();
-    while (queue.length > 0) {
-      const nodeId = queue.shift() as ID;
-      if (!visited.has(nodeId)) {
-        callback(project.nodeMap.get(nodeId)!);
-        visited.add(nodeId);
-        project.inMap.get(nodeId)?.forEach((edge: Edge) => {
-          queue.push(edge.source);
-        });
-      }
-    }
-  }
-
-  function bfsNode(project: Project, nodeId: ID, callback: (node: Node) => void): void {
-    const queue = [nodeId];
-    const visited = new Set<ID>();
-    while (queue.length > 0) {
-      const nodeId = queue.shift() as ID;
-      if (!visited.has(nodeId)) {
-        callback(project.nodeMap.get(nodeId)!);
-        visited.add(nodeId);
-        project.outMap.get(nodeId)?.forEach((edge: Edge) => {
-          queue.push(edge.target);
-        });
-        project.inMap.get(nodeId)?.forEach((edge: Edge) => {
-          queue.push(edge.source);
-        });
-      }
-    }
-  }
-
   function addProject(project: Project): void {
     mapper.set(project.id, project);
   }
 
   function removeProject(projectId: ID): void {
     mapper.delete(projectId);
-  }
-
-  function addNode(project: Project, node: Node): void {
-    const { nodeMap, inMap, outMap } = project;
-    node.projectId = project.id;
-    nodeMap.set(node.id, node);
-    inMap.set(node.id, new Set<Edge>());
-    outMap.set(node.id, new Set<Edge>());
-  }
-
-  function removeNode(project: Project, nodeId: ID): void {
-    const { edgeMap, inMap, outMap, nodeMap } = project;
-
-    outMap.get(nodeId)?.forEach((edge) => {
-      inMap.get(edge.target)?.delete(edge);
-      edgeMap.delete(edge.id);
-    });
-
-    inMap.get(nodeId)?.forEach((edge) => {
-      outMap.get(edge.source)?.delete(edge);
-      edgeMap.delete(edge.id);
-    });
-
-    outMap.delete(nodeId);
-    inMap.delete(nodeId);
-
-    nodeMap.delete(nodeId);
-  }
-
-  function addEdge(project: Project, node1: Partial<Node>, node2: Partial<Node>, id?: ID): void {
-    const { edgeMap, inMap, outMap } = project;
-    const edge = new Edge(node1.id, node2.id, id);
-    edgeMap.set(edge.id, edge);
-    inMap.get(edge.target).add(edge);
-    outMap.get(edge.source).add(edge);
-  }
-
-  function removeEdge(project: Project, edgeId: ID): void {
-    const { edgeMap, inMap, outMap } = project;
-    const edge = edgeMap.get(edgeId);
-    const sourceNodeId = edge.source;
-    const targetNodeId = edge.target;
-    inMap.get(targetNodeId).delete(edge);
-    outMap.get(sourceNodeId).delete(edge);
-    edgeMap.delete(edgeId);
   }
 
   function deserialize(data: any[]): void {
@@ -238,10 +142,6 @@ export const useProjectStore = defineStore('projects', () => {
     sortProjects,
     addProject,
     removeProject,
-    addNode,
-    removeNode,
-    addEdge,
-    removeEdge,
     deserialize,
     faker,
     fetch,

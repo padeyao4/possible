@@ -6,9 +6,8 @@ import { faker } from '@faker-js/faker';
 import { Edge } from './Edge';
 import { getDaysBetweenDates, useTimer } from '@/stores';
 import { useSettings } from '@/stores';
-import type { DraggableType } from '@/components/types';
 
-export class Project implements DraggableType {
+export class Project {
   id: ID;
   name: string;
   nodeMap: Map<ID, Node>;
@@ -297,5 +296,53 @@ export class Project implements DraggableType {
       .forEach((rightNode) => {
         rightNode.moveLeft();
       });
+  }
+
+  public bfsOutEdge(nodeId: ID, callback: (node: Node) => void): void {
+    const queue = [nodeId];
+    const visited = new Set<ID>();
+    while (queue.length > 0) {
+      const nodeId = queue.shift() as ID;
+      if (!visited.has(nodeId)) {
+        callback(this.nodeMap.get(nodeId)!);
+        visited.add(nodeId);
+        this.outMap.get(nodeId)?.forEach((edge: Edge) => {
+          queue.push(edge.target);
+        });
+      }
+    }
+  }
+
+  public bfsInEdge(nodeId: ID, callback: (node: Node) => void): void {
+    const queue = [nodeId];
+    const visited = new Set<ID>();
+    while (queue.length > 0) {
+      const nodeId = queue.shift() as ID;
+      if (!visited.has(nodeId)) {
+        callback(this.nodeMap.get(nodeId)!);
+        visited.add(nodeId);
+        this.inMap.get(nodeId)?.forEach((edge: Edge) => {
+          queue.push(edge.source);
+        });
+      }
+    }
+  }
+
+  public bfsNode(nodeId: ID, callback: (node: Node) => void): void {
+    const queue = [nodeId];
+    const visited = new Set<ID>();
+    while (queue.length > 0) {
+      const nodeId = queue.shift() as ID;
+      if (!visited.has(nodeId)) {
+        callback(this.nodeMap.get(nodeId)!);
+        visited.add(nodeId);
+        this.outMap.get(nodeId)?.forEach((edge: Edge) => {
+          queue.push(edge.target);
+        });
+        this.inMap.get(nodeId)?.forEach((edge: Edge) => {
+          queue.push(edge.source);
+        });
+      }
+    }
   }
 }

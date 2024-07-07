@@ -34,6 +34,14 @@ type Events = {
   'backlog:delete': Backlog;
   'backlog:open': Backlog;
   'backlog:close': Backlog;
+  /**
+   * 推送数据到服务器
+   */
+  'backlog:push': Backlog;
+  /**
+   * 从服务器来去数据
+   */
+  'backlog:fetch': Backlog;
   'graph:contextmenu': any;
   'login:success': any;
   'login:failed': ErrorMessage;

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, inject, type Ref, ref } from 'vue';
-import { Backlog } from '@/core';
+import { type Backlog } from '@/core';
 import { Check } from '@element-plus/icons-vue';
 import emitter from '@/utils/emitter';
 
 const { item } = defineProps<{ item: Backlog }>();
 
-const handleIconClick = () => item.set({ done: !item.done });
+const handleIconClick = () => (item.done = !item.done);
 
 const editorVisible = inject<Ref<boolean>>('editorVisible');
 const editorBacklog = inject<Ref<Backlog>>('editorBacklog');

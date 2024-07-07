@@ -1,72 +1,91 @@
-import type { DraggableType } from '@/components/types';
+import { type Sync, type SyncStatus } from '@/core/sync';
+import emitter from '@/utils/emitter';
 import { v4 } from 'uuid';
-import type { Backlog as BacklogType } from '@/openapi';
-import emitter, { BusEvents } from '@/utils/emitter';
 
-export class Backlog implements DraggableType {
-  title: string;
-  orderIndex: number;
-  createdAt: Date;
-  completeAt: Date | null;
-  done: boolean;
-  id: string;
-  dbId: number | null;
-  sync: boolean; // 是否同步已同步服务器
-  delete: boolean; // 是否删除
+export class Backlog implements Sync {
+  private readonly _id: string;
+  private _title: string;
+  private _orderIndex: number;
+  private _createdAt: Date;
+  private _completeAt: Date | null;
+  private _done: boolean;
 
-  constructor(
-    title: string,
-    orderIndex: number,
-    createdAt: Date,
-    completeAt: Date | null,
-    done: boolean
-  ) {
-    this.title = title;
-    this.orderIndex = orderIndex;
-    this.createdAt = createdAt;
-    this.completeAt = completeAt;
-    this.done = done;
-    this.id = v4();
-    this.dbId = null;
-    this.sync = false;
-    this.delete = false;
-  }
+  syncId: number | null;
+  syncStatus: SyncStatus;
+  syncVersion: number;
 
-  public static create(title: string) {
+  constructor() {
     const now = new Date();
-    return new Backlog(title, now.getTime(), now, null, false);
+    this._id = v4();
+    this._title = '';
+    this._orderIndex = now.getTime();
+    this._createdAt = now;
+    this._completeAt = null;
+    this._done = false;
+    this.syncId = null;
+    this.syncStatus = 'UPDATED';
+    this.syncVersion = 0;
   }
 
-  public static default() {
-    const now = new Date();
-    return new Backlog('', now.getTime(), now, null, false);
+  get id(): string {
+    return this._id;
   }
 
-  public static from(other: BacklogType) {
-    const entity = this.default();
-    entity.title = other.title;
-    entity.id = other.uid;
-    entity.done = other.done;
-    entity.dbId = other.id;
-    entity.createdAt = new Date(other.createdAt);
-    entity.completeAt = other.completeAt ? new Date(other.completeAt) : null;
-    entity.orderIndex = other.orderIndex;
-    return entity;
+  get title(): string {
+    return this._title;
   }
 
-  public toParam() {
-    return {
-      title: this.title,
-      orderIndex: this.orderIndex,
-      createdAt: this.createdAt.toISOString(),
-      completeAt: this.completeAt ? this.completeAt.toISOString() : null,
-      done: this.done,
-      id: this.dbId,
-      uid: this.id
-    };
+  set title(value: string) {
+    this._title = value;
+    this.syncStatus = 'UPDATED';
+    this.push();
   }
 
-  public set(item: Partial<Backlog>) {
-    Object.assign(this, item);
+  get orderIndex(): number {
+    return this._orderIndex;
+  }
+
+  set orderIndex(value: number) {
+    this._orderIndex = value;
+    this.syncStatus = 'UPDATED';
+    this.push();
+  }
+
+  get createdAt(): Date {
+    return this._createdAt;
+  }
+
+  set createdAt(value: Date) {
+    this._createdAt = value;
+    this.syncStatus = 'UPDATED';
+    this.push();
+  }
+
+  get completeAt(): Date | null {
+    return this._completeAt;
+  }
+
+  set completeAt(value: Date | null) {
+    this._completeAt = value;
+    this.syncStatus = 'UPDATED';
+    this.push();
+  }
+
+  get done(): boolean {
+    return this._done;
+  }
+
+  set done(value: boolean) {
+    this._done = value;
+    this.syncStatus = 'UPDATED';
+    this.push();
+  }
+
+  push() {
+    emitter.emit('backlog:push', this);
+  }
+
+  fetch() {
+    emitter.emit('backlog:fetch', this);
   }
 }

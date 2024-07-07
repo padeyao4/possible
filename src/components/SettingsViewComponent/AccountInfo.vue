@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SettingsItem from '@/components/SettingsViewComponent/SettingsItem.vue';
-import { useAccount, $resetPinia, useProjectStore } from '@/stores';
+import { $resetPinia, useAccount } from '@/stores';
 
 const account = useAccount();
 

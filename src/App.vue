@@ -15,7 +15,6 @@ axiosConfig();
 const account = useAccount();
 const store = useProjectStore();
 const counter = useCounter();
-const backlog = useBacklogs();
 useScheduler();
 useUpdateDate();
 
@@ -27,7 +26,6 @@ const debounceDataPushFnc = useDebounceFn(() => {
 emitter.on('login:success', async () => {
   await account.fetchUser();
   await store.fetch();
-  await backlog.reload();
   store.dailyUpdate();
   counter.countTodos();
 });
@@ -35,6 +33,12 @@ emitter.on('login:success', async () => {
 emitter.on('date:update', () => {
   store.dailyUpdate();
 });
+
+emitter.on('backlog:push', (e) => {
+  console.log('backlog:push', e.title);
+  // todo
+});
+
 emitter.on('*', (event: any) => {
   // 数据变化
   if (dataChangeEvents.has(event)) {

@@ -11,7 +11,6 @@ import BacklogEditor from '@/components/BacklogEditor.vue';
 const backlogs = useBacklogs();
 
 const onUpdate = (current: Backlog, other: Backlog) => {
-  // todo 设置emitter
   [current.orderIndex, other.orderIndex] = [other.orderIndex, current.orderIndex];
 };
 
@@ -47,7 +46,7 @@ const counterVisible = ref(false);
       <el-scrollbar class="grow px-3">
         <e-draggable :update="onUpdate" :list="backlogs.todos" handle="data-move">
           <template #default="{ item }">
-            <backlog-item :item="item" class="my-1" />
+            <backlog-item :item="item as Backlog" class="my-1" />
           </template>
         </e-draggable>
         <e-counter-button :count="backlogs.completes.length" v-model="counterVisible" />
@@ -58,7 +57,7 @@ const counterVisible = ref(false);
           handle="data-move"
         >
           <template #default="{ item }">
-            <backlog-item :item="item" class="my-1" />
+            <backlog-item :item="item as Backlog" class="my-1" />
           </template>
         </e-draggable>
       </el-scrollbar>

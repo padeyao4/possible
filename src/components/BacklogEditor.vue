@@ -6,15 +6,16 @@ import { useBacklogs } from '@/stores';
 import { useEventListener } from '@vueuse/core';
 import { Delete } from '@element-plus/icons-vue';
 import type { ID } from '@/core/types';
+import { Backlog } from '@/core';
 
 const visible = defineModel('visible', { default: false });
 
-const backlog = defineModel('backlog', { default: null });
+const backlog = defineModel<Backlog>('backlog', { default: null });
 
 const backlogs = useBacklogs();
 
 const show = computed(() => {
-  return backlog.value && !backlog.value.delete;
+  return backlog.value && backlog.value.syncStatus != 'DELETED';
 });
 
 emitter.on('backlog:open', (e) => {
@@ -39,6 +40,7 @@ useEventListener(window, 'keydown', (e) => {
 });
 
 const onDelete = (id: ID) => {
+  // todo emitter
   backlogs.remove(id);
 };
 </script>
