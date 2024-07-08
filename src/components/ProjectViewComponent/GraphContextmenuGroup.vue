@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import emitter, { BusEvents } from '@/utils/emitter';
+import { emitter } from '@/utils';
 import {
   appendNode,
   moveDown,
@@ -8,7 +8,7 @@ import {
   tryMoveDownWhole,
   tryMoveUp,
   tryMoveUpWhole
-} from '@/service/project.service';
+} from '@/service/common';
 import { Node } from '@/core';
 import { useCursor } from '@/stores';
 import { useSettings } from '@/stores';
@@ -34,7 +34,6 @@ function createNode() {
   node.y = Math.floor(y / settings.unitHeight);
   project.value.addNode(node);
   visible.value = false;
-  emitter.emit(BusEvents['node:created']);
 }
 
 function handleAppendNode() {
@@ -43,7 +42,6 @@ function handleAppendNode() {
   const node = project.value.nodeMap.get(key);
   appendNode(project.value, node);
   visible.value = false;
-  emitter.emit(BusEvents['node:created']);
 }
 
 function handleMoveUpWhole() {
@@ -52,7 +50,6 @@ function handleMoveUpWhole() {
   const node = project.value.nodeMap.get(key);
   tryMoveUpWhole(<Project>project.value, node);
   visible.value = false;
-  emitter.emit(BusEvents['node:updated']);
 }
 function handleMoveDownWhole() {
   const el = event.value.target as Element;
@@ -60,7 +57,6 @@ function handleMoveDownWhole() {
   const node = project.value.nodeMap.get(key);
   tryMoveDownWhole(<Project>project.value, node);
   visible.value = false;
-  emitter.emit(BusEvents['node:updated']);
 }
 
 function tryMoveRightNode() {
@@ -68,7 +64,6 @@ function tryMoveRightNode() {
   const nodeId = target.getAttribute('data-key');
   moveRight(<Project>project.value, project.value.nodeMap.get(nodeId));
   visible.value = false;
-  emitter.emit(BusEvents['node:updated']);
 }
 
 function tryMoveLeftNode() {
@@ -76,7 +71,6 @@ function tryMoveLeftNode() {
   const nodeId = target.getAttribute('data-key');
   moveLeft(<Project>project.value, project.value.nodeMap.get(nodeId));
   visible.value = false;
-  emitter.emit(BusEvents['node:updated']);
 }
 
 function tryMoveDownNode() {
@@ -84,7 +78,6 @@ function tryMoveDownNode() {
   const nodeId = target.getAttribute('data-key');
   moveDown(<Project>project.value, project.value.nodeMap.get(nodeId));
   visible.value = false;
-  emitter.emit(BusEvents['node:updated']);
 }
 
 function tryMoveUpNode() {
@@ -92,7 +85,6 @@ function tryMoveUpNode() {
   const nodeId = target.getAttribute('data-key');
   tryMoveUp(<Project>project.value, project.value.nodeMap.get(nodeId));
   visible.value = false;
-  emitter.emit(BusEvents['node:updated']);
 }
 
 function handleCompletedTask() {
@@ -101,7 +93,6 @@ function handleCompletedTask() {
   const node = project.value.nodeMap.get(nodeId);
   node.completed = !node.completed;
   visible.value = false;
-  emitter.emit(BusEvents['node:updated']);
 }
 
 function handleDeleteTask() {
@@ -109,7 +100,6 @@ function handleDeleteTask() {
   const key = el.getAttribute('data-key');
   project.value.removeNode(key);
   visible.value = false;
-  emitter.emit(BusEvents['node:deleted']);
 }
 
 function handleDeleteEdge() {
@@ -117,7 +107,6 @@ function handleDeleteEdge() {
   const edgeId = el.getAttribute('data-key');
   project.value.removeEdge(edgeId);
   visible.value = false;
-  emitter.emit(BusEvents['edge:deleted']);
 }
 
 function breakAwayFromRelation() {
@@ -137,7 +126,6 @@ function breakAwayFromRelation() {
   // 删除当前节点所有边
   project.value.removeRelations(nodeId);
   visible.value = false;
-  emitter.emit(BusEvents['node:updated']);
 }
 
 function insertNode() {
@@ -159,7 +147,6 @@ function insertNode() {
   });
   project.value.addEdge(newNode, rightNode);
   visible.value = false;
-  emitter.emit(BusEvents['node:updated']);
 }
 
 function pullRightNodes() {
@@ -167,7 +154,6 @@ function pullRightNodes() {
   const nodeId = el.getAttribute('data-key');
   project.value.pullRightNode(nodeId);
   visible.value = false;
-  emitter.emit(BusEvents['node:updated']);
 }
 
 const nodeOptions: OptionType[] = [
@@ -179,7 +165,7 @@ const nodeOptions: OptionType[] = [
         action() {
           const el = event.value.target as Element;
           const nodeId = el.getAttribute('data-key');
-          emitter.emit('node:open', project.value.getNode(nodeId));
+          emitter.emit('editor-node:open', project.value.getNode(nodeId));
           visible.value = false;
         }
       },
@@ -292,7 +278,7 @@ const items = computed(() => {
 });
 
 emitter.on(
-  BusEvents['graph:contextmenu'],
+  'contextmenu-canvas:open',
   ({ e, elementType }: { e: PointerEvent; elementType: ItemType }) => {
     visible.value = true;
     itemType.value = elementType;
@@ -306,7 +292,7 @@ emitter.on(
 );
 
 onBeforeUnmount(() => {
-  emitter.off(BusEvents['graph:contextmenu']);
+  emitter.off('contextmenu-canvas:open');
 });
 </script>
 

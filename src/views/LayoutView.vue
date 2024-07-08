@@ -5,7 +5,7 @@ import { RouterView } from 'vue-router';
 import SideItem from '@/components/SideItem.vue';
 import EDraggable from '@/components/common/MagicDraggable.vue';
 import { Project } from '@/core';
-import { handleNewProject } from '@/service/project.service';
+import { handleNewProject } from '@/service/common';
 import NavTodayItem from '@/components/NavTodayItem.vue';
 import NavBacklogItem from '@/components/NavBacklogItem.vue';
 import WarningDialog from '@/components/WarningDialog.vue';

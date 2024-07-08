@@ -1,7 +1,7 @@
 import { AccountControllerApi, type User, UserControllerApi } from '@/openapi';
 import { defineStore } from 'pinia';
 import { computed, reactive, ref } from 'vue';
-import emitter, { BusEvents } from '@/utils/emitter';
+import { emitter } from '@/utils';
 
 export const useAccount = defineStore('account', () => {
   const isAuth = ref(false);
@@ -21,7 +21,7 @@ export const useAccount = defineStore('account', () => {
       const remoteUser = response.data.payload;
       Object.assign(user, remoteUser);
     } catch (e) {
-      emitter.emit(BusEvents['error:message'], e);
+      emitter.emit('notify:error', e);
     } finally {
       fetchUserLoading.value = false;
     }
@@ -59,7 +59,7 @@ export const useAccount = defineStore('account', () => {
       logoutLoading.value = true;
       await new AccountControllerApi().logout();
     } catch (e) {
-      emitter.emit(BusEvents['error:message'], e);
+      emitter.emit('notify:error', e);
     } finally {
       token.value = null;
       logoutLoading.value = false;
@@ -89,7 +89,7 @@ export const useAccount = defineStore('account', () => {
       checkUsernameLoading.value = true;
       return await new AccountControllerApi().checkUsername(username);
     } catch (e) {
-      emitter.emit(BusEvents['error:message'], e);
+      emitter.emit('notify:error', e);
     } finally {
       checkUsernameLoading.value = false;
     }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import emitter from '@/utils/emitter';
+import { emitter } from '@/utils';
 import CloseIconButton from '@/components/common/CloseIconButton.vue';
 import { computed, onBeforeUnmount } from 'vue';
 import { useBacklogs } from '@/stores';
@@ -15,22 +15,22 @@ const backlog = defineModel<Backlog>('backlog', { default: null });
 const backlogs = useBacklogs();
 
 const show = computed(() => {
-  return backlog.value && backlog.value.syncStatus != 'DELETED';
+  return backlog.value && backlog.value.status != 'DELETED';
 });
 
-emitter.on('backlog:open', (e) => {
+emitter.on('editor-backlog:open', (e) => {
   visible.value = true;
   backlog.value = e;
 });
 
-emitter.on('backlog:close', () => {
+emitter.on('editor-backlog:close', () => {
   visible.value = false;
   backlog.value = null;
 });
 
 onBeforeUnmount(() => {
-  emitter.off('backlog:open');
-  emitter.off('backlog:close');
+  emitter.off('editor-backlog:open');
+  emitter.off('editor-backlog:close');
 });
 
 useEventListener(window, 'keydown', (e) => {

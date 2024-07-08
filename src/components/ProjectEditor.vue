@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import emitter from '@/utils/emitter';
+import { emitter } from '@/utils';
 import { Node } from '@/core';
 import { onBeforeUnmount, ref } from 'vue';
 import CloseIconButton from '@/components/common/CloseIconButton.vue';
@@ -9,18 +9,18 @@ import { useEventListener } from '@vueuse/core';
 const visible = defineModel({ default: false });
 const node = ref<Node>();
 
-emitter.on('node:open', (e) => {
+emitter.on('editor-node:open', (e) => {
   node.value = e;
   visible.value = true;
 });
 
-emitter.on('node:close', () => {
+emitter.on('editor-node:close', () => {
   visible.value = false;
 });
 
 onBeforeUnmount(() => {
-  emitter.off('node:open');
-  emitter.off('node:close');
+  emitter.off('editor-node:open');
+  emitter.off('editor-node:close');
 });
 
 useEventListener(window, 'keydown', (e) => {

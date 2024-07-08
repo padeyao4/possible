@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import emitter, { dataChangeEvents } from '@/utils/emitter';
-import { useAccount, useBacklogs, useProjectStore } from '@/stores';
-import { useDebounceFn } from '@vueuse/core';
+import { emitter } from '@/utils';
+import { useAccount, useProjectStore } from '@/stores';
 import { useScheduler, useUpdateDate } from '@/service';
 import { useCounter } from '@/stores/counter';
-import SystemTitlebar from '@/components/SystemTitlebar.vue';
 import { axiosConfig } from '@/core/config';
 import LoginView from '@/views/LoginView.vue';
 import { RouterView } from 'vue-router';
@@ -18,10 +16,10 @@ const counter = useCounter();
 useScheduler();
 useUpdateDate();
 
-const debounceDataPushFnc = useDebounceFn(() => {
-  console.info('data push', new Date());
-  store.push();
-}, 1000);
+// const debounceDataPushFnc = useDebounceFn(() => {
+//   console.info('data push', new Date());
+//   store.push();
+// }, 1000);
 
 emitter.on('login:success', async () => {
   await account.fetchUser();
@@ -34,18 +32,13 @@ emitter.on('date:update', () => {
   store.dailyUpdate();
 });
 
-emitter.on('backlog:push', (e) => {
-  console.log('backlog:push', e.title);
-  // todo
-});
-
-emitter.on('*', (event: any) => {
-  // 数据变化
-  if (dataChangeEvents.has(event)) {
-    counter.countTodos();
-    if (account.isRemote) debounceDataPushFnc();
-  }
-});
+// emitter.on('*', (event: any) => {
+//   // 数据变化
+//   if (dataChangeEvents.has(event)) {
+//     counter.countTodos();
+//     if (account.isRemote) debounceDataPushFnc();
+//   }
+// });
 
 // 账号如果是登录的
 if (account.isAuth) {
@@ -58,7 +51,6 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <!--  <system-titlebar />-->
   <router-view v-if="account.isAuth" />
   <login-view v-else />
 </template>

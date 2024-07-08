@@ -3,7 +3,7 @@ import { reactive, ref } from 'vue';
 import { useAccount } from '@/stores/account';
 import router from '@/router';
 import type { FormInstance, FormRules } from 'element-plus';
-import emitter from '@/utils/emitter';
+import { emitter } from '@/utils';
 import { Close } from '@element-plus/icons-vue';
 
 const account = useAccount();

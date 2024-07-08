@@ -1,8 +1,8 @@
-import { type Sync, type SyncStatus } from '@/core/sync';
-import emitter from '@/utils/emitter';
+import { type SyncStatus } from '@/core/sync';
 import { v4 } from 'uuid';
+import { emitter } from '@/utils';
 
-export class Backlog implements Sync {
+export class Backlog {
   private readonly _id: string;
   private _title: string;
   private _orderIndex: number;
@@ -10,9 +10,9 @@ export class Backlog implements Sync {
   private _completeAt: Date | null;
   private _done: boolean;
 
-  syncId: number | null;
-  syncStatus: SyncStatus;
-  syncVersion: number;
+  sid: number | null;
+  status: SyncStatus;
+  version: number;
 
   constructor() {
     const now = new Date();
@@ -22,9 +22,9 @@ export class Backlog implements Sync {
     this._createdAt = now;
     this._completeAt = null;
     this._done = false;
-    this.syncId = null;
-    this.syncStatus = 'UPDATED';
-    this.syncVersion = 0;
+    this.sid = null;
+    this.status = 'UPDATED';
+    this.version = 0;
   }
 
   get id(): string {
@@ -37,8 +37,8 @@ export class Backlog implements Sync {
 
   set title(value: string) {
     this._title = value;
-    this.syncStatus = 'UPDATED';
-    this.push();
+    this.status = 'UPDATED';
+    emitter.emit('backlog:update', this);
   }
 
   get orderIndex(): number {
@@ -47,8 +47,8 @@ export class Backlog implements Sync {
 
   set orderIndex(value: number) {
     this._orderIndex = value;
-    this.syncStatus = 'UPDATED';
-    this.push();
+    this.status = 'UPDATED';
+    emitter.emit('backlog:update', this);
   }
 
   get createdAt(): Date {
@@ -57,8 +57,8 @@ export class Backlog implements Sync {
 
   set createdAt(value: Date) {
     this._createdAt = value;
-    this.syncStatus = 'UPDATED';
-    this.push();
+    this.status = 'UPDATED';
+    emitter.emit('backlog:update', this);
   }
 
   get completeAt(): Date | null {
@@ -67,8 +67,8 @@ export class Backlog implements Sync {
 
   set completeAt(value: Date | null) {
     this._completeAt = value;
-    this.syncStatus = 'UPDATED';
-    this.push();
+    this.status = 'UPDATED';
+    emitter.emit('backlog:update', this);
   }
 
   get done(): boolean {
@@ -77,15 +77,7 @@ export class Backlog implements Sync {
 
   set done(value: boolean) {
     this._done = value;
-    this.syncStatus = 'UPDATED';
-    this.push();
-  }
-
-  push() {
-    emitter.emit('backlog:push', this);
-  }
-
-  fetch() {
-    emitter.emit('backlog:fetch', this);
+    this.status = 'UPDATED';
+    emitter.emit('backlog:update', this);
   }
 }

@@ -2,7 +2,7 @@
 import type { Project } from '@/core';
 import { ref } from 'vue';
 import { useProjectStore } from '@/stores';
-import emitter from '@/utils/emitter';
+import { emitter } from '@/utils';
 
 const { project } = defineProps<{ project: Project }>();
 const showIcon = ref(false);

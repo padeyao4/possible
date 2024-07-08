@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { computed, reactive } from 'vue';
 import type { ID } from '@/core/types';
 import { Backlog } from '@/core';
+import { emitter } from '@/utils';
 
 export const useBacklogs = defineStore('backlog', () => {
   const backlogs = reactive<Map<ID, Backlog>>(new Map());
@@ -18,13 +19,13 @@ export const useBacklogs = defineStore('backlog', () => {
 
   function remove(id: ID) {
     const backlog = backlogs.get(id);
-    backlog.syncStatus = 'DELETED';
-    backlog.push();
+    backlog.status = 'DELETED';
+    emitter.emit('backlog:delete');
   }
 
   const list = computed(() => {
     return Array.from(backlogs.values())
-      .filter((b) => b.syncStatus !== 'DELETED')
+      .filter((b) => b.status !== 'DELETED')
       .sort((a, b) => a.orderIndex - b.orderIndex);
   });
 

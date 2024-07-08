@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
-import emitter from '@/utils/emitter';
+import { emitter } from '@/utils';
 import { useProjectStore } from '@/stores';
 import { Project } from '@/core';
 
@@ -10,7 +10,7 @@ const projects = useProjectStore();
 const project = ref<Project>();
 
 onMounted(() => {
-  emitter.on('project:open', (e) => {
+  emitter.on('project-dialog:open', (e) => {
     console.log('listen on project:open');
     project.value = e;
     visible.value = true;
@@ -23,7 +23,7 @@ const handleDelete = () => {
 };
 
 onUnmounted(() => {
-  emitter.off('project:open');
+  emitter.off('project-dialog:open');
   console.log('off project:open');
 });
 </script>

@@ -2,7 +2,6 @@ import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { clampMin } from '../math';
 import type { Point } from '@/core/types';
 import type { Node } from '@/core/Node';
-import emitter, { BusEvents } from '@/utils/emitter';
 
 export class DragCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -49,8 +48,6 @@ export class DragCard extends BaseBehavior {
       if (this.project.collides(node).length !== 0 || !this.project.correctOrderOfNode(node)) {
         node.x = this.oldNode.x;
         node.y = this.oldNode.y;
-      } else {
-        emitter.emit(BusEvents['node:updated']);
       }
       this.mouseStyle.unlock();
       this.toggleMouseOver(e);

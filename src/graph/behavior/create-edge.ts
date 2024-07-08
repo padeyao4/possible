@@ -1,7 +1,6 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { type TempPath, useTempPaths } from '@/stores/temp-path';
 import type { ID } from '@/core/types';
-import emitter, { BusEvents } from '@/utils/emitter';
 
 export class CreateEdge extends BaseBehavior {
   isDown = false;
@@ -76,7 +75,6 @@ export class CreateEdge extends BaseBehavior {
           this.project.addEdge(key, path.nodeId);
         }
       }
-      emitter.emit(BusEvents['edge:created']);
     }
   }
 }

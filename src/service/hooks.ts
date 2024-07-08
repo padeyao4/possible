@@ -1,12 +1,13 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { scheduleMidnightTask, useTimer } from '@/stores/timer';
-import emitter, { BusEvents } from '@/utils/emitter';
+import { emitter } from '@/utils';
 
 export function useScheduler() {
   const scheduler = ref();
 
   scheduleMidnightTask(scheduler, () => {
-    emitter.emit(BusEvents['project:daily:update']);
+    // todo
+    // emitter.emit(BusEvents['project:daily:update']);
   });
 
   onMounted(() => {
@@ -24,5 +25,28 @@ export function useUpdateDate() {
 
   onBeforeUnmount(() => {
     clearInterval(interval.value);
+  });
+}
+
+export function useListenNodeEvent() {
+  emitter.on('node:update', (e) => {
+    // TODO: update project
+  });
+}
+export function useListenProjectEvent() {
+  emitter.on('project:update', (e) => {
+    // TODO: update project
+  });
+}
+
+export function useListenEdgeEvent() {
+  emitter.on('edge:update', (e) => {
+    // TODO: update project
+  });
+}
+
+export function useListenBacklogEvent() {
+  emitter.on('backlog:update', (e) => {
+    // TODO: update project
   });
 }

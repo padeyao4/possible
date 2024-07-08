@@ -4,34 +4,133 @@ import { Node } from './Node';
 import { v4 } from 'uuid';
 import { faker } from '@faker-js/faker';
 import { Edge } from './Edge';
-import { getDaysBetweenDates, useTimer } from '@/stores';
-import { useSettings } from '@/stores';
+import { getDaysBetweenDates, useSettings, useTimer } from '@/stores';
+import { type SyncStatus } from '@/core';
 
 export class Project {
-  id: ID;
-  name: string;
-  nodeMap: Map<ID, Node>;
-  edgeMap: Map<ID, Edge>;
-  inMap: Map<ID, Set<Edge>>;
-  outMap: Map<ID, Set<Edge>>;
-  completed: boolean;
-  sortIndex: number;
-  editable: boolean;
-  createTime: number;
-  offset: Point;
+  private _id: ID;
+  private _name: string;
+  private _nodeMap: Map<ID, Node>;
+  private _edgeMap: Map<ID, Edge>;
+  private _inMap: Map<ID, Set<Edge>>;
+  private _outMap: Map<ID, Set<Edge>>;
+  private _completed: boolean;
+  private _sortIndex: number;
+  private _editable: boolean;
+  private _createTime: number;
+  private _offset: Point;
+
+  sid: number | null;
+  status: SyncStatus;
+  version: number;
+
+  fetch(): void {}
+
+  push(): void {}
 
   public constructor() {
-    this.id = v4();
-    this.name = '';
-    this.nodeMap = new Map();
-    this.edgeMap = new Map();
-    this.inMap = markRaw(new Map());
-    this.outMap = markRaw(new Map());
-    this.completed = false;
-    this.sortIndex = new Date().getTime();
-    this.editable = false;
-    this.createTime = new Date().getTime();
-    this.offset = { x: 0, y: 0 };
+    this._id = v4();
+    this._name = '';
+    this._nodeMap = new Map();
+    this._edgeMap = new Map();
+    this._inMap = markRaw(new Map());
+    this._outMap = markRaw(new Map());
+    this._completed = false;
+    this._sortIndex = new Date().getTime();
+    this._editable = false;
+    this._createTime = new Date().getTime();
+    this._offset = { x: 0, y: 0 };
+    this.sid = null;
+    this.status = 'SYNCED';
+    this.version = 0;
+  }
+
+  get id(): ID {
+    return this._id;
+  }
+
+  set id(value: ID) {
+    this._id = value;
+  }
+
+  get name(): string {
+    return this._name;
+  }
+
+  get nodeMap(): Map<ID, Node> {
+    return this._nodeMap;
+  }
+
+  get edgeMap(): Map<ID, Edge> {
+    return this._edgeMap;
+  }
+
+  get inMap(): Map<ID, Set<Edge>> {
+    return this._inMap;
+  }
+
+  get outMap(): Map<ID, Set<Edge>> {
+    return this._outMap;
+  }
+
+  get completed(): boolean {
+    return this._completed;
+  }
+
+  get sortIndex(): number {
+    return this._sortIndex;
+  }
+
+  get editable(): boolean {
+    return this._editable;
+  }
+
+  get createTime(): number {
+    return this._createTime;
+  }
+
+  get offset(): Point {
+    return this._offset;
+  }
+
+  set name(value: string) {
+    this._name = value;
+  }
+
+  set nodeMap(value: Map<ID, Node>) {
+    this._nodeMap = value;
+  }
+
+  set edgeMap(value: Map<ID, Edge>) {
+    this._edgeMap = value;
+  }
+
+  set inMap(value: Map<ID, Set<Edge>>) {
+    this._inMap = value;
+  }
+
+  set outMap(value: Map<ID, Set<Edge>>) {
+    this._outMap = value;
+  }
+
+  set completed(value: boolean) {
+    this._completed = value;
+  }
+
+  set sortIndex(value: number) {
+    this._sortIndex = value;
+  }
+
+  set editable(value: boolean) {
+    this._editable = value;
+  }
+
+  set createTime(value: number) {
+    this._createTime = value;
+  }
+
+  set offset(value: Point) {
+    this._offset = value;
   }
 
   public plainObject() {
@@ -86,6 +185,7 @@ export class Project {
   }
 
   public addNode(node: Node) {
+    // todo emitter
     if (this.nodeMap.has(node.id)) return;
     node.projectId = this.id;
     this.nodeMap.set(node.id, node);
@@ -120,6 +220,7 @@ export class Project {
   }
 
   public addEdge(source: Node | ID, target: Node | ID, id?: ID) {
+    // todo emitter
     const sourceId = typeof source === 'string' ? source : source.id;
     const targetId = typeof target === 'string' ? target : target.id;
     const edge = new Edge(sourceId, targetId, id);
@@ -155,6 +256,7 @@ export class Project {
     inMap.delete(nodeId);
 
     nodeMap.delete(nodeId);
+    // todo emitter
   }
 
   public removeEdge(item: Edge | ID) {
@@ -166,6 +268,7 @@ export class Project {
     inMap.get(targetNodeId).delete(toRaw(edge));
     outMap.get(sourceNodeId).delete(toRaw(edge));
     edgeMap.delete(edge.id);
+    // todo emitter
   }
 
   public removeLeftRelations(nodeId: ID) {
@@ -187,6 +290,7 @@ export class Project {
   public removeRelations(nodeId: ID) {
     this.removeLeftRelations(nodeId);
     this.removeRightRelations(nodeId);
+    // todo emitter
   }
 
   public getNode(id: ID) {

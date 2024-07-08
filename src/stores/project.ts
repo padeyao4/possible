@@ -4,7 +4,7 @@ import { getIndexByDate } from './timer';
 import { Node, Project } from '@/core';
 import type { ID } from '@/core/types';
 import { StorageControllerApi } from '@/openapi';
-import emitter, { BusEvents } from '@/utils/emitter';
+import { emitter } from '@/utils';
 
 export const useProjectStore = defineStore('projects', () => {
   const mapper = reactive<Map<ID, Project>>(new Map());
@@ -49,6 +49,7 @@ export const useProjectStore = defineStore('projects', () => {
   }
 
   function addProject(project: Project): void {
+    // todo emitter
     mapper.set(project.id, project);
   }
 
@@ -75,7 +76,7 @@ export const useProjectStore = defineStore('projects', () => {
       deserialize(JSON.parse(data.content));
       dataVersion.value = data.id;
     } catch (e) {
-      emitter.emit(BusEvents['error:message'], e);
+      emitter.emit('notify:error', e);
     } finally {
       fetchLoading.value = false;
     }
@@ -91,9 +92,9 @@ export const useProjectStore = defineStore('projects', () => {
         uploadAt: new Date().toJSON()
       });
       dataVersion.value = response.data.payload;
-      emitter.emit(BusEvents['project:push:success']);
+      emitter.emit('notify:success', 'project load success');
     } catch (e) {
-      emitter.emit(BusEvents['project:push:failed'], e);
+      emitter.emit('notify:error', e);
     } finally {
       pushLoading.value = false;
     }
@@ -111,7 +112,7 @@ export const useProjectStore = defineStore('projects', () => {
         deserialize(JSON.parse(data));
       }
     } catch (e) {
-      emitter.emit(BusEvents['error:message'], e);
+      emitter.emit('notify:error', e);
     } finally {
       loading.value = false;
     }

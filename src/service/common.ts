@@ -3,7 +3,7 @@ import { useProjectStore } from '@/stores/project';
 import { Node } from '@/core/Node';
 import { Project } from '@/core/Project';
 import router from '@/router';
-import emitter, { BusEvents } from '@/utils/emitter';
+import { emitter } from '@/utils';
 
 export function moveDown(project: Project, node: Node) {
   node.y += 1;
@@ -124,6 +124,5 @@ export async function handleNewProject() {
   useProjectStore().addProject(project);
   setTimeout(async () => {
     await router.push({ name: 'project', query: { id: project.id } });
-    emitter.emit(BusEvents['project:created']);
   });
 }

@@ -2,7 +2,7 @@
 import { computed, inject, type Ref, ref } from 'vue';
 import { type Backlog } from '@/core';
 import { Check } from '@element-plus/icons-vue';
-import emitter from '@/utils/emitter';
+import { emitter } from '@/utils';
 
 const { item } = defineProps<{ item: Backlog }>();
 
@@ -13,9 +13,12 @@ const editorBacklog = inject<Ref<Backlog>>('editorBacklog');
 
 const handleTextClick = () => {
   if (editorVisible.value) {
-    emitter.emit(editorBacklog?.value?.id === item.id ? 'backlog:close' : 'backlog:open', item);
+    emitter.emit(
+      editorBacklog?.value?.id === item.id ? 'editor-backlog:close' : 'editor-backlog:open',
+      item
+    );
   } else {
-    emitter.emit('backlog:open', item);
+    emitter.emit('editor-backlog:open', item);
   }
 };
 
