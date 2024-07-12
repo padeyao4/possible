@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Sunny } from '@element-plus/icons-vue';
 import { useCounter } from '@/stores';
 
 const counter = useCounter();

@@ -1,36 +1,42 @@
 <script setup lang="ts">
 import { emitter } from '@/utils';
-import { useAccount, useProjectStore } from '@/stores';
-import { useScheduler, useUpdateDate } from '@/service';
-import { useCounter } from '@/stores/counter';
+import { useAccount } from '@/stores';
 import { axiosConfig } from '@/core/config';
 import LoginView from '@/views/LoginView.vue';
 import { RouterView } from 'vue-router';
 import { onBeforeUnmount } from 'vue';
+import {
+  useListenAppEvent,
+  useListenNotifyEvent,
+  useListenProjectEvent,
+  useLoadApp
+} from '@/service';
 
 axiosConfig();
 
+useListenNotifyEvent();
+useListenAppEvent();
+useListenProjectEvent();
+
+useLoadApp();
+
 const account = useAccount();
-const store = useProjectStore();
+
+/*const projects = useProjects();
 const counter = useCounter();
 useScheduler();
-useUpdateDate();
+useUpdateDate();*/
 
 // const debounceDataPushFnc = useDebounceFn(() => {
 //   console.info('data push', new Date());
 //   store.push();
 // }, 1000);
 
-emitter.on('login:success', async () => {
-  await account.fetchUser();
-  await store.fetch();
-  store.dailyUpdate();
-  counter.countTodos();
-});
-
+/*
 emitter.on('date:update', () => {
-  store.dailyUpdate();
+  projects.dailyUpdate();
 });
+*/
 
 // emitter.on('*', (event: any) => {
 //   // 数据变化
@@ -41,9 +47,9 @@ emitter.on('date:update', () => {
 // });
 
 // 账号如果是登录的
-if (account.isAuth) {
-  account.fetchUser().then(() => emitter.emit('login:success'));
-}
+// if (account.isAuth) {
+//   account.fetchUser().then(() => emitter.emit('login:success'));
+// }
 
 onBeforeUnmount(() => {
   emitter.all.clear();

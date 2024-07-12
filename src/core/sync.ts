@@ -1,1 +1,1 @@
-export type SyncStatus = 'SYNCED' | 'UPDATED' | 'DELETED';
+export type SyncStatus = 'SYNCED' | 'UPDATED' | 'DELETED' | 'CREATED';

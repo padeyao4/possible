@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useProjectStore, useSide } from '@/stores';
+import { useProjects, useSide } from '@/stores';
 import { useEventListener } from '@vueuse/core';
 import { RouterView } from 'vue-router';
 import SideItem from '@/components/SideItem.vue';
@@ -23,7 +23,7 @@ useEventListener(['pointerup', 'pointermove'], (e: PointerEvent) => {
   }
 });
 
-const projects = useProjectStore();
+const projects = useProjects();
 
 const swapProjects = (from: Project, to: Project) => {
   [from.sortIndex, to.sortIndex] = [to.sortIndex, from.sortIndex];

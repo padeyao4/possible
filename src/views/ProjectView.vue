@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ProjectFooter from '@/components/ProjectViewComponent/TheFooter.vue';
 import { computed, provide, ref } from 'vue';
-import { useProjectStore } from '@/stores/project';
+import { useProjects } from '@/stores/project';
 import type { ID } from '@/core/types';
 import ProjectEditor from '@/components/ProjectEditor.vue';
 import CanvasRuler from '@/components/ProjectViewComponent/CanvasRuler.vue';
@@ -11,7 +11,7 @@ import TheCanvas from '@/components/ProjectViewComponent/TheCanvas.vue';
 
 const { id } = defineProps<{ id: ID }>();
 
-const projects = useProjectStore();
+const projects = useProjects();
 const project = computed(() => projects.getProject(id));
 
 const canvasContainer = ref();

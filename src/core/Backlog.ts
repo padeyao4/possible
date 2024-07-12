@@ -3,81 +3,43 @@ import { v4 } from 'uuid';
 import { emitter } from '@/utils';
 
 export class Backlog {
-  private readonly _id: string;
-  private _title: string;
-  private _orderIndex: number;
-  private _createdAt: Date;
-  private _completeAt: Date | null;
-  private _done: boolean;
+  id: string;
+  title: string;
+  orderIndex: number;
+  createdAt: Date;
+  completeAt: Date;
+  done: boolean;
 
-  sid: number | null;
+  sid: number;
   status: SyncStatus;
   version: number;
 
   constructor() {
     const now = new Date();
-    this._id = v4();
-    this._title = '';
-    this._orderIndex = now.getTime();
-    this._createdAt = now;
-    this._completeAt = null;
-    this._done = false;
+    this.id = v4();
+    this.title = '';
+    this.orderIndex = now.getTime();
+    this.createdAt = now;
+    this.completeAt = null;
+    this.done = false;
     this.sid = null;
     this.status = 'UPDATED';
     this.version = 0;
   }
 
-  get id(): string {
-    return this._id;
-  }
-
-  get title(): string {
-    return this._title;
-  }
-
-  set title(value: string) {
-    this._title = value;
+  update(backlog: Partial<Backlog>) {
+    Object.assign(this, backlog);
     this.status = 'UPDATED';
     emitter.emit('backlog:update', this);
   }
 
-  get orderIndex(): number {
-    return this._orderIndex;
+  static delete(backlog: Backlog) {
+    backlog.status = 'DELETED';
+    emitter.emit('backlog:delete', backlog);
   }
 
-  set orderIndex(value: number) {
-    this._orderIndex = value;
-    this.status = 'UPDATED';
-    emitter.emit('backlog:update', this);
-  }
-
-  get createdAt(): Date {
-    return this._createdAt;
-  }
-
-  set createdAt(value: Date) {
-    this._createdAt = value;
-    this.status = 'UPDATED';
-    emitter.emit('backlog:update', this);
-  }
-
-  get completeAt(): Date | null {
-    return this._completeAt;
-  }
-
-  set completeAt(value: Date | null) {
-    this._completeAt = value;
-    this.status = 'UPDATED';
-    emitter.emit('backlog:update', this);
-  }
-
-  get done(): boolean {
-    return this._done;
-  }
-
-  set done(value: boolean) {
-    this._done = value;
-    this.status = 'UPDATED';
-    emitter.emit('backlog:update', this);
+  static create(backlog: Backlog) {
+    backlog.status = 'CREATED';
+    emitter.emit('backlog:create', backlog);
   }
 }

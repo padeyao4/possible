@@ -1,5 +1,5 @@
 import mitt from 'mitt';
-import { Backlog, Edge, Node, Project } from '@/core';
+import { Backlog, Edge, type ID, Node, Project } from '@/core';
 
 export type Error = { message: string; [key: string]: any };
 
@@ -16,7 +16,7 @@ type DataEvents = {
 
   'project:create': Project;
   'project:update': Project;
-  'project:delete': Project;
+  'project:delete': ID;
   'project:select': Project;
 
   'backlog:create': Backlog;
@@ -43,6 +43,13 @@ type UiEvents = {
   'register:failed': Error;
 };
 
+type LocalEvents = {
+  'local:save': any;
+  'local:load': any;
+  'local:login': any;
+  'local:logout': any;
+};
+
 type NotifyEvents = {
   'notify:success': string;
   'notify:failed': string;
@@ -51,4 +58,4 @@ type NotifyEvents = {
   'notify:error': Error;
 };
 
-export const emitter = mitt<DataEvents & UiEvents & NotifyEvents>();
+export const emitter = mitt<DataEvents & UiEvents & NotifyEvents & LocalEvents>();

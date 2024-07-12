@@ -178,17 +178,28 @@ ipcMain.handle('open-win', (_, arg) => {
   }
 });
 
-ipcMain.on('set-value', (_, arg) => {
+/**
+ * 用法
+ *       window.ipcRenderer.send('set', {
+ *         key: 'account',
+ *         value: {
+ *          isAuth: true,
+ *           isLocal: true,
+ *           token: ''
+ *         }
+ *       });
+ */
+ipcMain.on('set', (_, arg) => {
   console.log('set-value', arg);
   store.set(arg.key, arg.value);
-  store.openInEditor().then();
+  // store.openInEditor().then();
 });
 
-ipcMain.handle('get-value', (_, arg) => {
+ipcMain.handle('get', (_, arg) => {
   console.log('get-value', store.get(arg.key));
   return store.get(arg.key);
 });
 
-ipcMain.handle('get-store-path', () => {
+ipcMain.handle('get-path', () => {
   return app.getPath('userData');
 });

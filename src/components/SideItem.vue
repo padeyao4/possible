@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { Project } from '@/core';
 import { ref } from 'vue';
-import { useProjectStore } from '@/stores';
+import { useProjects } from '@/stores';
 import { emitter } from '@/utils';
 
 const { project } = defineProps<{ project: Project }>();
 const showIcon = ref(false);
-const projects = useProjectStore();
+const projects = useProjects();
 
 const submitProject = () => {
   if (project.name.trim() === '') {
@@ -22,7 +22,7 @@ const handleRef = (e: Element) => {
 };
 
 const handleDelete = () => {
-  emitter.emit('project:open', project);
+  emitter.emit('project-dialog:open', project);
 };
 
 const handleEdit = () => {

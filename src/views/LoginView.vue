@@ -101,6 +101,13 @@ const registerRules = reactive<FormRules<typeof registerForm>>({
     }
   ]
 });
+
+/**
+ * 处理本地登录事件
+ */
+const onLocalLogin = () => {
+  account.login('', '', true);
+};
 </script>
 
 <template>
@@ -120,7 +127,7 @@ const registerRules = reactive<FormRules<typeof registerForm>>({
               <el-form-item :error="loginForm.loginError">
                 <template #default>
                   <div class="flex w-full flex-row justify-between">
-                    <el-text tag="ins" class="forget-text">忘记密码?</el-text>
+                    <el-text tag="ins" class="cursor-no-drop">忘记密码?</el-text>
                     <el-button
                       type="primary"
                       @click="submitLogin(loginFormEl)"
@@ -133,7 +140,9 @@ const registerRules = reactive<FormRules<typeof registerForm>>({
               </el-form-item>
             </el-form>
             <el-divider><el-text size="small">其他登录方式</el-text></el-divider>
-            <el-button size="small" round><el-text size="small">本地</el-text></el-button>
+            <el-button size="small" round @click="onLocalLogin"
+              ><el-text size="small">本地</el-text></el-button
+            >
           </el-tab-pane>
           <el-tab-pane label="注册">
             <el-card v-if="isRegister">

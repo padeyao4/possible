@@ -3,10 +3,6 @@ import { ref } from 'vue';
 
 export const useSettings = defineStore('settings', () => {
   /**
-   * 左侧边栏,激活项
-   */
-  const sideWidth = ref(240);
-  /**
    * 画布中每个单元格宽度
    */
   const unitWidth = ref(120);
@@ -18,7 +14,6 @@ export const useSettings = defineStore('settings', () => {
   const offsetCardY = ref(10);
 
   function $reset() {
-    sideWidth.value = 240;
     unitWidth.value = 120;
     unitHeight.value = 80;
     offsetCardX.value = 10;
@@ -26,7 +21,6 @@ export const useSettings = defineStore('settings', () => {
   }
 
   return {
-    sideWidth,
     unitHeight,
     unitWidth,
     offsetCardX,

@@ -6,7 +6,7 @@ import type { ID } from '@/core/types';
 import { StorageControllerApi } from '@/openapi';
 import { emitter } from '@/utils';
 
-export const useProjectStore = defineStore('projects', () => {
+export const useProjects = defineStore('projects', () => {
   const mapper = reactive<Map<ID, Project>>(new Map());
   const dataVersion = ref(0);
 
@@ -14,7 +14,7 @@ export const useProjectStore = defineStore('projects', () => {
     return Array.from(mapper.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex) as Project[];
   });
 
-  const nodes = computed<Node[]>(() => {
+  const nodes = computed(() => {
     return Array.from(mapper.values())
       .map((project) => {
         const curX = getIndexByDate(<Project>project);
@@ -49,7 +49,6 @@ export const useProjectStore = defineStore('projects', () => {
   }
 
   function addProject(project: Project): void {
-    // todo emitter
     mapper.set(project.id, project);
   }
 
@@ -64,10 +63,14 @@ export const useProjectStore = defineStore('projects', () => {
   }
 
   function serialize() {
-    return Array.from(mapper).map(([_, value]) => value.plainObject());
+    return Array.from(mapper).map(([_, value]) => value.toPlainObject());
   }
 
   const fetchLoading = ref(false);
+
+  /**
+   * 从服务器加载
+   */
   async function fetch() {
     try {
       fetchLoading.value = true;
@@ -83,6 +86,10 @@ export const useProjectStore = defineStore('projects', () => {
   }
 
   const pushLoading = ref(false);
+
+  /**
+   * 推送服务器端
+   */
   async function push() {
     try {
       pushLoading.value = true;
@@ -101,20 +108,35 @@ export const useProjectStore = defineStore('projects', () => {
   }
 
   /**
-   * 加载本地localStorage数据
+   * 加载本地数据
    */
   const loading = ref(false);
   async function load() {
     try {
       loading.value = true;
-      const data = localStorage.getItem('data');
+      const data = await window.ipcRenderer.invoke('get', { key: 'projects' });
       if (data) {
-        deserialize(JSON.parse(data));
+        deserialize(data);
       }
     } catch (e) {
       emitter.emit('notify:error', e);
     } finally {
       loading.value = false;
+    }
+  }
+
+  const saving = ref(false);
+  /**
+   * 保存数据到本地
+   */
+  async function save() {
+    try {
+      saving.value = true;
+      window.ipcRenderer.send('set', { key: 'projects', value: serialize() });
+    } catch (e) {
+      emitter.emit('notify:error', e);
+    } finally {
+      saving.value = false;
     }
   }
 
@@ -149,6 +171,8 @@ export const useProjectStore = defineStore('projects', () => {
     fetchLoading,
     loading,
     load,
+    saving,
+    save,
     dataVersion,
     pushLoading,
     push,

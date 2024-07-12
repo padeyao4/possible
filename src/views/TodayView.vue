@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useProjectStore } from '@/stores/project';
+import { useProjects } from '@/stores/project';
 import { showWeekAndLocalDate, useTimer } from '@/stores/timer';
 import { computed, ref } from 'vue';
 import ECounterButton from '@/components/common/CounterButton.vue';
@@ -13,7 +13,7 @@ const timer = useTimer();
 
 const dateTime = computed(() => showWeekAndLocalDate(timer.localTimestamp));
 
-const projects = useProjectStore();
+const projects = useProjects();
 
 function onUpdate(n1: Node, n2: Node) {
   [n1.sortedIndex, n2.sortedIndex] = [n2.sortedIndex, n1.sortedIndex];

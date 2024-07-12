@@ -1,5 +1,5 @@
 import { isCross } from '@/graph/math';
-import { useProjectStore } from '@/stores/project';
+import { useProjects } from '@/stores/project';
 import { Node } from '@/core/Node';
 import { Project } from '@/core/Project';
 import router from '@/router';
@@ -121,8 +121,9 @@ export function tryMoveDownWhole(project: Project, node: Node) {
 export async function handleNewProject() {
   const project = new Project();
   project.editable = true;
-  useProjectStore().addProject(project);
+  useProjects().addProject(project);
   setTimeout(async () => {
     await router.push({ name: 'project', query: { id: project.id } });
+    emitter.emit('project:create', project);
   });
 }

@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import { Node } from '@/core/';
 import { Check } from '@element-plus/icons-vue';
-import { useProjectStore } from '@/stores';
+import { useProjects } from '@/stores';
 import { ref } from 'vue';
 
 const { node } = defineProps<{
   node: Node;
 }>();
 
-const projects = useProjectStore();
+const projects = useProjects();
 
 const project = projects.getProject(node.projectId);
 
 const showIcon = ref(false);
 
 const handleChange = () => {
-  node.set({ completed: !node.completed });
+  node.update({ completed: !node.completed });
 };
 </script>
 

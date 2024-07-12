@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
 import { emitter } from '@/utils';
-import { useProjectStore } from '@/stores';
+import { useProjects } from '@/stores';
 import { Project } from '@/core';
 
 const visible = ref(false);
 
-const projects = useProjectStore();
+const projects = useProjects();
 const project = ref<Project>();
 
 onMounted(() => {

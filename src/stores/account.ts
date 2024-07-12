@@ -8,22 +8,28 @@ export const useAccount = defineStore('account', () => {
   const isLocal = ref(false);
   const token = ref<string>();
   const user = reactive<User>({});
-  const fetchUserLoading = ref(false);
 
   const isRemote = computed(() => {
     return !isLocal.value;
   });
 
+  const fetchUserLoading = ref(false);
   async function fetchUser() {
-    try {
-      fetchUserLoading.value = true;
-      const response = await new UserControllerApi().userInfo();
-      const remoteUser = response.data.payload;
-      Object.assign(user, remoteUser);
-    } catch (e) {
-      emitter.emit('notify:error', e);
-    } finally {
-      fetchUserLoading.value = false;
+    if (isRemote) {
+      try {
+        fetchUserLoading.value = true;
+        const response = await new UserControllerApi().userInfo();
+        const remoteUser = response.data.payload;
+        Object.assign(user, remoteUser);
+      } catch (e) {
+        emitter.emit('notify:error', e);
+      } finally {
+        fetchUserLoading.value = false;
+      }
+    } else {
+      Object.assign(user, {
+        username: 'local'
+      });
     }
   }
 
@@ -35,35 +41,62 @@ export const useAccount = defineStore('account', () => {
   }
 
   const loginLoading = ref(false);
-  async function login(username: string, password: string) {
-    try {
-      loginLoading.value = true;
-      const response = await new AccountControllerApi().login({
-        username,
-        password
-      });
-      token.value = response.data.payload;
+  async function login(username: string, password: string, local: boolean = false) {
+    if (local) {
       isAuth.value = true;
-      emitter.emit('login:success');
-    } catch (e) {
-      isAuth.value = false;
-      emitter.emit('login:failed', e);
-    } finally {
-      loginLoading.value = false;
+      isLocal.value = true;
+      token.value = '';
+      window.ipcRenderer.send('set', {
+        key: 'account',
+        value: {
+          isAuth: true,
+          isLocal: true,
+          token: ''
+        }
+      });
+    } else {
+      try {
+        loginLoading.value = true;
+        const response = await new AccountControllerApi().login({
+          username,
+          password
+        });
+        token.value = response.data.payload;
+        isAuth.value = true;
+        emitter.emit('login:success');
+      } catch (e) {
+        isAuth.value = false;
+        emitter.emit('login:failed', e);
+      } finally {
+        loginLoading.value = false;
+      }
     }
   }
 
   const logoutLoading = ref(false);
   async function logout() {
-    try {
-      logoutLoading.value = true;
-      await new AccountControllerApi().logout();
-    } catch (e) {
-      emitter.emit('notify:error', e);
-    } finally {
+    if (isRemote.value) {
+      try {
+        logoutLoading.value = true;
+        await new AccountControllerApi().logout();
+      } catch (e) {
+        emitter.emit('notify:error', e);
+      } finally {
+        token.value = null;
+        logoutLoading.value = false;
+        isAuth.value = false;
+      }
+    } else {
       token.value = null;
-      logoutLoading.value = false;
       isAuth.value = false;
+      window.ipcRenderer.send('set', {
+        key: 'account',
+        value: {
+          isAuth: false,
+          isLocal: true,
+          token: ''
+        }
+      });
     }
   }
 

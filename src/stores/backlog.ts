@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { computed, reactive } from 'vue';
 import type { ID } from '@/core/types';
 import { Backlog } from '@/core';
-import { emitter } from '@/utils';
 
 export const useBacklogs = defineStore('backlog', () => {
   const backlogs = reactive<Map<ID, Backlog>>(new Map());
@@ -15,12 +14,12 @@ export const useBacklogs = defineStore('backlog', () => {
     const entity = new Backlog();
     entity.title = title;
     backlogs.set(entity.id, entity);
+    Backlog.create(entity);
   }
 
   function remove(id: ID) {
     const backlog = backlogs.get(id);
-    backlog.status = 'DELETED';
-    emitter.emit('backlog:delete');
+    Backlog.delete(backlog);
   }
 
   const list = computed(() => {
@@ -30,7 +29,6 @@ export const useBacklogs = defineStore('backlog', () => {
   });
 
   const todos = computed(() => {
-    console.log('todos update');
     return list.value.filter((b) => !b.done);
   });
 

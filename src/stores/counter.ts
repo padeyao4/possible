@@ -2,12 +2,12 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { getIndexByDate } from '@/stores/timer';
 import { Project } from '@/core';
-import { useProjectStore } from '@/stores/project';
+import { useProjects } from '@/stores/project';
 
 // 用于显示当前未完成的todo数量
 export const useCounter = defineStore('counter', () => {
   const count = ref(0);
-  const projects = useProjectStore();
+  const projects = useProjects();
 
   function countTodos() {
     const nodes = Array.from(projects.mapper.values())

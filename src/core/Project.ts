@@ -8,142 +8,52 @@ import { getDaysBetweenDates, useSettings, useTimer } from '@/stores';
 import { type SyncStatus } from '@/core';
 
 export class Project {
-  private _id: ID;
-  private _name: string;
-  private _nodeMap: Map<ID, Node>;
-  private _edgeMap: Map<ID, Edge>;
-  private _inMap: Map<ID, Set<Edge>>;
-  private _outMap: Map<ID, Set<Edge>>;
-  private _completed: boolean;
-  private _sortIndex: number;
-  private _editable: boolean;
-  private _createTime: number;
-  private _offset: Point;
+  id: ID;
+  name: string;
+  nodeMap: Map<ID, Node>;
+  edgeMap: Map<ID, Edge>;
+  inMap: Map<ID, Set<Edge>>;
+  outMap: Map<ID, Set<Edge>>;
+  completed: boolean;
+  sortIndex: number;
+  editable: boolean;
+  createTime: number;
+  offset: Point;
 
-  sid: number | null;
+  sid: number;
   status: SyncStatus;
   version: number;
 
-  fetch(): void {}
-
-  push(): void {}
-
   public constructor() {
-    this._id = v4();
-    this._name = '';
-    this._nodeMap = new Map();
-    this._edgeMap = new Map();
-    this._inMap = markRaw(new Map());
-    this._outMap = markRaw(new Map());
-    this._completed = false;
-    this._sortIndex = new Date().getTime();
-    this._editable = false;
-    this._createTime = new Date().getTime();
-    this._offset = { x: 0, y: 0 };
+    this.id = v4();
+    this.name = '';
+    this.nodeMap = new Map();
+    this.edgeMap = new Map();
+    this.inMap = markRaw(new Map());
+    this.outMap = markRaw(new Map());
+    this.completed = false;
+    this.sortIndex = new Date().getTime();
+    this.editable = false;
+    this.createTime = new Date().getTime();
+    this.offset = { x: 0, y: 0 };
     this.sid = null;
     this.status = 'SYNCED';
     this.version = 0;
   }
 
-  get id(): ID {
-    return this._id;
-  }
-
-  set id(value: ID) {
-    this._id = value;
-  }
-
-  get name(): string {
-    return this._name;
-  }
-
-  get nodeMap(): Map<ID, Node> {
-    return this._nodeMap;
-  }
-
-  get edgeMap(): Map<ID, Edge> {
-    return this._edgeMap;
-  }
-
-  get inMap(): Map<ID, Set<Edge>> {
-    return this._inMap;
-  }
-
-  get outMap(): Map<ID, Set<Edge>> {
-    return this._outMap;
-  }
-
-  get completed(): boolean {
-    return this._completed;
-  }
-
-  get sortIndex(): number {
-    return this._sortIndex;
-  }
-
-  get editable(): boolean {
-    return this._editable;
-  }
-
-  get createTime(): number {
-    return this._createTime;
-  }
-
-  get offset(): Point {
-    return this._offset;
-  }
-
-  set name(value: string) {
-    this._name = value;
-  }
-
-  set nodeMap(value: Map<ID, Node>) {
-    this._nodeMap = value;
-  }
-
-  set edgeMap(value: Map<ID, Edge>) {
-    this._edgeMap = value;
-  }
-
-  set inMap(value: Map<ID, Set<Edge>>) {
-    this._inMap = value;
-  }
-
-  set outMap(value: Map<ID, Set<Edge>>) {
-    this._outMap = value;
-  }
-
-  set completed(value: boolean) {
-    this._completed = value;
-  }
-
-  set sortIndex(value: number) {
-    this._sortIndex = value;
-  }
-
-  set editable(value: boolean) {
-    this._editable = value;
-  }
-
-  set createTime(value: number) {
-    this._createTime = value;
-  }
-
-  set offset(value: Point) {
-    this._offset = value;
-  }
-
-  public plainObject() {
+  public toPlainObject() {
     return {
       id: this.id,
       name: this.name,
-      nodeMap: Array.from(this.nodeMap.values()).map((n) => n.plainObject()),
-      edgeMap: Array.from(this.edgeMap.values()).map((e) => e.plainObject()),
+      nodes: Array.from(this.nodeMap.values()).map((n) => n.toPlainObject()),
+      edges: Array.from(this.edgeMap.values()).map((e) => e.plainObject()),
       completed: this.completed,
       sortIndex: this.sortIndex,
-      editable: this.editable,
       createTime: this.createTime,
-      offset: this.offset
+      offset: this.offset,
+      version: this.version,
+      status: this.status,
+      sid: this.sid
     };
   }
 
@@ -154,38 +64,33 @@ export class Project {
     project.name = obj.name;
     project.completed = obj.completed;
     project.sortIndex = obj.sortIndex;
-    project.editable = obj.editable;
     project.createTime = obj.createTime;
     project.offset = obj.offset;
+    project.version = obj.version;
+    project.status = obj.status;
+    project.sid = obj.sid;
 
-    obj.nodeMap.forEach((node: any) => {
-      project.addNode(Node.fromPlainObject(node));
-    });
-
-    obj.edgeMap.forEach((edge: any) => {
-      project.addEdge(edge.source, edge.target, edge.id);
-    });
+    obj.nodes.forEach((node: any) => project.addNode(Node.fromPlainObject(node)));
+    obj.edges.forEach((edge: any) => project.addEdge(edge.source, edge.target, edge.id));
     return project;
   }
 
   public static faker(): Project {
-    return Object.assign(new Project(), {
+    const source = {
       id: v4(),
       name: faker.lorem.words({ min: 3, max: 50 }),
-      nodeMap: new Map<ID, Node>(),
-      edgeMap: new Map<ID, Edge>(),
-      inMap: new Map<ID, Set<Edge>>(),
-      outMap: new Map<ID, Set<Edge>>(),
+      nodes: [],
+      edges: [],
       completed: false,
       sortIndex: new Date().getTime(),
       editable: false,
       createTime: faker.date.between({ from: '1900-01-01', to: '2024-06-01' }).getTime(),
       offset: { x: 0, y: 0 }
-    });
+    };
+    return Project.fromPlainObject(source);
   }
 
   public addNode(node: Node) {
-    // todo emitter
     if (this.nodeMap.has(node.id)) return;
     node.projectId = this.id;
     this.nodeMap.set(node.id, node);
