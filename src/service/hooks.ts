@@ -1,33 +1,6 @@
 import { emitter } from '@/utils';
 import { useAccount, useCounter, useProjects } from '@/stores';
 
-/*
-export function useScheduler() {
-  const scheduler = ref();
-
-  scheduleMidnightTask(scheduler, () => {
-    // todo
-    // emitter.emit(BusEvents['project:daily:update']);
-  });
-
-  onMounted(() => {
-    clearInterval(scheduler.value);
-  });
-}
-*/
-
-/*export function useUpdateDate() {
-  const timer = useTimer();
-  const interval = ref();
-
-  interval.value = setInterval(() => {
-    timer.update();
-  }, 600_000);
-
-  onBeforeUnmount(() => {
-    clearInterval(interval.value);
-  });
-}*/
 export function useListenNotifyEvent() {
   emitter.on('notify:error', (e) => {
     console.error(e.message);
@@ -59,6 +32,13 @@ export function useListenEdgeEvent() {
 export function useListenBacklogEvent() {
   emitter.on('backlog:update', (e) => {
     // TODO: update project
+    console.log('update backlog', e);
+  });
+  emitter.on('backlog:create', (e) => {
+    console.log('create backlog', e);
+  });
+  emitter.on('backlog:delete', (e) => {
+    console.log('delete backlog', e);
   });
 }
 
@@ -78,9 +58,8 @@ export function useListenAppEvent() {
   const counter = useCounter();
   emitter.on('login:success', async () => {
     console.log('login:success');
-    await account.fetchUser();
-
     if (account.isRemote) {
+      await account.fetchUser();
       await projects.fetch();
     } else {
       await projects.load();

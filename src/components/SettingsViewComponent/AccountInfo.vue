@@ -13,7 +13,9 @@ const logout = async () => {
 <template>
   <SettingsItem>
     <template #title>你的账号</template>
-    <template #description> 当前登录账号为 {{ account.user?.username ?? '未命名' }} </template>
+    <template #description>
+      当前登录账号为: <i>{{ account.user?.username ?? '本地账号' }}</i>
+    </template>
     <template #option>
       <el-button
         @click="logout"
@@ -24,10 +26,3 @@ const logout = async () => {
     </template>
   </SettingsItem>
 </template>
-
-<style scoped>
-i {
-  color: red;
-  font-size: 13px;
-}
-</style>

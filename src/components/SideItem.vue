@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import { useProjects } from '@/stores';
 import { emitter } from '@/utils';
 
-const { project } = defineProps<{ project: Project }>();
+const { project } = defineProps<{ project: Partial<Project> }>();
 const showIcon = ref(false);
 const projects = useProjects();
 

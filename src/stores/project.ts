@@ -11,7 +11,7 @@ export const useProjects = defineStore('projects', () => {
   const dataVersion = ref(0);
 
   const sortProjects = computed(() => {
-    return Array.from(mapper.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex) as Project[];
+    return Array.from(mapper.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex);
   });
 
   const nodes = computed(() => {

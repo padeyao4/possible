@@ -4,38 +4,38 @@ import { Backlog, Edge, type ID, Node, Project } from '@/core';
 export type Error = { message: string; [key: string]: any };
 
 type DataEvents = {
-  'node:update': Node;
-  'node:create': Node;
-  'node:delete': Node;
-  'node:select': Node;
+  'node:update': Partial<Node>;
+  'node:create': Partial<Node>;
+  'node:delete': Partial<Node>;
+  'node:select': Partial<Node>;
 
-  'edge:update': Edge;
-  'edge:create': Edge;
-  'edge:delete': Edge;
-  'edge:select': Edge;
+  'edge:update': Partial<Edge>;
+  'edge:create': Partial<Edge>;
+  'edge:delete': Partial<Edge>;
+  'edge:select': Partial<Edge>;
 
-  'project:create': Project;
-  'project:update': Project;
+  'project:create': Partial<Project>;
+  'project:update': Partial<Project>;
   'project:delete': ID;
-  'project:select': Project;
+  'project:select': Partial<Project>;
 
-  'backlog:create': Backlog;
-  'backlog:update': Backlog;
-  'backlog:delete': Backlog;
-  'backlog:select': Backlog;
+  'backlog:create': Partial<Backlog>;
+  'backlog:update': Partial<Backlog>;
+  'backlog:delete': Partial<Backlog>;
+  'backlog:select': Partial<Backlog>;
 
   'date:update': null;
 };
 
 type UiEvents = {
-  'editor-node:open': Node;
-  'editor-node:close': Node;
-  'editor-project:open': Project;
-  'editor-project:close': Project;
-  'editor-backlog:open': Backlog;
-  'editor-backlog:close': Backlog;
-  'project-dialog:open': Project;
-  'project-dialog:close': Project;
+  'editor-node:open': Partial<Node>;
+  'editor-node:close': Partial<Node>;
+  'editor-project:open': Partial<Project>;
+  'editor-project:close': Partial<Project>;
+  'editor-backlog:open': Partial<Backlog>;
+  'editor-backlog:close': Partial<Backlog>;
+  'project-dialog:open': Partial<Project>;
+  'project-dialog:close': Partial<Project>;
   'contextmenu-canvas:open': any;
   'login:success': any;
   'login:failed': Error;

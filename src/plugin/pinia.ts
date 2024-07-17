@@ -5,10 +5,6 @@ export function piniaPersisted({ store }: PiniaPluginContext) {
     const { store, name } = params;
     console.log(store.$id, name);
   }, true);*/
-
-  store.$subscribe((params) => {
-    // if (params.storeId === 'projects') {
-    //   console.log(params);
-    // }
-  });
+  /*  store.$subscribe((params) => {
+  });*/
 }
