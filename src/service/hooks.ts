@@ -10,6 +10,15 @@ export function useListenNotifyEvent() {
 export function useListenNodeEvent() {
   emitter.on('node:update', (e) => {
     // TODO: update project
+    console.log('update node', e);
+  });
+  emitter.on('node:create', (e) => {
+    // TODO: update project
+    console.log('create node', e);
+  });
+  emitter.on('node:delete', (e) => {
+    // TODO: update project
+    console.log('delete node', e);
   });
 }
 
@@ -17,8 +26,12 @@ export function useListenProjectEvent() {
   const projects = useProjects();
   emitter.on('project:update', (e) => {
     // TODO: update project
+    console.log('project update', e);
   });
   emitter.on('project:create', async (project) => {
+    await projects.save();
+  });
+  emitter.on('project:delete', async (project) => {
     await projects.save();
   });
 }
@@ -26,6 +39,15 @@ export function useListenProjectEvent() {
 export function useListenEdgeEvent() {
   emitter.on('edge:update', (e) => {
     // TODO: update project
+    console.log('edge update', e);
+  });
+  emitter.on('edge:create', (e) => {
+    // TODO: update project
+    console.log('edge create', e);
+  });
+  emitter.on('edge:delete', (e) => {
+    // TODO: update project
+    console.log('edge delete', e);
   });
 }
 

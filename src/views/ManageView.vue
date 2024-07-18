@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import BDraggable from '@/components/common/MagicDraggable.vue';
 import { ref } from 'vue';
-import type { DraggableType } from '@/components/types';
 
-const list = ref<DraggableType[]>([
+const list = ref<any[]>([
   { name: 'item1', id: '1' },
   { name: 'item1', id: '2' },
   { name: 'item1', id: '3' },

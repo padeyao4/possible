@@ -1,5 +1,6 @@
 import { clampMax } from '@/graph/math';
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
+import { emitter } from '@/utils';
 
 export default class DragCanvas extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -41,6 +42,7 @@ export default class DragCanvas extends BaseBehavior {
       this.isDown = false;
       this.mouseStyle.unlock();
       this.toggleMouseOver(e);
+      emitter.emit('project:update', this.project);
     }
   }
 }

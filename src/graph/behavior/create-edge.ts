@@ -1,6 +1,7 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { type TempPath, useTempPaths } from '@/stores/temp-path';
 import type { ID } from '@/core/types';
+import { emitter } from '@/utils';
 
 export class CreateEdge extends BaseBehavior {
   isDown = false;
@@ -68,11 +69,13 @@ export class CreateEdge extends BaseBehavior {
       path.opacity = 0;
       if (path.dummy === 'source') {
         if (!this.project.getEdge(path.nodeId, key)) {
-          this.project.addEdge(path.nodeId, key);
+          const edge = this.project.addEdge(path.nodeId, key);
+          emitter.emit('edge:create', edge);
         }
       } else {
         if (!this.project.getEdge(key, path.nodeId)) {
-          this.project.addEdge(key, path.nodeId);
+          const edge = this.project.addEdge(key, path.nodeId);
+          emitter.emit('edge:create', edge);
         }
       }
     }

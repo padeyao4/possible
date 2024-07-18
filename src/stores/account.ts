@@ -9,6 +9,8 @@ export const useAccount = defineStore('account', () => {
   const token = ref<string>();
   const user = reactive<User>({});
 
+  const userName = computed(() => user.username ?? 'local');
+
   const isRemote = computed(() => {
     return !isLocal.value;
   });
@@ -130,6 +132,7 @@ export const useAccount = defineStore('account', () => {
 
   return {
     user,
+    userName,
     token,
     fetchUser,
     fetchUserLoading,

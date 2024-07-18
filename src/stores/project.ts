@@ -5,10 +5,13 @@ import { Node, Project } from '@/core';
 import type { ID } from '@/core/types';
 import { StorageControllerApi } from '@/openapi';
 import { emitter } from '@/utils';
+import { useAccount } from '@/stores/account';
 
 export const useProjects = defineStore('projects', () => {
   const mapper = reactive<Map<ID, Project>>(new Map());
   const dataVersion = ref(0);
+
+  const account = useAccount();
 
   const sortProjects = computed(() => {
     return Array.from(mapper.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex);
@@ -114,7 +117,7 @@ export const useProjects = defineStore('projects', () => {
   async function load() {
     try {
       loading.value = true;
-      const data = await window.ipcRenderer.invoke('get', { key: 'projects' });
+      const data = await window.ipcRenderer.invoke('get', { key: `${account.userName}.projects` });
       if (data) {
         deserialize(data);
       }
@@ -132,7 +135,7 @@ export const useProjects = defineStore('projects', () => {
   async function save() {
     try {
       saving.value = true;
-      window.ipcRenderer.send('set', { key: 'projects', value: serialize() });
+      window.ipcRenderer.send('set', { key: `${account.userName}.projects`, value: serialize() });
     } catch (e) {
       emitter.emit('notify:error', e);
     } finally {

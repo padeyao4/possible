@@ -196,7 +196,7 @@ ipcMain.on('set', (_, arg) => {
 });
 
 ipcMain.handle('get', (_, arg) => {
-  console.log('get-value', store.get(arg.key));
+  console.log('get', arg.key, store.get(arg.key));
   return store.get(arg.key);
 });
 
