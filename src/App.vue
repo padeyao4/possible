@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { emitter } from '@/utils';
+import { emitter, loadAll } from '@/utils';
 import { useAccount } from '@/stores';
 import { axiosConfig } from '@/core/config';
 import LoginView from '@/views/LoginView.vue';
@@ -24,7 +24,7 @@ useListenEdgeEvent();
 useListenBacklogEvent();
 useListenProjectEvent();
 
-useLoadApp();
+loadAll();
 
 const account = useAccount();
 

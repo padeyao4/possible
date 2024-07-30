@@ -1,7 +1,7 @@
 import { AccountControllerApi, type User, UserControllerApi } from '@/openapi';
 import { defineStore } from 'pinia';
-import { computed, reactive, ref } from 'vue';
-import { emitter } from '@/utils';
+import { computed, reactive, ref, toRaw } from 'vue';
+import { emitter, loadAll } from '@/utils';
 
 export const useAccount = defineStore('account', () => {
   const isAuth = ref(false);
@@ -49,13 +49,10 @@ export const useAccount = defineStore('account', () => {
       isLocal.value = true;
       token.value = '';
       window.ipcRenderer.send('set', {
-        key: 'account',
-        value: {
-          isAuth: true,
-          isLocal: true,
-          token: ''
-        }
+        key: 'current',
+        value: toPlainObject()
       });
+      await loadAll();
     } else {
       try {
         loginLoading.value = true;
@@ -130,6 +127,22 @@ export const useAccount = defineStore('account', () => {
     }
   }
 
+  function toPlainObject() {
+    return {
+      isAuth: isAuth.value,
+      isLocal: isLocal.value,
+      token: token.value,
+      user: toRaw(user)
+    };
+  }
+
+  function fromPlainObject(obj: any) {
+    Object.assign(user, obj?.user);
+    isAuth.value = obj?.isAuth ?? false;
+    isLocal.value = obj?.isLocal ?? true;
+    token.value = obj?.token ?? '';
+  }
+
   return {
     user,
     userName,
@@ -147,6 +160,8 @@ export const useAccount = defineStore('account', () => {
     registerLoading,
     checkUsername,
     checkUsernameLoading,
+    toPlainObject,
+    fromPlainObject,
     $reset
   };
 });

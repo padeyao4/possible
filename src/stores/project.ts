@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, toRaw } from 'vue';
 import { getIndexByDate } from './timer';
 import { Node, Project } from '@/core';
 import type { ID } from '@/core/types';
@@ -69,6 +69,14 @@ export const useProjects = defineStore('projects', () => {
     return Array.from(mapper).map(([_, value]) => value.toPlainObject());
   }
 
+  function toPlainObject() {
+    return toRaw(Array.from(mapper).map(([_, value]) => value.toPlainObject()));
+  }
+
+  function fromPlainObject(data: any[]) {
+    deserialize(data);
+  }
+
   const fetchLoading = ref(false);
 
   /**
@@ -110,39 +118,6 @@ export const useProjects = defineStore('projects', () => {
     }
   }
 
-  /**
-   * 加载本地数据
-   */
-  const loading = ref(false);
-  async function load() {
-    try {
-      loading.value = true;
-      const data = await window.ipcRenderer.invoke('get', { key: `${account.userName}.projects` });
-      if (data) {
-        deserialize(data);
-      }
-    } catch (e) {
-      emitter.emit('notify:error', e);
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  const saving = ref(false);
-  /**
-   * 保存数据到本地
-   */
-  async function save() {
-    try {
-      saving.value = true;
-      window.ipcRenderer.send('set', { key: `${account.userName}.projects`, value: serialize() });
-    } catch (e) {
-      emitter.emit('notify:error', e);
-    } finally {
-      saving.value = false;
-    }
-  }
-
   function dailyUpdate() {
     Array.from(mapper.values()).forEach((project) => {
       project.dailyUpdate();
@@ -172,15 +147,13 @@ export const useProjects = defineStore('projects', () => {
     faker,
     fetch,
     fetchLoading,
-    loading,
-    load,
-    saving,
-    save,
     dataVersion,
     pushLoading,
     push,
     dailyUpdate,
     getProject,
+    toPlainObject,
+    fromPlainObject,
     $reset
   };
 });

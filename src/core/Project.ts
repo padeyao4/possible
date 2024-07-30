@@ -42,7 +42,7 @@ export class Project {
   }
 
   public toPlainObject() {
-    return {
+    return toRaw({
       id: this.id,
       name: this.name,
       nodes: Array.from(this.nodeMap.values()).map((n) => n.toPlainObject()),
@@ -50,11 +50,11 @@ export class Project {
       completed: this.completed,
       sortIndex: this.sortIndex,
       createTime: this.createTime,
-      offset: this.offset,
+      offset: toRaw(this.offset),
       version: this.version,
       status: this.status,
       sid: this.sid
-    };
+    });
   }
 
   public static fromPlainObject(obj: any) {

@@ -1,4 +1,4 @@
-import { emitter } from '@/utils';
+import { debounceSaveAll, emitter } from '@/utils';
 import { useAccount, useCounter, useProjects } from '@/stores';
 
 export function useListenNotifyEvent() {
@@ -8,31 +8,32 @@ export function useListenNotifyEvent() {
 }
 
 export function useListenNodeEvent() {
-  emitter.on('node:update', (e) => {
-    // TODO: update project
-    console.log('update node', e);
+  const counter = useCounter();
+  emitter.on('node:update', async () => {
+    await debounceSaveAll();
+    counter.countTodos();
   });
-  emitter.on('node:create', (e) => {
-    // TODO: update project
-    console.log('create node', e);
+  emitter.on('node:create', async () => {
+    await debounceSaveAll();
+    counter.countTodos();
   });
-  emitter.on('node:delete', (e) => {
-    // TODO: update project
-    console.log('delete node', e);
+  emitter.on('node:delete', async () => {
+    await debounceSaveAll();
+    counter.countTodos();
   });
 }
 
 export function useListenProjectEvent() {
-  const projects = useProjects();
+  const counter = useCounter();
   emitter.on('project:update', (e) => {
     // TODO: update project
     console.log('project update', e);
   });
   emitter.on('project:create', async (project) => {
-    await projects.save();
+    // todo
   });
   emitter.on('project:delete', async (project) => {
-    await projects.save();
+    counter.countTodos();
   });
 }
 
@@ -80,13 +81,6 @@ export function useListenAppEvent() {
   const counter = useCounter();
   emitter.on('login:success', async () => {
     console.log('login:success');
-    if (account.isRemote) {
-      await account.fetchUser();
-      await projects.fetch();
-    } else {
-      await projects.load();
-    }
-
     projects.dailyUpdate();
     counter.countTodos();
   });

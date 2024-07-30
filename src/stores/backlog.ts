@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, reactive } from 'vue';
-import type { ID } from '@/core/types';
+import type { ID } from '@/core';
 import { Backlog } from '@/core';
 
 export const useBacklogs = defineStore('backlog', () => {
@@ -8,6 +8,17 @@ export const useBacklogs = defineStore('backlog', () => {
 
   function $reset() {
     backlogs.clear();
+  }
+
+  function toPlainObject() {
+    return Array.from(backlogs.values()).map((b) => b.toPlainObject());
+  }
+
+  function fromPlainObject(objs: any[]) {
+    objs.forEach((obj) => {
+      const entity = Backlog.fromPlainObject(obj);
+      backlogs.set(entity.id, entity);
+    });
   }
 
   function add(title: string) {
@@ -56,7 +67,9 @@ export const useBacklogs = defineStore('backlog', () => {
     completes,
     todosCount,
     completesCount,
+    fromPlainObject,
     get,
+    toPlainObject,
     $reset
   };
 });

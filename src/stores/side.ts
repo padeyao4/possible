@@ -42,9 +42,21 @@ export const useSide = defineStore('side', () => {
     width.value = 200;
   }
 
+  function toPlainObject() {
+    return {
+      width: width.value
+    };
+  }
+
+  function fromPlainObject(obj: any) {
+    width.value = obj?.width ?? 200;
+  }
+
   return {
     $reset,
     width,
+    toPlainObject,
+    fromPlainObject,
     onPointerDown,
     onPointerMove,
     onPointerUp

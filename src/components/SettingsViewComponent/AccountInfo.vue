@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import SettingsItem from '@/components/SettingsViewComponent/SettingsItem.vue';
 import { $resetPinia, useAccount } from '@/stores';
+import { saveAll } from '@/utils';
 
 const account = useAccount();
 
 const logout = async () => {
+  await saveAll();
   await account.logout();
   $resetPinia();
 };

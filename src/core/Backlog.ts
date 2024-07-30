@@ -42,4 +42,20 @@ export class Backlog {
     backlog.status = 'CREATED';
     emitter.emit('backlog:create', backlog);
   }
+
+  toPlainObject() {
+    return {
+      ...this,
+      createdAt: this.createdAt.getTime(),
+      completeAt: this.completeAt?.getTime()
+    };
+  }
+
+  static fromPlainObject(obj: any): Backlog {
+    const backlog = new Backlog();
+    Object.assign(backlog, obj);
+    backlog.createdAt = new Date(backlog.createdAt);
+    backlog.completeAt = backlog.completeAt ? new Date(backlog.completeAt) : null;
+    return backlog;
+  }
 }

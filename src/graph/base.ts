@@ -66,6 +66,10 @@ export class Register {
     this.project = project;
   }
 
+  setProject(project: Project) {
+    this.project = project;
+  }
+
   public addBehaviors(...behaviors: (typeof BaseBehavior)[]) {
     behaviors.forEach((b) => {
       this.behaviors.push(Reflect.construct(b, [this.project]));
