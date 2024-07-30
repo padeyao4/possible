@@ -1,5 +1,5 @@
 import { debounceSaveAll, emitter, saveAll } from '@/utils';
-import { useAccount, useCounter, useProjects } from '@/stores';
+import { useCounter, useProjects } from '@/stores';
 
 export function useListenNotifyEvent() {
   emitter.on('notify:error', (e) => {
@@ -25,43 +25,39 @@ export function useListenNodeEvent() {
 
 export function useListenProjectEvent() {
   const counter = useCounter();
-  emitter.on('project:update', (e) => {
-    // TODO: update project
-    console.log('project update', e);
+  emitter.on('project:update', async (e) => {
+    await debounceSaveAll();
   });
   emitter.on('project:create', async (project) => {
-    // todo
+    await debounceSaveAll();
   });
   emitter.on('project:delete', async (project) => {
     counter.countTodos();
+    await debounceSaveAll();
   });
 }
 
 export function useListenEdgeEvent() {
-  emitter.on('edge:update', (e) => {
-    // TODO: update project
-    console.log('edge update', e);
+  emitter.on('edge:update', async (e) => {
+    await debounceSaveAll();
   });
-  emitter.on('edge:create', (e) => {
-    // TODO: update project
-    console.log('edge create', e);
+  emitter.on('edge:create', async (e) => {
+    await debounceSaveAll();
   });
-  emitter.on('edge:delete', (e) => {
-    // TODO: update project
-    console.log('edge delete', e);
+  emitter.on('edge:delete', async (e) => {
+    await debounceSaveAll();
   });
 }
 
 export function useListenBacklogEvent() {
-  emitter.on('backlog:update', (e) => {
-    // TODO: update project
-    console.log('update backlog', e);
+  emitter.on('backlog:update', async (e) => {
+    await debounceSaveAll();
   });
-  emitter.on('backlog:create', (e) => {
-    console.log('create backlog', e);
+  emitter.on('backlog:create', async (e) => {
+    await debounceSaveAll();
   });
-  emitter.on('backlog:delete', (e) => {
-    console.log('delete backlog', e);
+  emitter.on('backlog:delete', async (e) => {
+    await debounceSaveAll();
   });
 }
 

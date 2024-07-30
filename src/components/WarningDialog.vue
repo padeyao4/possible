@@ -3,23 +3,30 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import { emitter } from '@/utils';
 import { useProjects } from '@/stores';
 import { Project } from '@/core';
+import { useRoute, useRouter } from 'vue-router';
 
 const visible = ref(false);
 
 const projects = useProjects();
 const project = ref<Project>();
+const router = useRouter();
+const route = useRoute();
 
 onMounted(() => {
   emitter.on('project-dialog:open', (e) => {
     console.log('listen on project:open');
-    project.value = e;
+    project.value = e as Project;
     visible.value = true;
   });
 });
 
 const handleDelete = () => {
   visible.value = false;
-  projects.removeProject(project.value?.id);
+  const id = project.value?.id;
+  if (route.name === 'project' && route.query.id === id) {
+    router.push({ name: 'today' });
+  }
+  projects.removeProject(id);
 };
 
 onUnmounted(() => {
