@@ -21,7 +21,7 @@ const handleChange = () => {
 
 <template>
   <div
-    class="flex h-14 w-full flex-row items-center rounded-lg border border-gray-200 hover:bg-blue-50"
+    class="flex h-14 w-full flex-row items-center rounded-lg border-white bg-white hover:bg-blue-50"
     @pointerover="showIcon = true"
     @pointerleave="showIcon = false"
   >

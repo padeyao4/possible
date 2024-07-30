@@ -25,9 +25,9 @@ const showWelcome = computed(() => {
 </script>
 
 <template>
-  <div class="flex h-screen flex-col">
+  <div class="flex h-screen flex-col" style="background-color: #82bbb5">
     <div class="drag-region mb-3">
-      <div class="flex w-full shrink-0 items-end px-3 text-xl text-gray-500" style="height: 52px">
+      <div class="flex w-full shrink-0 items-end px-3 text-xl text-gray-600" style="height: 52px">
         我的一天
       </div>
       <div class="ml-3 text-xs text-gray-500">{{ dateTime }}</div>

@@ -31,7 +31,7 @@ useEventListener(window, 'keydown', (e) => {
 </script>
 
 <template>
-  <div v-if="visible" class="flex h-screen w-80 flex-col border-l border-gray-300">
+  <div v-if="visible" class="flex h-screen w-80 flex-col border-l border-gray-200 bg-white">
     <header
       class="drag-region mb-3 flex w-full shrink-0 items-end justify-between"
       style="height: 36px"

@@ -35,10 +35,10 @@ const counterVisible = ref(false);
 </script>
 
 <template>
-  <div class="flex h-screen w-full flex-row">
+  <div class="flex h-screen w-full flex-row" style="background-color: #a0b6cd">
     <div class="flex h-screen flex-col" :style="{ width }">
       <div
-        class="drag-region flex shrink-0 items-end truncate px-3 pb-3 text-xl text-gray-500"
+        class="drag-region flex shrink-0 items-end truncate px-3 pb-3 text-xl text-gray-600"
         style="height: 64px"
       >
         备忘录
@@ -64,13 +64,13 @@ const counterVisible = ref(false);
       <div
         class="mx-3 my-4 flex h-12 shrink-0 flex-row items-center overflow-hidden rounded-md border border-gray-200"
       >
-        <div class="flex h-full w-14 shrink-0 items-center justify-center border-r border-gray-200">
+        <div class="flex h-full w-14 shrink-0 items-center justify-center bg-white">
           <el-icon size="26"><Plus /></el-icon>
         </div>
         <input
           @keydown.enter="addNew"
           ref="inputEl"
-          class="h-full w-full grow p-2 text-base text-gray-500"
+          class="h-full w-full grow text-base text-gray-500"
           style="
             :focus {
               border: none;
@@ -83,7 +83,7 @@ const counterVisible = ref(false);
     <backlog-editor
       v-model:visible="editorVisible"
       v-model:backlog="editorBacklog"
-      class="shrink-0 border-l border-gray-300"
+      class="shrink-0 bg-white"
     />
   </div>
 </template>

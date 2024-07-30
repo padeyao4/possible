@@ -21,7 +21,7 @@ provide('project', project);
 </script>
 
 <template>
-  <div class="flex h-screen w-full flex-row">
+  <div class="flex h-screen w-full flex-row border-l bg-gray-50">
     <div class="flex grow flex-col">
       <header
         class="drag-region flex h-16 shrink-0 items-end justify-start px-3 pb-3 text-xl text-gray-500"

@@ -20,7 +20,7 @@ const show = computed(() => {
 
 emitter.on('editor-backlog:open', (e) => {
   visible.value = true;
-  backlog.value = e;
+  backlog.value = e as Backlog;
 });
 
 emitter.on('editor-backlog:close', () => {
@@ -40,8 +40,8 @@ useEventListener(window, 'keydown', (e) => {
 });
 
 const onDelete = (id: ID) => {
-  // todo emitter
   backlogs.remove(id);
+  emitter.emit('backlog:delete', { id });
 };
 </script>
 
@@ -74,7 +74,7 @@ const onDelete = (id: ID) => {
           />
         </div>
       </el-scrollbar>
-      <div class="flex h-12 shrink-0 items-center justify-center border-t border-gray-100">
+      <div class="flex h-12 shrink-0 items-center justify-center border-t border-gray-200">
         <el-button :icon="Delete" size="small" @click="onDelete(backlog.id)" />
       </div>
     </template>
