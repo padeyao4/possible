@@ -9,10 +9,10 @@ import {
   useListenAppEvent,
   useListenBacklogEvent,
   useListenEdgeEvent,
+  useListenElectronEvent,
   useListenNodeEvent,
   useListenNotifyEvent,
-  useListenProjectEvent,
-  useLoadApp
+  useListenProjectEvent
 } from '@/service';
 
 axiosConfig();
@@ -23,6 +23,7 @@ useListenNodeEvent();
 useListenEdgeEvent();
 useListenBacklogEvent();
 useListenProjectEvent();
+useListenElectronEvent();
 
 loadAll();
 

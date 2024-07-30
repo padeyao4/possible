@@ -1,4 +1,4 @@
-import { debounceSaveAll, emitter } from '@/utils';
+import { debounceSaveAll, emitter, saveAll } from '@/utils';
 import { useAccount, useCounter, useProjects } from '@/stores';
 
 export function useListenNotifyEvent() {
@@ -65,23 +65,23 @@ export function useListenBacklogEvent() {
   });
 }
 
-export async function useLoadApp() {
-  const account = useAccount();
-  const response = await window.ipcRenderer.invoke('get', { key: 'account' });
-  account.isAuth = response?.isAuth ?? false;
-  account.isLocal = response?.isLocal ?? false;
-  account.token = response?.token ?? '';
-  if (!account.isAuth) return;
-  emitter.emit('login:success');
-}
-
 export function useListenAppEvent() {
-  const account = useAccount();
   const projects = useProjects();
   const counter = useCounter();
   emitter.on('login:success', async () => {
     console.log('login:success');
     projects.dailyUpdate();
     counter.countTodos();
+  });
+}
+
+export function useListenElectronEvent() {
+  window.ipcRenderer.on('electron:exit', async () => {
+    await saveAll();
+    window.ipcRenderer.send('electron:exit');
+  });
+
+  window.ipcRenderer.on('electron:close', async () => {
+    await saveAll();
   });
 }

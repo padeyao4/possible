@@ -14,7 +14,7 @@ export async function saveAll() {
     side: side.toPlainObject()
   };
 
-  console.log('data', data);
+  console.log('save data', data);
 
   window.ipcRenderer.send('set', { key: 'current', value: account.toPlainObject() });
   window.ipcRenderer.send('set', { key: `${account.userName}`, value: data });

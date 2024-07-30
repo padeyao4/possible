@@ -110,6 +110,7 @@ app
     win.on('close', (e) => {
       e.preventDefault();
       win?.hide();
+      win?.webContents.send('electron:close');
     });
   })
   .then(() => {
@@ -127,7 +128,7 @@ app
       {
         label: '退出',
         click: () => {
-          app.exit(0);
+          win.webContents.send('electron:exit');
         }
       }
     ]);
@@ -140,8 +141,11 @@ app
   });
 
 app.on('window-all-closed', () => {
-  win = null;
-  if (process.platform !== 'darwin') app.quit();
+  win.webContents.send('electron:exit');
+  // win = null;
+  // if (process.platform !== 'darwin') {
+  //   app.exit(0)
+  // }
 });
 
 app.on('second-instance', () => {
@@ -202,4 +206,9 @@ ipcMain.handle('get', (_, arg) => {
 
 ipcMain.handle('get-path', () => {
   return app.getPath('userData');
+});
+
+ipcMain.on('electron:exit', () => {
+  console.log('app quit');
+  app.exit(0);
 });
