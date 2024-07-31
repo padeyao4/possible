@@ -62,7 +62,7 @@ const counterVisible = ref(false);
         </e-draggable>
       </el-scrollbar>
       <div
-        class="mx-3 my-4 flex h-12 shrink-0 flex-row items-center overflow-hidden rounded-md border border-gray-200"
+        class="mx-3 my-4 flex h-12 shrink-0 flex-row items-center overflow-hidden rounded-md"
       >
         <div class="flex h-full w-14 shrink-0 items-center justify-center bg-white">
           <el-icon size="26"><Plus /></el-icon>

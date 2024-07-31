@@ -31,7 +31,7 @@ const showIcon = ref(false);
 
 <template>
   <div
-    class="flex h-14 w-full items-center rounded-lg border border-white bg-white hover:bg-blue-50"
+    class="flex h-14 w-full items-center rounded-lg  bg-white hover:bg-blue-50"
     :class="{ 'bg-blue-50': active }"
     @pointerover="showIcon = true"
     @pointerleave="showIcon = false"
