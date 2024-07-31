@@ -5,13 +5,10 @@ import { Node, Project } from '@/core';
 import type { ID } from '@/core/types';
 import { StorageControllerApi } from '@/openapi';
 import { emitter } from '@/utils';
-import { useAccount } from '@/stores/account';
 
 export const useProjects = defineStore('projects', () => {
   const mapper = reactive<Map<ID, Project>>(new Map());
   const dataVersion = ref(0);
-
-  const account = useAccount();
 
   const sortProjects = computed(() => {
     return Array.from(mapper.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex);
