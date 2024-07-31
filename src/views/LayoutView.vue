@@ -50,7 +50,7 @@ const swapProjects = (from: Project, to: Project) => {
           class="flex h-full grow flex-row items-center rounded-md border-gray-200 hover:bg-blue-50"
           @click="handleNewProject"
         >
-          <span class="icon-[fe--plus] mx-1.5 bg-gray-600 text-2xl"></span>
+          <span class="icon-[uil--plus] mx-1.5 text-2xl bg-gray-500" />
           <el-text>新建项目</el-text>
         </div>
         <div
