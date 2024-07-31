@@ -1,52 +1,48 @@
 <script setup lang="ts">
 import CanvasPaths from '@/components/ProjectViewComponent/CanvasPaths.vue';
 import CanvasCards from '@/components/ProjectViewComponent/CanvasCards.vue';
-import {
-  computed,
-  type ComputedRef,
-  inject,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watchEffect
-} from 'vue';
-import { Register } from '@/graph/base';
+import { computed, type ComputedRef, inject, onBeforeUnmount, onMounted, ref } from 'vue';
 import CanvasTempPaths from '@/components/ProjectViewComponent/CanvasTempPaths.vue';
-import DragCanvas from '@/graph/behavior/drag-canvas';
-import { DragCard } from '@/graph/behavior/drag-card';
-import { ResizeCard } from '@/graph/behavior/resize-card';
-import { DefaultBehavior } from '@/graph/behavior/default';
-import { DoubleClickCard } from '@/graph/behavior/double-click-card';
-import { CreateEdge } from '@/graph/behavior/create-edge';
-import { Contextmenu } from '@/graph/behavior/contextmenu';
-import WheelCanvas from '@/graph/behavior/wheel-canvas';
 import { Project } from '@/core';
 import { useSettings } from '@/stores';
 import { storeToRefs } from 'pinia';
+import {
+  ClickCard,
+  Contextmenu,
+  CreateEdge,
+  DefaultBehavior,
+  DragCard,
+  Register,
+  ResizeCard,
+  DragCanvas,
+  WheelCanvas
+} from '@/graph';
 
 const svg = ref();
 const settings = useSettings();
 const { unitHeight, unitWidth } = storeToRefs(settings);
 const project = inject<ComputedRef<Project>>('project');
 
+const register = new Register(svg);
+
+register.addBehaviors(
+  DefaultBehavior,
+  DragCanvas,
+  DragCard,
+  ResizeCard,
+  ClickCard,
+  CreateEdge,
+  Contextmenu,
+  WheelCanvas
+);
+
 onMounted(() => {
-  if (project.value) {
-    const register = new Register(svg.value, project.value);
-    register.addBehaviors(
-      DefaultBehavior,
-      DragCanvas,
-      DragCard,
-      ResizeCard,
-      DoubleClickCard,
-      CreateEdge,
-      Contextmenu,
-      WheelCanvas
-    );
-    register.listen();
-  }
+  register.listen();
 });
 
-onBeforeUnmount(() => {});
+onBeforeUnmount(() => {
+  register.removeListen();
+});
 
 const translateX = computed(() => project.value.offset.x);
 const translateY = computed(() => project.value.offset.y);

@@ -1,7 +1,7 @@
 import { useCursor } from '@/stores/cursor';
 import { useSettings } from '@/stores/settings';
 import { useEventListener } from '@vueuse/core';
-import { Project } from '@/core';
+import type { Ref } from 'vue';
 
 const eventTypes = [
   'mouseover',
@@ -35,11 +35,8 @@ export type EventDispatch = {
 export abstract class BaseBehavior {
   mouseStyle = useCursor();
   settings = useSettings();
-  project: Project;
 
-  constructor(project: Project) {
-    this.project = project;
-  }
+  constructor() {}
 
   abstract getEventDispatch(): EventDispatch;
 
@@ -56,29 +53,23 @@ export abstract class BaseBehavior {
 
 export class Register {
   behaviors: BaseBehavior[];
-  container: Element;
+  container: Ref<Element>;
   globalListenerCleanup: any;
-  project: Project;
 
-  constructor(container: Element, project: Project) {
+  constructor(container: Ref<Element>) {
     this.behaviors = [];
     this.container = container;
-    this.project = project;
-  }
-
-  setProject(project: Project) {
-    this.project = project;
   }
 
   public addBehaviors(...behaviors: (typeof BaseBehavior)[]) {
     behaviors.forEach((b) => {
-      this.behaviors.push(Reflect.construct(b, [this.project]));
+      this.behaviors.push(Reflect.construct(b, []));
     });
   }
 
   public listen() {
     eventTypes.forEach((mouseType) => {
-      this.container.addEventListener(mouseType, this.processEvent.bind(this));
+      this.container.value.addEventListener(mouseType, this.processEvent.bind(this));
     });
     this.globalListenerCleanup = useEventListener(
       document,
@@ -89,7 +80,7 @@ export class Register {
 
   public removeListen() {
     eventTypes.forEach((mouseType) => {
-      this.container.removeEventListener(mouseType, this.processEvent);
+      this.container.value.removeEventListener(mouseType, this.processEvent);
     });
     this.globalListenerCleanup();
   }

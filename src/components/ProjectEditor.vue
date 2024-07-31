@@ -7,11 +7,15 @@ import { Delete } from '@element-plus/icons-vue';
 import { useEventListener } from '@vueuse/core';
 
 const visible = defineModel({ default: false });
-const node = ref<Node>();
+const node = ref<Partial<Node>>();
 
 emitter.on('editor-node:open', (e) => {
-  node.value = e;
-  visible.value = true;
+  if (node.value && e.id === node.value.id && visible.value) {
+    visible.value = false;
+  } else {
+    node.value = e;
+    visible.value = true;
+  }
 });
 
 emitter.on('editor-node:close', () => {

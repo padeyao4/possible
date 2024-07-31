@@ -2,6 +2,8 @@ import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { clampMin } from '@/graph/math';
 import { Node } from '@/core/Node';
 import { emitter } from '@/utils';
+import { inject, type Ref } from 'vue'
+import { Project } from '@/core'
 
 export class ResizeCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -16,6 +18,7 @@ export class ResizeCard extends BaseBehavior {
   mousePoint = { x: 0, y: 0 };
   oldNode = {} as any;
   direction = '';
+  project = inject<Ref<Project>>('project')
 
   onmousedown(e: MouseEvent, el: Element) {
     if (this.isPressed || e.button !== 0) return;
@@ -27,7 +30,7 @@ export class ResizeCard extends BaseBehavior {
     this.mousePoint.x = e.x;
     this.mousePoint.y = e.y;
     const key = el.getAttribute('data-key');
-    const node = this.project.getNode(key);
+    const node = this.project.value.getNode(key);
     Object.assign(this.oldNode, node);
   }
 
@@ -35,7 +38,7 @@ export class ResizeCard extends BaseBehavior {
     if (this.isPressed) {
       const dx = e.x - this.mousePoint.x;
       const dy = e.y - this.mousePoint.y;
-      const node = this.project.getNode(this.oldNode.id);
+      const node = this.project.value.getNode(this.oldNode.id);
       this.changeSize(dx, dy, node);
     }
   }
@@ -43,8 +46,8 @@ export class ResizeCard extends BaseBehavior {
   onmouseup(e: MouseEvent) {
     if (this.isPressed) {
       this.isPressed = false;
-      const node = this.project.getNode(this.oldNode.id);
-      if (this.project.collides(node).length === 0 && this.project.correctOrderOfNode(node)) {
+      const node = this.project.value.getNode(this.oldNode.id);
+      if (this.project.value.collides(node).length === 0 && this.project.value.correctOrderOfNode(node)) {
         node.width = Math.round(node.width);
         node.height = Math.round(node.height);
         node.x = Math.round(node.x);
