@@ -2,19 +2,19 @@ import { ipcRenderer, contextBridge } from 'electron';
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('ipcRenderer', {
-  on(...args: Parameters<typeof ipcRenderer.on>) {
+  on(...args: Parameters) {
     const [channel, listener] = args;
     return ipcRenderer.on(channel, (event, ...args) => listener(event, ...args));
   },
-  off(...args: Parameters<typeof ipcRenderer.off>) {
+  off(...args: Parameters) {
     const [channel, ...omit] = args;
     return ipcRenderer.off(channel, ...omit);
   },
-  send(...args: Parameters<typeof ipcRenderer.send>) {
+  send(...args: Parameters) {
     const [channel, ...omit] = args;
     return ipcRenderer.send(channel, ...omit);
   },
-  invoke(...args: Parameters<typeof ipcRenderer.invoke>) {
+  invoke(...args: Parameters) {
     const [channel, ...omit] = args;
     return ipcRenderer.invoke(channel, ...omit);
   }
@@ -115,4 +115,4 @@ window.onmessage = (ev: any) => {
   ev.data.payload === 'removeLoading' && removeLoading();
 };
 
-setTimeout(removeLoading, 4999);
+setTimeout(removeLoading, 10_000);

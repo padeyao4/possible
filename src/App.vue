@@ -4,7 +4,7 @@ import { useAccount } from '@/stores';
 import { axiosConfig } from '@/core/config';
 import LoginView from '@/views/LoginView.vue';
 import { RouterView } from 'vue-router';
-import { onBeforeUnmount } from 'vue';
+import { onBeforeUnmount, onMounted } from 'vue';
 import {
   useListenAppEvent,
   useListenBacklogEvent,
@@ -28,6 +28,10 @@ useListenElectronEvent();
 loadAll();
 
 const account = useAccount();
+
+onMounted(() => {
+  window.postMessage({ payload: 'removeLoading' }, '*');
+});
 
 onBeforeUnmount(() => {
   emitter.all.clear();
