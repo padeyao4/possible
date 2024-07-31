@@ -9,10 +9,9 @@ import {
   tryMoveUp,
   tryMoveUpWhole
 } from '@/service/common';
-import { Node } from '@/core';
-import { useCursor } from '@/stores';
-import { useSettings } from '@/stores';
 import type { Project } from '@/core';
+import { Node } from '@/core';
+import { useCursor, useSettings } from '@/stores';
 import type { ItemType } from '@/graph/types';
 import { computed, type ComputedRef, inject, onBeforeUnmount, ref } from 'vue';
 import ContextmenuComponent from '@/components/ProjectViewComponent/ContextmenuComponent.vue';
@@ -24,17 +23,15 @@ const cursor = useCursor();
 const itemType = ref<ItemType>('node');
 const event = ref<PointerEvent>();
 const project = inject<ComputedRef<Project>>('project');
+const settings = useSettings();
 
-function createNode() {
-  const settings = useSettings();
-  const x = event.value.offsetX - project.value.offset.x;
-  const y = event.value.offsetY - project.value.offset.y;
-  const node = new Node();
-  node.x = Math.floor(x / settings.unitWidth);
-  node.y = Math.floor(y / settings.unitHeight);
-  project.value.addNode(node);
-  visible.value = false;
-}
+const element = computed(() => {
+  return event.value.target as Element;
+});
+
+const elementId = computed(() => {
+  return element.value.getAttribute('data-key');
+});
 
 function handleAppendNode() {
   const el = event.value.target as Element;
@@ -92,13 +89,6 @@ function handleCompletedTask() {
   const nodeId = target.getAttribute('data-key');
   const node = project.value.nodeMap.get(nodeId);
   node.completed = !node.completed;
-  visible.value = false;
-}
-
-function handleDeleteTask() {
-  const el = event.value.target as Element;
-  const key = el.getAttribute('data-key');
-  project.value.removeNode(key);
   visible.value = false;
 }
 
@@ -163,9 +153,7 @@ const nodeOptions: OptionType[] = [
       {
         title: '编辑',
         action() {
-          const el = event.value.target as Element;
-          const nodeId = el.getAttribute('data-key');
-          emitter.emit('editor-node:open', project.value.getNode(nodeId));
+          emitter.emit('editor-node:open', project.value.getNode(elementId.value));
           visible.value = false;
         }
       },
@@ -237,7 +225,13 @@ const nodeOptions: OptionType[] = [
         title: '删除节点',
         icon: 'solar:notification-lines-remove-line-duotone',
         shortcut: 'Delete',
-        action: handleDeleteTask
+        action: function () {
+          const el = event.value.target as Element;
+          const key = el.getAttribute('data-key');
+          project.value.removeNode(key);
+          visible.value = false;
+          emitter.emit('node:delete', { id: key });
+        }
       }
     ]
   }
@@ -249,7 +243,16 @@ const canvasOptions: OptionType[] = [
     group: [
       {
         title: '创建节点',
-        action: createNode
+        action: function () {
+          const x = event.value.offsetX - project.value.offset.x;
+          const y = event.value.offsetY - project.value.offset.y;
+          const node = new Node();
+          node.x = Math.floor(x / settings.unitWidth);
+          node.y = Math.floor(y / settings.unitHeight);
+          project.value.addNode(node);
+          visible.value = false;
+          emitter.emit('node:create', node);
+        }
       }
     ]
   }

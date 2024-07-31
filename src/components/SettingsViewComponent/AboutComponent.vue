@@ -3,16 +3,10 @@ import SettingsItem from './SettingsItem.vue';
 </script>
 <template>
   <SettingsItem>
-    <template #title>关于</template>
+    <template #title><div class="text-gray-500">关于</div></template>
     <template #description>
-      <div class="version">当前版本: 0.3.1</div>
-      <div class="version">联系方式: guojian_k@qq.com</div>
+      <div>当前版本: 0.1.5</div>
+      <div>联系方式: guojian_k@qq.com</div>
     </template>
   </SettingsItem>
 </template>
-<style scoped>
-.version {
-  color: #00000090;
-  font-size: 13px;
-}
-</style>
