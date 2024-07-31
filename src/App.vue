@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { emitter, loadAll } from '@/utils';
-import { useAccount } from '@/stores';
+import { useAccount, useProjects } from '@/stores';
 import { axiosConfig } from '@/core/config';
 import LoginView from '@/views/LoginView.vue';
 import { RouterView } from 'vue-router';
@@ -27,7 +27,10 @@ useListenElectronEvent();
 
 loadAll();
 
+const projects = useProjects();
 const account = useAccount();
+
+projects.dailyUpdate();
 
 onMounted(() => {
   window.postMessage({ payload: 'removeLoading' }, '*');

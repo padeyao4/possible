@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import os from 'node:os';
 import Store from 'electron-store';
+import schedule from 'node-schedule';
 
 // 消除安全告警
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
@@ -137,6 +138,12 @@ app
       if (win.isMinimized()) win.restore();
       if (!win.isVisible()) win.show();
       win.focus();
+    });
+  })
+  .then(() => {
+    schedule.scheduleJob('0 0 0 * * *', () => {
+      // 每天凌晨执行
+      win.webContents.send('electron:schedule');
     });
   });
 

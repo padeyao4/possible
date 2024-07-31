@@ -72,6 +72,8 @@ export function useListenAppEvent() {
 }
 
 export function useListenElectronEvent() {
+  const projects = useProjects();
+
   window.ipcRenderer.on('electron:exit', async () => {
     await saveAll();
     window.ipcRenderer.send('electron:exit');
@@ -79,5 +81,9 @@ export function useListenElectronEvent() {
 
   window.ipcRenderer.on('electron:close', async () => {
     await saveAll();
+  });
+
+  window.ipcRenderer.on('electron:schedule', async () => {
+    projects.dailyUpdate();
   });
 }
