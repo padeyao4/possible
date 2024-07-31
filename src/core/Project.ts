@@ -125,7 +125,6 @@ export class Project {
   }
 
   public addEdge(source: Node | ID, target: Node | ID, id?: ID) {
-    // todo emitter
     const sourceId = typeof source === 'string' ? source : source.id;
     const targetId = typeof target === 'string' ? target : target.id;
     const edge = new Edge(sourceId, targetId, id);
@@ -161,7 +160,6 @@ export class Project {
     inMap.delete(nodeId);
 
     nodeMap.delete(nodeId);
-    // todo emitter
   }
 
   public removeEdge(item: Edge | ID) {

@@ -80,7 +80,7 @@ export class Register {
 
   public removeListen() {
     eventTypes.forEach((mouseType) => {
-      this.container.value.removeEventListener(mouseType, this.processEvent);
+      this.container.value?.removeEventListener(mouseType, this.processEvent);
     });
     this.globalListenerCleanup();
   }

@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { emitter } from '@/utils';
-import { Node } from '@/core';
-import { onBeforeUnmount, ref } from 'vue';
+import { Node, Project } from '@/core';
+import { inject, onBeforeUnmount, type Ref, ref } from 'vue';
 import CloseIconButton from '@/components/common/CloseIconButton.vue';
 import { Delete } from '@element-plus/icons-vue';
 import { useEventListener } from '@vueuse/core';
 
 const visible = defineModel({ default: false });
 const node = ref<Partial<Node>>();
+const project = inject<Ref<Project>>('project');
 
 emitter.on('editor-node:open', (e) => {
   if (node.value && e.id === node.value.id && visible.value) {
@@ -32,6 +33,12 @@ useEventListener(window, 'keydown', (e) => {
     visible.value = false;
   }
 });
+
+function handleDeleteButton() {
+  project.value.removeNode(node.value.id);
+  emitter.emit('node:delete', { id: node.value.id });
+  node.value = null;
+}
 </script>
 
 <template>
@@ -88,7 +95,7 @@ useEventListener(window, 'keydown', (e) => {
         </div>
       </el-scrollbar>
       <footer class="flex h-12 shrink-0 items-center justify-center border-t border-gray-200">
-        <el-button :icon="Delete" size="small" @click="" />
+        <el-button :icon="Delete" size="small" @click="handleDeleteButton" />
       </footer>
     </template>
   </div>
