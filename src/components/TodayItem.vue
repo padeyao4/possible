@@ -3,6 +3,7 @@ import { Node } from '@/core/';
 import { Check } from '@element-plus/icons-vue';
 import { useProjects } from '@/stores';
 import { ref } from 'vue';
+import { emitter } from '@/utils';
 
 const { node } = defineProps<{
   node: Node;
@@ -16,6 +17,13 @@ const showIcon = ref(false);
 
 const handleChange = () => {
   node.update({ completed: !node.completed });
+};
+
+const handleItemClick = () => {
+  emitter.emit('editor:open', {
+    item: node,
+    type: 'node'
+  });
 };
 </script>
 
@@ -31,12 +39,14 @@ const handleChange = () => {
     >
       <el-icon v-show="node.completed" size="16"><Check /></el-icon>
     </div>
-    <div class="flex h-full grow flex-col justify-center overflow-hidden">
+    <div class="flex h-full grow flex-col justify-center overflow-hidden" @click="handleItemClick">
       <div class="block truncate align-bottom text-base text-gray-500">
         {{ node.name }}
       </div>
       <div class="block h-fit items-start truncate text-xs text-gray-500">
-        {{ project.name }}
+        <span class="hover:cursor-pointer">
+          {{ project.name }}
+        </span>
       </div>
     </div>
     <div

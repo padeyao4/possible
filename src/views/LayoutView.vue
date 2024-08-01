@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useProjects, useSide } from '@/stores';
+import { useProjects, useLayout } from '@/stores';
 import { useEventListener } from '@vueuse/core';
 import { RouterView } from 'vue-router';
 import SideItem from '@/components/SideItem.vue';
@@ -9,17 +9,19 @@ import { handleNewProject } from '@/service/common';
 import NavTodayItem from '@/components/NavTodayItem.vue';
 import NavBacklogItem from '@/components/NavBacklogItem.vue';
 import WarningDialog from '@/components/WarningDialog.vue';
+import DetailEditor from '@/components/DetailEditor.vue';
 
-// todo 当调整边框时 侧边栏跟随改变
-const side = useSide();
+const layout = useLayout();
 
-const handlePointerDown = (e: PointerEvent) => side.onPointerDown(e.clientX);
+const leftSideDown = (e: PointerEvent) => layout.leftPointerDown(e.clientX);
+
+const rightSideDown = (e: PointerEvent) => layout.rightPointerDown(e.clientX);
 
 useEventListener(['pointerup', 'pointermove'], (e: PointerEvent) => {
   if (e.type === 'pointerup') {
-    side.onPointerUp();
+    layout.onPointerUp();
   } else {
-    side.onPointerMove(e.clientX);
+    layout.onPointerMove(e.clientX);
   }
 });
 
@@ -31,8 +33,11 @@ const swapProjects = (from: Project, to: Project) => {
 </script>
 
 <template>
-  <div class="grid h-screen w-screen" :style="{ gridTemplateColumns: `${side.width}px 1fr` }">
-    <div class="flex h-screen w-full flex-col">
+  <div
+    class="grid h-screen w-screen"
+    :style="{ gridTemplateColumns: layout.gridTemplateColumnsStyle }"
+  >
+    <div v-if="layout.showLeft" class="flex h-screen w-full flex-col">
       <header class="mt-4 flex h-fit flex-col border-b border-b-gray-200 pb-1">
         <nav-today-item class="my-1" />
         <nav-backlog-item class="my-1" />
@@ -50,7 +55,7 @@ const swapProjects = (from: Project, to: Project) => {
           class="flex h-full grow flex-row items-center rounded-md border-gray-200 hover:bg-blue-50"
           @click="handleNewProject"
         >
-          <span class="icon-[uil--plus] mx-1.5 text-2xl bg-gray-500" />
+          <span class="icon-[uil--plus] mx-1.5 bg-gray-500 text-2xl" />
           <el-text>新建项目</el-text>
         </div>
         <div
@@ -61,11 +66,19 @@ const swapProjects = (from: Project, to: Project) => {
         </div>
       </footer>
     </div>
+    <hr
+      v-if="layout.showLeft"
+      class="fixed top-0 z-40 block h-screen w-1 cursor-ew-resize"
+      @pointerdown="leftSideDown"
+      :style="{ left: `${layout.leftWidth}px` }"
+    />
     <router-view :key="$route.fullPath" class="min-w-48 flex-grow rounded-tl-lg" />
+    <hr
+      v-if="layout.showRight"
+      class="fixed top-0 z-40 block h-screen w-1 cursor-ew-resize"
+      @pointerdown="rightSideDown"
+      :style="{ right: `${layout.rightWidth - 4}px` }"
+    />
+    <detail-editor />
   </div>
-  <hr
-    class="fixed top-0 z-40 block h-screen w-1 cursor-ew-resize"
-    @pointerdown="handlePointerDown"
-    :style="{ left: `${side.width}px` }"
-  />
 </template>

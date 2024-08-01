@@ -1,68 +1,77 @@
 <script setup lang="ts">
 import { emitter } from '@/utils';
-import { Node, Project } from '@/core';
-import { inject, onBeforeUnmount, type Ref, ref } from 'vue';
 import CloseIconButton from '@/components/common/CloseIconButton.vue';
-import { Delete } from '@element-plus/icons-vue';
+import { onBeforeUnmount, ref } from 'vue';
 import { useEventListener } from '@vueuse/core';
+import { Delete } from '@element-plus/icons-vue';
+import { useLayout } from '@/stores';
 
-const visible = defineModel({ default: false });
-const node = ref<Partial<Node>>();
-const project = inject<Ref<Project>>('project');
+const layout = useLayout();
 
-emitter.on('editor-node:open', (e) => {
-  if (node.value && e.id === node.value.id && visible.value) {
-    visible.value = false;
+const item = ref();
+const itemType = ref();
+
+emitter.on('editor:open', (e) => {
+  if (!layout.showRight || e.type !== itemType.value || e.item.id !== item.value?.id) {
+    layout.showRight = true;
+    item.value = e.item;
+    itemType.value = e.type;
   } else {
-    node.value = e;
-    visible.value = true;
+    layout.showRight = false;
   }
 });
 
-emitter.on('editor-node:close', () => {
-  visible.value = false;
+emitter.on('editor:close', () => {
+  layout.showRight = false;
 });
 
 onBeforeUnmount(() => {
-  emitter.off('editor-node:open');
-  emitter.off('editor-node:close');
+  emitter.off('editor:open');
+  emitter.off('editor:close');
 });
 
 useEventListener(window, 'keydown', (e) => {
   if (e.key === 'Escape') {
-    visible.value = false;
+    layout.showRight = false;
   }
 });
-
-function handleDeleteButton() {
-  project.value.removeNode(node.value.id);
-  emitter.emit('node:delete', { id: node.value.id });
-  node.value = null;
-}
 </script>
 
 <template>
-  <div v-if="visible" class="flex h-screen w-80 flex-col border-l border-gray-200 bg-white">
+  <div class="flex h-screen flex-col" v-if="layout.showRight">
     <header
       class="drag-region mb-3 flex w-full shrink-0 items-end justify-between"
       style="height: 36px"
     >
       <close-icon-button
         class="no-drag-region ml-2.5 rounded-md border border-gray-300"
-        @click="visible = false"
+        @click="layout.showRight = false"
       />
       <div
         class="h-full rounded-bl-lg border border-b border-l border-gray-200"
         style="width: 139px"
       ></div>
     </header>
-    <template v-if="node">
-      <el-scrollbar class="grow">
+    <el-scrollbar class="grow">
+      <template v-if="itemType === 'backlog'">
         <div class="m-3">
           <el-input
             type="textarea"
             size="large"
-            v-model="node.name"
+            v-model="item.title"
+            autosize
+            resize="none"
+            placeholder="请输入内容"
+            input-style="padding: 16px;"
+          />
+        </div>
+      </template>
+      <template v-else-if="itemType === 'node'">
+        <div class="m-3">
+          <el-input
+            type="textarea"
+            size="large"
+            v-model="item.name"
             autosize
             resize="none"
             placeholder="请输入内容"
@@ -73,7 +82,7 @@ function handleDeleteButton() {
           <el-input
             type="textarea"
             size="large"
-            v-model="node.detail"
+            v-model="item.detail"
             autosize
             resize="none"
             placeholder="请输入内容"
@@ -85,7 +94,7 @@ function handleDeleteButton() {
           <el-input
             type="textarea"
             size="large"
-            v-model="node.record"
+            v-model="item.record"
             autosize
             resize="none"
             placeholder="请输入内容"
@@ -93,10 +102,10 @@ function handleDeleteButton() {
             class="clear-el-style"
           />
         </div>
-      </el-scrollbar>
-      <footer class="flex h-12 shrink-0 items-center justify-center border-t border-gray-200">
-        <el-button :icon="Delete" size="small" @click="handleDeleteButton" />
-      </footer>
-    </template>
+      </template>
+    </el-scrollbar>
+    <div class="flex h-12 shrink-0 items-center justify-center border-t border-gray-200">
+      <el-button :icon="Delete" size="small" @click="" />
+    </div>
   </div>
 </template>

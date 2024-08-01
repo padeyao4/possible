@@ -8,18 +8,13 @@ const { item } = defineProps<{ item: Backlog }>();
 
 const handleIconClick = () => (item.done = !item.done);
 
-const editorVisible = inject<Ref<boolean>>('editorVisible');
 const editorBacklog = inject<Ref<Backlog>>('editorBacklog');
 
 const handleTextClick = () => {
-  if (editorVisible.value) {
-    emitter.emit(
-      editorBacklog?.value?.id === item.id ? 'editor-backlog:close' : 'editor-backlog:open',
-      item
-    );
-  } else {
-    emitter.emit('editor-backlog:open', item);
-  }
+  emitter.emit('editor:open', {
+    item,
+    type: 'backlog'
+  });
 };
 
 const active = computed(() => {
@@ -31,7 +26,7 @@ const showIcon = ref(false);
 
 <template>
   <div
-    class="flex h-14 w-full items-center rounded-lg  bg-white hover:bg-blue-50"
+    class="flex h-14 w-full items-center rounded-lg bg-white hover:bg-blue-50"
     :class="{ 'bg-blue-50': active }"
     @pointerover="showIcon = true"
     @pointerleave="showIcon = false"

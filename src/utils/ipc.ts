@@ -1,11 +1,11 @@
-import { useAccount, useBacklogs, useProjects, useSide } from '@/stores';
+import { useAccount, useBacklogs, useProjects, useLayout } from '@/stores';
 import { type ArgumentsType, type Promisify, useDebounceFn } from '@vueuse/core';
 
 export async function saveAll() {
   const projects = useProjects();
   const account = useAccount();
   const backlogs = useBacklogs();
-  const side = useSide();
+  const side = useLayout();
 
   const data = {
     account: account.toPlainObject(),
@@ -24,7 +24,7 @@ export async function loadAll() {
   const projects = useProjects();
   const account = useAccount();
   const backlogs = useBacklogs();
-  const side = useSide();
+  const side = useLayout();
   const current = await window.ipcRenderer.invoke('get', { key: 'current' });
   account.fromPlainObject(current);
   const data = await window.ipcRenderer.invoke('get', { key: `${account.userName}` });

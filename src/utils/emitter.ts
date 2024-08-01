@@ -27,7 +27,14 @@ type DataEvents = {
   'date:update': null;
 };
 
+export type EditorParameters = {
+  item: Partial<Node | Project | Backlog>;
+  type: 'node' | 'project' | 'backlog';
+};
+
 type UiEvents = {
+  'editor:open': EditorParameters;
+  'editor:close': EditorParameters;
   'editor-node:open': Partial<Node>;
   'editor-node:close': Partial<Node>;
   'editor-project:open': Partial<Project>;

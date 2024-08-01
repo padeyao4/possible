@@ -9,7 +9,7 @@ export * from './settings';
 export * from './temp-path';
 export * from './timer';
 export * from './backlog';
-export * from './side';
+export * from './layout';
 
 interface ExtendedPinia extends Pinia {
   _s: Map<string, Store>;

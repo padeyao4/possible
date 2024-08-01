@@ -6,6 +6,10 @@ import ECounterButton from '@/components/common/CounterButton.vue';
 import EDraggable from '@/components/common/MagicDraggable.vue';
 import { Node } from '@/core';
 import TodayItem from '@/components/TodayItem.vue';
+import { useLayout } from '@/stores';
+
+const layout = useLayout();
+layout.showRight = false;
 
 const completeVisible = ref(false);
 

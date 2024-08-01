@@ -27,6 +27,7 @@ declare module 'vue' {
     CloseIconButton: typeof import('./src/components/common/CloseIconButton.vue')['default']
     ContextmenuComponent: typeof import('./src/components/ProjectViewComponent/ContextmenuComponent.vue')['default']
     CounterButton: typeof import('./src/components/common/CounterButton.vue')['default']
+    DetailEditor: typeof import('./src/components/DetailEditor.vue')['default']
     DraggableIcon: typeof import('./src/components/icon/DraggableIcon.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
