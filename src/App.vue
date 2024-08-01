@@ -1,37 +1,16 @@
 <script setup lang="ts">
-import { emitter, loadAll } from '@/utils';
-import { useAccount, useProjects } from '@/stores';
+import { emitter } from '@/utils';
+import { useAccount } from '@/stores';
 import { axiosConfig } from '@/core/config';
 import LoginView from '@/views/LoginView.vue';
 import { RouterView } from 'vue-router';
 import { onBeforeUnmount, onMounted } from 'vue';
-import {
-  useListenAppEvent,
-  useListenBacklogEvent,
-  useListenEdgeEvent,
-  useListenElectronEvent,
-  useListenNodeEvent,
-  useListenNotifyEvent,
-  useListenProjectEvent
-} from '@/service';
+import { initApp } from '@/service';
 
 axiosConfig();
+initApp();
 
-useListenNotifyEvent();
-useListenAppEvent();
-useListenNodeEvent();
-useListenEdgeEvent();
-useListenBacklogEvent();
-useListenProjectEvent();
-useListenElectronEvent();
-
-loadAll();
-
-const projects = useProjects();
 const account = useAccount();
-
-projects.dailyUpdate();
-
 onMounted(() => {
   window.postMessage({ payload: 'removeLoading' }, '*');
 });

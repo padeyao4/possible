@@ -1,4 +1,4 @@
-import { debounceSaveAll, emitter, saveAll } from '@/utils';
+import { debounceSaveAll, emitter, loadAll, saveAll } from '@/utils';
 import { useCounter, useProjects } from '@/stores';
 
 export function useListenNotifyEvent() {
@@ -86,4 +86,19 @@ export function useListenElectronEvent() {
   window.ipcRenderer.on('electron:schedule', async () => {
     projects.dailyUpdate();
   });
+}
+
+export async function initApp() {
+  useListenNotifyEvent();
+  useListenNodeEvent();
+  useListenProjectEvent();
+  useListenEdgeEvent();
+  useListenBacklogEvent();
+  useListenAppEvent();
+  useListenElectronEvent();
+  await loadAll();
+  const projects = useProjects();
+  projects.dailyUpdate();
+  const counter = useCounter();
+  counter.countTodos();
 }
