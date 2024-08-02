@@ -1,14 +1,24 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { useWindowSize } from '@vueuse/core';
+
+const minLeftWidth = 230;
+const minRightWidth = 230;
+const minContentWidth = 300;
 
 export const useLayout = defineStore('layout', () => {
-  const leftWidth = ref(240);
-  const rightWidth = ref(300);
+  const leftWidth = ref(minLeftWidth);
+  const rightWidth = ref(minRightWidth);
   const showLeft = ref(true);
   const showRight = ref(false);
 
+  const { width } = useWindowSize();
+
+  const contentWidth = computed(() => {
+    return width.value - leftWidth.value - rightWidth.value;
+  });
+
   const gridTemplateColumnsStyle = computed(() => {
-    // return `${leftWidth.value}px 1fr ${rightWidth.value}px`;
     const leftStyle = showLeft.value ? `${leftWidth.value}px` : '';
     const rightStyle = showRight.value ? `${rightWidth.value}px` : '';
     return `${leftStyle} 1fr ${rightStyle}`;
@@ -32,10 +42,13 @@ export const useLayout = defineStore('layout', () => {
 
     const nw = isLeft ? ow + dx : ow - dx;
 
+    const tempWidth = width.value - nw - (isLeft ? rightWidth.value : leftWidth.value);
+    if (tempWidth <= minContentWidth) return; // 防止内容区域过小
+
     if (isLeft) {
-      leftWidth.value = nw <= 230 ? 230 : nw;
+      leftWidth.value = nw <= minLeftWidth ? minLeftWidth : nw;
     } else {
-      rightWidth.value = nw <= 300 ? 300 : nw;
+      rightWidth.value = nw <= minRightWidth ? minRightWidth : nw;
     }
   }
 
@@ -51,8 +64,8 @@ export const useLayout = defineStore('layout', () => {
   }
 
   function $reset() {
-    leftWidth.value = 200;
-    rightWidth.value = 300;
+    leftWidth.value = minLeftWidth;
+    rightWidth.value = minRightWidth;
   }
 
   function toPlainObject() {
@@ -60,6 +73,22 @@ export const useLayout = defineStore('layout', () => {
       leftWidth: leftWidth.value,
       rightWidth: rightWidth.value
     };
+  }
+
+  function resize() {
+    if (contentWidth.value < minContentWidth) {
+      const dt = minContentWidth - contentWidth.value;
+      if (leftWidth.value - dt >= minLeftWidth) {
+        leftWidth.value -= dt;
+        return;
+      }
+      if (rightWidth.value - dt >= minRightWidth) {
+        rightWidth.value -= dt;
+        return;
+      }
+      leftWidth.value = minLeftWidth;
+      rightWidth.value -= dt - minLeftWidth;
+    }
   }
 
   function fromPlainObject(obj: any) {
@@ -74,11 +103,13 @@ export const useLayout = defineStore('layout', () => {
     gridTemplateColumnsStyle,
     showLeft,
     showRight,
+    contentWidth,
     toPlainObject,
     fromPlainObject,
     leftPointerDown,
     rightPointerDown,
     onPointerMove,
-    onPointerUp
+    onPointerUp,
+    resize
   };
 });
