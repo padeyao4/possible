@@ -5,6 +5,7 @@ import path from 'node:path';
 import os from 'node:os';
 import Store from 'electron-store';
 import schedule from 'node-schedule';
+import fs from 'fs';
 
 // 消除安全告警
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
@@ -241,4 +242,17 @@ ipcMain.handle('get-path', () => {
 ipcMain.on('electron:exit', () => {
   console.log('app quit');
   app.exit(0);
+});
+
+/**
+ * 读取package版本号
+ */
+ipcMain.handle('version', async () => {
+  try {
+    const packageJson = fs.readFileSync(path.join(__dirname, '../../package.json'), 'utf-8');
+    return JSON.parse(packageJson).version;
+  } catch (e) {
+    console.log(e);
+    return 'error';
+  }
 });
