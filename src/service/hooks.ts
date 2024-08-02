@@ -1,5 +1,5 @@
 import { debounceSaveAll, emitter, loadAll, saveAll } from '@/utils';
-import { useCounter, useProjects } from '@/stores';
+import { useAccount, useCounter, useProjects } from '@/stores';
 
 export function useListenNotifyEvent() {
   emitter.on('notify:error', (e) => {
@@ -73,14 +73,15 @@ export function useListenAppEvent() {
 
 export function useListenElectronEvent() {
   const projects = useProjects();
+  const account = useAccount();
 
   window.ipcRenderer.on('electron:exit', async () => {
-    await saveAll();
+    account.isAuth && (await saveAll());
     window.ipcRenderer.send('electron:exit');
   });
 
   window.ipcRenderer.on('electron:close', async () => {
-    await saveAll();
+    account.isAuth && (await saveAll());
   });
 
   window.ipcRenderer.on('electron:schedule', async () => {

@@ -4,7 +4,7 @@ import CloseIconButton from '@/components/common/CloseIconButton.vue';
 import { onBeforeUnmount, ref } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import { Delete } from '@element-plus/icons-vue';
-import { useLayout } from '@/stores';
+import { useBacklogs, useLayout, useProjects } from '@/stores';
 
 const layout = useLayout();
 
@@ -35,6 +35,25 @@ useEventListener(window, 'keydown', (e) => {
     layout.showRight = false;
   }
 });
+
+const backlogs = useBacklogs();
+const projects = useProjects();
+
+const handleDelete = () => {
+  if (itemType.value === 'backlog') {
+    backlogs.remove(item.value.id);
+    emitter.emit('backlog:delete', { id: item.value.id });
+    item.value = null;
+    return;
+  }
+  if (itemType.value === 'node') {
+    const project = projects.getProject(item.value.projectId);
+    project.removeNode(item.value.id);
+    emitter.emit('node:delete', item.value);
+    item.value = null;
+    return;
+  }
+};
 </script>
 
 <template>
@@ -53,7 +72,7 @@ useEventListener(window, 'keydown', (e) => {
       ></div>
     </header>
     <el-scrollbar class="grow">
-      <template v-if="itemType === 'backlog'">
+      <template v-if="itemType === 'backlog' && item !== null">
         <div class="m-3">
           <el-input
             type="textarea"
@@ -66,7 +85,7 @@ useEventListener(window, 'keydown', (e) => {
           />
         </div>
       </template>
-      <template v-else-if="itemType === 'node'">
+      <template v-else-if="itemType === 'node' && item !== null">
         <div class="m-3">
           <el-input
             type="textarea"
@@ -74,7 +93,7 @@ useEventListener(window, 'keydown', (e) => {
             v-model="item.name"
             autosize
             resize="none"
-            placeholder="请输入内容"
+            placeholder="请输入标题"
             input-style="padding: 16px;"
           />
         </div>
@@ -85,7 +104,7 @@ useEventListener(window, 'keydown', (e) => {
             v-model="item.detail"
             autosize
             resize="none"
-            placeholder="请输入内容"
+            placeholder="请输入详情"
             input-style="padding: 16px;"
             class="clear-el-style"
           />
@@ -97,15 +116,20 @@ useEventListener(window, 'keydown', (e) => {
             v-model="item.record"
             autosize
             resize="none"
-            placeholder="请输入内容"
+            placeholder="请输入记录"
             input-style="padding: 16px;"
             class="clear-el-style"
           />
         </div>
       </template>
+      <template v-else>
+        <div class="flex w-full items-center justify-center" style="height: calc(100vh - 96px)">
+          <el-empty class="h-full w-full" description="没有数据" />
+        </div>
+      </template>
     </el-scrollbar>
     <div class="flex h-12 shrink-0 items-center justify-center border-t border-gray-200">
-      <el-button :icon="Delete" size="small" @click="" />
+      <el-button :icon="Delete" size="small" @click="handleDelete" />
     </div>
   </div>
 </template>

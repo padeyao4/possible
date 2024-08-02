@@ -46,7 +46,7 @@ function handleDateChange() {
   <div class="the-footer border-t border-gray-200 bg-transparent">
     <HomeIcon @click="handleBackHome" />
     <MapPointIcon @click="handleToday" />
-    <TestTubeIcon @click="handleTest" />
+    <!--    <TestTubeIcon @click="handleTest" />-->
     <div>
       <CalendarSearchIcon for="calendar-input" class="calendar-icon" @click="handleCalendar" />
       <input
@@ -59,7 +59,7 @@ function handleDateChange() {
         @change="handleDateChange"
       />
     </div>
-    <ArrowRightIcon @click="handleMoveRight" />
+    <!--    <ArrowRightIcon @click="handleMoveRight" />-->
   </div>
 </template>
 
