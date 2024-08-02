@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import CanvasPaths from '@/components/ProjectViewComponent/CanvasPaths.vue';
-import CanvasCards from '@/components/ProjectViewComponent/CanvasCards.vue';
-import { computed, type ComputedRef, inject, onBeforeUnmount, onMounted, ref } from 'vue';
-import CanvasTempPaths from '@/components/ProjectViewComponent/CanvasTempPaths.vue';
+import CanvasPaths from '@/components/project/CanvasPaths.vue';
+import CanvasCards from '@/components/project/CanvasCards.vue';
+import { computed, type ComputedRef, inject, onBeforeUnmount, onMounted, provide, ref } from 'vue';
+import CanvasTempPaths from '@/components/project/CanvasTempPaths.vue';
 import { Project } from '@/core';
 import { useSettings } from '@/stores';
 import { storeToRefs } from 'pinia';
@@ -17,6 +17,7 @@ import {
   DragCanvas,
   WheelCanvas
 } from '@/graph';
+import GraphContextmenuGroup from '@/components/project/GraphContextmenuGroup.vue';
 
 const svg = ref();
 const settings = useSettings();
@@ -53,6 +54,8 @@ const uH = computed(() => `${unitHeight.value}px`);
 const position = computed(() => {
   return `${translateX.value}px ${translateY.value}px`;
 });
+
+provide('canvasContainer', svg);
 </script>
 
 <template>
@@ -71,6 +74,7 @@ const position = computed(() => {
       </g>
     </svg>
   </div>
+  <graph-contextmenu-group />
 </template>
 
 <style scoped>

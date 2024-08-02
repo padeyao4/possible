@@ -27,11 +27,7 @@ const left = computed(() => {
   if (parents.length === 0) {
     return clampMax(x, canvasContainerBound.right - width);
   } else {
-    if (x + width > canvasContainerBound.right) {
-      return x - width - parents.length * width;
-    } else {
-      return x;
-    }
+    return x + width > canvasContainerBound.right ? x - width - parents.length * width : x;
   }
 });
 

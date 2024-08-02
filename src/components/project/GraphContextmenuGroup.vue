@@ -14,7 +14,7 @@ import { Node } from '@/core';
 import { useCursor, useSettings } from '@/stores';
 import type { ItemType } from '@/graph/types';
 import { computed, type ComputedRef, inject, onBeforeUnmount, ref } from 'vue';
-import ContextmenuComponent from '@/components/ProjectViewComponent/ContextmenuComponent.vue';
+import ContextmenuComponent from '@/components/project/ContextmenuComponent.vue';
 import type { OptionType } from '@/components/types';
 
 const container = ref<HTMLElement>();

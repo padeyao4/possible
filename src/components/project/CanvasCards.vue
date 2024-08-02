@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CanvasCardItem from '@/components/ProjectViewComponent/CanvasCardItem.vue';
+import CanvasCardItem from '@/components/project/CanvasCardItem.vue';
 import { isCross } from '@/graph/math';
 import { useSettings } from '@/stores/settings';
 import { useWindowSize } from '@vueuse/core';

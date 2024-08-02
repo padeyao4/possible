@@ -3,7 +3,7 @@ import { computed, type ComputedRef, inject } from 'vue';
 import { useSettings } from '@/stores/settings';
 import type { Point } from '@/core/types';
 import { useTempPaths } from '@/stores/temp-path';
-import CanvasTheTempPath from '@/components/ProjectViewComponent/CanvasTheTempPath.vue';
+import CanvasTheTempPath from '@/components/project/CanvasTheTempPath.vue';
 import type { Project } from '@/core';
 
 const project = inject<ComputedRef<Project>>('project');

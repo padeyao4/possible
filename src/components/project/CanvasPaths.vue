@@ -2,7 +2,7 @@
 import { computed, type ComputedRef, inject } from 'vue';
 import { useSettings } from '@/stores/settings';
 import type { Path } from '@/core/types';
-import CanvasThePath from '@/components/ProjectViewComponent/CanvasThePath.vue';
+import CanvasThePath from '@/components/project/CanvasThePath.vue';
 import type { Project } from '@/core';
 
 const project = inject<ComputedRef<Project>>('project');
