@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SettingsItem from '@/components/SettingsViewComponent/SettingsItem.vue';
+import SettingsItem from '@/components/settings/SettingsItem.vue';
 import { $resetPinia, useAccount } from '@/stores';
 import { saveAll } from '@/utils';
 

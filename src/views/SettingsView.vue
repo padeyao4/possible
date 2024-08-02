@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import AccountInfo from '@/components/SettingsViewComponent/AccountInfo.vue';
-import AboutComponent from '@/components/SettingsViewComponent/AboutComponent.vue';
+import AccountInfo from '@/components/settings/AccountInfo.vue';
+import AboutComponent from '@/components/settings/AboutComponent.vue';
 import { Back } from '@element-plus/icons-vue';
+import UserDataInfo from '@/components/settings/UserDataInfo.vue';
 </script>
 <template>
   <div class="flex flex-col items-center">
@@ -18,6 +19,7 @@ import { Back } from '@element-plus/icons-vue';
     </header>
     <div class="" style="width: 550px">
       <AccountInfo />
+      <UserDataInfo />
       <AboutComponent />
     </div>
   </div>

@@ -7,8 +7,8 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AboutComponent: typeof import('./src/components/SettingsViewComponent/AboutComponent.vue')['default']
-    AccountInfo: typeof import('./src/components/SettingsViewComponent/AccountInfo.vue')['default']
+    AboutComponent: typeof import('./src/components/settings/AboutComponent.vue')['default']
+    AccountInfo: typeof import('./src/components/settings/AccountInfo.vue')['default']
     ArrowRightIcon: typeof import('./src/components/icon/ArrowRightIcon.vue')['default']
     BacklogItem: typeof import('./src/components/BacklogItem.vue')['default']
     CalendarSearchIcon: typeof import('./src/components/icon/CalendarSearchIcon.vue')['default']
@@ -51,13 +51,14 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SettingsIcon: typeof import('./src/components/icon/SettingsIcon.vue')['default']
-    SettingsItem: typeof import('./src/components/SettingsViewComponent/SettingsItem.vue')['default']
+    SettingsItem: typeof import('./src/components/settings/SettingsItem.vue')['default']
     SideItem: typeof import('./src/components/SideItem.vue')['default']
     TestTubeIcon: typeof import('./src/components/icon/TestTubeIcon.vue')['default']
     TheCanvas: typeof import('./src/components/project/TheCanvas.vue')['default']
     TheFooter: typeof import('./src/components/project/TheFooter.vue')['default']
     TodayEditor: typeof import('./src/components/TodayEditor.vue')['default']
     TodayItem: typeof import('./src/components/TodayItem.vue')['default']
+    UserDataInfo: typeof import('./src/components/settings/UserDataInfo.vue')['default']
     WarningDialog: typeof import('./src/components/WarningDialog.vue')['default']
   }
 }

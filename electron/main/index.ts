@@ -211,6 +211,9 @@ ipcMain.handle('get', (_, arg) => {
   return store.get(arg.key);
 });
 
+/**
+ * 显示文件存储目录
+ */
 ipcMain.handle('get-path', () => {
   return app.getPath('userData');
 });
