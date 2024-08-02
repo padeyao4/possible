@@ -51,13 +51,35 @@ const indexHtml = path.join(RENDERER_DIST, 'index.html');
 // 隐藏菜单栏
 Menu.setApplicationMenu(null);
 
+/**
+ * 获取配置文件中默认信息
+ */
+function getAppInfo() {
+  const defaultLayout = {
+    appWidth: 800,
+    appHeight: 600,
+    isMaximized: false
+  };
+  const account = store.get('current') ?? {};
+  if (account?.isAuth) {
+    const username = account?.user?.username ?? 'local';
+    return store.get(`${username}.layout`) ?? defaultLayout;
+  } else {
+    return defaultLayout;
+  }
+}
+
 async function createWindow() {
+  // 读取store配置文件
+  const appLayout = getAppInfo();
+  console.log('applayout', appLayout);
+
   win = new BrowserWindow({
     title: 'Main window',
     icon: path.join(process.env.VITE_PUBLIC, 'icon.png'),
     titleBarStyle: 'hidden',
-    width: 850,
-    height: 600,
+    width: appLayout.appWidth,
+    height: appLayout.appHeight,
     minWidth: 800,
     minHeight: 450,
     titleBarOverlay: {
@@ -201,13 +223,11 @@ ipcMain.handle('open-win', (_, arg) => {
  *       });
  */
 ipcMain.on('set', (_, arg) => {
-  console.log('set-value', arg);
   store.set(arg.key, arg.value);
   // store.openInEditor().then();
 });
 
 ipcMain.handle('get', (_, arg) => {
-  console.log('get', arg.key, store.get(arg.key));
   return store.get(arg.key);
 });
 

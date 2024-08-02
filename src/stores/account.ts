@@ -1,7 +1,7 @@
 import { AccountControllerApi, type User, UserControllerApi } from '@/openapi';
 import { defineStore } from 'pinia';
 import { computed, reactive, ref, toRaw } from 'vue';
-import { emitter, loadAll } from '@/utils';
+import { emitter, loadAll, saveAll } from '@/utils';
 
 export const useAccount = defineStore('account', () => {
   const isAuth = ref(false);
@@ -88,14 +88,7 @@ export const useAccount = defineStore('account', () => {
     } else {
       token.value = null;
       isAuth.value = false;
-      window.ipcRenderer.send('set', {
-        key: 'account',
-        value: {
-          isAuth: false,
-          isLocal: true,
-          token: ''
-        }
-      });
+      await saveAll();
     }
   }
 

@@ -12,7 +12,10 @@ export const useLayout = defineStore('layout', () => {
   const showLeft = ref(true);
   const showRight = ref(false);
 
-  const { width } = useWindowSize();
+  const appWidth = ref();
+  const appHeight = ref();
+
+  const { width, height } = useWindowSize();
 
   const contentWidth = computed(() => {
     return width.value - leftWidth.value - rightWidth.value;
@@ -71,7 +74,9 @@ export const useLayout = defineStore('layout', () => {
   function toPlainObject() {
     return {
       leftWidth: leftWidth.value,
-      rightWidth: rightWidth.value
+      rightWidth: rightWidth.value,
+      appHeight: appHeight.value,
+      appWidth: appWidth.value
     };
   }
 
@@ -89,17 +94,23 @@ export const useLayout = defineStore('layout', () => {
       leftWidth.value = minLeftWidth;
       rightWidth.value -= dt - minLeftWidth;
     }
+    appWidth.value = width.value;
+    appHeight.value = height.value;
   }
 
   function fromPlainObject(obj: any) {
-    leftWidth.value = obj?.leftWidth ?? 200;
-    rightWidth.value = obj?.rightWidth ?? 300;
+    leftWidth.value = obj?.leftWidth ?? minLeftWidth;
+    rightWidth.value = obj?.rightWidth ?? minRightWidth;
+    appWidth.value = obj?.appWidth ?? 800;
+    appHeight.value = obj?.appHeight ?? 600;
   }
 
   return {
     $reset,
     leftWidth,
     rightWidth,
+    appWidth,
+    appHeight,
     gridTemplateColumnsStyle,
     showLeft,
     showRight,
