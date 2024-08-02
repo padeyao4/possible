@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref, type Ref } from 'vue';
-import Project from '@/core/Project';
+import { Project } from '@/core';
 
 export function showWeek(date: Date | number): string {
   const arr = ['日', '一', '二', '三', '四', '五', '六'];

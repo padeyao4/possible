@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import os from 'node:os';
 import Store from 'electron-store';
+import schedule from 'node-schedule';
+import fs from 'fs';
 
 // 消除安全告警
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
@@ -50,14 +52,36 @@ const indexHtml = path.join(RENDERER_DIST, 'index.html');
 // 隐藏菜单栏
 Menu.setApplicationMenu(null);
 
+/**
+ * 获取配置文件中默认信息
+ */
+function getAppInfo() {
+  const defaultLayout = {
+    appWidth: 800,
+    appHeight: 600,
+    isMaximized: false
+  };
+  const account = store.get('current') ?? {};
+  if (account?.isAuth) {
+    const username = account?.user?.username ?? 'local';
+    return store.get(`${username}.layout`) ?? defaultLayout;
+  } else {
+    return defaultLayout;
+  }
+}
+
 async function createWindow() {
+  // 读取store配置文件
+  const appLayout = getAppInfo();
+  console.log('applayout', appLayout);
+
   win = new BrowserWindow({
     title: 'Main window',
     icon: path.join(process.env.VITE_PUBLIC, 'icon.png'),
     titleBarStyle: 'hidden',
-    width: 850,
-    height: 600,
-    minWidth: 620,
+    width: appLayout.appWidth,
+    height: appLayout.appHeight,
+    minWidth: 800,
     minHeight: 450,
     titleBarOverlay: {
       color: 'rgba(0,0,0,0)',
@@ -110,6 +134,7 @@ app
     win.on('close', (e) => {
       e.preventDefault();
       win?.hide();
+      win?.webContents.send('electron:close');
     });
   })
   .then(() => {
@@ -127,7 +152,7 @@ app
       {
         label: '退出',
         click: () => {
-          app.exit(0);
+          win.webContents.send('electron:exit');
         }
       }
     ]);
@@ -137,11 +162,20 @@ app
       if (!win.isVisible()) win.show();
       win.focus();
     });
+  })
+  .then(() => {
+    schedule.scheduleJob('0 0 0 * * *', () => {
+      // 每天凌晨执行
+      win.webContents.send('electron:schedule');
+    });
   });
 
 app.on('window-all-closed', () => {
-  win = null;
-  if (process.platform !== 'darwin') app.quit();
+  win.webContents.send('electron:exit');
+  // win = null;
+  // if (process.platform !== 'darwin') {
+  //   app.exit(0)
+  // }
 });
 
 app.on('second-instance', () => {
@@ -178,17 +212,47 @@ ipcMain.handle('open-win', (_, arg) => {
   }
 });
 
-ipcMain.on('set-value', (_, arg) => {
-  console.log('set-value', arg);
+/**
+ * 用法
+ *       window.ipcRenderer.send('set', {
+ *         key: 'account',
+ *         value: {
+ *          isAuth: true,
+ *           isLocal: true,
+ *           token: ''
+ *         }
+ *       });
+ */
+ipcMain.on('set', (_, arg) => {
   store.set(arg.key, arg.value);
-  store.openInEditor().then();
+  // store.openInEditor().then();
 });
 
-ipcMain.handle('get-value', (_, arg) => {
-  console.log('get-value', store.get(arg.key));
+ipcMain.handle('get', (_, arg) => {
   return store.get(arg.key);
 });
 
-ipcMain.handle('get-store-path', () => {
+/**
+ * 显示文件存储目录
+ */
+ipcMain.handle('get-path', () => {
   return app.getPath('userData');
+});
+
+ipcMain.on('electron:exit', () => {
+  console.log('app quit');
+  app.exit(0);
+});
+
+/**
+ * 读取package版本号
+ */
+ipcMain.handle('version', async () => {
+  try {
+    const packageJson = fs.readFileSync(path.join(__dirname, '../../package.json'), 'utf-8');
+    return JSON.parse(packageJson).version;
+  } catch (e) {
+    console.log(e);
+    return 'error';
+  }
 });

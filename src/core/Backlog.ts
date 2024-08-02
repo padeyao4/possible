@@ -1,67 +1,61 @@
-import type { DraggableType } from '@/components/types';
+import { type SyncStatus } from '@/core/sync';
 import { v4 } from 'uuid';
-import type { Backlog as BacklogType } from '@/openapi';
+import { emitter } from '@/utils';
 
-export class Backlog implements DraggableType {
+export class Backlog {
+  id: string;
   title: string;
   orderIndex: number;
   createdAt: Date;
-  completeAt: Date | null;
+  completeAt: Date;
   done: boolean;
-  id: string;
-  dbId: number | null;
-  sync: boolean; // 是否同步已同步服务器
-  delete: boolean; // 是否删除
 
-  constructor(
-    title: string,
-    orderIndex: number,
-    createdAt: Date,
-    completeAt: Date | null,
-    done: boolean
-  ) {
-    this.title = title;
-    this.orderIndex = orderIndex;
-    this.createdAt = createdAt;
-    this.completeAt = completeAt;
-    this.done = done;
+  sid: number;
+  status: SyncStatus;
+  version: number;
+
+  constructor() {
+    const now = new Date();
     this.id = v4();
-    this.dbId = null;
-    this.sync = false;
-    this.delete = false;
+    this.title = '';
+    this.orderIndex = now.getTime();
+    this.createdAt = now;
+    this.completeAt = null;
+    this.done = false;
+    this.sid = null;
+    this.status = 'UPDATED';
+    this.version = 0;
   }
 
-  public static create(title: string) {
-    const now = new Date();
-    return new Backlog(title, now.getTime(), now, null, false);
+  update(backlog: Partial<Backlog>) {
+    Object.assign(this, backlog);
+    this.status = 'UPDATED';
+    emitter.emit('backlog:update', this);
   }
 
-  public static default() {
-    const now = new Date();
-    return new Backlog('', now.getTime(), now, null, false);
+  static delete(backlog: Backlog) {
+    backlog.status = 'DELETED';
+    emitter.emit('backlog:delete', backlog);
   }
 
-  public static from(other: BacklogType) {
-    const entity = this.default();
-    entity.title = other.title;
-    entity.id = other.uid;
-    entity.done = other.done;
-    entity.dbId = other.id;
-    entity.createdAt = new Date(other.createdAt);
-    entity.completeAt = other.completeAt ? new Date(other.completeAt) : null;
-    entity.orderIndex = other.orderIndex;
-    return entity;
+  static create(backlog: Backlog) {
+    backlog.status = 'CREATED';
+    emitter.emit('backlog:create', backlog);
   }
 
-  public toParam() {
+  toPlainObject() {
     return {
-      title: this.title,
-      orderIndex: this.orderIndex,
-      createdAt: this.createdAt.toISOString(),
-      completeAt: this.completeAt ? this.completeAt.toISOString() : null,
-      done: this.done,
-      id: this.dbId,
-      uid: this.id
+      ...this,
+      createdAt: this.createdAt.getTime(),
+      completeAt: this.completeAt?.getTime()
     };
+  }
+
+  static fromPlainObject(obj: any): Backlog {
+    const backlog = new Backlog();
+    Object.assign(backlog, obj);
+    backlog.createdAt = new Date(backlog.createdAt);
+    backlog.completeAt = backlog.completeAt ? new Date(backlog.completeAt) : null;
+    return backlog;
   }
 }

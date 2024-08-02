@@ -1,51 +1,68 @@
 import mitt from 'mitt';
+import { Backlog, Edge, type ID, Node, Project } from '@/core';
 
-const emitter = mitt();
+export type Error = { message: string; [key: string]: any };
 
-export default emitter;
+type DataEvents = {
+  'node:update': Partial<Node>;
+  'node:create': Partial<Node>;
+  'node:delete': Partial<Node>;
+  'node:select': Partial<Node>;
 
-export const BusEvents = {
-  // 控制右键菜单显示
-  'graph:contextmenu': Symbol(),
-  'editor:open': Symbol(),
-  'editor:close': Symbol(),
-  // 账号登录成功后发出
-  'login:success': Symbol(),
-  'login:failed': Symbol(),
+  'edge:update': Partial<Edge>;
+  'edge:create': Partial<Edge>;
+  'edge:delete': Partial<Edge>;
+  'edge:select': Partial<Edge>;
 
-  'error:message': Symbol(),
-  'project:push': Symbol(),
-  'project:fetch': Symbol(),
-  // 项目开始加载
-  'project:load': Symbol(),
-  'project:daily:update': Symbol(),
-  'project:push:success': Symbol(),
-  'project:push:failed': Symbol(),
-  'project:updated': Symbol(),
-  'project:deleted': Symbol(),
-  'project:created': Symbol(),
+  'project:create': Partial<Project>;
+  'project:update': Partial<Project>;
+  'project:delete': ID;
+  'project:select': Partial<Project>;
 
-  'node:created': Symbol(),
-  'node:updated': Symbol(),
-  'node:deleted': Symbol(),
-  'edge:deleted': Symbol(),
-  'edge:created': Symbol(),
-  'time:updated': Symbol(),
-  // 注册
-  'register:success': Symbol(),
-  'register:failed': Symbol(),
-  // backlog
-  'backlog:event': Symbol(),
-  'app:reload': Symbol()
+  'backlog:create': Partial<Backlog>;
+  'backlog:update': Partial<Backlog>;
+  'backlog:delete': Partial<Backlog>;
+  'backlog:select': Partial<Backlog>;
+
+  'date:update': null;
 };
 
-export const dataChangeEvents = new Set([
-  BusEvents['node:created'],
-  BusEvents['node:updated'],
-  BusEvents['node:deleted'],
-  BusEvents['edge:created'],
-  BusEvents['edge:deleted'],
-  BusEvents['project:updated'],
-  BusEvents['project:created'],
-  BusEvents['project:deleted']
-]);
+export type EditorParameters = {
+  item: Partial<Node | Project | Backlog>;
+  type: 'node' | 'project' | 'backlog';
+};
+
+type UiEvents = {
+  'editor:open': EditorParameters;
+  'editor:close': EditorParameters;
+  'editor-node:open': Partial<Node>;
+  'editor-node:close': Partial<Node>;
+  'editor-project:open': Partial<Project>;
+  'editor-project:close': Partial<Project>;
+  'editor-backlog:open': Partial<Backlog>;
+  'editor-backlog:close': Partial<Backlog>;
+  'project-dialog:open': Partial<Project>;
+  'project-dialog:close': Partial<Project>;
+  'contextmenu-canvas:open': any;
+  'login:success': any;
+  'login:failed': Error;
+  'register:success': null;
+  'register:failed': Error;
+};
+
+type LocalEvents = {
+  'local:save': any;
+  'local:load': any;
+  'local:login': any;
+  'local:logout': any;
+};
+
+type NotifyEvents = {
+  'notify:success': string;
+  'notify:failed': string;
+  'notify:warning': string;
+  'notify:info': string;
+  'notify:error': Error;
+};
+
+export const emitter = mitt<DataEvents & UiEvents & NotifyEvents & LocalEvents>();

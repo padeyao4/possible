@@ -17,4 +17,8 @@ declare global {
   }
 }
 
+declare module mitt {
+  export function mitt<T = Record<string, any>>(): Mitt<T>;
+}
+
 export {};

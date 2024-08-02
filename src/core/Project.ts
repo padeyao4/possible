@@ -1,14 +1,13 @@
 import type { ID, Point } from './types';
 import { markRaw, toRaw } from 'vue';
-import Node from './Node';
+import { Node } from './Node';
 import { v4 } from 'uuid';
 import { faker } from '@faker-js/faker';
-import Edge from '@/core/Edge';
-import { getDaysBetweenDates, useTimer } from '@/stores/timer';
-import { useSettings } from '@/stores/settings';
-import type { DraggableType } from '@/components/types';
+import { Edge } from './Edge';
+import { getDaysBetweenDates, useSettings, useTimer } from '@/stores';
+import { type SyncStatus } from '@/core';
 
-export default class Project implements DraggableType {
+export class Project {
   id: ID;
   name: string;
   nodeMap: Map<ID, Node>;
@@ -20,6 +19,10 @@ export default class Project implements DraggableType {
   editable: boolean;
   createTime: number;
   offset: Point;
+
+  sid: number;
+  status: SyncStatus;
+  version: number;
 
   public constructor() {
     this.id = v4();
@@ -33,20 +36,25 @@ export default class Project implements DraggableType {
     this.editable = false;
     this.createTime = new Date().getTime();
     this.offset = { x: 0, y: 0 };
+    this.sid = null;
+    this.status = 'SYNCED';
+    this.version = 0;
   }
 
-  public plainObject() {
-    return {
+  public toPlainObject() {
+    return toRaw({
       id: this.id,
       name: this.name,
-      nodeMap: Array.from(this.nodeMap.values()).map((n) => n.plainObject()),
-      edgeMap: Array.from(this.edgeMap.values()).map((e) => e.plainObject()),
+      nodes: Array.from(this.nodeMap.values()).map((n) => n.toPlainObject()),
+      edges: Array.from(this.edgeMap.values()).map((e) => e.plainObject()),
       completed: this.completed,
       sortIndex: this.sortIndex,
-      editable: this.editable,
       createTime: this.createTime,
-      offset: this.offset
-    };
+      offset: toRaw(this.offset),
+      version: this.version,
+      status: this.status,
+      sid: this.sid
+    });
   }
 
   public static fromPlainObject(obj: any) {
@@ -56,34 +64,30 @@ export default class Project implements DraggableType {
     project.name = obj.name;
     project.completed = obj.completed;
     project.sortIndex = obj.sortIndex;
-    project.editable = obj.editable;
     project.createTime = obj.createTime;
     project.offset = obj.offset;
+    project.version = obj.version;
+    project.status = obj.status;
+    project.sid = obj.sid;
 
-    obj.nodeMap.forEach((node: any) => {
-      project.addNode(Node.fromPlainObject(node));
-    });
-
-    obj.edgeMap.forEach((edge: any) => {
-      project.addEdge(edge.source, edge.target, edge.id);
-    });
+    obj.nodes.forEach((node: any) => project.addNode(Node.fromPlainObject(node)));
+    obj.edges.forEach((edge: any) => project.addEdge(edge.source, edge.target, edge.id));
     return project;
   }
 
   public static faker(): Project {
-    return Object.assign(new Project(), {
+    const source = {
       id: v4(),
       name: faker.lorem.words({ min: 3, max: 50 }),
-      nodeMap: new Map<ID, Node>(),
-      edgeMap: new Map<ID, Edge>(),
-      inMap: new Map<ID, Set<Edge>>(),
-      outMap: new Map<ID, Set<Edge>>(),
+      nodes: [],
+      edges: [],
       completed: false,
       sortIndex: new Date().getTime(),
       editable: false,
       createTime: faker.date.between({ from: '1900-01-01', to: '2024-06-01' }).getTime(),
       offset: { x: 0, y: 0 }
-    });
+    };
+    return Project.fromPlainObject(source);
   }
 
   public addNode(node: Node) {
@@ -167,6 +171,7 @@ export default class Project implements DraggableType {
     inMap.get(targetNodeId).delete(toRaw(edge));
     outMap.get(sourceNodeId).delete(toRaw(edge));
     edgeMap.delete(edge.id);
+    // todo emitter
   }
 
   public removeLeftRelations(nodeId: ID) {
@@ -188,6 +193,7 @@ export default class Project implements DraggableType {
   public removeRelations(nodeId: ID) {
     this.removeLeftRelations(nodeId);
     this.removeRightRelations(nodeId);
+    // todo emitter
   }
 
   public getNode(id: ID) {
@@ -275,5 +281,75 @@ export default class Project implements DraggableType {
    */
   public setOffsetIndex(date: any) {
     this.offset.x = getDaysBetweenDates(this.createTime, date) * useSettings().unitWidth;
+  }
+
+  /**
+   * 拉取右边的关联的节点,
+   *
+   * 右边关联节点和它做关系节点距离一格以上，则它向左移动一格
+   * @param item
+   */
+  public pullRightNode(item: Node | ID) {
+    const nodeId = typeof item === 'string' ? item : item.id;
+    const { nodeMap, inMap, outMap } = this;
+    const node = nodeMap.get(nodeId);
+    Array.from(outMap.get(node.id))
+      .map((edge) => nodeMap.get(edge.target))
+      .filter((rightNode) =>
+        Array.from(inMap.get(rightNode.id))
+          .map((edge) => nodeMap.get(edge.source))
+          .every((leftNode) => rightNode.x - leftNode.x > 1)
+      )
+      .forEach((rightNode) => {
+        rightNode.moveLeft();
+      });
+  }
+
+  public bfsOutEdge(nodeId: ID, callback: (node: Node) => void): void {
+    const queue = [nodeId];
+    const visited = new Set<ID>();
+    while (queue.length > 0) {
+      const nodeId = queue.shift() as ID;
+      if (!visited.has(nodeId)) {
+        callback(this.nodeMap.get(nodeId)!);
+        visited.add(nodeId);
+        this.outMap.get(nodeId)?.forEach((edge: Edge) => {
+          queue.push(edge.target);
+        });
+      }
+    }
+  }
+
+  public bfsInEdge(nodeId: ID, callback: (node: Node) => void): void {
+    const queue = [nodeId];
+    const visited = new Set<ID>();
+    while (queue.length > 0) {
+      const nodeId = queue.shift() as ID;
+      if (!visited.has(nodeId)) {
+        callback(this.nodeMap.get(nodeId)!);
+        visited.add(nodeId);
+        this.inMap.get(nodeId)?.forEach((edge: Edge) => {
+          queue.push(edge.source);
+        });
+      }
+    }
+  }
+
+  public bfsNode(nodeId: ID, callback: (node: Node) => void): void {
+    const queue = [nodeId];
+    const visited = new Set<ID>();
+    while (queue.length > 0) {
+      const nodeId = queue.shift() as ID;
+      if (!visited.has(nodeId)) {
+        callback(this.nodeMap.get(nodeId)!);
+        visited.add(nodeId);
+        this.outMap.get(nodeId)?.forEach((edge: Edge) => {
+          queue.push(edge.target);
+        });
+        this.inMap.get(nodeId)?.forEach((edge: Edge) => {
+          queue.push(edge.source);
+        });
+      }
+    }
   }
 }

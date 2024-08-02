@@ -1,8 +1,10 @@
 import { v4 } from 'uuid';
 import { faker } from '@faker-js/faker';
 import type { ID } from '@/core/types';
+import type { SyncStatus } from '@/core/sync';
+import { emitter } from '@/utils';
 
-export default class Node {
+export class Node {
   id: ID;
   name: string;
   x: number;
@@ -14,6 +16,10 @@ export default class Node {
   completed: boolean;
   sortedIndex: number;
   projectId: ID;
+
+  sid: number;
+  version: number;
+  status: SyncStatus;
 
   constructor() {
     this.id = v4();
@@ -27,9 +33,12 @@ export default class Node {
     this.completed = false;
     this.sortedIndex = new Date().getTime();
     this.projectId = null;
+    this.sid = null;
+    this.version = 0;
+    this.status = 'CREATED';
   }
 
-  public plainObject() {
+  public toPlainObject() {
     return {
       id: this.id,
       name: this.name,
@@ -41,8 +50,29 @@ export default class Node {
       record: this.record,
       completed: this.completed,
       sortedIndex: this.sortedIndex,
-      projectId: this.projectId
+      projectId: this.projectId,
+      sid: this.sid,
+      version: this.version,
+      status: this.status
     };
+  }
+  public static fromPlainObject(obj: any) {
+    const node = new Node();
+    node.id = obj.id;
+    node.name = obj.name;
+    node.x = obj.x;
+    node.y = obj.y;
+    node.height = obj.height;
+    node.width = obj.width;
+    node.detail = obj.detail;
+    node.record = obj.record;
+    node.completed = obj.completed;
+    node.sortedIndex = obj.sortedIndex;
+    node.projectId = obj.projectId;
+    node.sid = obj.sid;
+    node.version = obj.version;
+    node.status = obj.status;
+    return node;
   }
 
   public static faker(): Node {
@@ -57,9 +87,12 @@ export default class Node {
       record: faker.lorem.paragraphs({ min: 2, max: 10 }),
       completed: false,
       sortedIndex: -1,
-      projectId: ''
+      projectId: '',
+      sid: null,
+      version: 0,
+      status: 'CREATED'
     };
-    return Object.assign(new Node(), template);
+    return Node.fromPlainObject(template);
   }
 
   /**
@@ -74,7 +107,6 @@ export default class Node {
 
   /**
    * 向上移动
-   * @param step
    */
   public moveUp(step = 1) {
     this.y -= step;
@@ -82,23 +114,22 @@ export default class Node {
 
   /**移动到底部 */
   public moveDown(step = 1) {
-    // 移动到底部
     this.y += step;
   }
 
   /**移动到左边 */
   public moveLeft(step = 1) {
-    // 移动到左边
     this.x -= step;
   }
 
   /**移动到右边 */
   public moveRight(step = 1) {
-    // 移动到右边
     this.x += step;
   }
 
-  public static fromPlainObject(node: any) {
-    return Object.assign(new Node(), node);
+  update(node: Partial<Node>) {
+    Object.assign(this, node);
+    this.status = 'UPDATED';
+    emitter.emit('node:update', this);
   }
 }

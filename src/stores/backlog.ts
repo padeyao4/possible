@@ -1,67 +1,41 @@
 import { defineStore } from 'pinia';
-import { computed, reactive, ref } from 'vue';
-import type { ID } from '@/core/types';
-import { BacklogControllerApi } from '@/openapi';
+import { computed, reactive } from 'vue';
+import type { ID } from '@/core';
 import { Backlog } from '@/core';
 
-export const useBacklog = defineStore('backlog', () => {
+export const useBacklogs = defineStore('backlog', () => {
   const backlogs = reactive<Map<ID, Backlog>>(new Map());
-
-  const backlogController = new BacklogControllerApi();
-
-  const reloadLoading = ref(false);
-
-  async function reload() {
-    try {
-      reloadLoading.value = true;
-      const response = await backlogController.list();
-      const items = response.data.payload;
-      items.forEach((backlog) => {
-        const entity = Backlog.from(backlog);
-        backlogs.set(entity.id, entity);
-      });
-    } finally {
-      reloadLoading.value = false;
-    }
-  }
 
   function $reset() {
     backlogs.clear();
   }
 
-  function add(title: string) {
-    const entity = Backlog.default();
-    entity.title = title;
-    entity.sync = false;
-    backlogs.set(entity.id, entity);
-    backlogController
-      .add(entity.toParam())
-      .then((response) => response.data)
-      .then((data) => data.payload)
-      .then((backlog) => {
-        const item = backlogs.get(backlog.uid);
-        item.dbId = backlog.id;
-        item.sync = true;
-      });
+  function toPlainObject() {
+    return Array.from(backlogs.values()).map((b) => b.toPlainObject());
   }
 
-  function remove(uid: ID) {
-    const entity = backlogs.get(uid);
-    entity.delete = true;
-    entity.sync = false;
-    backlogController
-      ._delete(entity.dbId)
-      .then((response) => response.data)
-      .then((data) => data.payload)
-      .then(() => {
-        entity.sync = true;
-        backlogs.delete(uid);
-      });
+  function fromPlainObject(objs: any[]) {
+    objs.forEach((obj) => {
+      const entity = Backlog.fromPlainObject(obj);
+      backlogs.set(entity.id, entity);
+    });
+  }
+
+  function add(title: string) {
+    const entity = new Backlog();
+    entity.title = title;
+    backlogs.set(entity.id, entity);
+    Backlog.create(entity);
+  }
+
+  function remove(id: ID) {
+    const backlog = backlogs.get(id);
+    Backlog.delete(backlog);
   }
 
   const list = computed(() => {
     return Array.from(backlogs.values())
-      .filter((b) => !b.delete)
+      .filter((b) => b.status !== 'DELETED')
       .sort((a, b) => a.orderIndex - b.orderIndex);
   });
 
@@ -81,21 +55,8 @@ export const useBacklog = defineStore('backlog', () => {
     return completes.value.length;
   });
 
-  function done(uid: string) {
-    const entity = backlogs.get(uid);
-    entity.done = true;
-    entity.sync = false;
-    backlogController
-      .update(entity.toParam())
-      .then((response) => response.data)
-      .then((data) => data.payload)
-      .then(() => {
-        entity.sync = true;
-      });
-  }
-
-  function get(uid: ID) {
-    return backlogs.get(uid) ?? Backlog.default();
+  function get(id: ID) {
+    return backlogs.get(id);
   }
 
   return {
@@ -106,9 +67,9 @@ export const useBacklog = defineStore('backlog', () => {
     completes,
     todosCount,
     completesCount,
-    reload,
+    fromPlainObject,
     get,
-    done,
+    toPlainObject,
     $reset
   };
 });

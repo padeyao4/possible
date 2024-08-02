@@ -1,29 +1,37 @@
 import { AccountControllerApi, type User, UserControllerApi } from '@/openapi';
 import { defineStore } from 'pinia';
-import { computed, reactive, ref } from 'vue';
-import emitter, { BusEvents } from '@/utils/emitter';
+import { computed, reactive, ref, toRaw } from 'vue';
+import { emitter, loadAll, saveAll } from '@/utils';
 
 export const useAccount = defineStore('account', () => {
   const isAuth = ref(false);
   const isLocal = ref(false);
   const token = ref<string>();
   const user = reactive<User>({});
-  const fetchUserLoading = ref(false);
+
+  const userName = computed(() => user.username ?? 'local');
 
   const isRemote = computed(() => {
     return !isLocal.value;
   });
 
+  const fetchUserLoading = ref(false);
   async function fetchUser() {
-    try {
-      fetchUserLoading.value = true;
-      const response = await new UserControllerApi().userInfo();
-      const remoteUser = response.data.payload;
-      Object.assign(user, remoteUser);
-    } catch (e) {
-      emitter.emit(BusEvents['error:message'], e);
-    } finally {
-      fetchUserLoading.value = false;
+    if (isRemote) {
+      try {
+        fetchUserLoading.value = true;
+        const response = await new UserControllerApi().userInfo();
+        const remoteUser = response.data.payload;
+        Object.assign(user, remoteUser);
+      } catch (e) {
+        emitter.emit('notify:error', e);
+      } finally {
+        fetchUserLoading.value = false;
+      }
+    } else {
+      Object.assign(user, {
+        username: 'local'
+      });
     }
   }
 
@@ -35,35 +43,52 @@ export const useAccount = defineStore('account', () => {
   }
 
   const loginLoading = ref(false);
-  async function login(username: string, password: string) {
-    try {
-      loginLoading.value = true;
-      const response = await new AccountControllerApi().login({
-        username,
-        password
-      });
-      token.value = response.data.payload;
+  async function login(username: string, password: string, local: boolean = false) {
+    if (local) {
       isAuth.value = true;
-      emitter.emit(BusEvents['login:success']);
-    } catch (e) {
-      isAuth.value = false;
-      emitter.emit(BusEvents['login:failed'], e);
-    } finally {
-      loginLoading.value = false;
+      isLocal.value = true;
+      token.value = '';
+      window.ipcRenderer.send('set', {
+        key: 'current',
+        value: toPlainObject()
+      });
+      await loadAll();
+    } else {
+      try {
+        loginLoading.value = true;
+        const response = await new AccountControllerApi().login({
+          username,
+          password
+        });
+        token.value = response.data.payload;
+        isAuth.value = true;
+        emitter.emit('login:success');
+      } catch (e) {
+        isAuth.value = false;
+        emitter.emit('login:failed', e);
+      } finally {
+        loginLoading.value = false;
+      }
     }
   }
 
   const logoutLoading = ref(false);
   async function logout() {
-    try {
-      logoutLoading.value = true;
-      await new AccountControllerApi().logout();
-    } catch (e) {
-      emitter.emit(BusEvents['error:message'], e);
-    } finally {
+    if (isRemote.value) {
+      try {
+        logoutLoading.value = true;
+        await new AccountControllerApi().logout();
+      } catch (e) {
+        emitter.emit('notify:error', e);
+      } finally {
+        token.value = null;
+        logoutLoading.value = false;
+        isAuth.value = false;
+      }
+    } else {
       token.value = null;
-      logoutLoading.value = false;
       isAuth.value = false;
+      await saveAll();
     }
   }
 
@@ -75,9 +100,9 @@ export const useAccount = defineStore('account', () => {
         username,
         password
       });
-      emitter.emit(BusEvents['register:success']);
+      emitter.emit('register:success');
     } catch (e) {
-      emitter.emit(BusEvents['register:failed'], e);
+      emitter.emit('register:failed', e);
     } finally {
       registerLoading.value = false;
     }
@@ -89,14 +114,31 @@ export const useAccount = defineStore('account', () => {
       checkUsernameLoading.value = true;
       return await new AccountControllerApi().checkUsername(username);
     } catch (e) {
-      emitter.emit(BusEvents['error:message'], e);
+      emitter.emit('notify:error', e);
     } finally {
       checkUsernameLoading.value = false;
     }
   }
 
+  function toPlainObject() {
+    return {
+      isAuth: isAuth.value,
+      isLocal: isLocal.value,
+      token: token.value,
+      user: toRaw(user)
+    };
+  }
+
+  function fromPlainObject(obj: any) {
+    Object.assign(user, obj?.user);
+    isAuth.value = obj?.isAuth ?? false;
+    isLocal.value = obj?.isLocal ?? true;
+    token.value = obj?.token ?? '';
+  }
+
   return {
     user,
+    userName,
     token,
     fetchUser,
     fetchUserLoading,
@@ -111,6 +153,8 @@ export const useAccount = defineStore('account', () => {
     registerLoading,
     checkUsername,
     checkUsernameLoading,
+    toPlainObject,
+    fromPlainObject,
     $reset
   };
 });

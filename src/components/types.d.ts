@@ -8,7 +8,3 @@ export type OptionType = {
     children?: OptionType[];
   }[];
 };
-
-export interface DraggableType {
-  [key: string]: any;
-}

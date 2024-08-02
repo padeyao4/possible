@@ -8,6 +8,8 @@ import vue from '@vitejs/plugin-vue';
 import fs from 'node:fs';
 import electron from 'vite-plugin-electron/simple';
 import pkg from './package.json';
+import autoprefixer from 'autoprefixer';
+import tailwindcss from 'tailwindcss';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
@@ -17,6 +19,11 @@ export default defineConfig(({ command }) => {
   const isBuild = command === 'build';
   const sourcemap = isServe || !!process.env.VSCODE_DEBUG;
   return {
+    css: {
+      postcss: {
+        plugins: [tailwindcss(), autoprefixer()]
+      }
+    },
     plugins: [
       vue(),
       AutoImport({

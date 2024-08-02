@@ -1,77 +1,51 @@
 <script setup lang="ts">
-import ProjectGroupComponent from '@/components/ProjectViewComponent/ProjectGroupComponent.vue';
-import ProjectFooter from '@/components/ProjectViewComponent/TheFooter.vue';
+import ProjectFooter from '@/components/project/TheFooter.vue';
 import { computed, provide } from 'vue';
-import EditorComponent from '@/components/ProjectViewComponent/EditorComponent.vue';
-import { useProjectStore } from '@/stores/project';
+import { useProjects } from '@/stores/project';
 import type { ID } from '@/core/types';
+import CanvasRuler from '@/components/project/CanvasRuler.vue';
+import CanvasHeader from '@/components/project/CanvasHeader.vue';
+import TheCanvas from '@/components/project/TheCanvas.vue';
+import { useLayout } from '@/stores';
 
 const { id } = defineProps<{ id: ID }>();
+const layout = useLayout();
+layout.showRight = false;
 
-const store = useProjectStore();
-const project = computed(() => store.getProject(id));
+const projects = useProjects();
+const project = computed(() => projects.getProject(id));
 
 provide('project', project);
+
+const titleWidth = computed(() => {
+  return layout.showRight ? 10 : 145;
+});
 </script>
 
 <template>
-  <div class="project-view">
-    <header>
-      <div class="title">{{ project.name ?? '未命名' }}</div>
+  <div class="flex h-screen flex-col border-l border-r">
+    <header
+      class="drag-region flex h-16 shrink-0 items-end justify-start px-3 pb-3 text-xl text-gray-500"
+    >
+      <div class="truncate" :style="{ width: `calc( 100% - ${titleWidth}px)` }">
+        {{ project.name ?? '未命名' }}
+      </div>
     </header>
-    <main class="project-group">
-      <project-group-component />
-      <editor-component class="editor" />
+    <main
+      class="relative grid grow border-t border-gray-200"
+      style="
+        grid-template-columns: 40px calc(100% - 40px);
+        grid-template-rows: 40px calc(100vh - 153px) 48px;
+        background-color: #f2f4f7;
+      "
+    >
+      <div class="flex h-full w-full items-center justify-center border-b border-r border-dashed">
+        <span class="icon-[uil--unlock] text-base text-gray-500" />
+      </div>
+      <canvas-header />
+      <canvas-ruler />
+      <the-canvas />
+      <project-footer class="col-span-2" style="background-color: #fff" />
     </main>
-    <project-footer class="footer" />
   </div>
 </template>
-
-<style scoped>
-.project-view {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-}
-
-header {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  height: 40px;
-  margin: 12px 16px;
-
-  .title {
-    display: block;
-    overflow: hidden;
-    font-size: var(--font-large-size);
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-}
-
-main {
-  flex-grow: 1;
-}
-
-.footer {
-  flex-shrink: 0;
-  height: 48px !important;
-  background: transparent !important;
-  border-top: 1px solid #00000010;
-}
-
-.project-group {
-  display: flex;
-  flex-direction: row;
-  overflow: hidden;
-  background-color: var(--background-canvas-color);
-  border-top: 1px solid #00000010;
-}
-
-.editor {
-  overflow-y: auto;
-  border-left: #00000010 1px solid;
-}
-</style>

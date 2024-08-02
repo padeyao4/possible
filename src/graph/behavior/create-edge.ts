@@ -1,7 +1,9 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { type TempPath, useTempPaths } from '@/stores/temp-path';
 import type { ID } from '@/core/types';
-import emitter, { BusEvents } from '@/utils/emitter';
+import { emitter } from '@/utils';
+import { inject, type Ref } from 'vue';
+import { Project } from '@/core';
 
 export class CreateEdge extends BaseBehavior {
   isDown = false;
@@ -9,6 +11,7 @@ export class CreateEdge extends BaseBehavior {
   target: string;
   tempPaths = useTempPaths();
   pathId: ID;
+  project = inject<Ref<Project>>('project');
 
   getEventDispatch(): EventDispatch {
     return {
@@ -24,7 +27,7 @@ export class CreateEdge extends BaseBehavior {
       this.isDown = true;
       const key = el.getAttribute('data-key');
       const direction = el.getAttribute('data-anchor');
-      const point = this.project.getPointByOffsetPoint({ x: e.offsetX, y: e.offsetY });
+      const point = this.project.value.getPointByOffsetPoint({ x: e.offsetX, y: e.offsetY });
       const path = this.tempPaths.createTempPath(
         key,
         point,
@@ -42,7 +45,7 @@ export class CreateEdge extends BaseBehavior {
   }
 
   private updatePoint(e: MouseEvent) {
-    const point = this.project.getPointByOffsetPoint({ x: e.offsetX, y: e.offsetY });
+    const point = this.project.value.getPointByOffsetPoint({ x: e.offsetX, y: e.offsetY });
     const path = this.tempPaths.getPath(this.pathId);
     path.location.x = point.x;
     path.location.y = point.y;
@@ -50,7 +53,7 @@ export class CreateEdge extends BaseBehavior {
 
   onmouseup(e: MouseEvent, el: Element, __, elType: string) {
     if (this.isDown) {
-      const point = this.project.getPointByOffsetPoint({ x: e.offsetX, y: e.offsetY });
+      const point = this.project.value.getPointByOffsetPoint({ x: e.offsetX, y: e.offsetY });
       const path = this.tempPaths.getPath(this.pathId);
       path.location.x = point.x;
       path.location.y = point.y;
@@ -68,15 +71,16 @@ export class CreateEdge extends BaseBehavior {
       if (key == path.nodeId) return;
       path.opacity = 0;
       if (path.dummy === 'source') {
-        if (!this.project.getEdge(path.nodeId, key)) {
-          this.project.addEdge(path.nodeId, key);
+        if (!this.project.value.getEdge(path.nodeId, key)) {
+          const edge = this.project.value.addEdge(path.nodeId, key);
+          emitter.emit('edge:create', edge);
         }
       } else {
-        if (!this.project.getEdge(key, path.nodeId)) {
-          this.project.addEdge(key, path.nodeId);
+        if (!this.project.value.getEdge(key, path.nodeId)) {
+          const edge = this.project.value.addEdge(key, path.nodeId);
+          emitter.emit('edge:create', edge);
         }
       }
-      emitter.emit(BusEvents['edge:created']);
     }
   }
 }
