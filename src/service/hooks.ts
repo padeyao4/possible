@@ -1,5 +1,5 @@
 import { debounceSaveAll, emitter, loadAll, saveAll } from '@/utils';
-import { useAccount, useCounter, useProjects } from '@/stores';
+import { useAccount, useProjects } from '@/stores';
 
 export function useListenNotifyEvent() {
   emitter.on('notify:error', (e) => {
@@ -8,23 +8,18 @@ export function useListenNotifyEvent() {
 }
 
 export function useListenNodeEvent() {
-  const counter = useCounter();
   emitter.on('node:update', async () => {
     await debounceSaveAll();
-    counter.countTodos();
   });
   emitter.on('node:create', async () => {
     await debounceSaveAll();
-    counter.countTodos();
   });
   emitter.on('node:delete', async () => {
     await debounceSaveAll();
-    counter.countTodos();
   });
 }
 
 export function useListenProjectEvent() {
-  const counter = useCounter();
   emitter.on('project:update', async (e) => {
     await debounceSaveAll();
   });
@@ -32,7 +27,6 @@ export function useListenProjectEvent() {
     await debounceSaveAll();
   });
   emitter.on('project:delete', async (project) => {
-    counter.countTodos();
     await debounceSaveAll();
   });
 }
@@ -63,11 +57,9 @@ export function useListenBacklogEvent() {
 
 export function useListenAppEvent() {
   const projects = useProjects();
-  const counter = useCounter();
   emitter.on('login:success', async () => {
     console.log('login:success');
     projects.dailyUpdate();
-    counter.countTodos();
   });
 }
 
@@ -100,6 +92,4 @@ export async function initApp() {
   await loadAll();
   const projects = useProjects();
   projects.dailyUpdate();
-  const counter = useCounter();
-  counter.countTodos();
 }

@@ -39,7 +39,7 @@ export function getDaysBetweenDates(
   return days(startDate) - days(endDate);
 }
 
-export function getIndexByDate(project: Project): number {
+export function getIndexByDate(project: Partial<Project>): number {
   const timer = useTimer();
   return getDaysBetweenDates(timer.timestamp, project.createTime);
 }

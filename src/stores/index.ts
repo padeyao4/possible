@@ -2,7 +2,6 @@ import type { Pinia, Store } from 'pinia';
 import { getActivePinia } from 'pinia';
 
 export * from './account';
-export * from './counter';
 export * from './cursor';
 export * from './project';
 export * from './settings';

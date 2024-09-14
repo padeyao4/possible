@@ -37,6 +37,14 @@ export const useProjects = defineStore('projects', () => {
     return nodes.value.filter((node) => node.completed === true);
   });
 
+  const todayTodoList = computed(() => {
+    return todoList.value.filter((node) => {
+      const project = mapper.get(node.projectId);
+      const curX = getIndexByDate(project);
+      return node.x <= curX && curX < node.x + node.width;
+    });
+  });
+
   function faker() {
     mapper.clear();
     for (let i = 0; i < 10; i++) {
@@ -138,6 +146,7 @@ export const useProjects = defineStore('projects', () => {
     todoList,
     completedList,
     sortProjects,
+    todayTodoList,
     addProject,
     removeProject,
     deserialize,
