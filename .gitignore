@@ -31,3 +31,4 @@ coverage
 dist/
 dist-electron/
 release/
+/vite.config.ts.*.mjs
