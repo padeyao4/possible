@@ -58,7 +58,6 @@ export function useListenBacklogEvent() {
 export function useListenAppEvent() {
   const projects = useProjects();
   emitter.on('login:success', async () => {
-    console.log('login:success');
     projects.dailyUpdate();
   });
 }

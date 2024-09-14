@@ -108,6 +108,7 @@ const registerRules = reactive<FormRules<typeof registerForm>>({
 const onLocalLogin = () => {
   account.login('', '', true);
   loadAll();
+  router.push({ name: 'today' });
 };
 </script>
 
