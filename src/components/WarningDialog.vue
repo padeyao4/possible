@@ -27,6 +27,7 @@ const handleDelete = () => {
     router.push({ name: 'today' });
   }
   projects.removeProject(id);
+  emitter.emit('project:delete', id);
 };
 
 onUnmounted(() => {
