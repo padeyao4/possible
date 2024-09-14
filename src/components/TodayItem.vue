@@ -41,7 +41,10 @@ const handleItemClick = () => {
     </div>
     <div class="flex h-full grow flex-col justify-center overflow-hidden" @click="handleItemClick">
       <div class="block truncate align-bottom text-base text-gray-500">
-        {{ node.name }}
+        <del v-if="node.completed">{{ node.name }}</del>
+        <template v-else>
+          {{ node.name }}
+        </template>
       </div>
       <div class="block h-fit items-start truncate text-xs text-gray-500">
         <span class="hover:cursor-pointer">
