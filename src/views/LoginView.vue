@@ -141,10 +141,6 @@ const onLocalLogin = () => {
                 </template>
               </el-form-item>
             </el-form>
-            <el-divider><el-text size="small">其他登录方式</el-text></el-divider>
-            <el-button size="small" round @click="onLocalLogin"
-              ><el-text size="small">本地</el-text></el-button
-            >
           </el-tab-pane>
           <el-tab-pane label="注册">
             <el-card v-if="isRegister">
