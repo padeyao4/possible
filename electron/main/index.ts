@@ -55,7 +55,7 @@ Menu.setApplicationMenu(null);
 /**
  * 获取配置文件中默认信息
  */
-function getAppInfo() {
+function getDefaultAppInfo() {
   const defaultLayout = {
     appWidth: 800,
     appHeight: 600,
@@ -72,8 +72,8 @@ function getAppInfo() {
 
 async function createWindow() {
   // 读取store配置文件
-  const appLayout = getAppInfo();
-  console.log('applayout', appLayout);
+  const appLayout = getDefaultAppInfo();
+  console.log('app layout', appLayout);
 
   win = new BrowserWindow({
     title: 'Main window',

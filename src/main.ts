@@ -5,6 +5,7 @@ import App from './App.vue';
 import ElementPlus from 'element-plus';
 import router from './router';
 import { piniaPersisted } from '@/plugin';
+import { initApp } from '@/service';
 
 const pinia = createPinia();
 pinia.use(piniaPersisted);
@@ -14,3 +15,5 @@ app.use(ElementPlus, { zIndex: 3000 });
 app.use(pinia);
 app.use(router);
 app.mount('#app');
+
+initApp().then(r => console.log(r))
