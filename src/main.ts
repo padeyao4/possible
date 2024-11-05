@@ -5,7 +5,8 @@ import App from './App.vue';
 import ElementPlus from 'element-plus';
 import router from './router';
 import { piniaPersisted } from '@/plugin';
-import { initApp } from '@/service';
+import { initEventListen } from '@/service';
+import { load } from '@/utils'
 
 const pinia = createPinia();
 pinia.use(piniaPersisted);
@@ -16,4 +17,5 @@ app.use(pinia);
 app.use(router);
 app.mount('#app');
 
-initApp().then(r => console.log(r))
+initEventListen().then((r) => console.log(r));
+load().then((r) => console.log(r));

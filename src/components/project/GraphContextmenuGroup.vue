@@ -153,7 +153,7 @@ const nodeOptions: OptionType[] = [
       {
         title: '编辑',
         action() {
-          emitter.emit('editor-node:open', project.value.getNode(elementId.value));
+          emitter.emit('editor:open', { item: project.value.getNode(elementId.value), type: 'node' });
           visible.value = false;
         }
       },

@@ -3,7 +3,7 @@ import { reactive, ref } from 'vue';
 import { useAccount } from '@/stores/account';
 import router from '@/router';
 import type { FormInstance, FormRules } from 'element-plus';
-import { emitter, loadAll } from '@/utils';
+import { emitter, load } from '@/utils';
 import { Close } from '@element-plus/icons-vue';
 
 const account = useAccount();
@@ -107,7 +107,7 @@ const registerRules = reactive<FormRules<typeof registerForm>>({
  */
 const onLocalLogin = () => {
   account.login('', '', true);
-  loadAll();
+  load();
   router.push({ name: 'today' });
 };
 </script>

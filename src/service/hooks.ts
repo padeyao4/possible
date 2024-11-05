@@ -1,7 +1,7 @@
-import { debounceSaveAll, emitter, loadAll, saveAll } from '@/utils';
-import { useAccount, useProjects } from '@/stores';
+import { emitter, save } from '@/utils';
+import { useProjects } from '@/stores';
 
-export function useListenNotifyEvent() {
+/*export function useListenNotifyEvent() {
   emitter.on('notify:error', (e) => {
     console.error(e.message);
   });
@@ -53,26 +53,18 @@ export function useListenBacklogEvent() {
   emitter.on('backlog:delete', async (e) => {
     await debounceSaveAll();
   });
-}
-
-export function useListenAppEvent() {
-  const projects = useProjects();
-  emitter.on('login:success', async () => {
-    projects.dailyUpdate();
-  });
-}
+}*/
 
 export function useListenElectronEvent() {
   const projects = useProjects();
-  const account = useAccount();
 
   window.ipcRenderer.on('electron:exit', async () => {
-    account.isAuth && (await saveAll());
+    await save();
     window.ipcRenderer.send('electron:exit');
   });
 
   window.ipcRenderer.on('electron:close', async () => {
-    account.isAuth && (await saveAll());
+    await save();
   });
 
   window.ipcRenderer.on('electron:schedule', async () => {
@@ -80,15 +72,27 @@ export function useListenElectronEvent() {
   });
 }
 
-export async function initApp() {
+/*export async function initApp() {
   useListenNotifyEvent();
   useListenNodeEvent();
   useListenProjectEvent();
   useListenEdgeEvent();
   useListenBacklogEvent();
-  useListenAppEvent();
   useListenElectronEvent();
-  await loadAll();
+  await load();
   const projects = useProjects();
   projects.dailyUpdate();
+}*/
+
+/**
+ * 初始化事件监听
+ */
+export async function initEventListen() {
+  emitter.on('*', async () => {
+    await save();
+  });
+  emitter.on('notify:error', (e) => {
+    console.error(e.message);
+  });
+  useListenElectronEvent();
 }

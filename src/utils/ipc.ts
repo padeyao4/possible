@@ -1,7 +1,10 @@
 import { useAccount, useBacklogs, useProjects, useLayout } from '@/stores';
 import { type ArgumentsType, type Promisify, useDebounceFn } from '@vueuse/core';
 
-export async function saveAll() {
+/**
+ * Save data to ipc
+ */
+export async function save() {
   const projects = useProjects();
   const account = useAccount();
   const backlogs = useBacklogs();
@@ -14,23 +17,25 @@ export async function saveAll() {
     layout: side.toPlainObject()
   };
 
-  window.ipcRenderer.send('set', { key: 'current', value: account.toPlainObject() });
-  window.ipcRenderer.send('set', { key: `${account.userName}`, value: data });
+  window.ipcRenderer.send('set', { key: 'data', value: data });
 }
 
-export async function loadAll() {
+/**
+ * Load data from ipc
+ */
+export async function load() {
   const projects = useProjects();
   const account = useAccount();
   const backlogs = useBacklogs();
   const layout = useLayout();
-  const current = await window.ipcRenderer.invoke('get', { key: 'current' });
-  account.fromPlainObject(current);
-  const data = await window.ipcRenderer.invoke('get', { key: `${account.userName}` });
+  const data = await window.ipcRenderer.invoke('get', { key: 'data' });
   backlogs.fromPlainObject(data?.backlogs ?? []);
   projects.fromPlainObject(data?.projects ?? []);
   layout.fromPlainObject(data?.layout);
+  account.fromPlainObject(data?.account);
+  projects.dailyUpdate()
 }
 
 export const debounceSaveAll: (
   ...args: ArgumentsType<() => void>
-) => Promisify<ReturnType<() => void>> = useDebounceFn(saveAll, 60_000);
+) => Promisify<ReturnType<() => void>> = useDebounceFn(save, 60_000);
