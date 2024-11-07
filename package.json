@@ -1,6 +1,6 @@
 {
   "name": "possible",
-  "version": "0.1.8",
+  "version": "0.1.8-a",
   "main": "dist-electron/main/index.js",
   "private": true,
   "type": "module",

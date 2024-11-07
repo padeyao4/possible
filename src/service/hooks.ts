@@ -69,6 +69,7 @@ export function useListenElectronEvent() {
 
   window.ipcRenderer.on('electron:schedule', async () => {
     projects.dailyUpdate();
+    console.log('daily update')
   });
 }
 

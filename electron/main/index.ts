@@ -193,6 +193,8 @@ app.on('activate', () => {
   } else {
     createWindow().then();
   }
+  // 激活窗口时触发electron:schedule信号
+  win.webContents.send('electron:schedule');
 });
 
 // New window example arg: new windows url
