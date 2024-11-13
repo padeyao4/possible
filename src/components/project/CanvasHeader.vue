@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, type ComputedRef, inject, ref, watchEffect } from 'vue';
-import { useSettings } from '@/stores/settings';
+import { useSettings } from '@/stores/card';
 import CanvasHeaderItem from '@/components/project/CanvasHeaderItem.vue';
 import { getDaysBetweenDates, useTimer } from '@/stores/timer';
 import { useWindowSize } from '@vueuse/core';

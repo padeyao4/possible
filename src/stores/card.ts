@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
-export const useSettings = defineStore('settings', () => {
+export const useSettings = defineStore('card', () => {
   /**
    * 画布中每个单元格宽度
    */

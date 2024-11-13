@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import CanvasCardItem from '@/components/project/CanvasCardItem.vue';
 import { isCross } from '@/graph/math';
-import { useSettings } from '@/stores/settings';
+import { useSettings } from '@/stores/card';
 import { useWindowSize } from '@vueuse/core';
 import { computed, type ComputedRef, inject } from 'vue';
 import type { Project } from '@/core';

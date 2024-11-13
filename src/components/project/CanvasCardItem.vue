@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useSettings } from '@/stores/settings';
+import { useSettings } from '@/stores/card';
 import { Node } from '@/core';
 
 const props = defineProps<{ node: Node }>();

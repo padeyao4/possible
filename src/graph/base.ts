@@ -1,5 +1,5 @@
 import { useCursor } from '@/stores/cursor';
-import { useSettings } from '@/stores/settings';
+import { useSettings } from '@/stores/card';
 import { useEventListener } from '@vueuse/core';
 import type { Ref } from 'vue';
 

@@ -3,12 +3,9 @@ import { computed, reactive, ref, toRaw } from 'vue';
 import { getIndexByDate } from './timer';
 import { Node, Project } from '@/core';
 import type { ID } from '@/core/types';
-import { StorageControllerApi } from '@/openapi';
-import { emitter } from '@/utils';
 
 export const useProjects = defineStore('projects', () => {
   const mapper = reactive<Map<ID, Project>>(new Map());
-  const dataVersion = ref(0);
 
   const sortProjects = computed(() => {
     return Array.from(mapper.values()).sort((p1, p2) => p1.sortIndex - p2.sortIndex);
@@ -84,44 +81,7 @@ export const useProjects = defineStore('projects', () => {
 
   const fetchLoading = ref(false);
 
-  /**
-   * 从服务器加载
-   */
-  async function fetch() {
-    try {
-      fetchLoading.value = true;
-      const response = await new StorageControllerApi().fetch();
-      const data = response.data.payload;
-      deserialize(JSON.parse(data.content));
-      dataVersion.value = data.id;
-    } catch (e) {
-      emitter.emit('notify:error', e);
-    } finally {
-      fetchLoading.value = false;
-    }
-  }
-
   const pushLoading = ref(false);
-
-  /**
-   * 推送服务器端
-   */
-  async function push() {
-    try {
-      pushLoading.value = true;
-      const response = await new StorageControllerApi().push({
-        dataVersion: dataVersion.value,
-        content: JSON.stringify(serialize()),
-        uploadAt: new Date().toJSON()
-      });
-      dataVersion.value = response.data.payload;
-      emitter.emit('notify:success', 'project load success');
-    } catch (e) {
-      emitter.emit('notify:error', e);
-    } finally {
-      pushLoading.value = false;
-    }
-  }
 
   function dailyUpdate() {
     Array.from(mapper.values()).forEach((project) => {
@@ -138,7 +98,6 @@ export const useProjects = defineStore('projects', () => {
 
   function $reset() {
     mapper.clear();
-    dataVersion.value = 0;
   }
 
   return {
@@ -153,9 +112,7 @@ export const useProjects = defineStore('projects', () => {
     faker,
     fetch,
     fetchLoading,
-    dataVersion,
     pushLoading,
-    push,
     dailyUpdate,
     getProject,
     toPlainObject,

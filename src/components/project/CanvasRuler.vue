@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, type ComputedRef, inject, ref, watchEffect } from 'vue';
 import { useWindowSize } from '@vueuse/core';
-import { useSettings } from '@/stores/settings';
+import { useSettings } from '@/stores/card';
 import type { Project } from '@/core';
 
 const project = inject<ComputedRef<Project>>('project');

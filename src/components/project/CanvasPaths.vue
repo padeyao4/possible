@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, type ComputedRef, inject } from 'vue';
-import { useSettings } from '@/stores/settings';
+import { useSettings } from '@/stores/card';
 import type { Path } from '@/core/types';
 import CanvasThePath from '@/components/project/CanvasThePath.vue';
 import type { Project } from '@/core';
