@@ -1,15 +1,43 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { emitter } from '@/utils';
 import CloseIconButton from '@/components/common/CloseIconButton.vue';
-import { onBeforeUnmount, ref } from 'vue';
+import { computed, onBeforeUnmount, ref, watch, watchEffect } from 'vue'
 import { useEventListener } from '@vueuse/core';
 import { Delete } from '@element-plus/icons-vue';
 import { useBacklogs, useLayout, useProjects } from '@/stores';
+
+const contents = [
+  {
+    type: 'node',
+    data: [
+      { name: 'name', placeholder: '请输入标题' },
+      { name: 'detail', placeholder: '请输入详情' },
+      {
+        name: 'record',
+        placeholder: '请输入内容'
+      }
+    ]
+  },
+  {
+    type: 'backlog',
+    data: [
+      {
+        name: 'title',
+        placeholder: '请输入内容'
+      }
+    ]
+  }
+];
+
 
 const layout = useLayout();
 
 const item = ref();
 const itemType = ref();
+
+const content = computed(()=>{
+  return contents.find((item) => item.type === itemType.value)?.data;
+})
 
 emitter.on('editor:open', (e) => {
   if (!layout.showRight || e.type !== itemType.value || e.item.id !== item.value?.id) {
@@ -20,6 +48,11 @@ emitter.on('editor:open', (e) => {
     layout.showRight = false;
   }
 });
+
+emitter.on('editor:delete',()=>{
+  item.value = null;
+  itemType.value = ''
+})
 
 emitter.on('editor:close', () => {
   layout.showRight = false;
@@ -44,6 +77,7 @@ const handleDelete = () => {
     backlogs.remove(item.value.id);
     emitter.emit('backlog:delete', { id: item.value.id });
     item.value = null;
+    itemType.value = ''
     return;
   }
   if (itemType.value === 'node') {
@@ -51,13 +85,14 @@ const handleDelete = () => {
     project.removeNode(item.value.id);
     emitter.emit('node:delete', item.value);
     item.value = null;
+    itemType.value = ''
     return;
   }
 };
 </script>
 
 <template>
-  <div class="flex h-screen flex-col" v-if="layout.showRight">
+  <div v-if="layout.showRight" class="flex h-screen flex-col">
     <header
       class="drag-region mb-3 flex w-full shrink-0 items-end justify-between"
       style="height: 36px"
@@ -72,53 +107,16 @@ const handleDelete = () => {
       ></div>
     </header>
     <el-scrollbar class="grow">
-      <template v-if="itemType === 'backlog' && item !== null">
-        <div class="m-3">
+      <template v-if="content">
+        <div v-for="i in content" class="m-3">
           <el-input
-            type="textarea"
-            size="large"
-            v-model="item.title"
             autosize
-            resize="none"
-            placeholder="请输入内容"
             input-style="padding: 16px;"
-          />
-        </div>
-      </template>
-      <template v-else-if="itemType === 'node' && item !== null">
-        <div class="m-3">
-          <el-input
-            type="textarea"
+            v-model="item[i.name]"
+            :placeholder="i.placeholder"
+            resize="none"
             size="large"
-            v-model="item.name"
-            autosize
-            resize="none"
-            placeholder="请输入标题"
-            input-style="padding: 16px;"
-          />
-        </div>
-        <div class="m-3">
-          <el-input
             type="textarea"
-            size="large"
-            v-model="item.detail"
-            autosize
-            resize="none"
-            placeholder="请输入详情"
-            input-style="padding: 16px;"
-            class="clear-el-style"
-          />
-        </div>
-        <div class="m-3">
-          <el-input
-            type="textarea"
-            size="large"
-            v-model="item.record"
-            autosize
-            resize="none"
-            placeholder="请输入记录"
-            input-style="padding: 16px;"
-            class="clear-el-style"
           />
         </div>
       </template>

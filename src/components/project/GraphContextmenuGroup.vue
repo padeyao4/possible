@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { emitter } from '@/utils';
 import {
   appendNode,
@@ -48,6 +48,7 @@ function handleMoveUpWhole() {
   tryMoveUpWhole(<Project>project.value, node);
   visible.value = false;
 }
+
 function handleMoveDownWhole() {
   const el = event.value.target as Element;
   const key = el.getAttribute('data-key');
@@ -153,7 +154,10 @@ const nodeOptions: OptionType[] = [
       {
         title: '编辑',
         action() {
-          emitter.emit('editor:open', { item: project.value.getNode(elementId.value), type: 'node' });
+          emitter.emit('editor:open', {
+            item: project.value.getNode(elementId.value),
+            type: 'node'
+          });
           visible.value = false;
         }
       },
@@ -231,6 +235,7 @@ const nodeOptions: OptionType[] = [
           project.value.removeNode(key);
           visible.value = false;
           emitter.emit('node:delete', { id: key });
+          emitter.emit('editor:delete');
         }
       }
     ]
@@ -252,6 +257,7 @@ const canvasOptions: OptionType[] = [
           project.value.addNode(node);
           visible.value = false;
           emitter.emit('node:create', node);
+          emitter.emit('editor:open', { type: 'node', item: node });
         }
       }
     ]
@@ -301,8 +307,9 @@ onBeforeUnmount(() => {
 
 <template>
   <teleport to="body">
-    <div v-if="visible" @blur="visible = false" tabindex="0" ref="container" class="container">
-      <contextmenu-component :items="items" :x="event.x" :y="event.y" :parents="[]" />"
+    <div v-if="visible" ref="container" class="container" tabindex="0" @blur="visible = false">
+      <contextmenu-component :items="items" :parents="[]" :x="event.x" :y="event.y" />
+      "
     </div>
   </teleport>
 </template>

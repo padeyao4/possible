@@ -35,6 +35,7 @@ export type EditorParameters = {
 type UiEvents = {
   'editor:open': EditorParameters;
   'editor:close': EditorParameters;
+  'editor:delete': any;
   'editor-node:open': Partial<Node>;
   'editor-node:close': Partial<Node>;
   'editor-project:open': Partial<Project>;
