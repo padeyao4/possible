@@ -3,15 +3,15 @@ import TodayView from '@/views/TodayView.vue';
 import ProjectView from '@/views/ProjectView.vue';
 import BacklogView from '@/views/BacklogView.vue';
 import ManageView from '@/views/ManageView.vue';
-import LayoutView from '@/views/LayoutView.vue';
 import SettingsView from '@/views/SettingsView.vue';
+import IndexView from '@/views/IndexView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/index',
-      component: LayoutView,
+      component: IndexView,
       children: [
         {
           path: 'today',

@@ -1,65 +1,42 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useSettings } from '@/stores/card';
-import { Node } from '@/core';
+import { type ID, type Node, useCard } from '@/stores'
 
-const props = defineProps<{ node: Node }>();
-const settings = useSettings();
-
-const { node } = props;
-
-const translateX = computed(() => {
-  return node.x * settings.unitWidth + settings.offsetCardX;
-});
-
-const translateY = computed(() => {
-  return node.y * settings.unitHeight + settings.offsetCardY;
-});
-
-const width = computed(() => {
-  return node.width * settings.unitWidth - settings.offsetCardX * 2;
-});
-
-const height = computed(() => {
-  return node.height * settings.unitHeight - settings.offsetCardY * 2;
-});
-
-const backgroundColor = computed(() => {
-  return node.completed ? '#dddddd' : '#fff';
-});
-
-const taskName = computed(() => {
-  return node.name.trim() === '' ? '未命名' : node.name;
-});
-
-const lineCount = computed(() => {
-  return Math.floor(height.value / 20);
-});
+defineProps<{
+  card: {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    name: string;
+    color: string;
+    id: ID;
+  };
+}>();
 </script>
 
 <template>
-  <g :transform="`translate(${translateX},${translateY})`">
+  <g :transform="`translate(${card.x},${card.y})`">
     <rect
-      :width="width"
-      :height="height"
+      :width="card.w"
+      :height="card.h"
       opacity="0.7"
       stroke-width="1"
       stroke="#000"
-      :fill="backgroundColor"
+      :fill="card.color"
       rx="8"
     />
-    <foreignObject :width="width" :height="height" opacity="1">
+    <foreignObject :width="card.w" :height="card.h" opacity="1">
       <div class="text">
         <p>
-          {{ taskName }}
+          {{ card.name }}
         </p>
       </div>
     </foreignObject>
     <rect
-      :width="width"
-      :height="height"
+      :width="card.w"
+      :height="card.h"
       opacity="0"
-      :data-key="node.id"
+      :data-key="card.id"
       data-el-type="node"
       data-mouse-style="pointer"
       class="key-shape"
@@ -67,7 +44,7 @@ const lineCount = computed(() => {
     />
     <g opacity="0">
       <rect
-        :data-key="node.id"
+        :data-key="card.id"
         data-mouse-style="nwse-resize"
         data-type="node"
         data-el-type="resize"
@@ -79,41 +56,41 @@ const lineCount = computed(() => {
         height="5"
       />
       <rect
-        :data-key="node.id"
+        :data-key="card.id"
         data-mouse-style="nesw-resize"
         data-el-type="resize"
         data-type="node"
         data-direction="rt"
-        :x="width - 2.5"
+        :x="card.w - 2.5"
         y="-2.5"
         fill="red"
         width="5"
         height="5"
       />
       <rect
-        :data-key="node.id"
+        :data-key="card.id"
         data-mouse-style="ns-resize"
         data-el-type="resize"
         data-type="node"
         data-direction="t"
         x="2.5"
         y="-2.5"
-        :width="width - 5"
+        :width="card.w - 5"
         height="5"
       />
       <rect
-        :data-key="node.id"
+        :data-key="card.id"
         data-el-type="resize"
         data-mouse-style="ns-resize"
         data-type="node"
         data-direction="b"
         x="2.5"
-        :y="height - 2.5"
-        :width="width - 5"
+        :y="card.h - 2.5"
+        :width="card.w - 5"
         height="5"
       />
       <rect
-        :data-key="node.id"
+        :data-key="card.id"
         data-el-type="resize"
         data-mouse-style="ew-resize"
         data-type="node"
@@ -121,39 +98,39 @@ const lineCount = computed(() => {
         x="-2.5"
         y="2.5"
         :width="5"
-        :height="height - 5"
+        :height="card.h - 5"
       />
       <rect
-        :data-key="node.id"
+        :data-key="card.id"
         data-el-type="resize"
         data-mouse-style="ew-resize"
         data-type="node"
         data-direction="r"
-        :x="width - 2.5"
+        :x="card.w - 2.5"
         y="2.5"
         :width="5"
-        :height="height - 5"
+        :height="card.h - 5"
       />
       <rect
-        :data-key="node.id"
+        :data-key="card.id"
         data-el-type="resize"
         data-mouse-style="nesw-resize"
         data-type="node"
         data-direction="lb"
         x="-2.5"
-        :y="height - 2.5"
+        :y="card.h - 2.5"
         fill="red"
         width="5"
         height="5"
       />
       <rect
-        :data-key="node.id"
+        :data-key="card.id"
         data-el-type="resize"
         data-mouse-style="nwse-resize"
         data-type="node"
         data-direction="rb"
-        :x="width - 2.5"
-        :y="height - 2.5"
+        :x="card.w - 2.5"
+        :y="card.h - 2.5"
         fill="red"
         width="5"
         height="5"
@@ -161,7 +138,7 @@ const lineCount = computed(() => {
     </g>
     <g class="anchor">
       <circle
-        :cy="height / 2"
+        :cy="card.h / 2"
         r="5"
         stroke="#000"
         fill="#fff"
@@ -169,12 +146,12 @@ const lineCount = computed(() => {
         data-type="node"
         data-mouse-style="pointer"
         data-el-type="anchor"
-        :data-key="node.id"
+        :data-key="card.id"
         data-anchor="left"
       />
       <circle
-        :cx="width"
-        :cy="height / 2"
+        :cx="card.w"
+        :cy="card.h / 2"
         r="5"
         stroke="#000"
         fill="#fff"
@@ -182,7 +159,7 @@ const lineCount = computed(() => {
         data-type="node"
         data-mouse-style="pointer"
         data-el-type="anchor"
-        :data-key="node.id"
+        :data-key="card.id"
         data-anchor="right"
       />
     </g>
@@ -220,7 +197,6 @@ const lineCount = computed(() => {
     text-align: center;
     word-wrap: break-word;
     word-break: break-all;
-    -webkit-line-clamp: v-bind(lineCount);
     -webkit-box-orient: vertical;
   }
 }

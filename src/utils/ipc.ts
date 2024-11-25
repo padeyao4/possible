@@ -1,11 +1,11 @@
-import { useAccount, useBacklogs, useProjects, useLayout } from '@/stores';
+import { useAccount, useBacklogs, useGraph, useLayout } from '@/stores';
 import { type ArgumentsType, type Promisify, useDebounceFn } from '@vueuse/core';
 
 /**
  * Save data to ipc
  */
 export async function save() {
-  const projects = useProjects();
+  const projects = useGraph();
   const account = useAccount();
   const backlogs = useBacklogs();
   const side = useLayout();
@@ -24,7 +24,7 @@ export async function save() {
  * Load data from ipc
  */
 export async function load() {
-  const projects = useProjects();
+  const projects = useGraph();
   const account = useAccount();
   const backlogs = useBacklogs();
   const layout = useLayout();

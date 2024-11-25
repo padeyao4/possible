@@ -4,7 +4,7 @@ import CloseIconButton from '@/components/common/CloseIconButton.vue';
 import { computed, onBeforeUnmount, ref, watch, watchEffect } from 'vue'
 import { useEventListener } from '@vueuse/core';
 import { Delete } from '@element-plus/icons-vue';
-import { useBacklogs, useLayout, useProjects } from '@/stores';
+import { useBacklogs, useLayout, useGraph } from '@/stores';
 
 const contents = [
   {
@@ -70,7 +70,7 @@ useEventListener(window, 'keydown', (e) => {
 });
 
 const backlogs = useBacklogs();
-const projects = useProjects();
+const projects = useGraph();
 
 const handleDelete = () => {
   if (itemType.value === 'backlog') {

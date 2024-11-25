@@ -3,12 +3,13 @@ import { getActivePinia } from 'pinia';
 
 export * from './account';
 export * from './cursor';
-export * from './project';
+// export * from './project';
 export * from './card';
 export * from './temp-path';
 export * from './timer';
 export * from './backlog';
 export * from './layout';
+export * from './data';
 
 interface ExtendedPinia extends Pinia {
   _s: Map<string, Store>;

@@ -1,39 +1,52 @@
 <script setup lang="ts">
-import { computed, type ComputedRef, inject, ref, watchEffect } from 'vue';
-import { useSettings } from '@/stores/card';
-import CanvasHeaderItem from '@/components/project/CanvasHeaderItem.vue';
-import { getDaysBetweenDates, useTimer } from '@/stores/timer';
+import { computed, type ComputedRef, inject } from 'vue';
+import { useCard } from '@/stores/card';
+import { ONE_DAY_MS, type Project } from '@/stores';
 import { useWindowSize } from '@vueuse/core';
-import type { Project } from '@/core';
 
-const settings = useSettings();
-const indexes = ref<number[]>([]);
+const card = useCard();
+
 const project = inject<ComputedRef<Project>>('project');
-const timer = useTimer();
 
-const { width } = useWindowSize();
+const { width: windowWidth } = useWindowSize();
 
-watchEffect(() => {
-  const count = Math.ceil(width.value / settings.unitWidth);
-  indexes.value = Array.from({ length: count }, (_, i) => i + 1);
-});
+const offsetX = computed(() => Math.floor(-project.value.x / card.w) - 2);
 
-const x = computed(() => Math.floor(-project.value.offset.x / settings.unitWidth) - 2);
-
-const translateX = computed(
-  () => (project.value.offset.x % settings.unitWidth) - settings.unitWidth + 'px'
+const numbers = computed(() =>
+  Array.from({ length: Math.ceil(windowWidth.value / card.w) }, (_, i) => i + 1 + offsetX.value)
 );
 
-const unitWidth = computed(() => settings.unitWidth + 'px');
+const translateX = computed(() => (project.value.x % card.w) - card.w + 'px');
 
-const todayIndex = computed(() => getDaysBetweenDates(timer.timestamp, project.value.createTime));
+const unitWidth = computed(() => card.w + 'px');
+
+// const todayIndex = computed(() => getDaysBetweenDates(timer.timestamp, project.value.createTime));
+
+/**
+ * 显示一个日期是周几
+ */
+function formatWeek(date: Date): string {
+  return '周' + ['日', '一', '二', '三', '四', '五', '六'][date.getDay()];
+}
+
+/**
+ * 格式化日期 显示格式为：
+ * 2023-01-01 周一
+ */
+function formatDate(date: Date) {
+  return new Intl.DateTimeFormat('zh-Hans').format(date) + ' ' + formatWeek(date);
+}
+
+function showDateInfo(index: number) {
+  return formatDate(new Date(index * ONE_DAY_MS));
+}
 </script>
 
 <template>
   <div class="canvas-header">
     <div class="container">
-      <div v-for="idx in indexes" class="item" :key="idx">
-        <canvas-header-item :idx="idx + x" :isToday="todayIndex === idx + x" />
+      <div v-for="n in numbers" class="item time-cell" :key="n" :class="[{ today: false }]">
+        {{ showDateInfo(n) }}
       </div>
     </div>
   </div>
@@ -57,7 +70,18 @@ const todayIndex = computed(() => getDaysBetweenDates(timer.timestamp, project.v
 }
 
 .item {
+  display: flex;
   flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
   width: v-bind(unitWidth);
+  height: 100%;
+  font-weight: lighter;
+  font-size: 14px;
+  border-right: 1px solid #00000010;
+}
+
+.today {
+  background-color: #95d47570;
 }
 </style>

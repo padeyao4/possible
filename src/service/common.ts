@@ -1,9 +1,10 @@
-import { isCross } from '@/graph/math';
-import { useProjects } from '@/stores/project';
+// import { isCross } from '@/graph/math';
+// import { useProjects } from '@/stores/project';
 import { Node } from '@/core/Node';
 import { Project } from '@/core/Project';
 import router from '@/router';
 import { emitter } from '@/utils';
+import { cross,} from '@/stores'
 
 export function moveDown(project: Project, node: Node) {
   node.y += 1;
@@ -57,7 +58,7 @@ export function moveRight(project: Project, node: Node) {
   });
   node.moveRight();
   project.collides(node).forEach((collideNode) => {
-    while (isCross(node, collideNode)) {
+    while (cross(node, collideNode)) {
       moveDown(project, collideNode);
     }
   });
@@ -74,7 +75,7 @@ export function moveLeft(project: Project, node: Node) {
   node.x -= 1;
   const nodes = project.collides(node);
   nodes.forEach((collideNode) => {
-    while (isCross(node, collideNode)) {
+    while (cross(node, collideNode)) {
       moveDown(project, collideNode);
     }
   });
@@ -115,15 +116,15 @@ export function tryMoveDownWhole(project: Project, node: Node) {
   });
 }
 
-/**
- * 创建项目按钮
- */
-export async function handleNewProject() {
-  const project = new Project();
-  project.editable = true;
-  useProjects().addProject(project);
-  setTimeout(async () => {
-    await router.push({ name: 'project', query: { id: project.id } });
-    emitter.emit('project:create', project);
-  });
-}
+// /**
+//  * 创建项目按钮
+//  */
+// export async function handleNewProject() {
+//   const project = new Project();
+//   project.editable = true;
+//   useProjects().addProject(project);
+//   setTimeout(async () => {
+//     await router.push({ name: 'project', query: { id: project.id } });
+//     emitter.emit('project:create', project);
+//   });
+// }

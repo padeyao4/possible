@@ -1,5 +1,6 @@
 import mitt from 'mitt';
-import { Backlog, Edge, type ID, Node, Project } from '@/core';
+import { Backlog, Edge, type ID, Node } from '@/core';
+import type { Project } from '@/stores'
 
 export type Error = { message: string; [key: string]: any };
 
@@ -14,7 +15,6 @@ type DataEvents = {
   'edge:delete': Partial<Edge>;
   'edge:select': Partial<Edge>;
 
-  'project:create': Partial<Project>;
   'project:update': Partial<Project>;
   'project:delete': ID;
   'project:select': Partial<Project>;
@@ -42,7 +42,7 @@ type UiEvents = {
   'editor-project:close': Partial<Project>;
   'editor-backlog:open': Partial<Backlog>;
   'editor-backlog:close': Partial<Backlog>;
-  'project-dialog:open': Partial<Project>;
+  'project-dialog:open': Project;
   'project-dialog:close': Partial<Project>;
   'contextmenu-canvas:open': any;
   'login:success': any;

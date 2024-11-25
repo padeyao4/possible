@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useProjects } from '@/stores';
+import { useGraph } from '@/stores';
 
-const projects = useProjects();
+const projects = useGraph();
 </script>
 
 <template>
@@ -15,7 +15,7 @@ const projects = useProjects();
     <span class="icon-[solar--sun-broken] mx-2 bg-gray-600 text-2xl" />
     <el-text class="grow">我的一天</el-text>
     <div class="mx-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-200">
-      <el-text size="small">{{ projects.todayTodoList.length }}</el-text>
+      <el-text size="small">{{ 0 }}</el-text>
     </div>
   </div>
 </template>

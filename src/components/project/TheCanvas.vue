@@ -1,27 +1,26 @@
 <script setup lang="ts">
-import CanvasPaths from '@/components/project/CanvasPaths.vue';
-import CanvasCards from '@/components/project/CanvasCards.vue';
-import { computed, type ComputedRef, inject, onBeforeUnmount, onMounted, provide, ref } from 'vue';
-import CanvasTempPaths from '@/components/project/CanvasTempPaths.vue';
-import { Project } from '@/core';
-import { useSettings } from '@/stores';
-import { storeToRefs } from 'pinia';
+// import CanvasPaths from '@/components/project/CanvasPaths.vue';
+import { type ComputedRef, inject, onMounted, provide, ref } from 'vue';
+// import CanvasTempPaths from '@/components/project/CanvasTempPaths.vue';
+import { type Project, useCard, useGraph } from '@/stores';
 import {
   ClickCard,
   Contextmenu,
   CreateEdge,
   DefaultBehavior,
+  DragCanvas,
   DragCard,
   Register,
   ResizeCard,
-  DragCanvas,
   WheelCanvas
 } from '@/graph';
 import GraphContextmenuGroup from '@/components/project/GraphContextmenuGroup.vue';
+import CanvasCard from '@/components/project/CanvasCard.vue';
+// import CanvasPaths from '@/components/project/CanvasPaths.vue'
 
+const graph = useGraph();
 const svg = ref();
-const settings = useSettings();
-const { unitHeight, unitWidth } = storeToRefs(settings);
+const card = useCard();
 const project = inject<ComputedRef<Project>>('project');
 
 const register = new Register(svg);
@@ -41,20 +40,6 @@ onMounted(() => {
   register.listen();
 });
 
-onBeforeUnmount(() => {
-  register.removeListen();
-});
-
-const translateX = computed(() => project.value.offset.x);
-const translateY = computed(() => project.value.offset.y);
-
-const uW = computed(() => `${unitWidth.value}px`);
-const uH = computed(() => `${unitHeight.value}px`);
-
-const position = computed(() => {
-  return `${translateX.value}px ${translateY.value}px`;
-});
-
 provide('canvasContainer', svg);
 </script>
 
@@ -63,14 +48,24 @@ provide('canvasContainer', svg);
     <svg
       ref="svg"
       class="grid-line absolute h-full w-full"
+      :style="{
+        backgroundPositionX: project.x + 'px',
+        backgroundPositionY: project.y + 'px',
+        backgroundSize: `${card.w}px ${card.h}px`
+      }"
       @contextmenu.prevent
       data-el-type="canvas"
       data-type="canvas"
     >
-      <g :transform="`translate(${translateX},${translateY})`">
-        <canvas-paths></canvas-paths>
-        <canvas-cards></canvas-cards>
-        <canvas-temp-paths></canvas-temp-paths>
+      <g :transform="`translate(${project.x},${project.y})`">
+        <!--        <canvas-paths></canvas-paths>-->
+<!--        <canvas-paths/>-->
+        <canvas-card
+          v-for="item in graph.getCardsByProjectId(project.id)"
+          :card="item"
+          :key="item.id"
+        />
+        <!--        <canvas-temp-paths></canvas-temp-paths>-->
       </g>
     </svg>
   </div>
@@ -94,8 +89,6 @@ provide('canvasContainer', svg);
       transparent 80px
     );
   background-repeat: repeat;
-  background-position: v-bind(position);
-  background-size: v-bind(uW) v-bind(uH);
   background-blend-mode: normal;
 }
 </style>

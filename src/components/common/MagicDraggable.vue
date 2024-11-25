@@ -1,8 +1,7 @@
-<script setup lang="ts" generic="T extends { id: ID; [key: string]: any }">
+<script setup lang="ts" generic="T extends { id: any; [key: string]: any }">
 import { computed, reactive, ref } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import type { RectLike } from '@/graph/math';
-import type { ID } from '@/core/types';
 import { useCursor } from '@/stores/cursor';
 
 /**
@@ -27,7 +26,7 @@ const attr = 'data-draggable';
 
 const cursor = useCursor();
 
-const refs = reactive<Map<ID, HTMLElement>>(new Map());
+const refs = reactive<Map<any, HTMLElement>>(new Map());
 
 const origin = reactive({ x: 0, y: 0 });
 const start = reactive({ x: 0, y: 0 });

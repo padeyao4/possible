@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import type { Project } from '@/core';
 import { ref } from 'vue';
-import { useProjects } from '@/stores';
-import { emitter } from '@/utils';
+import { type Project, useGraph } from '@/stores'
+// import { emitter } from '@/utils'
 
 const { project } = defineProps<{ project: Partial<Project> }>();
 const showIcon = ref(false);
-const projects = useProjects();
+const graph = useGraph()
 
 const submitProject = () => {
   if (project.name.trim() === '') {
-    project.name = `无标题项目(${projects.sortProjects.length})`;
+    project.name = `无标题项目(${graph.projects.length})`;
   }
   project.editable = false;
 };
@@ -21,9 +20,9 @@ const handleRef = (e: Element) => {
   });
 };
 
-const handleDelete = () => {
-  emitter.emit('project-dialog:open', project);
-};
+// const handleDelete = () => {
+//   emitter.emit('project-dialog:open', project);
+// };
 
 const handleEdit = () => {
   project.editable = true;
@@ -67,7 +66,7 @@ const handleEdit = () => {
         <span
           class="icon-[uiw--delete] text-gray-400"
           style="height: 14px; width: 14px"
-          @click="handleDelete"
+          @click=""
         />
       </div>
       <div

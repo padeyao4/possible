@@ -1,25 +1,18 @@
 <script setup lang="ts">
-import ProjectFooter from '@/components/project/TheFooter.vue';
+import TheFooter from '@/components/project/TheFooter.vue';
 import { computed, provide } from 'vue';
-import { useProjects } from '@/stores/project';
 import type { ID } from '@/core/types';
 import CanvasRuler from '@/components/project/CanvasRuler.vue';
 import CanvasHeader from '@/components/project/CanvasHeader.vue';
 import TheCanvas from '@/components/project/TheCanvas.vue';
-import { useLayout } from '@/stores';
+import { useGraph } from '@/stores';
 
 const { id } = defineProps<{ id: ID }>();
-const layout = useLayout();
-layout.showRight = false;
-
-const projects = useProjects();
-const project = computed(() => projects.getProject(id));
+const graph = useGraph();
+const project = computed(() => graph.getProjectById(id));
 
 provide('project', project);
-
-const titleWidth = computed(() => {
-  return layout.showRight ? 10 : 145;
-});
+provide('projectId',id)
 </script>
 
 <template>
@@ -27,8 +20,8 @@ const titleWidth = computed(() => {
     <header
       class="drag-region flex h-16 shrink-0 items-end justify-start px-3 pb-3 text-xl text-gray-500"
     >
-      <div class="truncate" :style="{ width: `calc( 100% - ${titleWidth}px)` }">
-        {{ project.name ?? '未命名' }}
+      <div class="truncate">
+        {{ project.name }}
       </div>
     </header>
     <main
@@ -45,7 +38,7 @@ const titleWidth = computed(() => {
       <canvas-header />
       <canvas-ruler />
       <the-canvas />
-      <project-footer class="col-span-2" style="background-color: #fff" />
+      <the-footer />
     </main>
   </div>
 </template>

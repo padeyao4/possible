@@ -28,3 +28,13 @@ export const useSettings = defineStore('card', () => {
     $reset
   };
 });
+
+/**
+ * 网格背景中每个网格的规格
+ */
+export const useCard = defineStore('UnitCard', {
+  state: () => ({
+    w: 120,
+    h: 80
+  })
+});

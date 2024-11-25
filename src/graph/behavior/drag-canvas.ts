@@ -1,8 +1,8 @@
 import { clampMax } from '@/graph/math';
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { emitter } from '@/utils';
-import { Project } from '@/core'
 import { inject, type Ref } from 'vue'
+import type { Project } from '@/stores'
 
 export class DragCanvas extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -23,7 +23,7 @@ export class DragCanvas extends BaseBehavior {
     this.isDown = true;
     this.position.x = e.x;
     this.position.y = e.y;
-    const { x, y } = this.project.value.offset;
+    const { x, y } = this.project.value;
 
     this.offset.x = x;
     this.offset.y = y;
@@ -34,8 +34,8 @@ export class DragCanvas extends BaseBehavior {
     if (!this.isDown) return;
     const dx = e.x - this.position.x;
     const dy = e.y - this.position.y;
-    this.project.value.offset.x = clampMax(this.offset.x + dx, 0);
-    this.project.value.offset.y = clampMax(this.offset.y + dy, 0);
+    this.project.value.x = clampMax(this.offset.x + dx, 0);
+    this.project.value.y = clampMax(this.offset.y + dy, 0);
   }
 
   onmouseup(e: MouseEvent) {

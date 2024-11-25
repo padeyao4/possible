@@ -1,5 +1,5 @@
 import { emitter, save } from '@/utils';
-import { useProjects } from '@/stores';
+import { useGraph } from '@/stores';
 
 /*export function useListenNotifyEvent() {
   emitter.on('notify:error', (e) => {
@@ -56,7 +56,7 @@ export function useListenBacklogEvent() {
 }*/
 
 export function useListenElectronEvent() {
-  const projects = useProjects();
+  const projects = useGraph();
 
   window.ipcRenderer.on('electron:exit', async () => {
     await save();
@@ -68,7 +68,7 @@ export function useListenElectronEvent() {
   });
 
   window.ipcRenderer.on('electron:schedule', async () => {
-    projects.dailyUpdate();
+    // projects.dailyUpdate();
     console.log('daily update')
   });
 }

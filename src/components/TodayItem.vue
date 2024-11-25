@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Node } from '@/core/';
 import { Check } from '@element-plus/icons-vue';
-import { useProjects } from '@/stores';
+import { useGraph } from '@/stores';
 import { ref } from 'vue';
 import { emitter } from '@/utils';
 
@@ -9,7 +9,7 @@ const { node } = defineProps<{
   node: Node;
 }>();
 
-const projects = useProjects();
+const projects = useGraph();
 
 const project = projects.getProject(node.projectId);
 
