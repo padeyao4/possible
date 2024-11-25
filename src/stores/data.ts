@@ -1,6 +1,4 @@
 import { defineStore } from 'pinia';
-import { useWindowSize } from '@vueuse/core';
-import { useCard } from '@/stores/card';
 import { v4 } from 'uuid';
 
 export type ID = string | number;
@@ -57,7 +55,11 @@ export const useGraph = defineStore('graph', {
     nodesMap: new Map<ID, Node>(),
     edgesMap: new Map<ID, Edge>(),
     inEdgesMap: new Map<ID, Set<Edge>>(), // Map中的ID表示edge中的target,Set中的Edge表示所有指向该节点的边
-    outEdgesMap: new Map<ID, Set<Edge>>() // Map中的ID表示edge中的source,Set中的Edge表示所有从该节点出发的边
+    outEdgesMap: new Map<ID, Set<Edge>>(), // Map中的ID表示edge中的source,Set中的Edge表示所有从该节点出发的边
+    viewWidth: 0, // 可视化窗口大小
+    viewHeight: 0, // 可视化窗口大小
+    cardWidth: 120, // 实际卡片宽度
+    cardHeight: 80 // 实际卡片高度
   }),
   getters: {
     projects: (state) => Array.from(state.projectsMap.values()),
@@ -75,14 +77,12 @@ export const useGraph = defineStore('graph', {
      * @param state
      */
     getCardsByProjectId: (state) => (id: ID) => {
-      const { width, height } = useWindowSize();
-      const card = useCard();
       const project = state.projectsMap.get(id);
       const bounds = {
-        x: -project.x / card.w,
-        y: -project.y / card.h,
-        w: width.value / card.w,
-        h: height.value / card.h
+        x: -project.x / state.cardWidth,
+        y: -project.y / state.cardHeight,
+        w: state.viewWidth / state.cardWidth,
+        h: state.viewHeight / state.cardHeight
       }; // 计算当前视图的边界
       return Array.from(state.nodesMap.values())
         .filter((node) => node.projectId === id && cross(bounds, node))
@@ -90,10 +90,10 @@ export const useGraph = defineStore('graph', {
         .map((node) => ({
           id: node.id,
           name: node.name,
-          x: node.x * card.w + 10, // 实际x点
-          y: node.y * card.h + 10, // 实际y点
-          w: node.w * card.w - 10 * 2, // 实际宽度
-          h: node.h * card.h - 10 * 2, // 实际高度
+          x: node.x * state.cardWidth + 10, // 实际x点
+          y: node.y * state.cardHeight + 10, // 实际y点
+          w: node.w * state.cardWidth - 10 * 2, // 实际宽度
+          h: node.h * state.cardHeight - 10 * 2, // 实际高度
           color: node.status ? '#dddddd' : '#fff' // 根据状态设置颜色
         }));
     },
@@ -102,16 +102,15 @@ export const useGraph = defineStore('graph', {
      * @param state
      */
     getPathsByProjectId: (state) => (id: ID) => {
-      const card = useCard();
       return Array.from(state.edgesMap.values())
         .filter((edge) => edge.projectId === id)
         .map((edge) => {
           const sourceNode = state.nodesMap.get(edge.source);
           const targetNode = state.nodesMap.get(edge.target);
-          const startX = (sourceNode.x + sourceNode.w) * card.w - 10;
-          const startY = (sourceNode.y + sourceNode.h / 2) * card.h;
-          const targetX = targetNode.x * card.w + 10;
-          const targetY = (targetNode.y + targetNode.h / 2) * card.h;
+          const startX = (sourceNode.x + sourceNode.w) * state.cardWidth - 10;
+          const startY = (sourceNode.y + sourceNode.h / 2) * state.cardHeight;
+          const targetX = targetNode.x * state.cardWidth + 10;
+          const targetY = (targetNode.y + targetNode.h / 2) * state.cardHeight;
           const dist = targetX - startX;
           const controller1X = startX + dist / 2;
           const controller1Y = startY;

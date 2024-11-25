@@ -1,24 +1,19 @@
 <script setup lang="ts">
 import { computed, type ComputedRef, inject } from 'vue';
-import { useCard } from '@/stores/card';
-import { ONE_DAY_MS, type Project } from '@/stores';
-import { useWindowSize } from '@vueuse/core';
-
-const card = useCard();
+import { ONE_DAY_MS, type Project, useGraph } from '@/stores';
 
 const project = inject<ComputedRef<Project>>('project');
+const graph = useGraph();
 
-const { width: windowWidth } = useWindowSize();
-
-const offsetX = computed(() => Math.floor(-project.value.x / card.w) - 2);
+const offsetX = computed(() => Math.floor(-project.value.x / graph.cardWidth) - 2);
 
 const numbers = computed(() =>
-  Array.from({ length: Math.ceil(windowWidth.value / card.w) }, (_, i) => i + 1 + offsetX.value)
+  Array.from({ length: Math.ceil(graph.viewWidth / graph.cardWidth) }, (_, i) => i + 1 + offsetX.value)
 );
 
-const translateX = computed(() => (project.value.x % card.w) - card.w + 'px');
+const translateX = computed(() => (project.value.x % graph.cardWidth) - graph.cardWidth + 'px');
 
-const unitWidth = computed(() => card.w + 'px');
+const unitWidth = computed(() => graph.cardWidth + 'px');
 
 // const todayIndex = computed(() => getDaysBetweenDates(timer.timestamp, project.value.createTime));
 

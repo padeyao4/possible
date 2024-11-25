@@ -39,8 +39,8 @@ export class DragCard extends BaseBehavior {
     // const node = this.project.value.nodeMap.get(this.oldNode.id);
     const node = this.graph.nodesMap.get(this.oldNode.id);
 
-    node.x = this.oldNode.x + dx / this.settings.unitWidth;
-    node.y = this.oldNode.y + dy / this.settings.unitHeight;
+    node.x = this.oldNode.x + dx / this.graph.cardWidth;
+    node.y = this.oldNode.y + dy / this.graph.cardHeight;
     this.mouseStyle.lock('move');
   }
 

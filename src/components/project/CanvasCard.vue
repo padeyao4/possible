@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { type ID, type Node, useCard } from '@/stores'
+import { type ID } from '@/stores';
 
 defineProps<{
-  card: {
+  data: {
     x: number;
     y: number;
     w: number;
@@ -15,28 +15,28 @@ defineProps<{
 </script>
 
 <template>
-  <g :transform="`translate(${card.x},${card.y})`">
+  <g :transform="`translate(${data.x},${data.y})`">
     <rect
-      :width="card.w"
-      :height="card.h"
+      :width="data.w"
+      :height="data.h"
       opacity="0.7"
       stroke-width="1"
       stroke="#000"
-      :fill="card.color"
+      :fill="data.color"
       rx="8"
     />
-    <foreignObject :width="card.w" :height="card.h" opacity="1">
+    <foreignObject :width="data.w" :height="data.h" opacity="1">
       <div class="text">
         <p>
-          {{ card.name }}
+          {{ data.name }}
         </p>
       </div>
     </foreignObject>
     <rect
-      :width="card.w"
-      :height="card.h"
+      :width="data.w"
+      :height="data.h"
       opacity="0"
-      :data-key="card.id"
+      :data-key="data.id"
       data-el-type="node"
       data-mouse-style="pointer"
       class="key-shape"
@@ -44,7 +44,7 @@ defineProps<{
     />
     <g opacity="0">
       <rect
-        :data-key="card.id"
+        :data-key="data.id"
         data-mouse-style="nwse-resize"
         data-type="node"
         data-el-type="resize"
@@ -56,41 +56,41 @@ defineProps<{
         height="5"
       />
       <rect
-        :data-key="card.id"
+        :data-key="data.id"
         data-mouse-style="nesw-resize"
         data-el-type="resize"
         data-type="node"
         data-direction="rt"
-        :x="card.w - 2.5"
+        :x="data.w - 2.5"
         y="-2.5"
         fill="red"
         width="5"
         height="5"
       />
       <rect
-        :data-key="card.id"
+        :data-key="data.id"
         data-mouse-style="ns-resize"
         data-el-type="resize"
         data-type="node"
         data-direction="t"
         x="2.5"
         y="-2.5"
-        :width="card.w - 5"
+        :width="data.w - 5"
         height="5"
       />
       <rect
-        :data-key="card.id"
+        :data-key="data.id"
         data-el-type="resize"
         data-mouse-style="ns-resize"
         data-type="node"
         data-direction="b"
         x="2.5"
-        :y="card.h - 2.5"
-        :width="card.w - 5"
+        :y="data.h - 2.5"
+        :width="data.w - 5"
         height="5"
       />
       <rect
-        :data-key="card.id"
+        :data-key="data.id"
         data-el-type="resize"
         data-mouse-style="ew-resize"
         data-type="node"
@@ -98,39 +98,39 @@ defineProps<{
         x="-2.5"
         y="2.5"
         :width="5"
-        :height="card.h - 5"
+        :height="data.h - 5"
       />
       <rect
-        :data-key="card.id"
+        :data-key="data.id"
         data-el-type="resize"
         data-mouse-style="ew-resize"
         data-type="node"
         data-direction="r"
-        :x="card.w - 2.5"
+        :x="data.w - 2.5"
         y="2.5"
         :width="5"
-        :height="card.h - 5"
+        :height="data.h - 5"
       />
       <rect
-        :data-key="card.id"
+        :data-key="data.id"
         data-el-type="resize"
         data-mouse-style="nesw-resize"
         data-type="node"
         data-direction="lb"
         x="-2.5"
-        :y="card.h - 2.5"
+        :y="data.h - 2.5"
         fill="red"
         width="5"
         height="5"
       />
       <rect
-        :data-key="card.id"
+        :data-key="data.id"
         data-el-type="resize"
         data-mouse-style="nwse-resize"
         data-type="node"
         data-direction="rb"
-        :x="card.w - 2.5"
-        :y="card.h - 2.5"
+        :x="data.w - 2.5"
+        :y="data.h - 2.5"
         fill="red"
         width="5"
         height="5"
@@ -138,7 +138,7 @@ defineProps<{
     </g>
     <g class="anchor">
       <circle
-        :cy="card.h / 2"
+        :cy="data.h / 2"
         r="5"
         stroke="#000"
         fill="#fff"
@@ -146,12 +146,12 @@ defineProps<{
         data-type="node"
         data-mouse-style="pointer"
         data-el-type="anchor"
-        :data-key="card.id"
+        :data-key="data.id"
         data-anchor="left"
       />
       <circle
-        :cx="card.w"
-        :cy="card.h / 2"
+        :cx="data.w"
+        :cy="data.h / 2"
         r="5"
         stroke="#000"
         fill="#fff"
@@ -159,7 +159,7 @@ defineProps<{
         data-type="node"
         data-mouse-style="pointer"
         data-el-type="anchor"
-        :data-key="card.id"
+        :data-key="data.id"
         data-anchor="right"
       />
     </g>

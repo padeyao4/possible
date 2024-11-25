@@ -1,27 +1,25 @@
 <script setup lang="ts">
-import { useTimer } from '@/stores/timer';
 import { type ComputedRef, inject, ref } from 'vue';
-import type { Project } from '@/core';
 import HomeIcon from '@/components/icon/HomeIcon.vue';
 import MapPointIcon from '@/components/icon/MapPointIcon.vue';
 import TestTubeIcon from '@/components/icon/TestTubeIcon.vue';
 import CalendarSearchIcon from '@/components/icon/CalendarSearchIcon.vue';
 import ArrowRightIcon from '@/components/icon/ArrowRightIcon.vue';
+import type { Project } from '@/stores'
 
 const project = inject<ComputedRef<Project>>('project');
-const timer = useTimer();
 
 function handleBackHome() {
-  project.value.offset.x = 0;
-  project.value.offset.y = 0;
+  project.value.x = 0;
+  project.value.y = 0;
 }
 
 function handleToday() {
-  project.value.setOffsetIndex(timer.timestamp);
+  // project.value.setOffsetIndex(timer.timestamp);
 }
 
 function handleTest() {
-  console.log(project.value.offset);
+  // console.log(project.value.offset);
 }
 
 function handleMoveRight() {}
@@ -37,7 +35,7 @@ const dateInputValue = defineModel();
 function handleDateChange() {
   const date = dateInputValue.value as string;
   if (date !== '' && date !== null) {
-    project.value.setOffsetIndex(date);
+    // project.value.setOffsetIndex(date);
   }
 }
 </script>

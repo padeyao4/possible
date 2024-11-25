@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref, type Ref } from 'vue';
-import { Project } from '@/core';
+// import { Project } from '@/core';
 
 export const ONE_DAY_MS = 86400_000;
 export const ONE_MINUTE_MS = 60_000;
@@ -45,10 +45,10 @@ export function getDaysBetweenDates(
   return days(startDate) - days(endDate);
 }
 
-export function getIndexByDate(project: Partial<Project>): number {
-  const timer = useTimer();
-  return getDaysBetweenDates(timer.timestamp, project.createTime);
-}
+// export function getIndexByDate(project: Partial<Project>): number {
+//   const timer = useTimer();
+//   return getDaysBetweenDates(timer.timestamp, project.createTime);
+// }
 
 export function scheduleMidnightTask(clear: Ref<any>, callback: () => void) {
   const now = new Date();
@@ -62,32 +62,32 @@ export function scheduleMidnightTask(clear: Ref<any>, callback: () => void) {
   }, delay);
 }
 
-export const useTimer = defineStore('timestamp', () => {
-  const timestamp = ref(new Date().valueOf());
-
-  const localTimestamp = computed(() => {
-    const d = new Date(timestamp.value);
-    return d.getTime() - d.getTimezoneOffset() * ONE_MINUTE_MS;
-  });
-
-  const currentDays = computed(() => {
-    return days(timestamp.value);
-  });
-
-  function update() {
-    timestamp.value = new Date().valueOf();
-  }
-
-  function $reset() {}
-
-  return {
-    timestamp,
-    localTimestamp,
-    currentDays,
-    update,
-    $reset
-  };
-});
+// export const useTimer = defineStore('timestamp', () => {
+//   const timestamp = ref(new Date().valueOf());
+//
+//   const localTimestamp = computed(() => {
+//     const d = new Date(timestamp.value);
+//     return d.getTime() - d.getTimezoneOffset() * ONE_MINUTE_MS;
+//   });
+//
+//   const currentDays = computed(() => {
+//     return days(timestamp.value);
+//   });
+//
+//   function update() {
+//     timestamp.value = new Date().valueOf();
+//   }
+//
+//   function $reset() {}
+//
+//   return {
+//     timestamp,
+//     localTimestamp,
+//     currentDays,
+//     update,
+//     $reset
+//   };
+// });
 
 export const useTime = defineStore('time', {
   state: () => ({

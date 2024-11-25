@@ -1,5 +1,4 @@
 import { useCursor } from '@/stores/cursor';
-import { useSettings } from '@/stores/card';
 import { useEventListener } from '@vueuse/core';
 import type { Ref } from 'vue';
 
@@ -34,7 +33,6 @@ export type EventDispatch = {
 
 export abstract class BaseBehavior {
   mouseStyle = useCursor();
-  settings = useSettings();
 
   constructor() {}
 

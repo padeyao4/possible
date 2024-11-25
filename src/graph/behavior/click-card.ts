@@ -1,8 +1,7 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { emitter } from '@/utils';
 import { inject, type Ref } from 'vue';
-import { Project } from '@/core';
-import { useGraph } from '@/stores';
+import { type Project, useGraph } from '@/stores'
 
 export class ClickCard extends BaseBehavior {
   distance = 100;

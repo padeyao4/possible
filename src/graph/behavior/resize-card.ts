@@ -1,7 +1,7 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { clampMin } from '@/graph/math';
 import { inject, type Ref } from 'vue';
-import { type Project, type Node, useGraph, useCard } from '@/stores';
+import { type Project, type Node, useGraph } from '@/stores';
 
 export class ResizeCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -17,7 +17,6 @@ export class ResizeCard extends BaseBehavior {
   oldNode = {} as any;
   direction = '';
   graph = useGraph();
-  card = useCard();
   project = inject<Ref<Project>>('project');
 
   onmousedown(e: MouseEvent, el: Element) {
@@ -65,8 +64,8 @@ export class ResizeCard extends BaseBehavior {
   }
 
   private changeSize(dx: number, dy: number, node: Node) {
-    const dtW = dx / this.card.w;
-    const dtH = dy / this.card.h;
+    const dtW = dx / this.graph.cardWidth;
+    const dtH = dy / this.graph.cardHeight;
     const rw = clampMin(this.oldNode.w + dtW, 1);
     const lw = clampMin(this.oldNode.w - dtW, 1);
     const bh = clampMin(this.oldNode.h + dtH, 1);

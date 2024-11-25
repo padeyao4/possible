@@ -1,32 +1,32 @@
 <script setup lang="ts">
 import { computed, type ComputedRef, inject, ref, watchEffect } from 'vue';
 import { useWindowSize } from '@vueuse/core';
-import { type Project, useCard } from '@/stores'
+import { type Project, useGraph } from '@/stores'
 
+const graph = useGraph()
 const project = inject<ComputedRef<Project>>('project');
-const card = useCard();
 
 const rulers = ref<number[]>([]);
 
 const { height } = useWindowSize();
 
 watchEffect(() => {
-  const count = Math.ceil(height.value / card.h);
+  const count = Math.ceil(height.value / graph.cardHeight);
   rulers.value = Array.from({ length: count }, (_, i) => i + 1);
 });
 
 const y = computed(() => {
   const absY = Math.abs(project.value.y);
-  return Math.floor(absY / card.h) - 2;
+  return Math.floor(absY / graph.cardHeight) - 2;
 });
 
-const translateY = computed(() => (project.value.y % card.h) - card.h + 'px');
+const translateY = computed(() => (project.value.y % graph.cardHeight) - graph.cardHeight + 'px');
 </script>
 
 <template>
   <div class="canvas-ruler">
     <div class="container">
-      <div v-for="item in rulers" class="ruler-unit" :key="item" :style="{ height: `${card.h}px` }">
+      <div v-for="item in rulers" class="ruler-unit" :key="item" :style="{ height: `${graph.cardHeight}px` }">
         {{ item + y }}
       </div>
     </div>

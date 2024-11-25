@@ -4,7 +4,6 @@ import { getActivePinia } from 'pinia';
 export * from './account';
 export * from './cursor';
 // export * from './project';
-export * from './card';
 export * from './temp-path';
 export * from './timer';
 export * from './backlog';

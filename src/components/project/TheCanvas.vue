@@ -2,7 +2,7 @@
 // import CanvasPaths from '@/components/project/CanvasPaths.vue';
 import { type ComputedRef, inject, onMounted, provide, ref } from 'vue';
 // import CanvasTempPaths from '@/components/project/CanvasTempPaths.vue';
-import { type Project, useCard, useGraph } from '@/stores';
+import { type Project, useGraph } from '@/stores';
 import {
   ClickCard,
   Contextmenu,
@@ -16,11 +16,10 @@ import {
 } from '@/graph';
 import GraphContextmenuGroup from '@/components/project/GraphContextmenuGroup.vue';
 import CanvasCard from '@/components/project/CanvasCard.vue';
-// import CanvasPaths from '@/components/project/CanvasPaths.vue'
+import CanvasPaths from '@/components/project/CanvasPaths.vue';
 
 const graph = useGraph();
 const svg = ref();
-const card = useCard();
 const project = inject<ComputedRef<Project>>('project');
 
 const register = new Register(svg);
@@ -51,18 +50,17 @@ provide('canvasContainer', svg);
       :style="{
         backgroundPositionX: project.x + 'px',
         backgroundPositionY: project.y + 'px',
-        backgroundSize: `${card.w}px ${card.h}px`
+        backgroundSize: `${graph.cardWidth}px ${graph.cardHeight}px`
       }"
       @contextmenu.prevent
       data-el-type="canvas"
       data-type="canvas"
     >
       <g :transform="`translate(${project.x},${project.y})`">
-        <!--        <canvas-paths></canvas-paths>-->
-<!--        <canvas-paths/>-->
+        <canvas-paths />
         <canvas-card
           v-for="item in graph.getCardsByProjectId(project.id)"
-          :card="item"
+          :data="item"
           :key="item.id"
         />
         <!--        <canvas-temp-paths></canvas-temp-paths>-->
