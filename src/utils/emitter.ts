@@ -1,6 +1,6 @@
 import mitt from 'mitt';
 import { Backlog, Edge, type ID, Node } from '@/core';
-import type { Project } from '@/stores'
+import type { Project } from '@/stores';
 
 export type Error = { message: string; [key: string]: any };
 
@@ -66,4 +66,13 @@ type NotifyEvents = {
   'notify:error': Error;
 };
 
-export const emitter = mitt<DataEvents & UiEvents & NotifyEvents & LocalEvents>();
+/**
+ * @description
+ * Custom events,界面控制事件
+ */
+type CustomEvents = {
+  'open-create-project-dialog': null;
+  'open-delete-project-dialog': null;
+};
+
+export const emitter = mitt<DataEvents & UiEvents & NotifyEvents & LocalEvents & CustomEvents>();

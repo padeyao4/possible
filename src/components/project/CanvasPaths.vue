@@ -17,7 +17,7 @@ const project = inject<ComputedRef<Project>>('project');
       stroke-opacity="0.3"
       stroke-width="1"
     />
-    <path
+<!--    <path
       :d="`M ${item.startX},${item.startY} C ${item.controller1X},${item.controller1Y} ${item.controller2X},${item.controller2Y} ${item.targetX},${item.targetY}`"
       stroke="#00000050"
       fill="#ffffff00"
@@ -27,7 +27,7 @@ const project = inject<ComputedRef<Project>>('project');
       data-el-type="edge"
       stroke-opacity="0.7"
       stroke-width="9"
-    />
+    />-->
   </template>
 </template>
 

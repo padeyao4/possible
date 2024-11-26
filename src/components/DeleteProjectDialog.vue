@@ -12,12 +12,10 @@ const project = ref<Project>();
 const router = useRouter();
 const route = useRoute();
 
-onMounted(() => {
-  emitter.on('project-dialog:open', (e) => {
-    console.log('listen on project:open');
-    project.value = e;
-    visible.value = true;
-  });
+emitter.on('open-delete-project-dialog', (e) => {
+  console.log('listen on project:open');
+  project.value = e;
+  visible.value = true;
 });
 
 const handleDelete = () => {
@@ -31,11 +29,6 @@ const handleDelete = () => {
   // dataController.removeProject(project.value);
   // emitter.emit('project:delete', id);
 };
-
-onUnmounted(() => {
-  emitter.off('project-dialog:open');
-  console.log('off project:open');
-});
 </script>
 
 <template>
@@ -46,7 +39,7 @@ onUnmounted(() => {
     align-center
     style="border-radius: 6px !important"
   >
-    <el-text truncated>确定删除{{ project?.name ?? '' }}项目吗</el-text>
+    <el-text truncated>确定删除 <i>{{ project?.name ?? '' }}</i>项目吗</el-text>
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="visible = false">取消</el-button>
