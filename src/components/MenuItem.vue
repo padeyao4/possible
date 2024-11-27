@@ -30,9 +30,6 @@ const showIcon = ref(false);
       >
         <span class="icon-[cil--pen] bg-gray-400" style="height: 14px; width: 14px" />
       </div>
-<!--      <div class="flex h-6 w-6 items-center justify-center rounded hover:bg-blue-100">-->
-<!--        <div class="icon-[icon-park-outline&#45;&#45;drag] bg-gray-400" />-->
-<!--      </div>-->
     </div>
   </div>
 </template>
