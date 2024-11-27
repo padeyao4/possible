@@ -1,6 +1,6 @@
 import mitt from 'mitt';
 // import { Backlog, Edge, Node } from '@/core';
-import type { Project, ID } from '@/stores';
+import type { Project } from '@/stores';
 
 // export type Error = { message: string; [key: string]: any };
 
@@ -50,6 +50,11 @@ import type { Project, ID } from '@/stores';
 type CustomEvents = {
   'open-create-project-dialog': null;
   'open-delete-project-dialog': Project;
+  'open-canvas-menu': {
+    menuType: 'canvas' | 'node' | 'edge';
+    x: number;
+    y: number;
+  };
 };
 
 export const emitter = mitt<CustomEvents>();

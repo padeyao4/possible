@@ -16,7 +16,7 @@ app.use(router);
 // 页面每次跳转前记录跳转后的项目id
 router.beforeEach(async (to, from, next) => {
   const graph = useGraph();
-  to.name === 'project' && graph.setCurrentId(to.query['id'] as ID);
+  to.name === 'project' && graph.setProjectId(to.query['id'] as ID);
   next();
 });
 app.mount('#app');

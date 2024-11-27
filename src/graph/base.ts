@@ -35,7 +35,7 @@ export type EventDispatch = {
 export abstract class BaseBehavior {
   mouseStyle = useCursor();
   graph = useGraph();
-  project = this.graph.currentProject;
+  project = this.graph.project;
 
   constructor() {}
 
@@ -70,7 +70,9 @@ export class Register {
 
   public listen() {
     eventTypes.forEach((mouseType) => {
-      this.container.value.addEventListener(mouseType, this.processEvent.bind(this));
+      this.container.value.addEventListener(mouseType, this.processEvent.bind(this), {
+        passive: true
+      });
     });
     this.globalListenerCleanup = useEventListener(
       document,

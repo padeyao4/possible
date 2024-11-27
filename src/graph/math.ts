@@ -5,19 +5,10 @@ export interface RectLike {
   h: number;
 }
 
-
-
 export function clampMin(n: number, min: number) {
-  return n >= min ? n : min
+  return n >= min ? n : min;
 }
 
 export function clampMax(n: number, max: number) {
-  return n <= max ? n : max
-}
-
-export function clamp(n: number, min: number, max: number) {
-  if (min > max) return min
-  if (n <= min) return min
-  if (n >= max) return max
-  return n
+  return n <= max ? n : max;
 }

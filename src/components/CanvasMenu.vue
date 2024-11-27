@@ -1,0 +1,161 @@
+<script lang="ts" setup>
+import { computed, reactive, ref, watch, watchEffect } from 'vue';
+import { emitter } from '@/utils';
+
+const { svg } = defineProps<{ svg: HTMLElement }>();
+
+interface ConfType {
+  name: string;
+  icon?: string;
+  action?: () => void;
+  group?: ConfType[][];
+}
+
+/**
+ * 菜单列表
+ */
+const conf = {
+  node: <ConfType[][]>[
+    [
+      {
+        name: '编辑',
+        icon: 'edit',
+        action: () => {}
+      }
+    ],
+    [
+      {
+        name: '追加节点',
+        icon: 'append',
+        action: () => {}
+      },
+      {
+        name: '插入节点',
+        icon: 'insert',
+        action: () => {}
+      }
+    ],
+    [
+      {
+        name: '删除',
+        icon: 'delete',
+        action: () => {}
+      }
+    ]
+  ],
+  edge: <ConfType[][]>[],
+  canvas: <ConfType[][]>[
+    [
+      {
+        name: '创建节点',
+        icon: 'add',
+        action: () => {}
+      }
+    ]
+  ]
+};
+
+type MenuType = keyof typeof conf;
+
+const menuRef = ref<HTMLElement | null>(null);
+
+const menuModel = reactive({
+  visible: false,
+  top: 0, // 菜单栏距离顶部的距离
+  left: 0, // 菜单栏距离左侧的距离
+  menuType: <MenuType>'canvas'
+});
+
+emitter.on('open-canvas-menu', (param) => {
+  menuModel.visible = true;
+  menuModel.top = param.y;
+  menuModel.left = param.x;
+  menuModel.menuType = param.menuType;
+});
+
+watchEffect(() => {
+  // 解决焦点问题
+  menuRef.value?.focus?.();
+  // 监听菜单栏显示状态,调整菜单位置
+  if (menuModel.visible && menuRef.value) {
+    const svgBounding = svg.getBoundingClientRect();
+    const menuBounding = menuRef.value?.getBoundingClientRect();
+    if (menuBounding.right > svgBounding.right) {
+      menuModel.left = svgBounding.right - menuBounding.width;
+    }
+    if (menuBounding.bottom > svgBounding.bottom) {
+      menuModel.top = menuModel.top - (menuBounding.bottom - svgBounding.bottom);
+    }
+  }
+});
+
+const list = computed(() => {
+  return conf[menuModel.menuType];
+});
+</script>
+
+<template>
+  <div
+    v-if="menuModel.visible"
+    ref="menuRef"
+    :style="{ top: menuModel.top + 'px', left: menuModel.left + 'px' }"
+    class="container"
+    tabindex="0"
+    @blur="menuModel.visible = false"
+    @contextmenu.prevent
+  >
+    <div v-for="group in list" class="group">
+      <div v-for="item in group" class="item">
+        {{ item.name }}
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  position: fixed;
+  z-index: 4;
+  width: 200px;
+  padding: 2px;
+  background-color: #ffffff;
+  border: 1px solid #00000020;
+  border-radius: 5px;
+  box-shadow:
+    0 0 10px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(247, 247, 249, 0.25);
+  animation: fadeIn 200ms ease-in;
+}
+
+div:focus {
+  outline: none;
+}
+
+.group {
+  border-bottom: 1px solid #33333350;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+
+  &:hover {
+    background-color: #00000010;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+</style>

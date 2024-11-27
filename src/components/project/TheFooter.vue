@@ -6,7 +6,7 @@ import CalendarSearchIcon from '@/components/icon/CalendarSearchIcon.vue';
 import { useGraph } from '@/stores';
 
 const graph = useGraph();
-const project = graph.currentProject;
+const project = graph.project;
 
 function handleBackHome() {
   project.x = 0;

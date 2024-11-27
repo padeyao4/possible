@@ -6,7 +6,7 @@ import TheCanvas from '@/components/project/TheCanvas.vue';
 import { useGraph } from '@/stores';
 
 const graph = useGraph();
-const project = graph.currentProject;
+const project = graph.project;
 </script>
 
 <template>

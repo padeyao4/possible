@@ -4,7 +4,7 @@ import { useWindowSize } from '@vueuse/core';
 import { useGraph } from '@/stores';
 
 const graph = useGraph();
-const project = graph.currentProject;
+const project = graph.project;
 
 const rulers = ref<number[]>([]);
 

@@ -51,7 +51,7 @@ export function cross(rect1: RectLike, rect2: RectLike): boolean {
 
 export const useGraph = defineStore('graph', {
   state: () => ({
-    currentId: <ID>undefined,
+    projectId: <ID>undefined,
     projectsMap: new Map<ID, Project>(),
     nodesMap: new Map<ID, Node>(),
     edgesMap: new Map<ID, Edge>(),
@@ -63,8 +63,8 @@ export const useGraph = defineStore('graph', {
     cardHeight: 80 // 实际卡片高度
   }),
   getters: {
-    currentProject: (state) => {
-      return state.projectsMap.get(state.currentId);
+    project: (state) => {
+      return state.projectsMap.get(state.projectId);
     },
     projects: (state) => Array.from(state.projectsMap.values()),
     sortedProjects: (state) => {
@@ -80,7 +80,7 @@ export const useGraph = defineStore('graph', {
      * @param state
      */,
     currentCards: (state) => {
-      const project = state.projectsMap.get(state.currentId);
+      const project = state.projectsMap.get(state.projectId);
       const bounds = {
         x: -project.x / state.cardWidth,
         y: -project.y / state.cardHeight,
@@ -88,7 +88,7 @@ export const useGraph = defineStore('graph', {
         h: state.viewHeight / state.cardHeight
       }; // 计算当前视图的边界
       return Array.from(state.nodesMap.values())
-        .filter((node) => node.projectId === state.currentId && cross(bounds, node))
+        .filter((node) => node.projectId === state.projectId && cross(bounds, node))
         .sort((a, b) => a.x - b.x)
         .map((node) => ({
           id: node.id,
@@ -105,7 +105,7 @@ export const useGraph = defineStore('graph', {
      */,
     currentPaths: (state) => {
       return Array.from(state.edgesMap.values())
-        .filter((edge) => edge.projectId === state.currentId)
+        .filter((edge) => edge.projectId === state.projectId)
         .map((edge) => {
           const sourceNode = state.nodesMap.get(edge.source);
           const targetNode = state.nodesMap.get(edge.target);
@@ -155,8 +155,8 @@ export const useGraph = defineStore('graph', {
       this.edgesMap.set(edge.id, edge);
       // todo 添加出边和入边
     },
-    setCurrentId(id: ID) {
-      this.currentId = id;
+    setProjectId(id: ID) {
+      this.projectId = id;
     }
   }
 });

@@ -5,7 +5,7 @@ import { computed, onMounted, provide, ref } from 'vue';
 import { useGraph } from '@/stores';
 import {
   ClickCard,
-  Contextmenu,
+  ClickCanvasMenu,
   CreateEdge,
   DefaultBehavior,
   DragCanvas,
@@ -14,12 +14,13 @@ import {
   ResizeCard,
   WheelCanvas
 } from '@/graph';
-import GraphContextmenuGroup from '@/components/project/GraphContextmenuGroup.vue';
+// import GraphContextmenuGroup from '@/components/project/GraphContextmenuGroup.vue';
 import CanvasCard from '@/components/project/CanvasCard.vue';
 import CanvasPath from '@/components/project/CanvasPath.vue';
+import CanvasMenu from '@/components/CanvasMenu.vue';
 
 const graph = useGraph();
-const project = graph.currentProject;
+const project = graph.project;
 const svg = ref();
 const cards = computed(() => graph.currentCards);
 const paths = computed(() => graph.currentPaths);
@@ -34,7 +35,7 @@ onMounted(() => {
     ResizeCard,
     ClickCard,
     CreateEdge,
-    Contextmenu,
+    ClickCanvasMenu,
     WheelCanvas
   );
 
@@ -64,8 +65,9 @@ provide('canvasContainer', svg);
         <!--        <canvas-temp-paths></canvas-temp-paths>-->
       </g>
     </svg>
+    <canvas-menu :svg="svg" />
   </div>
-  <graph-contextmenu-group />
+  <!--  <graph-contextmenu-group />-->
 </template>
 
 <style scoped>

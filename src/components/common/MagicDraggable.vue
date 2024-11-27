@@ -51,7 +51,7 @@ function setRefs(e: any) {
 }
 
 function collide(r1: RectLike, x: number, y: number) {
-  return !(x < r1.x || x > r1.x + r1.width || y < r1.y || y > r1.y + r1.height);
+  return !(x < r1.x || x > r1.x + r1.w || y < r1.y || y > r1.y + r1.h);
 }
 
 useEventListener(

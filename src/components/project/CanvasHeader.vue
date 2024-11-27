@@ -4,7 +4,7 @@ import { ONE_DAY_MS, useGraph } from '@/stores';
 
 const graph = useGraph();
 
-const project = graph.currentProject;
+const project = graph.project;
 
 const offsetX = computed(() => Math.floor(-project.x / graph.cardWidth) - 2);
 
