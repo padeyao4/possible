@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { type Project } from '@/stores';
+import MenuItemEditeButton from '@/components/MenuItemEditeButton.vue';
+import MenuItemDeleteButton from '@/components/MenuItemDeleteButton.vue';
 
 defineProps<{ project: Project }>();
 const showIcon = ref(false);
@@ -20,16 +22,8 @@ const showIcon = ref(false);
       <el-text truncated size="default">{{ project.name }}</el-text>
     </div>
     <div v-show="showIcon" class="flex shrink-0 flex-row">
-      <div
-        class="flex h-6 w-6 items-center justify-center rounded hover:cursor-pointer hover:bg-blue-100"
-      >
-        <span class="icon-[uiw--delete] text-gray-400" style="height: 14px; width: 14px" />
-      </div>
-      <div
-        class="flex h-6 w-6 items-center justify-center rounded hover:cursor-pointer hover:bg-blue-100"
-      >
-        <span class="icon-[cil--pen] bg-gray-400" style="height: 14px; width: 14px" />
-      </div>
+      <menu-item-edite-button :project="project" />
+      <menu-item-delete-button :project="project" />
     </div>
   </div>
 </template>

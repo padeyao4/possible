@@ -1,14 +1,18 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { RouterView } from 'vue-router';
 import { useGraph } from '@/stores';
 import { v4 } from 'uuid';
 import { faker } from '@faker-js/faker';
 import { useWindowSize } from '@vueuse/core';
+import { watchEffect } from 'vue';
 
 const graph = useGraph();
 const { width, height } = useWindowSize();
-graph.viewWidth = width.value;
-graph.viewHeight = height.value;
+
+watchEffect(() => {
+  graph.viewWidth = width.value;
+  graph.viewHeight = height.value;
+});
 
 for (let i = 0; i < 10; i++) {
   graph.addProject({

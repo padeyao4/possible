@@ -1,70 +1,47 @@
 import mitt from 'mitt';
-import { Backlog, Edge, type ID, Node } from '@/core';
-import type { Project } from '@/stores';
+// import { Backlog, Edge, Node } from '@/core';
+import type { Project, ID } from '@/stores';
 
-export type Error = { message: string; [key: string]: any };
+// export type Error = { message: string; [key: string]: any };
 
-type DataEvents = {
-  'node:update': Partial<Node>;
-  'node:create': Partial<Node>;
-  'node:delete': Partial<Node>;
-  'node:select': Partial<Node>;
+// export type EditorParameters = {
+//   item: Partial<Node | Project | Backlog>;
+//   type: 'node' | 'project' | 'backlog';
+// };
 
-  'edge:update': Partial<Edge>;
-  'edge:create': Partial<Edge>;
-  'edge:delete': Partial<Edge>;
-  'edge:select': Partial<Edge>;
+// type UiEvents = {
+//   'editor:open': EditorParameters;
+//   'editor:close': EditorParameters;
+//   'editor:delete': any;
+//   'editor-node:open': Partial<Node>;
+//   'editor-node:close': Partial<Node>;
+//   'editor-project:open': Partial<Project>;
+//   'editor-project:close': Partial<Project>;
+//   'editor-backlog:open': Partial<Backlog>;
+//   'editor-backlog:close': Partial<Backlog>;
+//   'project-dialog:open': Project;
+//   'project-dialog:close': Partial<Project>;
+//   'contextmenu-canvas:open': any;
+//   'login:success': any;
+//   'login:failed': Error;
+//   'register:success': null;
+//   'register:failed': Error;
+// };
+//
+// type LocalEvents = {
+//   'local:save': any;
+//   'local:load': any;
+//   'local:login': any;
+//   'local:logout': any;
+// };
 
-  'project:update': Partial<Project>;
-  'project:delete': ID;
-  'project:select': Partial<Project>;
-
-  'backlog:create': Partial<Backlog>;
-  'backlog:update': Partial<Backlog>;
-  'backlog:delete': Partial<Backlog>;
-  'backlog:select': Partial<Backlog>;
-
-  'date:update': null;
-};
-
-export type EditorParameters = {
-  item: Partial<Node | Project | Backlog>;
-  type: 'node' | 'project' | 'backlog';
-};
-
-type UiEvents = {
-  'editor:open': EditorParameters;
-  'editor:close': EditorParameters;
-  'editor:delete': any;
-  'editor-node:open': Partial<Node>;
-  'editor-node:close': Partial<Node>;
-  'editor-project:open': Partial<Project>;
-  'editor-project:close': Partial<Project>;
-  'editor-backlog:open': Partial<Backlog>;
-  'editor-backlog:close': Partial<Backlog>;
-  'project-dialog:open': Project;
-  'project-dialog:close': Partial<Project>;
-  'contextmenu-canvas:open': any;
-  'login:success': any;
-  'login:failed': Error;
-  'register:success': null;
-  'register:failed': Error;
-};
-
-type LocalEvents = {
-  'local:save': any;
-  'local:load': any;
-  'local:login': any;
-  'local:logout': any;
-};
-
-type NotifyEvents = {
-  'notify:success': string;
-  'notify:failed': string;
-  'notify:warning': string;
-  'notify:info': string;
-  'notify:error': Error;
-};
+// type NotifyEvents = {
+//   'notify:success': string;
+//   'notify:failed': string;
+//   'notify:warning': string;
+//   'notify:info': string;
+//   'notify:error': Error;
+// };
 
 /**
  * @description
@@ -72,7 +49,7 @@ type NotifyEvents = {
  */
 type CustomEvents = {
   'open-create-project-dialog': null;
-  'open-delete-project-dialog': null;
+  'open-delete-project-dialog': Project;
 };
 
-export const emitter = mitt<DataEvents & UiEvents & NotifyEvents & LocalEvents & CustomEvents>();
+export const emitter = mitt<CustomEvents>();
