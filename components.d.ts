@@ -18,6 +18,7 @@ declare module 'vue' {
     CanvasCards: typeof import('./src/components/project/CanvasCards.vue')['default']
     CanvasHeader: typeof import('./src/components/project/CanvasHeader.vue')['default']
     CanvasHeaderItem: typeof import('./src/components/project/CanvasHeaderItem.vue')['default']
+    CanvasPath: typeof import('./src/components/project/CanvasPath.vue')['default']
     CanvasPaths: typeof import('./src/components/project/CanvasPaths.vue')['default']
     CanvasRuler: typeof import('./src/components/project/CanvasRuler.vue')['default']
     CanvasTempPaths: typeof import('./src/components/project/CanvasTempPaths.vue')['default']

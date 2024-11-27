@@ -12,7 +12,6 @@ const graph = useGraph();
 const project = computed(() => graph.getProjectById(id));
 
 provide('project', project);
-provide('projectId',id)
 </script>
 
 <template>
@@ -35,10 +34,10 @@ provide('projectId',id)
       <div class="flex h-full w-full items-center justify-center border-b border-r border-dashed">
         <span class="icon-[uil--unlock] text-base text-gray-500" />
       </div>
-      <canvas-header />
-      <canvas-ruler />
-      <the-canvas />
-      <the-footer />
+      <canvas-header :project="project" />
+      <canvas-ruler :project="project" />
+      <the-canvas :project="project" />
+      <the-footer :project="project" />
     </main>
   </div>
 </template>

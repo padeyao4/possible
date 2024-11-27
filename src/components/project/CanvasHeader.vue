@@ -1,21 +1,23 @@
 <script setup lang="ts">
-import { computed, type ComputedRef, inject } from 'vue';
+import { computed } from 'vue';
 import { ONE_DAY_MS, type Project, useGraph } from '@/stores';
 
-const project = inject<ComputedRef<Project>>('project');
+const { project } = defineProps<{ project: Project }>();
+
 const graph = useGraph();
 
-const offsetX = computed(() => Math.floor(-project.value.x / graph.cardWidth) - 2);
+const offsetX = computed(() => Math.floor(-project.x / graph.cardWidth) - 2);
 
 const numbers = computed(() =>
-  Array.from({ length: Math.ceil(graph.viewWidth / graph.cardWidth) }, (_, i) => i + 1 + offsetX.value)
+  Array.from(
+    { length: Math.ceil(graph.viewWidth / graph.cardWidth) },
+    (_, i) => i + 1 + offsetX.value
+  )
 );
 
-const translateX = computed(() => (project.value.x % graph.cardWidth) - graph.cardWidth + 'px');
+const translateX = computed(() => (project.x % graph.cardWidth) - graph.cardWidth + 'px');
 
 const unitWidth = computed(() => graph.cardWidth + 'px');
-
-// const todayIndex = computed(() => getDaysBetweenDates(timer.timestamp, project.value.createTime));
 
 /**
  * 显示一个日期是周几

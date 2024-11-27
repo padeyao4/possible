@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed, type ComputedRef, inject, ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { useWindowSize } from '@vueuse/core';
-import { type Project, useGraph } from '@/stores'
+import { type Project, useGraph } from '@/stores';
 
-const graph = useGraph()
-const project = inject<ComputedRef<Project>>('project');
+const graph = useGraph();
+const { project } = defineProps<{ project: Project }>();
 
 const rulers = ref<number[]>([]);
 
@@ -16,17 +16,22 @@ watchEffect(() => {
 });
 
 const y = computed(() => {
-  const absY = Math.abs(project.value.y);
+  const absY = Math.abs(project.y);
   return Math.floor(absY / graph.cardHeight) - 2;
 });
 
-const translateY = computed(() => (project.value.y % graph.cardHeight) - graph.cardHeight + 'px');
+const translateY = computed(() => (project.y % graph.cardHeight) - graph.cardHeight + 'px');
 </script>
 
 <template>
   <div class="canvas-ruler">
     <div class="container">
-      <div v-for="item in rulers" class="ruler-unit" :key="item" :style="{ height: `${graph.cardHeight}px` }">
+      <div
+        v-for="item in rulers"
+        class="ruler-unit"
+        :key="item"
+        :style="{ height: `${graph.cardHeight}px` }"
+      >
         {{ item + y }}
       </div>
     </div>

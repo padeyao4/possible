@@ -11,7 +11,7 @@ import { emitter } from '@/utils';
 // } from '@/service/common';
 // import type { Project } from '@/core';
 import { Node } from '@/core';
-import { type Project, useCursor } from '@/stores'
+import { type Project, useCursor } from '@/stores';
 import type { ItemType } from '@/graph/types';
 import { computed, type ComputedRef, inject, onBeforeUnmount, ref } from 'vue';
 import ContextmenuComponent from '@/components/project/ContextmenuComponent.vue';
@@ -234,8 +234,6 @@ const nodeOptions: OptionType[] = [
           const key = el.getAttribute('data-key');
           // project.value.removeNode(key);
           visible.value = false;
-          emitter.emit('node:delete', { id: key });
-          emitter.emit('editor:delete');
         }
       }
     ]
@@ -309,7 +307,6 @@ onBeforeUnmount(() => {
   <teleport to="body">
     <div v-if="visible" ref="container" class="container" tabindex="0" @blur="visible = false">
       <contextmenu-component :items="items" :parents="[]" :x="event.x" :y="event.y" />
-      "
     </div>
   </teleport>
 </template>

@@ -1,6 +1,6 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 // import CanvasPaths from '@/components/project/CanvasPaths.vue';
-import { type ComputedRef, inject, onMounted, provide, ref } from 'vue';
+import { computed, onMounted, provide, ref } from 'vue';
 // import CanvasTempPaths from '@/components/project/CanvasTempPaths.vue';
 import { type Project, useGraph } from '@/stores';
 import {
@@ -16,26 +16,28 @@ import {
 } from '@/graph';
 import GraphContextmenuGroup from '@/components/project/GraphContextmenuGroup.vue';
 import CanvasCard from '@/components/project/CanvasCard.vue';
-import CanvasPaths from '@/components/project/CanvasPaths.vue';
+import CanvasPath from '@/components/project/CanvasPath.vue';
 
+const { project } = defineProps<{ project: Project }>();
 const graph = useGraph();
 const svg = ref();
-const project = inject<ComputedRef<Project>>('project');
-
-const register = new Register(svg);
-
-register.addBehaviors(
-  DefaultBehavior,
-  DragCanvas,
-  DragCard,
-  ResizeCard,
-  ClickCard,
-  CreateEdge,
-  Contextmenu,
-  WheelCanvas
-);
+const cards = computed(() => graph.getCardsByProjectId(project.id));
+const paths = computed(() => graph.getPathsByProjectId(project.id));
 
 onMounted(() => {
+  const register = new Register(svg);
+
+  register.addBehaviors(
+    DefaultBehavior,
+    DragCanvas,
+    DragCard,
+    ResizeCard,
+    ClickCard,
+    CreateEdge,
+    Contextmenu,
+    WheelCanvas
+  );
+
   register.listen();
 });
 
@@ -46,23 +48,19 @@ provide('canvasContainer', svg);
   <div class="relative bg-transparent">
     <svg
       ref="svg"
-      class="grid-line absolute h-full w-full"
       :style="{
         backgroundPositionX: project.x + 'px',
         backgroundPositionY: project.y + 'px',
         backgroundSize: `${graph.cardWidth}px ${graph.cardHeight}px`
       }"
-      @contextmenu.prevent
+      class="grid-line absolute h-full w-full"
       data-el-type="canvas"
       data-type="canvas"
+      @contextmenu.prevent
     >
       <g :transform="`translate(${project.x},${project.y})`">
-        <canvas-paths />
-        <canvas-card
-          v-for="item in graph.getCardsByProjectId(project.id)"
-          :data="item"
-          :key="item.id"
-        />
+        <canvas-path v-for="item in paths" :key="item.id" :data="item" />
+        <canvas-card v-for="item in cards" :key="item.id" :data="item" />
         <!--        <canvas-temp-paths></canvas-temp-paths>-->
       </g>
     </svg>
