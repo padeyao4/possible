@@ -1,9 +1,6 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { type TempPath, useTempPaths } from '@/stores/temp-path';
 import type { ID } from '@/core/types';
-import { emitter } from '@/utils';
-import { inject, type Ref } from 'vue';
-import type { Project } from '@/stores'
 
 export class CreateEdge extends BaseBehavior {
   isDown = false;
@@ -11,7 +8,6 @@ export class CreateEdge extends BaseBehavior {
   target: string;
   tempPaths = useTempPaths();
   pathId: ID;
-  project = inject<Ref<Project>>('project');
 
   getEventDispatch(): EventDispatch {
     return {

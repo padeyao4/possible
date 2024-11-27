@@ -1,7 +1,6 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { clampMin } from '@/graph/math';
-import { inject, type Ref } from 'vue';
-import { type Project, type Node, useGraph } from '@/stores';
+import { type Node } from '@/stores';
 
 export class ResizeCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -16,8 +15,6 @@ export class ResizeCard extends BaseBehavior {
   mousePoint = { x: 0, y: 0 };
   oldNode = {} as any;
   direction = '';
-  graph = useGraph();
-  project = inject<Ref<Project>>('project');
 
   onmousedown(e: MouseEvent, el: Element) {
     if (this.isPressed || e.button !== 0) return;

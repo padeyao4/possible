@@ -1,6 +1,7 @@
 import { useCursor } from '@/stores/cursor';
 import { useEventListener } from '@vueuse/core';
 import type { Ref } from 'vue';
+import { useGraph } from '@/stores';
 
 const eventTypes = [
   'mouseover',
@@ -33,6 +34,8 @@ export type EventDispatch = {
 
 export abstract class BaseBehavior {
   mouseStyle = useCursor();
+  graph = useGraph();
+  project = this.graph.currentProject;
 
   constructor() {}
 

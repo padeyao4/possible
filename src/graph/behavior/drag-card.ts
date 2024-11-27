@@ -2,9 +2,6 @@ import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { clampMin } from '../math';
 import type { Point } from '@/core/types';
 import type { Node } from '@/core/Node';
-import { emitter } from '@/utils';
-import { inject, type Ref } from 'vue'
-import { type Project, useGraph } from '@/stores'
 
 export class DragCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -15,8 +12,6 @@ export class DragCard extends BaseBehavior {
     };
   }
 
-  graph = useGraph()
-  project = inject<Ref<Project>>('project')
   isDown = false;
   mousePosition: Point = { x: 0, y: 0 };
   oldNode = {} as Node;
@@ -56,8 +51,8 @@ export class DragCard extends BaseBehavior {
       //   node.x = this.oldNode.x;
       //   node.y = this.oldNode.y;
       // } else {
-        // emitter.emit('node:update', node);
-        // todo
+      // emitter.emit('node:update', node);
+      // todo
       // }
       this.mouseStyle.unlock();
       this.toggleMouseOver(e);

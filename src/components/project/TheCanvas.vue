@@ -2,7 +2,7 @@
 // import CanvasPaths from '@/components/project/CanvasPaths.vue';
 import { computed, onMounted, provide, ref } from 'vue';
 // import CanvasTempPaths from '@/components/project/CanvasTempPaths.vue';
-import { type Project, useGraph } from '@/stores';
+import { useGraph } from '@/stores';
 import {
   ClickCard,
   Contextmenu,
@@ -18,11 +18,11 @@ import GraphContextmenuGroup from '@/components/project/GraphContextmenuGroup.vu
 import CanvasCard from '@/components/project/CanvasCard.vue';
 import CanvasPath from '@/components/project/CanvasPath.vue';
 
-const { project } = defineProps<{ project: Project }>();
 const graph = useGraph();
+const project = graph.currentProject;
 const svg = ref();
-const cards = computed(() => graph.getCardsByProjectId(project.id));
-const paths = computed(() => graph.getPathsByProjectId(project.id));
+const cards = computed(() => graph.currentCards);
+const paths = computed(() => graph.currentPaths);
 
 onMounted(() => {
   const register = new Register(svg);

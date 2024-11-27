@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue';
 import { useWindowSize } from '@vueuse/core';
-import { type Project, useGraph } from '@/stores';
+import { useGraph } from '@/stores';
 
 const graph = useGraph();
-const { project } = defineProps<{ project: Project }>();
+const project = graph.currentProject;
 
 const rulers = ref<number[]>([]);
 

@@ -51,6 +51,7 @@ export function cross(rect1: RectLike, rect2: RectLike): boolean {
 
 export const useGraph = defineStore('graph', {
   state: () => ({
+    currentId: <ID>undefined,
     projectsMap: new Map<ID, Project>(),
     nodesMap: new Map<ID, Node>(),
     edgesMap: new Map<ID, Edge>(),
@@ -62,6 +63,9 @@ export const useGraph = defineStore('graph', {
     cardHeight: 80 // 实际卡片高度
   }),
   getters: {
+    currentProject: (state) => {
+      return state.projectsMap.get(state.currentId);
+    },
     projects: (state) => Array.from(state.projectsMap.values()),
     sortedProjects: (state) => {
       return Array.from(state.projectsMap.values()).sort((a, b) => a.index - b.index);
@@ -71,13 +75,12 @@ export const useGraph = defineStore('graph', {
     },
     getProjectById: (state) => (id: ID) => {
       return state.projectsMap.get(id);
-    },
-    /**
+    } /**
      * 根据项目id获取待绘制卡片信息
      * @param state
-     */
-    getCardsByProjectId: (state) => (id: ID) => {
-      const project = state.projectsMap.get(id);
+     */,
+    currentCards: (state) => {
+      const project = state.projectsMap.get(state.currentId);
       const bounds = {
         x: -project.x / state.cardWidth,
         y: -project.y / state.cardHeight,
@@ -85,7 +88,7 @@ export const useGraph = defineStore('graph', {
         h: state.viewHeight / state.cardHeight
       }; // 计算当前视图的边界
       return Array.from(state.nodesMap.values())
-        .filter((node) => node.projectId === id && cross(bounds, node))
+        .filter((node) => node.projectId === state.currentId && cross(bounds, node))
         .sort((a, b) => a.x - b.x)
         .map((node) => ({
           id: node.id,
@@ -96,14 +99,13 @@ export const useGraph = defineStore('graph', {
           h: node.h * state.cardHeight - 10 * 2, // 实际高度
           color: node.status ? '#dddddd' : '#fff' // 根据状态设置颜色
         }));
-    },
-    /**
+    } /**
      * 根据项目id获取所有边绘制信息
      * @param state
-     */
-    getPathsByProjectId: (state) => (id: ID) => {
+     */,
+    currentPaths: (state) => {
       return Array.from(state.edgesMap.values())
-        .filter((edge) => edge.projectId === id)
+        .filter((edge) => edge.projectId === state.currentId)
         .map((edge) => {
           const sourceNode = state.nodesMap.get(edge.source);
           const targetNode = state.nodesMap.get(edge.target);
@@ -152,6 +154,9 @@ export const useGraph = defineStore('graph', {
       };
       this.edgesMap.set(edge.id, edge);
       // todo 添加出边和入边
+    },
+    setCurrentId(id: ID) {
+      this.currentId = id;
     }
   }
 });

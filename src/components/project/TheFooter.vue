@@ -1,25 +1,24 @@
-<script setup lang="ts">
-import { type ComputedRef, inject, ref } from 'vue';
+<script lang="ts" setup>
+import { ref } from 'vue';
 import HomeIcon from '@/components/icon/HomeIcon.vue';
 import MapPointIcon from '@/components/icon/MapPointIcon.vue';
-import TestTubeIcon from '@/components/icon/TestTubeIcon.vue';
 import CalendarSearchIcon from '@/components/icon/CalendarSearchIcon.vue';
-import ArrowRightIcon from '@/components/icon/ArrowRightIcon.vue';
-import type { Project } from '@/stores'
+import { useGraph } from '@/stores';
 
-const project = inject<ComputedRef<Project>>('project');
+const graph = useGraph();
+const project = graph.currentProject;
 
 function handleBackHome() {
-  project.value.x = 0;
-  project.value.y = 0;
+  project.x = 0;
+  project.y = 0;
 }
 
 function handleToday() {
-  // project.value.setOffsetIndex(timer.timestamp);
+  // project.setOffsetIndex(timer.timestamp);
 }
 
 function handleTest() {
-  // console.log(project.value.offset);
+  // console.log(project.offset);
 }
 
 function handleMoveRight() {}
@@ -35,7 +34,7 @@ const dateInputValue = defineModel();
 function handleDateChange() {
   const date = dateInputValue.value as string;
   if (date !== '' && date !== null) {
-    // project.value.setOffsetIndex(date);
+    // project.setOffsetIndex(date);
   }
 }
 </script>
@@ -49,14 +48,14 @@ function handleDateChange() {
     <MapPointIcon @click="handleToday" />
     <!--    <TestTubeIcon @click="handleTest" />-->
     <div>
-      <CalendarSearchIcon for="calendar-input" class="calendar-icon" @click="handleCalendar" />
+      <CalendarSearchIcon class="calendar-icon" for="calendar-input" @click="handleCalendar" />
       <input
-        type="date"
+        id="calendar-input"
+        ref="dateInput"
         v-model="dateInputValue"
         class="date-select"
         orientation="top"
-        ref="dateInput"
-        id="calendar-input"
+        type="date"
         @change="handleDateChange"
       />
     </div>

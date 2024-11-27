@@ -1,17 +1,12 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import TheFooter from '@/components/project/TheFooter.vue';
-import { computed, provide } from 'vue';
-import type { ID } from '@/core/types';
 import CanvasRuler from '@/components/project/CanvasRuler.vue';
 import CanvasHeader from '@/components/project/CanvasHeader.vue';
 import TheCanvas from '@/components/project/TheCanvas.vue';
 import { useGraph } from '@/stores';
 
-const { id } = defineProps<{ id: ID }>();
 const graph = useGraph();
-const project = computed(() => graph.getProjectById(id));
-
-provide('project', project);
+const project = graph.currentProject;
 </script>
 
 <template>
@@ -34,10 +29,10 @@ provide('project', project);
       <div class="flex h-full w-full items-center justify-center border-b border-r border-dashed">
         <span class="icon-[uil--unlock] text-base text-gray-500" />
       </div>
-      <canvas-header :project="project" />
-      <canvas-ruler :project="project" />
-      <the-canvas :project="project" />
-      <the-footer :project="project" />
+      <canvas-header />
+      <canvas-ruler />
+      <the-canvas />
+      <the-footer />
     </main>
   </div>
 </template>
