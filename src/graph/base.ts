@@ -91,7 +91,7 @@ export class Register {
   private processEvent(e: Event) {
     const el = e.target as Element;
     const eventType = e.type as EventType;
-    const elementType = el.getAttribute('data-el-type') ?? 'unknown';
+    const elementType = el.getAttribute('data-item-type') ?? 'unknown';
     this.behaviors
       .filter((behavior) => {
         const dispatch = behavior.getEventDispatch();

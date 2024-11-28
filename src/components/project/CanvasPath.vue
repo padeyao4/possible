@@ -19,8 +19,8 @@ defineProps<{
 <template>
   <path
     :d="`M ${data.startX},${data.startY} C ${data.controller1X},${data.controller1Y} ${data.controller2X},${data.controller2Y} ${data.targetX},${data.targetY}`"
-    :data-key="data.id"
-    data-el-type="edge"
+    :data-item-id="data.id"
+    data-item-type="edge"
     fill="#ffffff00"
     stroke="#000000"
     stroke-opacity="0.3"
@@ -30,10 +30,10 @@ defineProps<{
     :d="`M ${data.startX},${data.startY} C ${data.controller1X},${data.controller1Y} ${data.controller2X},${data.controller2Y} ${data.targetX},${data.targetY}`"
     stroke="#00000050"
     fill="#ffffff00"
-    :data-key="data.id"
+    :data-item-id="data.id"
     opacity="0"
     data-mouse-style="pointer"
-    data-el-type="edge"
+    data-item-type="edge"
     stroke-opacity="0.7"
     stroke-width="9"
   />-->

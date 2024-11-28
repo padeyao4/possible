@@ -18,7 +18,7 @@ export class DragCard extends BaseBehavior {
 
   onmousedown(e: MouseEvent, el: Element) {
     if (this.isDown || e.button !== 0) return;
-    const nodeId = el.getAttribute('data-key');
+    const nodeId = el.getAttribute('data-item-id');
     // const node = this.project.value.nodeMap.get(nodeId);
     const node = this.graph.nodesMap.get(nodeId);
     Object.assign(this.oldNode, node);

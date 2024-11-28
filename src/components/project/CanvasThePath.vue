@@ -28,8 +28,8 @@ const ctl2 = computed(() => {
     :d="`M ${edge.from.x},${edge.from.y} C ${ctl1.x},${ctl1.y} ${ctl2.x},${ctl2.y} ${edge.to.x},${edge.to.y}`"
     stroke="#000000"
     fill="#ffffff00"
-    :data-key="edge.id"
-    data-el-type="edge"
+    :data-item-id="edge.id"
+    data-item-type="edge"
     stroke-opacity="0.3"
     stroke-width="1"
   />
@@ -37,10 +37,10 @@ const ctl2 = computed(() => {
     :d="`M ${edge.from.x},${edge.from.y} C ${ctl1.x},${ctl1.y} ${ctl2.x},${ctl2.y} ${edge.to.x},${edge.to.y}`"
     stroke="#00000050"
     fill="#ffffff00"
-    :data-key="edge.id"
+    :data-item-id="edge.id"
     opacity="0"
     data-mouse-style="pointer"
-    data-el-type="edge"
+    data-item-type="edge"
     stroke-opacity="0.7"
     stroke-width="9"
   />

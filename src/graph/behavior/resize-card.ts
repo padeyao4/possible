@@ -25,7 +25,7 @@ export class ResizeCard extends BaseBehavior {
     this.mouseStyle.lock(style);
     this.mousePoint.x = e.x;
     this.mousePoint.y = e.y;
-    const key = el.getAttribute('data-key');
+    const key = el.getAttribute('data-item-id');
     const node = this.graph.nodesMap.get(key);
     Object.assign(this.oldNode, node);
   }

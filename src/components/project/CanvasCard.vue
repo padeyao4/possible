@@ -36,18 +36,18 @@ defineProps<{
       :width="data.w"
       :height="data.h"
       opacity="0"
-      :data-key="data.id"
-      data-el-type="node"
+      :data-item-id="data.id"
+      data-item-type="node"
       data-mouse-style="pointer"
       class="key-shape"
       rx="8"
     />
     <g opacity="0">
       <rect
-        :data-key="data.id"
+        :data-item-id="data.id"
         data-mouse-style="nwse-resize"
         data-type="node"
-        data-el-type="resize"
+        data-item-type="resize"
         data-direction="lt"
         x="-2.5"
         y="-2.5"
@@ -56,9 +56,9 @@ defineProps<{
         height="5"
       />
       <rect
-        :data-key="data.id"
+        :data-item-id="data.id"
         data-mouse-style="nesw-resize"
-        data-el-type="resize"
+        data-item-type="resize"
         data-type="node"
         data-direction="rt"
         :x="data.w - 2.5"
@@ -68,9 +68,9 @@ defineProps<{
         height="5"
       />
       <rect
-        :data-key="data.id"
+        :data-item-id="data.id"
         data-mouse-style="ns-resize"
-        data-el-type="resize"
+        data-item-type="resize"
         data-type="node"
         data-direction="t"
         x="2.5"
@@ -79,8 +79,8 @@ defineProps<{
         height="5"
       />
       <rect
-        :data-key="data.id"
-        data-el-type="resize"
+        :data-item-id="data.id"
+        data-item-type="resize"
         data-mouse-style="ns-resize"
         data-type="node"
         data-direction="b"
@@ -90,8 +90,8 @@ defineProps<{
         height="5"
       />
       <rect
-        :data-key="data.id"
-        data-el-type="resize"
+        :data-item-id="data.id"
+        data-item-type="resize"
         data-mouse-style="ew-resize"
         data-type="node"
         data-direction="l"
@@ -101,8 +101,8 @@ defineProps<{
         :height="data.h - 5"
       />
       <rect
-        :data-key="data.id"
-        data-el-type="resize"
+        :data-item-id="data.id"
+        data-item-type="resize"
         data-mouse-style="ew-resize"
         data-type="node"
         data-direction="r"
@@ -112,8 +112,8 @@ defineProps<{
         :height="data.h - 5"
       />
       <rect
-        :data-key="data.id"
-        data-el-type="resize"
+        :data-item-id="data.id"
+        data-item-type="resize"
         data-mouse-style="nesw-resize"
         data-type="node"
         data-direction="lb"
@@ -124,8 +124,8 @@ defineProps<{
         height="5"
       />
       <rect
-        :data-key="data.id"
-        data-el-type="resize"
+        :data-item-id="data.id"
+        data-item-type="resize"
         data-mouse-style="nwse-resize"
         data-type="node"
         data-direction="rb"
@@ -145,8 +145,8 @@ defineProps<{
         stroke-width="0.8"
         data-type="node"
         data-mouse-style="pointer"
-        data-el-type="anchor"
-        :data-key="data.id"
+        data-item-type="anchor"
+        :data-item-id="data.id"
         data-anchor="left"
       />
       <circle
@@ -158,8 +158,8 @@ defineProps<{
         stroke-width="0.8"
         data-type="node"
         data-mouse-style="pointer"
-        data-el-type="anchor"
-        :data-key="data.id"
+        data-item-type="anchor"
+        :data-item-id="data.id"
         data-anchor="right"
       />
     </g>

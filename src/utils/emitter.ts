@@ -1,6 +1,6 @@
 import mitt from 'mitt';
 // import { Backlog, Edge, Node } from '@/core';
-import type { Project } from '@/stores';
+import type { ID, Project } from '@/stores';
 
 // export type Error = { message: string; [key: string]: any };
 
@@ -54,6 +54,11 @@ type CustomEvents = {
     menuType: 'canvas' | 'node' | 'edge';
     x: number;
     y: number;
+  };
+  'open-canvas-card-editor': {
+    x: number;
+    y: number;
+    nodeId: ID;
   };
 };
 

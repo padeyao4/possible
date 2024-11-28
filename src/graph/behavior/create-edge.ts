@@ -21,7 +21,7 @@ export class CreateEdge extends BaseBehavior {
     if (e.button !== 0) return;
     if (el.hasAttribute('data-anchor')) {
       this.isDown = true;
-      const key = el.getAttribute('data-key');
+      const key = el.getAttribute('data-item-id');
       const direction = el.getAttribute('data-anchor');
       // const point = this.project.value.getPointByOffsetPoint({ x: e.offsetX, y: e.offsetY });
       // const path = this.tempPaths.createTempPath(
@@ -63,7 +63,7 @@ export class CreateEdge extends BaseBehavior {
 
   private createEdge(el: Element, elType: string, path: TempPath) {
     // if (elType === 'node' || elType === 'anchor') {
-    //   const key = el.getAttribute('data-key');
+    //   const key = el.getAttribute('data-item-id');
     //   if (key == path.nodeId) return;
     //   path.opacity = 0;
     //   if (path.dummy === 'source') {

@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-// import CanvasPaths from '@/components/project/CanvasPaths.vue';
 import { computed, onMounted, provide, ref } from 'vue';
-// import CanvasTempPaths from '@/components/project/CanvasTempPaths.vue';
 import { useGraph } from '@/stores';
 import {
   ClickCard,
@@ -14,7 +12,6 @@ import {
   ResizeCard,
   WheelCanvas
 } from '@/graph';
-// import GraphContextmenuGroup from '@/components/project/GraphContextmenuGroup.vue';
 import CanvasCard from '@/components/project/CanvasCard.vue';
 import CanvasPath from '@/components/project/CanvasPath.vue';
 import CanvasMenu from '@/components/CanvasMenu.vue';
@@ -41,8 +38,6 @@ onMounted(() => {
 
   register.listen();
 });
-
-provide('canvasContainer', svg);
 </script>
 
 <template>
@@ -55,7 +50,7 @@ provide('canvasContainer', svg);
         backgroundSize: `${graph.cardWidth}px ${graph.cardHeight}px`
       }"
       class="grid-line absolute h-full w-full"
-      data-el-type="canvas"
+      data-item-type="canvas"
       data-type="canvas"
       @contextmenu.prevent
     >
@@ -67,7 +62,6 @@ provide('canvasContainer', svg);
     </svg>
     <canvas-menu :svg="svg" />
   </div>
-  <!--  <graph-contextmenu-group />-->
 </template>
 
 <style scoped>

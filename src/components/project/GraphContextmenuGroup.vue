@@ -30,12 +30,12 @@ const element = computed(() => {
 });
 
 const elementId = computed(() => {
-  return element.value.getAttribute('data-key');
+  return element.value.getAttribute('data-item-id');
 });
 
 function handleAppendNode() {
   const el = event.value.target as Element;
-  const key = el.getAttribute('data-key');
+  const key = el.getAttribute('data-item-id');
   // const node = project.value.nodeMap.get(key);
   // appendNode(project.value, node);
   visible.value = false;
@@ -43,7 +43,7 @@ function handleAppendNode() {
 
 function handleMoveUpWhole() {
   const el = event.value.target as Element;
-  const key = el.getAttribute('data-key');
+  const key = el.getAttribute('data-item-id');
   // const node = project.value.nodeMap.get(key);
   // tryMoveUpWhole(<Project>project.value, node);
   visible.value = false;
@@ -51,7 +51,7 @@ function handleMoveUpWhole() {
 
 function handleMoveDownWhole() {
   const el = event.value.target as Element;
-  const key = el.getAttribute('data-key');
+  const key = el.getAttribute('data-item-id');
   // const node = project.value.nodeMap.get(key);
   // tryMoveDownWhole(<Project>project.value, node);
   visible.value = false;
@@ -59,35 +59,35 @@ function handleMoveDownWhole() {
 
 function tryMoveRightNode() {
   const target = event.value.target as Element;
-  const nodeId = target.getAttribute('data-key');
+  const nodeId = target.getAttribute('data-item-id');
   // moveRight(<Project>project.value, project.value.nodeMap.get(nodeId));
   visible.value = false;
 }
 
 function tryMoveLeftNode() {
   const target = event.value.target as Element;
-  const nodeId = target.getAttribute('data-key');
+  const nodeId = target.getAttribute('data-item-id');
   // moveLeft(<Project>project.value, project.value.nodeMap.get(nodeId));
   visible.value = false;
 }
 
 function tryMoveDownNode() {
   const target = event.value.target as Element;
-  const nodeId = target.getAttribute('data-key');
+  const nodeId = target.getAttribute('data-item-id');
   // moveDown(<Project>project.value, project.value.nodeMap.get(nodeId));
   visible.value = false;
 }
 
 function tryMoveUpNode() {
   const target = event.value.target as Element;
-  const nodeId = target.getAttribute('data-key');
+  const nodeId = target.getAttribute('data-item-id');
   // tryMoveUp(<Project>project.value, project.value.nodeMap.get(nodeId));
   visible.value = false;
 }
 
 function handleCompletedTask() {
   const target = event.value.target as Element;
-  const nodeId = target.getAttribute('data-key');
+  const nodeId = target.getAttribute('data-item-id');
   // const node = project.value.nodeMap.get(nodeId);
   // node.completed = !node.completed;
   visible.value = false;
@@ -95,14 +95,14 @@ function handleCompletedTask() {
 
 function handleDeleteEdge() {
   const el = event.value.target as Element;
-  const edgeId = el.getAttribute('data-key');
+  const edgeId = el.getAttribute('data-item-id');
   // project.value.removeEdge(edgeId);
   visible.value = false;
 }
 
 function breakAwayFromRelation() {
   const el = event.value.target as Element;
-  const nodeId = el.getAttribute('data-key');
+  const nodeId = el.getAttribute('data-item-id');
 
   // 找到左侧关系节点
   // const leftNodes = project.value.getRelationLeftNodes(nodeId);
@@ -121,7 +121,7 @@ function breakAwayFromRelation() {
 
 function insertNode() {
   // const el = event.value.target as Element;
-  // const nodeId = el.getAttribute('data-key');
+  // const nodeId = el.getAttribute('data-item-id');
   // const rightNode = project.value.getNode(nodeId);
   // const sources = project.value.getRelationLeftNodes(nodeId);
   // moveRight(<Project>project.value, rightNode);
@@ -142,7 +142,7 @@ function insertNode() {
 
 function pullRightNodes() {
   const el = event.value.target as Element;
-  const nodeId = el.getAttribute('data-key');
+  const nodeId = el.getAttribute('data-item-id');
   // project.value.pullRightNode(nodeId);
   visible.value = false;
 }
@@ -231,7 +231,7 @@ const nodeOptions: OptionType[] = [
         shortcut: 'Delete',
         action: function () {
           const el = event.value.target as Element;
-          const key = el.getAttribute('data-key');
+          const key = el.getAttribute('data-item-id');
           // project.value.removeNode(key);
           visible.value = false;
         }
