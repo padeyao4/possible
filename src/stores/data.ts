@@ -16,7 +16,8 @@ export interface Node {
   id: ID;
   projectId: ID;
   name: string;
-  description: string;
+  detail: string;
+  record: string;
   x: number; // 距离1970年的天数
   y: number;
   w: number;
@@ -59,6 +60,8 @@ export const useGraph = defineStore('graph', {
     outEdgesMap: new Map<ID, Set<Edge>>(), // Map中的ID表示edge中的source,Set中的Edge表示所有从该节点出发的边
     viewWidth: 0, // 可视化窗口大小
     viewHeight: 0, // 可视化窗口大小
+    menuWidth: 240, // 菜单栏宽度
+    editorWidth: 300, // 编辑框宽度
     cardWidth: 120, // 实际卡片宽度
     cardHeight: 80 // 实际卡片高度
   }),
@@ -130,6 +133,13 @@ export const useGraph = defineStore('graph', {
             controller2Y
           };
         });
+    },
+    gridTemplateColumns: (state) => {
+      if (state.editorWidth !== 0) {
+        return { gridTemplateColumns: `${state.menuWidth}px 1fr ${state.editorWidth}px` };
+      } else {
+        return { gridTemplateColumns: `${state.menuWidth}px 1fr` };
+      }
     }
   },
   actions: {

@@ -1,4 +1,4 @@
-import { useAccount, useBacklogs, useGraph, useLayout } from '@/stores';
+import { useAccount, useBacklogs, useGraph } from '@/stores';
 import { type ArgumentsType, type Promisify, useDebounceFn } from '@vueuse/core';
 
 /**
@@ -8,13 +8,10 @@ export async function save() {
   const projects = useGraph();
   const account = useAccount();
   const backlogs = useBacklogs();
-  const side = useLayout();
 
   const data = {
     account: account.toPlainObject(),
-    projects: projects.toPlainObject(),
-    backlogs: backlogs.toPlainObject(),
-    layout: side.toPlainObject()
+    backlogs: backlogs.toPlainObject()
   };
 
   window.ipcRenderer.send('set', { key: 'data', value: data });
@@ -27,13 +24,9 @@ export async function load() {
   const projects = useGraph();
   const account = useAccount();
   const backlogs = useBacklogs();
-  const layout = useLayout();
   const data = await window.ipcRenderer.invoke('get', { key: 'data' });
   backlogs.fromPlainObject(data?.backlogs ?? []);
-  projects.fromPlainObject(data?.projects ?? []);
-  layout.fromPlainObject(data?.layout);
   account.fromPlainObject(data?.account);
-  projects.dailyUpdate()
 }
 
 export const debounceSaveAll: (

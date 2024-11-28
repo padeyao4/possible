@@ -2,13 +2,11 @@
 import { provide, ref } from 'vue';
 import ECounterButton from '@/components/common/CounterButton.vue';
 import EDraggable from '@/components/common/MagicDraggable.vue';
-import { useBacklogs, useLayout } from '@/stores';
+import { useBacklogs } from '@/stores';
 import { Backlog } from '@/core';
 import BacklogItem from '@/components/BacklogItem.vue';
 
 const backlogs = useBacklogs();
-const layout = useLayout();
-layout.showRight = false;
 
 const onUpdate = (current: Backlog, other: Backlog) => {
   [current.orderIndex, other.orderIndex] = [other.orderIndex, current.orderIndex];

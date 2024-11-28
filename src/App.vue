@@ -27,7 +27,8 @@ for (let i = 0; i < 10; i++) {
 graph.projects.forEach((project) => {
   for (let i = 0; i < 20; i++) {
     graph.addNode({
-      description: '',
+      record: '',
+      detail: '',
       id: v4(),
       name: faker.location.county(),
       projectId: project.id,

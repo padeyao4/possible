@@ -6,7 +6,6 @@ export * from './cursor';
 export * from './temp-path';
 export * from './timer';
 export * from './backlog';
-export * from './layout';
 export * from './data';
 
 interface ExtendedPinia extends Pinia {

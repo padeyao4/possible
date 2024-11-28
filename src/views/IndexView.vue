@@ -7,12 +7,13 @@ import MenuItem from '@/components/MenuItem.vue';
 import CreateProjectButton from '@/components/CreateProjectButton.vue';
 import SettingsButton from '@/components/SettingsButton.vue';
 import CreateProjectDialog from '@/components/CreateProjectDialog.vue';
-import DeleteProjectDialog from '@/components/DeleteProjectDialog.vue'
+import DeleteProjectDialog from '@/components/DeleteProjectDialog.vue';
+import DetailEditor from '@/components/DetailEditor.vue';
 const graph = useGraph();
 </script>
 
 <template>
-  <div style="grid-template-columns: 240px 1fr" class="grid h-screen w-screen">
+  <div :style="graph.gridTemplateColumns" class="grid h-screen w-screen">
     <div class="flex h-screen w-full flex-col">
       <header class="mt-4 flex h-fit flex-col border-b border-b-gray-200 pb-1">
         <nav-today-item class="my-1" />
@@ -27,7 +28,8 @@ const graph = useGraph();
       </footer>
     </div>
     <router-view :key="$route.fullPath" class="min-w-48 flex-grow rounded-tl-lg" />
+    <detail-editor />
   </div>
   <create-project-dialog />
-  <delete-project-dialog/>
+  <delete-project-dialog />
 </template>
