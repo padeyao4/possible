@@ -3,7 +3,6 @@ import { reactive, ref } from 'vue';
 import { useAccount } from '@/stores/account';
 import router from '@/router';
 import type { FormInstance, FormRules } from 'element-plus';
-import { emitter, load } from '@/utils';
 import { Close } from '@element-plus/icons-vue';
 
 const account = useAccount();
@@ -36,17 +35,17 @@ function handleResetRegister() {
   });
 }
 
-emitter.on('login:failed', (e) => {
-  loginForm.loginError = e.message;
-});
-
-emitter.on('register:success', () => {
-  isRegister.value = true;
-});
-
-emitter.on('register:failed', (e) => {
-  registerForm.registerError = e.message;
-});
+// emitter.on('login:failed', (e) => {
+//   loginForm.loginError = e.message;
+// });
+//
+// emitter.on('register:success', () => {
+//   isRegister.value = true;
+// });
+//
+// emitter.on('register:failed', (e) => {
+//   registerForm.registerError = e.message;
+// });
 
 const submitLogin = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
@@ -107,7 +106,6 @@ const registerRules = reactive<FormRules<typeof registerForm>>({
  */
 const onLocalLogin = () => {
   account.login('', '', true);
-  load();
   router.push({ name: 'today' });
 };
 </script>

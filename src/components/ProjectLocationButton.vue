@@ -1,7 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+function handleClick() {
+  console.log('location');
+  // todo
+}
+</script>
 
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" @click="handleClick">
     <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5">
       <path d="M12.5 7.041A3 3 0 1 0 14.959 9.5" />
       <path

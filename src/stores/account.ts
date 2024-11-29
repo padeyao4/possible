@@ -16,7 +16,7 @@ export const useAccount = defineStore('account', () => {
       const remoteUser = response.data.payload;
       Object.assign(user, remoteUser);
     } catch (e) {
-      emitter.emit('notify:error', e);
+      // emitter.emit('notify:error', e);
     } finally {
       fetchUserLoading.value = false;
     }
@@ -38,10 +38,10 @@ export const useAccount = defineStore('account', () => {
       });
       token.value = response.data.payload;
       isAuth.value = true;
-      emitter.emit('login:success');
+      // emitter.emit('login:success');
     } catch (e) {
       isAuth.value = false;
-      emitter.emit('login:failed', e);
+      // emitter.emit('login:failed', e);
     } finally {
       loginLoading.value = false;
     }
@@ -53,7 +53,7 @@ export const useAccount = defineStore('account', () => {
       logoutLoading.value = true;
       await new AccountControllerApi().logout();
     } catch (e) {
-      emitter.emit('notify:error', e);
+      // emitter.emit('notify:error', e);
     } finally {
       token.value = null;
       logoutLoading.value = false;
@@ -69,9 +69,9 @@ export const useAccount = defineStore('account', () => {
         username,
         password
       });
-      emitter.emit('register:success');
+      // emitter.emit('register:success');
     } catch (e) {
-      emitter.emit('register:failed', e);
+      // emitter.emit('register:failed', e);
     } finally {
       registerLoading.value = false;
     }
@@ -83,7 +83,7 @@ export const useAccount = defineStore('account', () => {
       checkUsernameLoading.value = true;
       return await new AccountControllerApi().checkUsername(username);
     } catch (e) {
-      emitter.emit('notify:error', e);
+      // emitter.emit('notify:error', e);
     } finally {
       checkUsernameLoading.value = false;
     }

@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 
 const viewModel = reactive({
   inputValue: <string>undefined
 });
+
+const dateInputRef = ref<HTMLElement & { showPicker: () => void }>();
+
+function handleCalendar() {
+  dateInputRef.value?.showPicker();
+}
 
 function handleChange() {
   if (viewModel.inputValue) {
@@ -13,7 +19,12 @@ function handleChange() {
 </script>
 
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="calendar-icon">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    class="calendar-icon"
+    @click="handleCalendar"
+  >
     <g fill="none" stroke="currentColor" stroke-width="1.5">
       <path
         stroke-linecap="round"
@@ -24,11 +35,10 @@ function handleChange() {
     </g>
   </svg>
   <input
-    id="calendar-input"
-    ref="dateInput"
+    ref="dateInputRef"
     v-model="viewModel.inputValue"
     class="date-select"
-    orientation="top"
+    orientation="bottom"
     type="date"
     @change="handleChange"
   />
@@ -41,8 +51,8 @@ function handleChange() {
 }
 
 .date-select {
-  position: absolute;
-  top: -10px;
+  top: -6px;
+  left: -125px;
   background-color: #b8823050;
   border: 1px solid #00000020;
   border-radius: 4px;

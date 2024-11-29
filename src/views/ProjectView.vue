@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import TheFooter from '@/components/project/TheFooter.vue';
 import CanvasRuler from '@/components/project/CanvasRuler.vue';
 import CanvasHeader from '@/components/project/CanvasHeader.vue';
 import TheCanvas from '@/components/project/TheCanvas.vue';
 import { useGraph } from '@/stores';
+import ProjectLockButton from '@/components/ProjectLockButton.vue';
+import ProjectLocationButton from '@/components/ProjectLocationButton.vue';
+import ProjectHomeButton from '@/components/ProjectHomeButton.vue';
+import ProjectCalenderButton from '@/components/ProjectCalenderButton.vue';
 
 const graph = useGraph();
 const project = graph.project;
@@ -18,21 +21,47 @@ const project = graph.project;
         {{ project.name }}
       </div>
     </header>
-    <main
-      class="relative grid grow border-t border-gray-200"
-      style="
-        grid-template-columns: 40px calc(100% - 40px);
-        grid-template-rows: 40px calc(100vh - 153px) 48px;
-        background-color: #f2f4f7;
-      "
-    >
-      <div class="flex h-full w-full items-center justify-center border-b border-r border-dashed">
-        <span class="icon-[uil--unlock] text-base text-gray-500" />
-      </div>
+    <main class="main relative grid grow border-t border-gray-200">
+      <project-lock-button />
       <canvas-header />
       <canvas-ruler />
       <the-canvas />
-      <the-footer />
     </main>
+    <footer class="col-span-2 border-t border-gray-200 bg-transparent bg-white">
+      <ProjectHomeButton />
+      <ProjectLocationButton />
+      <ProjectCalenderButton />
+    </footer>
   </div>
 </template>
+<style>
+.main {
+  grid-template-rows: 40px calc(100vh - 153px);
+  grid-template-columns: 40px calc(100% - 40px);
+  background-color: #f2f4f7;
+}
+
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+
+  & > * {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    border-radius: 8px;
+    opacity: 0.7;
+
+    &:hover {
+      background-color: #b8823050;
+    }
+  }
+}
+</style>
