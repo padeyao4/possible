@@ -10,8 +10,10 @@ const showIcon = ref(false);
 
 <template>
   <div
-    class="my-1 flex h-12 w-full flex-row items-center overflow-hidden rounded-md border-gray-200 px-1.5 hover:bg-blue-50"
-    :class="{ 'bg-blue-50': $route.name === 'project' && $route.query.id === project.id }"
+    :class="[
+      'my-1 flex h-12 w-full flex-row items-center overflow-hidden rounded-md border-gray-200 px-1.5 hover:bg-blue-50',
+      { 'bg-blue-50': $route.name === 'project' && $route.query.id === project.id }
+    ]"
     @pointerover="showIcon = true"
     @pointerleave="showIcon = false"
   >

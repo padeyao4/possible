@@ -52,7 +52,7 @@ export function cross(rect1: RectLike, rect2: RectLike): boolean {
 
 export const useGraph = defineStore('graph', {
   state: () => ({
-    projectId: <ID>undefined,
+    projectId: <ID>undefined, // 当前项目id
     projectsMap: new Map<ID, Project>(),
     nodesMap: new Map<ID, Node>(),
     edgesMap: new Map<ID, Edge>(),
@@ -61,7 +61,7 @@ export const useGraph = defineStore('graph', {
     viewWidth: 0, // 可视化窗口大小
     viewHeight: 0, // 可视化窗口大小
     menuWidth: 240, // 菜单栏宽度
-    editorWidth: 300, // 编辑框宽度
+    editorWidth: 0, // 编辑框宽度
     cardWidth: 120, // 实际卡片宽度
     cardHeight: 80 // 实际卡片高度
   }),

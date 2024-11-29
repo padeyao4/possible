@@ -3,7 +3,7 @@
   "version": "0.1.9",
   "private": true,
   "type": "module",
-  "author": "guojian_k@qq.com",
+  "author": "guo jian <guojian_k@qq.com>",
   "description": "...",
   "scripts": {
     "dev": "vite",

@@ -1,33 +1,51 @@
 <script setup lang="ts">
-import { provide, ref } from 'vue';
+import { provide, reactive, ref } from 'vue';
 import ECounterButton from '@/components/common/CounterButton.vue';
 import EDraggable from '@/components/common/MagicDraggable.vue';
-import { useBacklogs } from '@/stores';
-import { Backlog } from '@/core';
+// import { Backlog } from '@/core';
 import BacklogItem from '@/components/BacklogItem.vue';
+import { type Backlog, type ID, useMeno } from '@/stores';
 
-const backlogs = useBacklogs();
+const meno = useMeno();
 
-const onUpdate = (current: Backlog, other: Backlog) => {
-  [current.orderIndex, other.orderIndex] = [other.orderIndex, current.orderIndex];
-};
+const viewModel = reactive({
+  doneBacklogsVisible: false,
+  selectId: <ID>undefined // 选中的id
+});
 
-const inputEl = ref<HTMLInputElement>();
+export type BacklogViewModel = typeof viewModel;
 
-const addNew = () => {
-  const value = inputEl.value.value.trim();
-  if (!value) return;
-  backlogs.add(value);
-  inputEl.value.value = '';
-};
+// const onUpdate = (current: Backlog, other: Backlog) => {
+//   [current.orderIndex, other.orderIndex] = [other.orderIndex, current.orderIndex];
+// };
 
-const editorVisible = ref(false);
-const editorBacklog = ref();
+const inputRef = ref<HTMLInputElement>();
 
-provide('editorVisible', editorVisible);
-provide('editorBacklog', editorBacklog);
+// const addNew = () => {
+//   const value = inputEl.value.value.trim();
+//   if (!value) return;
+//   backlogs.add(value);
+//   inputEl.value.value = '';
+// };
 
-const counterVisible = ref(false);
+// const editorVisible = ref(false);
+// const editorBacklog = ref();
+
+// provide('editorVisible', editorVisible);
+// provide('editorBacklog', editorBacklog);
+
+// const counterVisible = ref(false);
+
+function handleInput() {
+  if (inputRef.value) {
+    meno.add(inputRef.value.value.trim());
+    inputRef.value.value = '';
+  }
+}
+
+function handleUpdate(b1: Backlog, b2: Backlog) {
+  [b1.index, b2.index] = [b2.index, b1.index];
+}
 </script>
 
 <template>
@@ -39,20 +57,20 @@ const counterVisible = ref(false);
       备忘录
     </div>
     <el-scrollbar class="grow px-3">
-      <e-draggable :update="onUpdate" :list="backlogs.todos" handle="data-move">
+      <e-draggable :update="handleUpdate" :list="meno.todoBacklogs" handle="data-move">
         <template #default="{ item }">
-          <backlog-item :item="item as Backlog" class="my-1" />
+          <backlog-item :item="item" :backlog-view-model="viewModel" />
         </template>
       </e-draggable>
-      <e-counter-button :count="backlogs.completes.length" v-model="counterVisible" />
+      <e-counter-button :count="meno.doneBacklogs.length" v-model="viewModel.doneBacklogsVisible" />
       <e-draggable
-        v-if="counterVisible"
-        :update="onUpdate"
-        :list="backlogs.completes"
+        v-if="viewModel.doneBacklogsVisible"
+        :update="handleUpdate"
+        :list="meno.doneBacklogs"
         handle="data-move"
       >
         <template #default="{ item }">
-          <backlog-item :item="item as Backlog" class="my-1" />
+          <backlog-item :item="item" :backlog-view-model="viewModel" />
         </template>
       </e-draggable>
     </el-scrollbar>
@@ -61,8 +79,8 @@ const counterVisible = ref(false);
         <span class="icon-[fe--plus] h-6 w-6 bg-gray-500"></span>
       </div>
       <input
-        @keydown.enter="addNew"
-        ref="inputEl"
+        @keydown.enter="handleInput"
+        ref="inputRef"
         class="h-full w-full grow text-base text-gray-500"
         style="
           :focus {

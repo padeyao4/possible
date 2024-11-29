@@ -1,19 +1,15 @@
 <script setup lang="ts">
 import SettingsItem from './SettingsItem.vue';
-import { ref, watchEffect } from 'vue';
 
-const version = ref();
-
-watchEffect(async () => {
-  version.value = await window.ipcRenderer.invoke('version');
-});
+const version = import.meta.env.VITE_APP_VERSION;
+const author = import.meta.env.VITE_APP_AUTHOR;
 </script>
 <template>
   <SettingsItem>
     <template #title>关于</template>
     <template #description>
       <div>当前版本: {{ version }}</div>
-      <div>联系方式: guojian_k@qq.com</div>
+      <div>联系方式: {{ author }}</div>
     </template>
   </SettingsItem>
 </template>

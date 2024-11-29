@@ -9,6 +9,7 @@ import SettingsButton from '@/components/SettingsButton.vue';
 import CreateProjectDialog from '@/components/CreateProjectDialog.vue';
 import DeleteProjectDialog from '@/components/DeleteProjectDialog.vue';
 import DetailEditor from '@/components/DetailEditor.vue';
+import RenameProjectDialog from '@/components/RenameProjectDialog.vue';
 const graph = useGraph();
 </script>
 
@@ -32,4 +33,5 @@ const graph = useGraph();
   </div>
   <create-project-dialog />
   <delete-project-dialog />
+  <rename-project-dialog />
 </template>

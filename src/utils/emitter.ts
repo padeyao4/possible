@@ -1,6 +1,6 @@
 import mitt from 'mitt';
 // import { Backlog, Edge, Node } from '@/core';
-import type { ID, Project } from '@/stores';
+import type { Backlog, ID, Project } from '@/stores';
 
 // export type Error = { message: string; [key: string]: any };
 
@@ -60,6 +60,8 @@ type CustomEvents = {
     y: number;
     nodeId: ID;
   };
+  'edite-project-name': Project;
+  'open-backlog-editor': Backlog;
 };
 
 export const emitter = mitt<CustomEvents>();

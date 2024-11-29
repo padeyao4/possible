@@ -56,6 +56,7 @@ declare module 'vue' {
     NavBacklogItem: typeof import('./src/components/NavBacklogItem.vue')['default']
     NavTodayItem: typeof import('./src/components/NavTodayItem.vue')['default']
     NotCheckIcon: typeof import('./src/components/icon/NotCheckIcon.vue')['default']
+    RenameProjectDialog: typeof import('./src/components/RenameProjectDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SettingsButton: typeof import('./src/components/SettingsButton.vue')['default']

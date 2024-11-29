@@ -1,75 +1,45 @@
 import { defineStore } from 'pinia';
-import { computed, reactive } from 'vue';
-import type { ID } from '@/core';
-import { Backlog } from '@/core';
+import type { ID } from '@/stores';
+import { v4 } from 'uuid';
 
-export const useBacklogs = defineStore('backlog', () => {
-  const backlogs = reactive<Map<ID, Backlog>>(new Map());
+export interface Backlog {
+  id: ID;
+  name: string;
+  index: number; //用于排序
+  status: boolean; // true: 完成, false: 未完成
+}
 
-  function $reset() {
-    backlogs.clear();
+/**
+ * 备忘录,用于存储待办事项
+ */
+export const useMeno = defineStore('meno', {
+  state: () => ({
+    backlogsMap: new Map<ID, Backlog>()
+  }),
+  getters: {
+    backlogs: (state) => {
+      return Array.from(state.backlogsMap.values()).sort((a, b) => a.index - b.index);
+    },
+    todoBacklogs: (state) => {
+      return Array.from(state.backlogsMap.values())
+        .sort((a, b) => a.index - b.index)
+        .filter((b) => !b.status);
+    },
+    doneBacklogs: (state) => {
+      return Array.from(state.backlogsMap.values())
+        .sort((a, b) => a.index - b.index)
+        .filter((b) => b.status);
+    }
+  },
+  actions: {
+    add(name: string) {
+      const backlog = <Backlog>{
+        id: v4(),
+        name,
+        index: this.backlogs.length,
+        status: false
+      };
+      this.backlogsMap.set(backlog.id, backlog);
+    }
   }
-
-  function toPlainObject() {
-    return Array.from(backlogs.values()).map((b) => b.toPlainObject());
-  }
-
-  function fromPlainObject(objs: any[]) {
-    objs.forEach((obj) => {
-      const entity = Backlog.fromPlainObject(obj);
-      backlogs.set(entity.id, entity);
-    });
-  }
-
-  function add(title: string) {
-    const entity = new Backlog();
-    entity.title = title;
-    backlogs.set(entity.id, entity);
-    Backlog.create(entity);
-  }
-
-  function remove(id: ID) {
-    const backlog = backlogs.get(id);
-    Backlog.delete(backlog);
-  }
-
-  const list = computed(() => {
-    return Array.from(backlogs.values())
-      .filter((b) => b.status !== 'DELETED')
-      .sort((a, b) => a.orderIndex - b.orderIndex);
-  });
-
-  const todos = computed(() => {
-    return list.value.filter((b) => !b.done);
-  });
-
-  const completes = computed(() => {
-    return list.value.filter((b) => b.done);
-  });
-
-  const todosCount = computed(() => {
-    return todos.value.length;
-  });
-
-  const completesCount = computed(() => {
-    return completes.value.length;
-  });
-
-  function get(id: ID) {
-    return backlogs.get(id);
-  }
-
-  return {
-    backlogs,
-    add,
-    remove,
-    todos,
-    completes,
-    todosCount,
-    completesCount,
-    fromPlainObject,
-    get,
-    toPlainObject,
-    $reset
-  };
 });

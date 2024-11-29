@@ -27,21 +27,21 @@ export class Backlog {
     this.version = 0;
   }
 
-  update(backlog: Partial<Backlog>) {
-    Object.assign(this, backlog);
-    this.status = 'UPDATED';
-    emitter.emit('backlog:update', this);
-  }
-
-  static delete(backlog: Backlog) {
-    backlog.status = 'DELETED';
-    emitter.emit('backlog:delete', backlog);
-  }
-
-  static create(backlog: Backlog) {
-    backlog.status = 'CREATED';
-    emitter.emit('backlog:create', backlog);
-  }
+  // update(backlog: Partial<Backlog>) {
+  //   Object.assign(this, backlog);
+  //   this.status = 'UPDATED';
+  //   emitter.emit('backlog:update', this);
+  // }
+  //
+  // static delete(backlog: Backlog) {
+  //   backlog.status = 'DELETED';
+  //   emitter.emit('backlog:delete', backlog);
+  // }
+  //
+  // static create(backlog: Backlog) {
+  //   backlog.status = 'CREATED';
+  //   emitter.emit('backlog:create', backlog);
+  // }
 
   toPlainObject() {
     return {
