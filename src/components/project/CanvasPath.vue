@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { type ID } from '@/stores';
+import { computed, ref } from 'vue';
 
-defineProps<{
+const { data } = defineProps<{
   data: {
     id: ID;
     startX: number;
@@ -14,29 +15,41 @@ defineProps<{
     controller2Y: number;
   };
 }>();
+
+const path = ref<SVGPathElement>();
+
+const style = computed(() => {
+  return `M ${data.startX},${data.startY} C ${data.controller1X},${data.controller1Y} ${data.controller2X},${data.controller2Y} ${data.targetX},${data.targetY}`;
+});
 </script>
 
 <template>
   <path
-    :d="`M ${data.startX},${data.startY} C ${data.controller1X},${data.controller1Y} ${data.controller2X},${data.controller2Y} ${data.targetX},${data.targetY}`"
+    :d="style"
     :data-item-id="data.id"
     data-item-type="edge"
-    fill="#ffffff00"
+    fill="none"
     stroke="#000000"
     stroke-opacity="0.3"
     stroke-width="1"
   />
-  <!--    <path
-    :d="`M ${data.startX},${data.startY} C ${data.controller1X},${data.controller1Y} ${data.controller2X},${data.controller2Y} ${data.targetX},${data.targetY}`"
+  <path
+    ref="path"
+    :d="style"
     stroke="#00000050"
-    fill="#ffffff00"
+    fill="none"
     :data-item-id="data.id"
     opacity="0"
     data-mouse-style="pointer"
     data-item-type="edge"
     stroke-opacity="0.7"
     stroke-width="9"
-  />-->
+    pointer-events="visibleStroke"
+  />
 </template>
 
-<style scoped></style>
+<style scoped>
+path:hover {
+  opacity: 0.8;
+}
+</style>

@@ -18,7 +18,7 @@ import CanvasMenu from '@/components/CanvasMenu.vue';
 
 const graph = useGraph();
 const project = graph.project;
-const svg = ref();
+const svg = ref<SVGSVGElement>();
 const cards = computed(() => graph.currentCards);
 const paths = computed(() => graph.currentPaths);
 

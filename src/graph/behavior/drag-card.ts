@@ -1,7 +1,6 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { clampMin } from '../math';
-import type { Point } from '@/core/types';
-import type { Node } from '@/core/Node';
+import type { Node } from '@/stores';
 
 export class DragCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -13,8 +12,8 @@ export class DragCard extends BaseBehavior {
   }
 
   isDown = false;
-  mousePosition: Point = { x: 0, y: 0 };
-  oldNode = {} as Node;
+  mousePosition = { x: 0, y: 0 };
+  oldNode = <Node>{};
 
   onmousedown(e: MouseEvent, el: Element) {
     if (this.isDown || e.button !== 0) return;

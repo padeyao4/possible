@@ -4,7 +4,7 @@ import ProjectView from '@/views/ProjectView.vue';
 import BacklogView from '@/views/BacklogView.vue';
 import ManageView from '@/views/ManageView.vue';
 import SettingsView from '@/views/SettingsView.vue';
-import IndexView from '@/views/IndexView.vue'
+import IndexView from '@/views/IndexView.vue';
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -28,6 +28,7 @@ const router = createRouter({
           name: 'manage',
           component: ManageView
         },
+
         {
           path: 'project',
           name: 'project',
@@ -40,6 +41,11 @@ const router = createRouter({
       path: '/settings',
       name: 'settings',
       component: SettingsView
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: () => import('@/views/TestView.vue')
     },
     { path: '/', redirect: '/index/today' }
   ]

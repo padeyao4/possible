@@ -1,19 +1,7 @@
-<script setup lang="ts">
-import { reactive } from 'vue';
-
-const viewModel = reactive({
-  inputValue: <string>undefined
-});
-
-function handleChange() {
-  if (viewModel.inputValue) {
-    // todo change project x and y
-  }
-}
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="calendar-icon">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <g fill="none" stroke="currentColor" stroke-width="1.5">
       <path
         stroke-linecap="round"
@@ -23,29 +11,6 @@ function handleChange() {
       <path stroke-linecap="round" d="M20.5 20.5L22 22m-.5-13H10.75M2 9h3.875" />
     </g>
   </svg>
-  <input
-    id="calendar-input"
-    ref="dateInput"
-    v-model="viewModel.inputValue"
-    class="date-select"
-    orientation="top"
-    type="date"
-    @change="handleChange"
-  />
 </template>
 
-<style scoped>
-.calendar-icon {
-  width: 32px;
-  height: 32px;
-}
-
-.date-select {
-  position: absolute;
-  top: -10px;
-  background-color: #b8823050;
-  border: 1px solid #00000020;
-  border-radius: 4px;
-  visibility: hidden;
-}
-</style>
+<style scoped></style>

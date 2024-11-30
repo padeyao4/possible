@@ -2,7 +2,7 @@
 import { computed, reactive, ref, watch, watchEffect } from 'vue';
 import { emitter } from '@/utils';
 
-const { svg } = defineProps<{ svg: HTMLElement }>();
+const { svg } = defineProps<{ svg: SVGSVGElement }>();
 
 interface ConfType {
   name: string;
