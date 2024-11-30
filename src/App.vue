@@ -28,8 +28,8 @@ graph.projects.forEach((project) => {
   for (let i = 0; i < 20; i++) {
     graph.addNode({
       index: generateIndex(),
-      record: '',
-      detail: '',
+      record: faker.word.words({ count: 50 }),
+      detail: faker.word.words({ count: 50 }),
       id: v4(),
       name: faker.location.county(),
       projectId: project.id,

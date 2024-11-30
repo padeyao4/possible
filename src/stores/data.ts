@@ -78,6 +78,10 @@ export const useGraph = defineStore('graph', {
       return state.projectsMap.get(state.projectId);
     },
     projects: (state) => Array.from(state.projectsMap.values()),
+    /**
+     * 获取排序后的所有项目
+     * @param state
+     */
     sortedProjects: (state) => {
       return Array.from(state.projectsMap.values()).sort((a, b) => a.index - b.index);
     },
@@ -98,7 +102,7 @@ export const useGraph = defineStore('graph', {
         w: state.viewWidth / state.cardWidth,
         h: state.viewHeight / state.cardHeight
       }; // 计算当前视图的边界
-      return Array.from(state.nodesMap.values())
+      const cards = Array.from(state.nodesMap.values())
         .filter((node) => node.projectId === state.projectId && cross(bounds, node))
         .sort((a, b) => a.x - b.x)
         .map((node) => ({
@@ -110,6 +114,26 @@ export const useGraph = defineStore('graph', {
           h: node.h * state.cardHeight - 10 * 2, // 实际高度
           color: node.status ? '#dddddd' : '#fff' // 根据状态设置颜色
         }));
+      const nodesMap = new Map<string, any[]>();
+      cards.forEach((card) => {
+        const key = `${card.x}-${card.y}`;
+        if (nodesMap.has(key)) {
+          nodesMap.get(key).push(card);
+        } else {
+          nodesMap.set(key, [card]);
+        }
+      });
+
+      Array.from(nodesMap.values()).forEach((item) => {
+        if (item.length > 1) {
+          item.forEach((card, index) => {
+            card.x = card.x + index * 3;
+            card.y = card.y + index * 3;
+          });
+        }
+      });
+
+      return cards;
     } /**
      * 根据项目id获取所有边绘制信息
      * @param state
