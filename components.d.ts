@@ -53,6 +53,7 @@ declare module 'vue' {
     MapPointIcon: typeof import('./src/components/icon/MapPointIcon.vue')['default']
     MenuItem: typeof import('./src/components/MenuItem.vue')['default']
     MenuItemDeleteButton: typeof import('./src/components/MenuItemDeleteButton.vue')['default']
+    MenuItemDraggableButton: typeof import('./src/components/MenuItemDraggableButton.vue')['default']
     MenuItemEditeButton: typeof import('./src/components/MenuItemEditeButton.vue')['default']
     NavBacklogItem: typeof import('./src/components/NavBacklogItem.vue')['default']
     NavTodayItem: typeof import('./src/components/NavTodayItem.vue')['default']

@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
-import type { ID } from '@/stores';
+import { generateIndex, type ID } from '@/stores';
 import { v4 } from 'uuid';
 
 export interface Backlog {
   id: ID;
   name: string;
-  index: number; //用于排序
+  index: number; //用于排序,时间毫秒值+随机数
   status: boolean; // true: 完成, false: 未完成
 }
 
@@ -36,7 +36,7 @@ export const useMeno = defineStore('meno', {
       const backlog = <Backlog>{
         id: v4(),
         name,
-        index: this.backlogs.length,
+        index: generateIndex(),
         status: false
       };
       this.backlogsMap.set(backlog.id, backlog);

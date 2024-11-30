@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { provide, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
 import ECounterButton from '@/components/common/CounterButton.vue';
-import EDraggable from '@/components/common/MagicDraggable.vue';
-// import { Backlog } from '@/core';
+import MagicDraggable from '@/components/common/MagicDraggable.vue';
 import BacklogItem from '@/components/BacklogItem.vue';
 import { type Backlog, type ID, useMeno } from '@/stores';
 
@@ -15,26 +14,7 @@ const viewModel = reactive({
 
 export type BacklogViewModel = typeof viewModel;
 
-// const onUpdate = (current: Backlog, other: Backlog) => {
-//   [current.orderIndex, other.orderIndex] = [other.orderIndex, current.orderIndex];
-// };
-
 const inputRef = ref<HTMLInputElement>();
-
-// const addNew = () => {
-//   const value = inputEl.value.value.trim();
-//   if (!value) return;
-//   backlogs.add(value);
-//   inputEl.value.value = '';
-// };
-
-// const editorVisible = ref(false);
-// const editorBacklog = ref();
-
-// provide('editorVisible', editorVisible);
-// provide('editorBacklog', editorBacklog);
-
-// const counterVisible = ref(false);
 
 function handleInput() {
   if (inputRef.value) {
@@ -57,22 +37,21 @@ function handleUpdate(b1: Backlog, b2: Backlog) {
       备忘录
     </div>
     <el-scrollbar class="grow px-3">
-      <e-draggable :update="handleUpdate" :list="meno.todoBacklogs" handle="data-move">
+      <magic-draggable :update="handleUpdate" :list="meno.todoBacklogs">
         <template #default="{ item }">
           <backlog-item :item="item" :backlog-view-model="viewModel" />
         </template>
-      </e-draggable>
+      </magic-draggable>
       <e-counter-button :count="meno.doneBacklogs.length" v-model="viewModel.doneBacklogsVisible" />
-      <e-draggable
+      <magic-draggable
         v-if="viewModel.doneBacklogsVisible"
         :update="handleUpdate"
         :list="meno.doneBacklogs"
-        handle="data-move"
       >
         <template #default="{ item }">
           <backlog-item :item="item" :backlog-view-model="viewModel" />
         </template>
-      </e-draggable>
+      </magic-draggable>
     </el-scrollbar>
     <div class="mx-3 my-4 flex h-12 shrink-0 flex-row items-center overflow-hidden rounded-md">
       <div class="flex h-full w-14 shrink-0 items-center justify-center bg-white">

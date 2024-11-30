@@ -6,7 +6,7 @@ export type ID = string | number;
 export interface Project {
   id: ID;
   name: string;
-  index: number;
+  index: number; // 项目在项目列表中的排序,默认是创建时间毫秒值+随机数
   description: string;
   x: number; // 画布平移偏差值
   y: number; // 画布平移偏差值
@@ -18,6 +18,7 @@ export interface Node {
   name: string;
   detail: string;
   record: string;
+  index: number; // 节点在项目中的排序,默认是创建时间毫秒值+随机数
   x: number; // 距离1970年的天数
   y: number;
   w: number;
@@ -48,6 +49,13 @@ export function cross(rect1: RectLike, rect2: RectLike): boolean {
   const { x: x1, y: y1, w: w1, h: h1 } = rect1;
   const { x: x2, y: y2, w: w2, h: h2 } = rect2;
   return x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2;
+}
+
+/**
+ * 生成唯一index,时间+随机数
+ */
+export function generateIndex() {
+  return Date.now() * 100 + Math.floor(Math.random() * 100);
 }
 
 export const useGraph = defineStore('graph', {

@@ -3,9 +3,16 @@ import { ref } from 'vue';
 import { type Project } from '@/stores';
 import MenuItemEditeButton from '@/components/MenuItemEditeButton.vue';
 import MenuItemDeleteButton from '@/components/MenuItemDeleteButton.vue';
+import MenuItemDraggableButton from '@/components/MenuItemDraggableButton.vue';
+import { useRouter } from 'vue-router';
 
-defineProps<{ project: Project }>();
+const { project } = defineProps<{ project: Project }>();
+const router = useRouter();
 const showIcon = ref(false);
+
+function onClick() {
+  router.push({ name: 'project', query: { id: project.id } });
+}
 </script>
 
 <template>
@@ -19,13 +26,14 @@ const showIcon = ref(false);
   >
     <div
       class="flex h-full grow items-center justify-start overflow-hidden pl-1.5"
-      @click="$router.push({ name: 'project', query: { id: project.id } })"
+      @click="onClick"
     >
       <el-text truncated size="default">{{ project.name }}</el-text>
     </div>
     <div v-show="showIcon" class="flex shrink-0 flex-row">
       <menu-item-edite-button :project="project" />
       <menu-item-delete-button :project="project" />
+      <menu-item-draggable-button :project="project" />
     </div>
   </div>
 </template>

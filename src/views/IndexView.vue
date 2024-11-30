@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useGraph } from '@/stores';
+import { type Project, useGraph } from '@/stores';
 import { RouterView } from 'vue-router';
 import NavTodayItem from '@/components/NavTodayItem.vue';
 import NavBacklogItem from '@/components/NavBacklogItem.vue';
@@ -10,7 +10,12 @@ import CreateProjectDialog from '@/components/CreateProjectDialog.vue';
 import DeleteProjectDialog from '@/components/DeleteProjectDialog.vue';
 import DetailEditor from '@/components/DetailEditor.vue';
 import RenameProjectDialog from '@/components/RenameProjectDialog.vue';
+import MagicDraggable from '@/components/common/MagicDraggable.vue';
 const graph = useGraph();
+
+function handleUpdate(p1: Project, p2: Project) {
+  [p1.index, p2.index] = [p2.index, p1.index];
+}
 </script>
 
 <template>
@@ -21,7 +26,11 @@ const graph = useGraph();
         <nav-backlog-item class="my-1" />
       </header>
       <el-scrollbar class="flex-grow px-2.5 py-1.5">
-        <menu-item v-for="item in graph.projects" :project="item" />
+        <magic-draggable :update="handleUpdate" :list="graph.sortedProjects">
+          <template #default="{ item }">
+            <menu-item :project="item" />
+          </template>
+        </magic-draggable>
       </el-scrollbar>
       <footer class="flex h-12 shrink-0 items-center border-t border-t-gray-200 p-1">
         <create-project-button />

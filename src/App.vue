@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { RouterView } from 'vue-router';
-import { useGraph } from '@/stores';
+import { generateIndex, useGraph } from '@/stores';
 import { v4 } from 'uuid';
 import { faker } from '@faker-js/faker';
 import { useWindowSize } from '@vueuse/core';
@@ -20,13 +20,14 @@ for (let i = 0; i < 10; i++) {
     y: 0,
     description: '',
     id: v4(),
-    index: i,
+    index: generateIndex(),
     name: faker.person.fullName()
   });
 }
 graph.projects.forEach((project) => {
   for (let i = 0; i < 20; i++) {
     graph.addNode({
+      index: generateIndex(),
       record: '',
       detail: '',
       id: v4(),

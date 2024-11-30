@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useGraph } from '@/stores';
+import { generateIndex, useGraph } from '@/stores';
 import { emitter } from '@/utils';
 import { v4 } from 'uuid';
 
@@ -17,7 +17,7 @@ function handleCreateProject() {
   graph.addProject({
     description: '',
     id: v4(),
-    index: graph.projects.length,
+    index: generateIndex(),
     name: name.value,
     x: 0,
     y: 0

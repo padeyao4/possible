@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { showWeekAndLocalDate, useTime } from '@/stores/timer';
+import { showWeekAndLocalDate, useTime, type Node } from '@/stores';
 import { computed, ref } from 'vue';
 import ECounterButton from '@/components/common/CounterButton.vue';
 import EDraggable from '@/components/common/MagicDraggable.vue';
-import { Node } from '@/core';
 import TodayItem from '@/components/TodayItem.vue';
 const completeVisible = ref(false);
 
@@ -12,7 +11,7 @@ const timeStore = useTime();
 const dateTime = computed(() => showWeekAndLocalDate(timeStore.localTimestamp));
 
 function onUpdate(n1: Node, n2: Node) {
-  [n1.sortedIndex, n2.sortedIndex] = [n2.sortedIndex, n1.sortedIndex];
+  [n1.index, n2.index] = [n2.index, n1.index];
 }
 </script>
 

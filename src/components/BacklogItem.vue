@@ -38,7 +38,7 @@ const showIcon = ref(false);
     <div
       v-show="showIcon"
       class="icon-[icon-park-outline--drag] ml-auto mr-2 block shrink-0 border border-black bg-gray-500 text-xl"
-      data-move
+      :data-draggable-move="item.id"
     />
   </div>
 </template>
