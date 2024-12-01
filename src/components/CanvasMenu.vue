@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watch, watchEffect } from 'vue';
 import { emitter } from '@/utils';
+import { generateIndex, type ID, useGraph } from '@/stores';
+import { v4 } from 'uuid';
 
 const { svg } = defineProps<{ svg: SVGSVGElement }>();
+const graph = useGraph();
 
 interface ConfType {
   name: string;
@@ -39,17 +42,25 @@ const conf = {
       {
         name: '删除',
         icon: 'delete',
-        action: () => {}
+        action: deleteNode
       }
     ]
   ],
-  edge: <ConfType[][]>[],
+  edge: <ConfType[][]>[
+    [
+      {
+        name: '删除',
+        icon: 'delete',
+        action: undefined
+      }
+    ]
+  ],
   canvas: <ConfType[][]>[
     [
       {
         name: '创建节点',
         icon: 'add',
-        action: () => {}
+        action: createNode
       }
     ]
   ]
@@ -63,7 +74,8 @@ const menuModel = reactive({
   visible: false,
   top: 0, // 菜单栏距离顶部的距离
   left: 0, // 菜单栏距离左侧的距离
-  menuType: <MenuType>'canvas'
+  menuType: <MenuType>'canvas',
+  itemId: <ID>undefined
 });
 
 emitter.on('open-canvas-menu', (param) => {
@@ -71,7 +83,32 @@ emitter.on('open-canvas-menu', (param) => {
   menuModel.top = param.y;
   menuModel.left = param.x;
   menuModel.menuType = param.menuType;
+  menuModel.itemId = param.itemId;
 });
+
+function deleteNode() {
+  graph.removeNode(menuModel.itemId);
+  menuModel.visible = false;
+}
+
+function createNode() {
+  const project = graph.project;
+  const svgBound = svg.getBoundingClientRect();
+  graph.addNode({
+    detail: '',
+    h: 1,
+    id: v4(),
+    index: generateIndex(),
+    name: 'untitled',
+    projectId: project.id,
+    record: '',
+    status: false,
+    w: 1,
+    x: Math.floor((menuModel.left - svgBound.left - project.x) / graph.cardWidth),
+    y: Math.floor((menuModel.top - svgBound.top - project.y) / graph.cardHeight)
+  });
+  menuModel.visible = false;
+}
 
 watchEffect(() => {
   // 解决焦点问题
@@ -105,7 +142,7 @@ const list = computed(() => {
     @contextmenu.prevent
   >
     <div v-for="group in list" class="group">
-      <div v-for="item in group" class="item">
+      <div v-for="item in group" class="item" @click="item.action">
         {{ item.name }}
       </div>
     </div>

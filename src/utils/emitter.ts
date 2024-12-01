@@ -12,6 +12,7 @@ type CustomEvents = {
     menuType: 'canvas' | 'node' | 'edge';
     x: number;
     y: number;
+    itemId?: ID;
   };
   'open-canvas-card-editor': {
     x: number;

@@ -186,6 +186,11 @@ export const useGraph = defineStore('graph', {
     addNode(node: Node) {
       this.nodesMap.set(node.id, node);
     },
+    removeNode(item: ID | Node) {
+      const id = typeof item === 'object' ? item.id : item;
+      this.nodesMap.delete(id);
+      // todo 删除所有关联的边
+    },
     addEdge(node1: Node, node2: Node) {
       if (node1.projectId != node2.projectId) return;
       const edge: Edge = {
