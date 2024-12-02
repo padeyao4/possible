@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, onMounted, provide, ref } from 'vue';
+import { computed, onMounted, provide, ref, watchEffect } from 'vue';
 import { useGraph } from '@/stores';
 import {
   ClickCard,
@@ -19,7 +19,7 @@ import CanvasMenu from '@/components/CanvasMenu.vue';
 const graph = useGraph();
 const project = graph.project;
 const svg = ref<SVGSVGElement>();
-const cards = computed(() => graph.currentCards);
+const cards = computed(() => graph.drawableCards);
 const paths = computed(() => graph.currentPaths);
 
 onMounted(() => {

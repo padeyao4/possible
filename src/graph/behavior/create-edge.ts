@@ -4,9 +4,9 @@ import {
   GRAPH_ITEM_ID,
   GRAPH_ITEM_SHAPE,
   GRAPH_NODE_ANCHOR
-} from '@/graph/base';
+} from '@/graph';
 import { v4 } from 'uuid';
-import { type Edge, type Point } from '@/stores';
+import { type Edge } from '@/stores';
 import { reactive } from 'vue';
 
 export class CreateEdge extends BaseBehavior {
@@ -68,7 +68,10 @@ export class CreateEdge extends BaseBehavior {
       }
       // 如果已存在该边，则删除
       Array.from(this.graph.edgesMap.values()).find(
-        (edge) => edge.source === this.tempEdge.source && edge.target === this.tempEdge.target
+        (edge) =>
+          edge.source === this.tempEdge.source &&
+          edge.target === this.tempEdge.target &&
+          edge.id !== this.tempEdge.id
       ) && this.graph.removeEdge(this.tempEdge.id);
     } else {
       this.graph.removeEdge(this.tempEdge.id);

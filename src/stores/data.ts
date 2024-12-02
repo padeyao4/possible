@@ -92,6 +92,43 @@ function targetAnchor(node: Node, cardWidth: number, cardHeight: number) {
   };
 }
 
+/**
+ * 计算边的控制点坐标,用于绘制曲线
+ */
+export interface PathDraw {
+  id: ID;
+  sourceX: number;
+  sourceY: number;
+  targetX: number;
+  targetY: number;
+  controller1X: number;
+  controller1Y: number;
+  controller2X: number;
+  controller2Y: number;
+}
+
+export interface CardDraw {
+  id: ID;
+  name: string;
+  x: number; // 实际x点
+  y: number; // 实际y点
+  w: number; // 实际宽度
+  h: number; // 实际高度
+  anchor: {
+    source: {
+      // 卡片右侧锚点
+      x: number;
+      y: number;
+    };
+    target: {
+      // 卡片左侧锚点
+      x: number;
+      y: number;
+    };
+  };
+  color: string; // 根据状态设置颜色
+}
+
 export const useGraph = defineStore('graph', {
   state: () => ({
     projectId: <ID>undefined, // 当前项目id
@@ -111,11 +148,10 @@ export const useGraph = defineStore('graph', {
     project: (state) => {
       return state.projectsMap.get(state.projectId);
     },
-    projects: (state) => Array.from(state.projectsMap.values()),
-    /**
+    projects: (state) => Array.from(state.projectsMap.values()) /**
      * 获取排序后的所有项目
      * @param state
-     */
+     */,
     sortedProjects: (state) => {
       return Array.from(state.projectsMap.values()).sort((a, b) => a.index - b.index);
     },
@@ -125,29 +161,41 @@ export const useGraph = defineStore('graph', {
     getProjectById: (state) => (id: ID) => {
       return state.projectsMap.get(id);
     } /**
-     * 根据项目id获取待绘制卡片信息
+     * canvas中用于显示图形的区域大小
      * @param state
      */,
-    currentCards: (state) => {
+    viewBounds: (state) => {
       const project = state.projectsMap.get(state.projectId);
-      const bounds = {
-        x: -project.x / state.cardWidth,
-        y: -project.y / state.cardHeight,
-        w: state.viewWidth / state.cardWidth,
-        h: state.viewHeight / state.cardHeight
-      }; // 计算当前视图的边界
-      const cards = Array.from(state.nodesMap.values())
-        .filter((node) => node.projectId === state.projectId && cross(bounds, node))
+      return {
+        x: -project.x,
+        y: -project.y,
+        w: state.viewWidth,
+        h: state.viewHeight
+      };
+    },
+
+    /**
+     * 根据项目id获取待绘制卡片信息,所有当前项目下的卡片数据
+     */
+    currentCards(): CardDraw[] {
+      const cards = Array.from(this.nodesMap.values())
+        .filter((node) => node.projectId === this.projectId)
         .sort((a, b) => a.x - b.x)
-        .map((node) => ({
-          id: node.id,
-          name: node.name,
-          x: node.x * state.cardWidth + 10, // 实际x点
-          y: node.y * state.cardHeight + 10, // 实际y点
-          w: node.w * state.cardWidth - 10 * 2, // 实际宽度
-          h: node.h * state.cardHeight - 10 * 2, // 实际高度
-          color: node.status ? '#dddddd' : '#fff' // 根据状态设置颜色
-        }));
+        .map((node) => {
+          const x = node.x * this.cardWidth + 10;
+          const y = node.y * this.cardHeight + 10;
+          const w = node.w * this.cardWidth - 10 * 2;
+          const h = node.h * this.cardHeight - 10 * 2;
+          return {
+            id: node.id,
+            name: node.name,
+            x, // 实际x点
+            y, // 实际y点
+            w, // 实际宽度
+            h, // 实际高度
+            color: node.status ? '#dddddd' : '#fff' // 根据状态设置颜色
+          };
+        });
       const nodesMap = new Map<string, any[]>();
       cards.forEach((card) => {
         const key = `${card.x}-${card.y}`;
@@ -167,25 +215,54 @@ export const useGraph = defineStore('graph', {
         }
       });
 
-      return cards;
-    } /**
+      return cards.map((card) => {
+        return {
+          ...card,
+          anchor: {
+            source: {
+              // 卡片右侧锚点
+              x: card.x + card.w,
+              y: card.y + card.h / 2
+            },
+            target: {
+              // 卡片左侧锚点
+              x: card.x,
+              y: card.y + card.h / 2
+            }
+          }
+        };
+      });
+    },
+    /**
+     * 根据显示区域裁剪后的用于显示的卡片数据
+     */
+    drawableCards(): CardDraw[] {
+      return this.currentCards.filter((card) => cross(this.viewBounds, card));
+    },
+    /**
      * 根据项目id获取所有边绘制信息
-     * @param state
-     */,
-    currentPaths: (state) => {
-      // todo 存在bug,应该以实际显示卡片为主
-      return Array.from(state.edgesMap.values())
-        .filter((edge) => edge.projectId === state.projectId)
+     */
+    currentPaths(): PathDraw[] {
+      const cardsMap = new Map<ID, CardDraw>();
+      this.currentCards.forEach((card) => cardsMap.set(card.id, card));
+      return Array.from(this.edgesMap.values())
+        .filter((edge) => edge.projectId === this.projectId)
         .map((edge) => {
           const { x: sourceX, y: sourceY } =
             typeof edge.source === 'object'
-              ? { x: edge.source.x, y: edge.source.y }
-              : sourceAnchor(state.nodesMap.get(edge.source), state.cardWidth, state.cardHeight);
+              ? {
+                  x: edge.source.x,
+                  y: edge.source.y
+                }
+              : cardsMap.get(edge.source).anchor.source;
 
           const { x: targetX, y: targetY } =
             typeof edge.target === 'object'
-              ? { x: edge.target.x, y: edge.target.y }
-              : targetAnchor(state.nodesMap.get(edge.target), state.cardWidth, state.cardHeight);
+              ? {
+                  x: edge.target.x,
+                  y: edge.target.y
+                }
+              : cardsMap.get(edge.target).anchor.target;
 
           const dist = targetX - sourceX;
           const controller1X = sourceX + dist / 2;
