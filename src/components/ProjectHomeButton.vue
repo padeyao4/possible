@@ -4,8 +4,7 @@ import { useGraph } from '@/stores';
 const graph = useGraph();
 
 function goHome() {
-  graph.project.x = 0;
-  graph.project.y = 0;
+  graph.setCurrentProjectPositionByDate(graph.project.createdAt);
 }
 </script>
 

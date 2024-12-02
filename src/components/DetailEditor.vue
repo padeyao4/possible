@@ -82,7 +82,7 @@ useEventListener(document, 'keydown', (e) => {
       />
     </header>
     <el-scrollbar class="grow">
-      <template v-if="content">
+      <template v-if="content && itemModel">
         <div v-for="item in content" class="m-3">
           <el-input
             autosize

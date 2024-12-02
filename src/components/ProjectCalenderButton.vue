@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
+import { getDays, useGraph } from '@/stores';
+
+const graph = useGraph();
 
 const viewModel = reactive({
   inputValue: <string>undefined
@@ -13,7 +16,8 @@ function handleCalendar() {
 
 function handleChange() {
   if (viewModel.inputValue) {
-    // todo change project x and y
+    const offsetX = -getDays(new Date(viewModel.inputValue)) * graph.cardWidth;
+    graph.project.x = offsetX > 0 ? offsetX - 1 : offsetX;
   }
 }
 </script>

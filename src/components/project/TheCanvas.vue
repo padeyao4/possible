@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { computed, onMounted, provide, ref, watchEffect } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useGraph } from '@/stores';
 import {
-  ClickCard,
   ClickCanvasMenu,
+  ClickCard,
   CreateEdge,
   DefaultBehavior,
   DragCanvas,
@@ -38,26 +38,28 @@ onMounted(() => {
 
   register.listen();
 });
+
+const backgroundStyle = computed(() => {
+  return {
+    backgroundPositionX: project.x + 'px',
+    backgroundPositionY: project.y + 'px',
+    backgroundSize: `${graph.cardWidth}px ${graph.cardHeight}px`
+  };
+});
 </script>
 
 <template>
   <div class="relative bg-transparent">
     <svg
       ref="svg"
-      :style="{
-        backgroundPositionX: project.x + 'px',
-        backgroundPositionY: project.y + 'px',
-        backgroundSize: `${graph.cardWidth}px ${graph.cardHeight}px`
-      }"
+      :style="backgroundStyle"
       class="grid-line absolute h-full w-full"
       data-graph-item-shape="canvas"
-      data-graph-item="canvas"
       @contextmenu.prevent
     >
       <g :transform="`translate(${project.x},${project.y})`">
         <canvas-path v-for="item in paths" :key="item.id" :data="item" />
         <canvas-card v-for="item in cards" :key="item.id" :data="item" />
-        <!--        <canvas-temp-paths></canvas-temp-paths>-->
       </g>
     </svg>
     <canvas-menu :svg="svg" />

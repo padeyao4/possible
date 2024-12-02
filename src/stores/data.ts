@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { type DateType, getDays, useTime } from '@/stores/timer';
 
 export type ID = string | number;
 
@@ -14,6 +15,7 @@ export interface Project {
   description: string;
   x: number; // 画布平移偏差值
   y: number; // 画布平移偏差值
+  createdAt: number; // 创建时间系统时间毫秒值
 }
 
 export interface Node {
@@ -60,36 +62,6 @@ export function cross(rect1: RectLike, rect2: RectLike): boolean {
  */
 export function generateIndex() {
   return Date.now() * 100 + Math.floor(Math.random() * 100);
-}
-
-/**
- * 计算卡片锚点的坐标
- * source表示卡片右侧锚点，边的起点
- * @param node
- * @param cardWidth
- * @param cardHeight
- */
-function sourceAnchor(node: Node, cardWidth: number, cardHeight: number) {
-  const { x, y, w, h } = node;
-  return {
-    x: (x + w) * cardWidth - 10,
-    y: (y + h / 2) * cardHeight
-  };
-}
-
-/**
- * 计算卡片锚点的坐标
- * target表示卡片左侧锚点，边的终点
- * @param node
- * @param cardWidth
- * @param cardHeight
- */
-function targetAnchor(node: Node, cardWidth: number, cardHeight: number) {
-  const { x, y, h } = node;
-  return {
-    x: x * cardWidth + 10,
-    y: (y + h / 2) * cardHeight
-  };
 }
 
 /**
@@ -298,13 +270,21 @@ export const useGraph = defineStore('graph', {
     removeProject(item: ID | Project) {
       const id = typeof item === 'object' ? item.id : item;
       this.projectsMap.delete(id);
-      // todo 删除所有关联的节点和边
+      this.edgesMap.forEach((value, key, map) => {
+        value.projectId === id && this.edgesMap.delete(key);
+      });
+      this.nodesMap.forEach((value, key, map) => {
+        value.projectId === id && this.nodesMap.delete(key);
+      });
     },
     setNode(node: Node) {
       this.nodesMap.set(node.id, node);
     },
     removeNode(item: ID | Node) {
       const id = typeof item === 'object' ? item.id : item;
+      this.edgesMap.forEach((value, key, map) => {
+        (value.source === id || value.target === id) && this.edgesMap.delete(key);
+      });
       this.nodesMap.delete(id);
       // todo 删除所有关联的边
     },
@@ -318,6 +298,15 @@ export const useGraph = defineStore('graph', {
     },
     setProjectId(id: ID) {
       this.projectId = id;
+    },
+    /**
+     * 根据改变当前项目坐标
+     */
+    setCurrentProjectPositionByDate(dateType: DateType) {
+      const date = typeof dateType === 'object' ? dateType : new Date(dateType);
+      const offsetX = -getDays(date) * this.cardWidth;
+      this.project.x = offsetX > 0 ? offsetX - 1 : offsetX;
+      this.project.y = 0;
     }
   }
 });

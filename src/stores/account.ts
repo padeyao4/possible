@@ -1,7 +1,6 @@
 import { AccountControllerApi, type User, UserControllerApi } from '@/openapi';
 import { defineStore } from 'pinia';
 import { reactive, ref, toRaw } from 'vue';
-import { emitter } from '@/utils';
 
 export const useAccount = defineStore('account', () => {
   const isAuth = ref(false);

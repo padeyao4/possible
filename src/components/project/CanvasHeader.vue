@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { ONE_DAY_MS, useGraph } from '@/stores';
+import { ONE_DAY_MS, useGraph, getDays, useTime } from '@/stores';
 
 const graph = useGraph();
 
 const project = graph.project;
 
-const offsetX = computed(() => Math.floor(-project.x / graph.cardWidth) - 2);
+const offsetX = computed(() => Math.floor(-project.x / graph.cardWidth));
 
 const numbers = computed(() =>
   Array.from(
     { length: Math.ceil(graph.viewWidth / graph.cardWidth) },
-    (_, i) => i + 1 + offsetX.value
+    (_, i) => i + (offsetX.value < 0 ? offsetX.value + 1 : offsetX.value) - 2
   )
 );
 
@@ -37,12 +37,22 @@ function formatDate(date: Date) {
 function showDateInfo(index: number) {
   return formatDate(new Date(index * ONE_DAY_MS));
 }
+
+const timer = useTime();
+
+const todayIndex = computed(() => {
+  return getDays(new Date(timer.localTimestamp));
+});
 </script>
 
 <template>
   <div class="canvas-header">
     <div class="container">
-      <div v-for="n in numbers" class="item time-cell" :key="n" :class="[{ today: false }]">
+      <div
+        v-for="n in numbers"
+        :key="n"
+        :class="['item time-cell', { today: n + 1 === todayIndex }]"
+      >
         {{ showDateInfo(n) }}
       </div>
     </div>

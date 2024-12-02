@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import { useGraph, useTime } from '@/stores';
+
+const graph = useGraph();
+const time = useTime();
+
 function handleClick() {
-  console.log('location');
-  // todo
+  graph.setCurrentProjectPositionByDate(time.timestamp);
 }
 </script>
 

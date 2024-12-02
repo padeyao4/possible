@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { RouterView } from 'vue-router';
-import { generateIndex, useGraph } from '@/stores';
+import { generateIndex, getDays, useGraph, useTime } from '@/stores';
 import { v4 } from 'uuid';
 import { faker } from '@faker-js/faker';
 import { useWindowSize } from '@vueuse/core';
@@ -14,10 +14,19 @@ watchEffect(() => {
   graph.viewHeight = height.value;
 });
 
+const timer = useTime();
+timer.timestamp = new Date().getTime();
+
 for (let i = 0; i < 10; i++) {
   graph.setProject({
     x: 0,
     y: 0,
+    createdAt: faker.date
+      .between({
+        from: '1900-01-01T00:00:00.000Z',
+        to: '2100-01-01T00:00:00.000Z'
+      })
+      .getTime(),
     description: '',
     id: v4(),
     index: generateIndex(),
@@ -36,7 +45,7 @@ graph.projects.forEach((project) => {
       status: false,
       w: faker.number.int({ min: 1, max: 5 }),
       h: faker.number.int({ min: 1, max: 5 }),
-      x: faker.number.int({ min: 1, max: 50 }),
+      x: faker.number.int({ min: 1, max: 50 }) + getDays(new Date(project.createdAt)),
       y: faker.number.int({ min: 1, max: 15 })
     });
   }

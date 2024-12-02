@@ -50,7 +50,7 @@ export class DragCard extends BaseBehavior {
     if (this.down) {
       this.down = false;
       const node = this.graph.nodesMap.get(this.oldNode.id);
-      node.x = Math.max(Math.round(node.x), 0);
+      node.x = Math.round(node.x);
       node.y = Math.max(Math.round(node.y), 0);
       this.mouseStyle.unlock();
       this.toggleMouseOver(e);

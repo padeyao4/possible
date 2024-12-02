@@ -20,7 +20,8 @@ function handleCreateProject() {
     index: generateIndex(),
     name: name.value,
     x: 0,
-    y: 0
+    y: 0,
+    createdAt: Date.now().valueOf()
   });
   visible.value = false;
   name.value = '';
