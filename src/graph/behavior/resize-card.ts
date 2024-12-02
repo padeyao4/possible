@@ -1,37 +1,40 @@
-import { BaseBehavior, type EventDispatch } from '@/graph/base';
-import { clampMin } from '@/graph/math';
+import {
+  BaseBehavior,
+  type EventDispatch,
+  GRAPH_ITEM_ID,
+  GRAPH_NODE_RESIZE_REGION,
+  MOUSE_STYLE
+} from '@/graph/base';
 import { type Node } from '@/stores';
 
 export class ResizeCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {
     return {
-      'resize:mousedown': this.onmousedown.bind(this),
+      'node:mousedown': this.onmousedown.bind(this),
       ':mousemove': this.onmousemove.bind(this),
       ':mouseup': this.onmouseup.bind(this)
     };
   }
 
-  isPressed = false;
+  down = false;
   mousePoint = { x: 0, y: 0 };
   oldNode = {} as any;
   direction = '';
 
   onmousedown(e: MouseEvent, el: Element) {
-    if (this.isPressed || e.button !== 0) return;
-
-    this.isPressed = true;
-    this.direction = el.getAttribute('data-direction');
-    const style = el.getAttribute('data-mouse-style');
+    if (this.down || e.button !== 0 || !el.hasAttribute(GRAPH_NODE_RESIZE_REGION)) return;
+    this.down = true;
+    this.direction = el.getAttribute(GRAPH_NODE_RESIZE_REGION);
+    const style = el.getAttribute(MOUSE_STYLE);
     this.mouseStyle.lock(style);
     this.mousePoint.x = e.x;
     this.mousePoint.y = e.y;
-    const key = el.getAttribute('data-graph-item-id');
-    const node = this.graph.nodesMap.get(key);
+    const node = this.graph.nodesMap.get(el.getAttribute(GRAPH_ITEM_ID));
     Object.assign(this.oldNode, node);
   }
 
   onmousemove(e: MouseEvent) {
-    if (this.isPressed) {
+    if (this.down) {
       const dx = e.x - this.mousePoint.x;
       const dy = e.y - this.mousePoint.y;
       const node = this.graph.nodesMap.get(this.oldNode.id);
@@ -40,21 +43,13 @@ export class ResizeCard extends BaseBehavior {
   }
 
   onmouseup(e: MouseEvent) {
-    if (this.isPressed) {
-      this.isPressed = false;
+    if (this.down) {
+      this.down = false;
       const node = this.graph.nodesMap.get(this.oldNode.id);
-      // if (this.project.value.collides(node).length === 0 && this.project.value.correctOrderOfNode(node)) {
       node.w = Math.round(node.w);
       node.h = Math.round(node.h);
       node.x = Math.round(node.x);
       node.y = Math.round(node.y);
-      //   emitter.emit('node:update', node);
-      // } else {
-      //   node.w = this.oldNode.w;
-      //   node.h = this.oldNode.h;
-      //   node.x = this.oldNode.x;
-      //   node.y = this.oldNode.y;
-      // }
       this.mouseStyle.unlock();
       this.toggleMouseOver(e);
     }
@@ -63,10 +58,10 @@ export class ResizeCard extends BaseBehavior {
   private changeSize(dx: number, dy: number, node: Node) {
     const dtW = dx / this.graph.cardWidth;
     const dtH = dy / this.graph.cardHeight;
-    const rw = clampMin(this.oldNode.w + dtW, 1);
-    const lw = clampMin(this.oldNode.w - dtW, 1);
-    const bh = clampMin(this.oldNode.h + dtH, 1);
-    const th = clampMin(this.oldNode.h - dtH, 1);
+    const rw = Math.max(this.oldNode.w + dtW, 1);
+    const lw = Math.max(this.oldNode.w - dtW, 1);
+    const bh = Math.max(this.oldNode.h + dtH, 1);
+    const th = Math.max(this.oldNode.h - dtH, 1);
     const x = this.oldNode.x + (lw === 1 ? this.oldNode.w - 1 : dtW);
     const y = this.oldNode.y + (th === 1 ? this.oldNode.h - 1 : dtH);
 

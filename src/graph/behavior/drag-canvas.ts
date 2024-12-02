@@ -1,4 +1,3 @@
-import { clampMax } from '@/graph/math';
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
 
 export class DragCanvas extends BaseBehavior {
@@ -30,8 +29,8 @@ export class DragCanvas extends BaseBehavior {
     if (!this.isDown) return;
     const dx = e.x - this.position.x;
     const dy = e.y - this.position.y;
-    this.project.x = clampMax(this.offset.x + dx, 0);
-    this.project.y = clampMax(this.offset.y + dy, 0);
+    this.project.x = Math.min(this.offset.x + dx, 0);
+    this.project.y = Math.min(this.offset.y + dy, 0);
   }
 
   onmouseup(e: MouseEvent) {

@@ -50,7 +50,7 @@ onMounted(() => {
         backgroundSize: `${graph.cardWidth}px ${graph.cardHeight}px`
       }"
       class="grid-line absolute h-full w-full"
-      data-item-type="canvas"
+      data-graph-item-shape="canvas"
       data-graph-item="canvas"
       @contextmenu.prevent
     >

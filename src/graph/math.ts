@@ -6,9 +6,11 @@ export interface RectLike {
 }
 
 export function clampMin(n: number, min: number) {
-  return n >= min ? n : min;
+  // return n >= min ? n : min;
+  return Math.max(n, min);
 }
 
 export function clampMax(n: number, max: number) {
-  return n <= max ? n : max;
+  // return n <= max ? n : max;
+  return Math.min(n, max);
 }

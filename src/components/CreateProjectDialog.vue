@@ -14,7 +14,7 @@ emitter.on('open-create-project-dialog', () => {
 });
 
 function handleCreateProject() {
-  graph.addProject({
+  graph.setProject({
     description: '',
     id: v4(),
     index: generateIndex(),

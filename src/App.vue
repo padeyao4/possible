@@ -15,7 +15,7 @@ watchEffect(() => {
 });
 
 for (let i = 0; i < 10; i++) {
-  graph.addProject({
+  graph.setProject({
     x: 0,
     y: 0,
     description: '',
@@ -26,7 +26,7 @@ for (let i = 0; i < 10; i++) {
 }
 graph.projects.forEach((project) => {
   for (let i = 0; i < 20; i++) {
-    graph.addNode({
+    graph.setNode({
       index: generateIndex(),
       record: faker.word.words({ count: 50 }),
       detail: faker.word.words({ count: 50 }),
@@ -52,7 +52,12 @@ graph.projects.forEach((project) => {
       if (node1.x > node2.x) {
         [node1, node2] = [node2, node1];
       }
-      graph.addEdge(node1, node2);
+      graph.setEdge({
+        id: v4(),
+        projectId: node1.projectId,
+        source: node1.id,
+        target: node2.id
+      });
     }
   }
 });

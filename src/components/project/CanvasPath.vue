@@ -5,8 +5,8 @@ import { computed, ref } from 'vue';
 const { data } = defineProps<{
   data: {
     id: ID;
-    startX: number;
-    startY: number;
+    sourceX: number;
+    sourceY: number;
     targetX: number;
     targetY: number;
     controller1X: number;
@@ -19,7 +19,7 @@ const { data } = defineProps<{
 const path = ref<SVGPathElement>();
 
 const style = computed(() => {
-  return `M ${data.startX},${data.startY} C ${data.controller1X},${data.controller1Y} ${data.controller2X},${data.controller2Y} ${data.targetX},${data.targetY}`;
+  return `M ${data.sourceX},${data.sourceY} C ${data.controller1X},${data.controller1Y} ${data.controller2X},${data.controller2Y} ${data.targetX},${data.targetY}`;
 });
 </script>
 
@@ -27,7 +27,7 @@ const style = computed(() => {
   <path
     :d="style"
     :data-graph-item-id="data.id"
-    data-item-type="edge"
+    data-graph-item-shape="edge"
     fill="none"
     stroke="#000000"
     stroke-opacity="0.3"
@@ -41,7 +41,7 @@ const style = computed(() => {
     :data-graph-item-id="data.id"
     opacity="0"
     data-mouse-style="pointer"
-    data-item-type="edge"
+    data-graph-item-shape="edge"
     stroke-opacity="0.7"
     stroke-width="9"
     pointer-events="visibleStroke"

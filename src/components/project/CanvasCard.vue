@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /**
  * canvas卡片组件
- * data-graph-item 属性表示graph中有哪些类型。node edge canvas
+ * data-graph-item-shape 属性表示graph中有哪些类型。node edge canvas
  * data-graph-item-id 属性表示节点id
- * data-graph-node-anchor 属性表示锚点类型。值可以为 left right top bottom
- * data-graph-node-resize-direction 属性表示是否可以缩放。表示八个方向的调整方向
+ * data-graph-node-anchor 属性表示锚点类型。值可以为 source和target。source表示边的起点节点
+ * data-graph-node-resize-region 属性表示是否可以缩放。表示八个方向的调整方向
  */
 import { type ID } from '@/stores';
 
@@ -44,7 +44,7 @@ defineProps<{
       :height="data.h"
       opacity="0"
       :data-graph-item-id="data.id"
-      data-item-type="node"
+      data-graph-item-shape="node"
       data-mouse-style="pointer"
       class="key-shape"
       rx="8"
@@ -53,9 +53,8 @@ defineProps<{
       <rect
         :data-graph-item-id="data.id"
         data-mouse-style="nwse-resize"
-        data-graph-item="node"
-        data-item-type="resize"
-        data-direction="lt"
+        data-graph-item-shape="node"
+        data-graph-node-resize-region="lt"
         x="-2.5"
         y="-2.5"
         fill="red"
@@ -65,9 +64,8 @@ defineProps<{
       <rect
         :data-graph-item-id="data.id"
         data-mouse-style="nesw-resize"
-        data-item-type="resize"
-        data-graph-item="node"
-        data-direction="rt"
+        data-graph-item-shape="node"
+        data-graph-node-resize-region="rt"
         :x="data.w - 2.5"
         y="-2.5"
         fill="red"
@@ -77,9 +75,8 @@ defineProps<{
       <rect
         :data-graph-item-id="data.id"
         data-mouse-style="ns-resize"
-        data-item-type="resize"
-        data-graph-item="node"
-        data-direction="t"
+        data-graph-item-shape="node"
+        data-graph-node-resize-region="t"
         x="2.5"
         y="-2.5"
         :width="data.w - 5"
@@ -87,10 +84,9 @@ defineProps<{
       />
       <rect
         :data-graph-item-id="data.id"
-        data-item-type="resize"
+        data-graph-item-shape="node"
         data-mouse-style="ns-resize"
-        data-graph-item="node"
-        data-direction="b"
+        data-graph-node-resize-region="b"
         x="2.5"
         :y="data.h - 2.5"
         :width="data.w - 5"
@@ -98,10 +94,9 @@ defineProps<{
       />
       <rect
         :data-graph-item-id="data.id"
-        data-item-type="resize"
+        data-graph-item-shape="node"
         data-mouse-style="ew-resize"
-        data-graph-item="node"
-        data-direction="l"
+        data-graph-node-resize-region="l"
         x="-2.5"
         y="2.5"
         :width="5"
@@ -109,10 +104,9 @@ defineProps<{
       />
       <rect
         :data-graph-item-id="data.id"
-        data-item-type="resize"
+        data-graph-item-shape="node"
         data-mouse-style="ew-resize"
-        data-graph-item="node"
-        data-direction="r"
+        data-graph-node-resize-region="r"
         :x="data.w - 2.5"
         y="2.5"
         :width="5"
@@ -120,10 +114,9 @@ defineProps<{
       />
       <rect
         :data-graph-item-id="data.id"
-        data-item-type="resize"
+        data-graph-item-shape="node"
         data-mouse-style="nesw-resize"
-        data-graph-item="node"
-        data-direction="lb"
+        data-graph-node-resize-region="lb"
         x="-2.5"
         :y="data.h - 2.5"
         fill="red"
@@ -132,10 +125,9 @@ defineProps<{
       />
       <rect
         :data-graph-item-id="data.id"
-        data-item-type="resize"
+        data-graph-item-shape="node"
         data-mouse-style="nwse-resize"
-        data-graph-item="node"
-        data-direction="rb"
+        data-graph-node-resize-region="rb"
         :x="data.w - 2.5"
         :y="data.h - 2.5"
         fill="red"
@@ -150,11 +142,10 @@ defineProps<{
         stroke="#000"
         fill="#fff"
         stroke-width="0.8"
-        data-graph-item="node"
         data-mouse-style="pointer"
-        data-item-type="anchor"
+        data-graph-item-shape="node"
         :data-graph-item-id="data.id"
-        data-graph-node-anchor="left"
+        data-graph-node-anchor="target"
       />
       <circle
         :cx="data.w"
@@ -163,11 +154,10 @@ defineProps<{
         stroke="#000"
         fill="#fff"
         stroke-width="0.8"
-        data-graph-item="node"
         data-mouse-style="pointer"
-        data-item-type="anchor"
+        data-graph-item-shape="node"
         :data-graph-item-id="data.id"
-        data-graph-node-anchor="right"
+        data-graph-node-anchor="source"
       />
     </g>
   </g>

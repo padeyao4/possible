@@ -1,5 +1,9 @@
-import { BaseBehavior, type EventDispatch } from '@/graph/base';
-import { clampMin } from '../math';
+import {
+  BaseBehavior,
+  type EventDispatch,
+  GRAPH_NODE_ANCHOR,
+  GRAPH_NODE_RESIZE_REGION
+} from '@/graph/base';
 import type { Node } from '@/stores';
 
 export class DragCard extends BaseBehavior {
@@ -11,26 +15,30 @@ export class DragCard extends BaseBehavior {
     };
   }
 
-  isDown = false;
+  down = false;
   mousePosition = { x: 0, y: 0 };
   oldNode = <Node>{};
 
   onmousedown(e: MouseEvent, el: Element) {
-    if (this.isDown || e.button !== 0) return;
+    if (
+      this.down ||
+      e.button !== 0 ||
+      el.hasAttribute(GRAPH_NODE_RESIZE_REGION) ||
+      el.hasAttribute(GRAPH_NODE_ANCHOR)
+    )
+      return;
     const nodeId = el.getAttribute('data-graph-item-id');
-    // const node = this.project.value.nodeMap.get(nodeId);
     const node = this.graph.nodesMap.get(nodeId);
     Object.assign(this.oldNode, node);
-    this.isDown = true;
+    this.down = true;
     this.mousePosition.x = e.x;
     this.mousePosition.y = e.y;
   }
 
   onmousemove(e: MouseEvent) {
-    if (!this.isDown) return;
+    if (!this.down) return;
     const dx = e.x - this.mousePosition.x;
     const dy = e.y - this.mousePosition.y;
-    // const node = this.project.value.nodeMap.get(this.oldNode.id);
     const node = this.graph.nodesMap.get(this.oldNode.id);
 
     node.x = this.oldNode.x + dx / this.graph.cardWidth;
@@ -39,20 +47,11 @@ export class DragCard extends BaseBehavior {
   }
 
   onmouseup(e: MouseEvent) {
-    if (this.isDown) {
-      this.isDown = false;
-      // const node = this.project.value.nodeMap.get(this.oldNode.id);
+    if (this.down) {
+      this.down = false;
       const node = this.graph.nodesMap.get(this.oldNode.id);
-      node.x = clampMin(Math.round(node.x), 0);
-      node.y = clampMin(Math.round(node.y), 0);
-
-      // if (this.project.value.collides(node).length !== 0 || !this.project.value.correctOrderOfNode(node)) {
-      //   node.x = this.oldNode.x;
-      //   node.y = this.oldNode.y;
-      // } else {
-      // emitter.emit('node:update', node);
-      // todo
-      // }
+      node.x = Math.max(Math.round(node.x), 0);
+      node.y = Math.max(Math.round(node.y), 0);
       this.mouseStyle.unlock();
       this.toggleMouseOver(e);
     }

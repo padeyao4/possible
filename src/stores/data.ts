@@ -1,7 +1,11 @@
 import { defineStore } from 'pinia';
-import { v4 } from 'uuid';
 
 export type ID = string | number;
+
+export type Point = {
+  x: number;
+  y: number;
+};
 
 export interface Project {
   id: ID;
@@ -29,8 +33,8 @@ export interface Node {
 export interface Edge {
   id: ID;
   projectId: ID;
-  source: ID;
-  target: ID;
+  source: ID | Point;
+  target: ID | Point;
 }
 
 export interface RectLike {
@@ -56,6 +60,36 @@ export function cross(rect1: RectLike, rect2: RectLike): boolean {
  */
 export function generateIndex() {
   return Date.now() * 100 + Math.floor(Math.random() * 100);
+}
+
+/**
+ * 计算卡片锚点的坐标
+ * source表示卡片右侧锚点，边的起点
+ * @param node
+ * @param cardWidth
+ * @param cardHeight
+ */
+function sourceAnchor(node: Node, cardWidth: number, cardHeight: number) {
+  const { x, y, w, h } = node;
+  return {
+    x: (x + w) * cardWidth - 10,
+    y: (y + h / 2) * cardHeight
+  };
+}
+
+/**
+ * 计算卡片锚点的坐标
+ * target表示卡片左侧锚点，边的终点
+ * @param node
+ * @param cardWidth
+ * @param cardHeight
+ */
+function targetAnchor(node: Node, cardWidth: number, cardHeight: number) {
+  const { x, y, h } = node;
+  return {
+    x: x * cardWidth + 10,
+    y: (y + h / 2) * cardHeight
+  };
 }
 
 export const useGraph = defineStore('graph', {
@@ -139,24 +173,30 @@ export const useGraph = defineStore('graph', {
      * @param state
      */,
     currentPaths: (state) => {
+      // todo 存在bug,应该以实际显示卡片为主
       return Array.from(state.edgesMap.values())
         .filter((edge) => edge.projectId === state.projectId)
         .map((edge) => {
-          const sourceNode = state.nodesMap.get(edge.source);
-          const targetNode = state.nodesMap.get(edge.target);
-          const startX = (sourceNode.x + sourceNode.w) * state.cardWidth - 10;
-          const startY = (sourceNode.y + sourceNode.h / 2) * state.cardHeight;
-          const targetX = targetNode.x * state.cardWidth + 10;
-          const targetY = (targetNode.y + targetNode.h / 2) * state.cardHeight;
-          const dist = targetX - startX;
-          const controller1X = startX + dist / 2;
-          const controller1Y = startY;
+          const { x: sourceX, y: sourceY } =
+            typeof edge.source === 'object'
+              ? { x: edge.source.x, y: edge.source.y }
+              : sourceAnchor(state.nodesMap.get(edge.source), state.cardWidth, state.cardHeight);
+
+          const { x: targetX, y: targetY } =
+            typeof edge.target === 'object'
+              ? { x: edge.target.x, y: edge.target.y }
+              : targetAnchor(state.nodesMap.get(edge.target), state.cardWidth, state.cardHeight);
+
+          const dist = targetX - sourceX;
+          const controller1X = sourceX + dist / 2;
+          const controller1Y = sourceY;
           const controller2X = targetX - dist / 2;
           const controller2Y = targetY;
+
           return {
             id: edge.id,
-            startX,
-            startY,
+            sourceX,
+            sourceY,
             targetX,
             targetY,
             controller1X,
@@ -175,7 +215,7 @@ export const useGraph = defineStore('graph', {
     }
   },
   actions: {
-    addProject(project: Project) {
+    setProject(project: Project) {
       this.projectsMap.set(project.id, project);
     },
     removeProject(item: ID | Project) {
@@ -183,7 +223,7 @@ export const useGraph = defineStore('graph', {
       this.projectsMap.delete(id);
       // todo 删除所有关联的节点和边
     },
-    addNode(node: Node) {
+    setNode(node: Node) {
       this.nodesMap.set(node.id, node);
     },
     removeNode(item: ID | Node) {
@@ -191,16 +231,13 @@ export const useGraph = defineStore('graph', {
       this.nodesMap.delete(id);
       // todo 删除所有关联的边
     },
-    addEdge(node1: Node, node2: Node) {
-      if (node1.projectId != node2.projectId) return;
-      const edge: Edge = {
-        source: node1.id,
-        target: node2.id,
-        id: v4(),
-        projectId: node1.projectId
-      };
+    setEdge(edge: Edge) {
       this.edgesMap.set(edge.id, edge);
       // todo 添加出边和入边
+    },
+    removeEdge(item: ID | Edge) {
+      const id = typeof item === 'object' ? item.id : item;
+      this.edgesMap.delete(id);
     },
     setProjectId(id: ID) {
       this.projectId = id;

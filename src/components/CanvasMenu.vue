@@ -94,7 +94,7 @@ function deleteNode() {
 function createNode() {
   const project = graph.project;
   const svgBound = svg.getBoundingClientRect();
-  graph.addNode({
+  graph.setNode({
     detail: '',
     h: 1,
     id: v4(),
