@@ -237,10 +237,6 @@ export const useGraph = defineStore('graph', {
               : cardsMap.get(edge.target).anchor.target;
 
           const dist = targetX - sourceX;
-          const controller1X = sourceX + dist / 2;
-          const controller1Y = sourceY;
-          const controller2X = targetX - dist / 2;
-          const controller2Y = targetY;
 
           return {
             id: edge.id,
@@ -248,10 +244,10 @@ export const useGraph = defineStore('graph', {
             sourceY,
             targetX,
             targetY,
-            controller1X,
-            controller1Y,
-            controller2X,
-            controller2Y
+            controller1X: sourceX + dist / 2,
+            controller1Y: sourceY,
+            controller2X: targetX - dist / 2,
+            controller2Y: targetY
           };
         });
     },
