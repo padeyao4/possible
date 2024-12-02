@@ -1,4 +1,11 @@
 <script setup lang="ts">
+/**
+ * canvas卡片组件
+ * data-graph-item 属性表示graph中有哪些类型。node edge canvas
+ * data-graph-item-id 属性表示节点id
+ * data-graph-node-anchor 属性表示锚点类型。值可以为 left right top bottom
+ * data-graph-node-resize-direction 属性表示是否可以缩放。表示八个方向的调整方向
+ */
 import { type ID } from '@/stores';
 
 defineProps<{
@@ -36,7 +43,7 @@ defineProps<{
       :width="data.w"
       :height="data.h"
       opacity="0"
-      :data-item-id="data.id"
+      :data-graph-item-id="data.id"
       data-item-type="node"
       data-mouse-style="pointer"
       class="key-shape"
@@ -44,9 +51,9 @@ defineProps<{
     />
     <g opacity="0">
       <rect
-        :data-item-id="data.id"
+        :data-graph-item-id="data.id"
         data-mouse-style="nwse-resize"
-        data-type="node"
+        data-graph-item="node"
         data-item-type="resize"
         data-direction="lt"
         x="-2.5"
@@ -56,10 +63,10 @@ defineProps<{
         height="5"
       />
       <rect
-        :data-item-id="data.id"
+        :data-graph-item-id="data.id"
         data-mouse-style="nesw-resize"
         data-item-type="resize"
-        data-type="node"
+        data-graph-item="node"
         data-direction="rt"
         :x="data.w - 2.5"
         y="-2.5"
@@ -68,10 +75,10 @@ defineProps<{
         height="5"
       />
       <rect
-        :data-item-id="data.id"
+        :data-graph-item-id="data.id"
         data-mouse-style="ns-resize"
         data-item-type="resize"
-        data-type="node"
+        data-graph-item="node"
         data-direction="t"
         x="2.5"
         y="-2.5"
@@ -79,10 +86,10 @@ defineProps<{
         height="5"
       />
       <rect
-        :data-item-id="data.id"
+        :data-graph-item-id="data.id"
         data-item-type="resize"
         data-mouse-style="ns-resize"
-        data-type="node"
+        data-graph-item="node"
         data-direction="b"
         x="2.5"
         :y="data.h - 2.5"
@@ -90,10 +97,10 @@ defineProps<{
         height="5"
       />
       <rect
-        :data-item-id="data.id"
+        :data-graph-item-id="data.id"
         data-item-type="resize"
         data-mouse-style="ew-resize"
-        data-type="node"
+        data-graph-item="node"
         data-direction="l"
         x="-2.5"
         y="2.5"
@@ -101,10 +108,10 @@ defineProps<{
         :height="data.h - 5"
       />
       <rect
-        :data-item-id="data.id"
+        :data-graph-item-id="data.id"
         data-item-type="resize"
         data-mouse-style="ew-resize"
-        data-type="node"
+        data-graph-item="node"
         data-direction="r"
         :x="data.w - 2.5"
         y="2.5"
@@ -112,10 +119,10 @@ defineProps<{
         :height="data.h - 5"
       />
       <rect
-        :data-item-id="data.id"
+        :data-graph-item-id="data.id"
         data-item-type="resize"
         data-mouse-style="nesw-resize"
-        data-type="node"
+        data-graph-item="node"
         data-direction="lb"
         x="-2.5"
         :y="data.h - 2.5"
@@ -124,10 +131,10 @@ defineProps<{
         height="5"
       />
       <rect
-        :data-item-id="data.id"
+        :data-graph-item-id="data.id"
         data-item-type="resize"
         data-mouse-style="nwse-resize"
-        data-type="node"
+        data-graph-item="node"
         data-direction="rb"
         :x="data.w - 2.5"
         :y="data.h - 2.5"
@@ -143,11 +150,11 @@ defineProps<{
         stroke="#000"
         fill="#fff"
         stroke-width="0.8"
-        data-type="node"
+        data-graph-item="node"
         data-mouse-style="pointer"
         data-item-type="anchor"
-        :data-item-id="data.id"
-        data-anchor="left"
+        :data-graph-item-id="data.id"
+        data-graph-node-anchor="left"
       />
       <circle
         :cx="data.w"
@@ -156,11 +163,11 @@ defineProps<{
         stroke="#000"
         fill="#fff"
         stroke-width="0.8"
-        data-type="node"
+        data-graph-item="node"
         data-mouse-style="pointer"
         data-item-type="anchor"
-        :data-item-id="data.id"
-        data-anchor="right"
+        :data-graph-item-id="data.id"
+        data-graph-node-anchor="right"
       />
     </g>
   </g>

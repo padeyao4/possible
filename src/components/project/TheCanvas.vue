@@ -51,7 +51,7 @@ onMounted(() => {
       }"
       class="grid-line absolute h-full w-full"
       data-item-type="canvas"
-      data-type="canvas"
+      data-graph-item="canvas"
       @contextmenu.prevent
     >
       <g :transform="`translate(${project.x},${project.y})`">

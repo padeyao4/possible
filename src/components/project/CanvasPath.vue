@@ -26,7 +26,7 @@ const style = computed(() => {
 <template>
   <path
     :d="style"
-    :data-item-id="data.id"
+    :data-graph-item-id="data.id"
     data-item-type="edge"
     fill="none"
     stroke="#000000"
@@ -38,7 +38,7 @@ const style = computed(() => {
     :d="style"
     stroke="#00000050"
     fill="none"
-    :data-item-id="data.id"
+    :data-graph-item-id="data.id"
     opacity="0"
     data-mouse-style="pointer"
     data-item-type="edge"

@@ -1,13 +1,10 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
 import { type TempPath, useTempPaths } from '@/stores/temp-path';
-import type { ID } from '@/core/types';
 
 export class CreateEdge extends BaseBehavior {
   isDown = false;
   source: string;
   target: string;
-  tempPaths = useTempPaths();
-  pathId: ID;
 
   getEventDispatch(): EventDispatch {
     return {
@@ -19,10 +16,10 @@ export class CreateEdge extends BaseBehavior {
 
   onmousedown(e: MouseEvent, el: Element) {
     if (e.button !== 0) return;
-    if (el.hasAttribute('data-anchor')) {
+    if (el.hasAttribute('data-graph-node-anchor')) {
       this.isDown = true;
-      const key = el.getAttribute('data-item-id');
-      const direction = el.getAttribute('data-anchor');
+      const key = el.getAttribute('data-graph-item-id');
+      const direction = el.getAttribute('data-graph-node-anchor');
       // const point = this.project.value.getPointByOffsetPoint({ x: e.offsetX, y: e.offsetY });
       // const path = this.tempPaths.createTempPath(
       //   key,
@@ -63,7 +60,7 @@ export class CreateEdge extends BaseBehavior {
 
   private createEdge(el: Element, elType: string, path: TempPath) {
     // if (elType === 'node' || elType === 'anchor') {
-    //   const key = el.getAttribute('data-item-id');
+    //   const key = el.getAttribute('data-graph-item-id');
     //   if (key == path.nodeId) return;
     //   path.opacity = 0;
     //   if (path.dummy === 'source') {

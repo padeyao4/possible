@@ -25,7 +25,7 @@ export class ClickCard extends BaseBehavior {
       emitter.emit('open-canvas-card-editor', {
         x: e.x,
         y: e.y,
-        nodeId: el.getAttribute('data-item-id')
+        nodeId: el.getAttribute('data-graph-item-id')
       });
     }
     this.distance = 100;
