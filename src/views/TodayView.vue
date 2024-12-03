@@ -1,14 +1,28 @@
 <script setup lang="ts">
-import { showWeekAndLocalDate, useTime, type Node } from '@/stores';
+import { type DateType, type Node, useGraph } from '@/stores';
 import { computed, ref } from 'vue';
 import ECounterButton from '@/components/common/CounterButton.vue';
 import EDraggable from '@/components/common/MagicDraggable.vue';
 import TodayItem from '@/components/TodayItem.vue';
+
 const completeVisible = ref(false);
 
-const timeStore = useTime();
+const graph = useGraph();
 
-const dateTime = computed(() => showWeekAndLocalDate(timeStore.localTimestamp));
+/**
+ * 表头显示的时间格式
+ * @param dateType
+ */
+function showWeekAndLocalDate(dateType: DateType) {
+  const date = typeof dateType === 'object' ? dateType : new Date(dateType);
+  const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
+  const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+  const dayIndex = adjustedDate.getDay();
+  const localDate = adjustedDate.toLocaleDateString();
+  return `${localDate} ${days[dayIndex]}`;
+}
+
+const dateTime = computed(() => showWeekAndLocalDate(graph.timestamp));
 
 function onUpdate(n1: Node, n2: Node) {
   [n1.index, n2.index] = [n2.index, n1.index];

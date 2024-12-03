@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { useGraph, useTime } from '@/stores';
+import { useGraph } from '@/stores';
 
 const graph = useGraph();
-const time = useTime();
 
 function handleClick() {
-  graph.setCurrentProjectPositionByDate(time.timestamp);
+  graph.setCurrentProjectPositionByDate(graph.timestamp);
 }
 </script>
 

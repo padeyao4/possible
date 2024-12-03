@@ -1,7 +1,18 @@
 import { defineStore } from 'pinia';
-import { type DateType, getDays, useTime } from '@/stores/timer';
+import type { Ref } from 'vue';
 
 export type ID = string | number;
+
+/**
+ * 一天的表示的毫秒值
+ */
+export const ONE_DAY_MS = 86400_000;
+/**
+ * 一分钟毫秒值
+ */
+export const ONE_MINUTE_MS = 60_000;
+
+export type DateType = Date | string | number;
 
 export type Point = {
   x: number;
@@ -65,6 +76,13 @@ export function generateIndex() {
 }
 
 /**
+ * 获取日期距离1970的天数
+ */
+export function days(dateType: DateType) {
+  const date = typeof dateType === 'object' ? dateType : new Date(dateType);
+  return Math.ceil((date.getTime() - date.getTimezoneOffset() * ONE_MINUTE_MS) / ONE_DAY_MS);
+}
+/**
  * 计算边的控制点坐标,用于绘制曲线
  */
 export interface PathDraw {
@@ -101,6 +119,23 @@ export interface CardDraw {
   color: string; // 根据状态设置颜色
 }
 
+/**
+ * 媒体晚上12点钟执行
+ * @param clear
+ * @param callback
+ */
+export function scheduleMidnightTask(clear: Ref<any>, callback: () => void) {
+  const now = new Date();
+  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+  const delay: number = midnight.getTime() - now.getTime();
+  clearTimeout(clear.value);
+  clear.value = setTimeout(() => {
+    callback();
+    // 设置下一个午夜的定时器
+    scheduleMidnightTask(clear, callback);
+  }, delay);
+}
+
 export const useGraph = defineStore('graph', {
   state: () => ({
     projectId: <ID>undefined, // 当前项目id
@@ -114,7 +149,8 @@ export const useGraph = defineStore('graph', {
     menuWidth: 240, // 菜单栏宽度
     editorWidth: 0, // 编辑框宽度
     cardWidth: 120, // 实际卡片宽度
-    cardHeight: 80 // 实际卡片高度
+    cardHeight: 80, // 实际卡片高度
+    timestamp: 0 // 时间戳,用于控制表头显示的时间格式
   }),
   getters: {
     project: (state) => {
@@ -299,8 +335,7 @@ export const useGraph = defineStore('graph', {
      * 根据改变当前项目坐标
      */
     setCurrentProjectPositionByDate(dateType: DateType) {
-      const date = typeof dateType === 'object' ? dateType : new Date(dateType);
-      const offsetX = -getDays(date) * this.cardWidth;
+      const offsetX = -days(dateType) * this.cardWidth;
       this.project.x = offsetX > 0 ? offsetX - 1 : offsetX;
       this.project.y = 0;
     }

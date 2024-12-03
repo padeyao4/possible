@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { ONE_DAY_MS, useGraph, getDays, useTime } from '@/stores';
+import { days, ONE_DAY_MS, useGraph } from '@/stores';
 
 const graph = useGraph();
 
@@ -38,10 +38,8 @@ function showDateInfo(index: number) {
   return formatDate(new Date(index * ONE_DAY_MS));
 }
 
-const timer = useTime();
-
 const todayIndex = computed(() => {
-  return getDays(new Date(timer.localTimestamp));
+  return days(graph.timestamp);
 });
 </script>
 
