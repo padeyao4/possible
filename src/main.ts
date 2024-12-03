@@ -16,7 +16,13 @@ app.use(router);
 // 页面每次跳转前记录跳转后的项目id
 router.beforeEach(async (to, from, next) => {
   const graph = useGraph();
-  to.name === 'project' && graph.setProjectId(to.query['id'] as ID);
+  if (to.name === 'project') {
+    graph.setProjectId(<ID>to.query['id']);
+    if (!graph.project) {
+      // 当项目id不存在时，跳转到today页面
+      await router.push({ name: 'today' });
+    }
+  }
   next();
 });
 app.mount('#app');

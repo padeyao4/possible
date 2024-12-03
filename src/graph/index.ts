@@ -1,6 +1,4 @@
 export * from './base';
-export * from './math';
-export * from './types.d';
 export * from './behavior/default';
 export * from './behavior/click-card';
 export * from './behavior/click-canvas-menu';

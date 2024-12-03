@@ -64,13 +64,22 @@ function setRefs(e: Element, id: ID) {
 }
 
 /**
- * 判断点是否在矩形框内
- * @param r1
- * @param x
- * @param y
+ * 判断两个矩形是否相交
  */
-function collide(r1: DOMRect, x: number, y: number) {
-  return !(x < r1.x || x > r1.x + r1.width || y < r1.y || y > r1.y + r1.height);
+function isIntersect(r1: DOMRect, r2: DOMRect) {
+  return !(
+    r2.x > r1.x + r1.width ||
+    r2.x + r2.width < r1.x ||
+    r2.y > r1.y + r1.height ||
+    r2.y + r2.height < r1.y
+  );
+}
+
+/**
+ * 判断r1的水平中线是否在线段r2的矩形内
+ */
+function isInLine(r1: DOMRect, r2: DOMRect) {
+  return r2.y <= r1.y + r1.height / 2 && r1.y + r1.height / 2 <= r2.y + r2.height;
 }
 
 useEventListener(['pointermove'], (e) => {
@@ -79,11 +88,12 @@ useEventListener(['pointermove'], (e) => {
   viewModel.end.y = e.clientY;
   viewModel.clone.style.top = `${viewModel.origin.y + viewModel.end.y - viewModel.start.y}px`;
   viewModel.clone.style.left = `${viewModel.origin.x + viewModel.end.x - viewModel.start.x}px`;
+  const r1 = viewModel.clone.getBoundingClientRect();
   const draggableEl = Array.from(viewModel.refsMap.values())
     .filter((el) => el.getAttribute(idAttr) !== viewModel.target.getAttribute(idAttr))
     .find((el) => {
-      const rect = el.getBoundingClientRect();
-      return collide(rect, e.clientX, e.clientY);
+      const r2 = el.getBoundingClientRect();
+      return isIntersect(r1, r2) && isInLine(r1, r2);
     });
   if (draggableEl) {
     const sourceId = viewModel.target.getAttribute(idAttr);

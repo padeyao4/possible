@@ -49,15 +49,33 @@ const itemModel = computed(() => {
 });
 
 emitter.on('open-canvas-card-editor', (params) => {
+  if (editorModel.itemId === params.nodeId) {
+    editorModel.itemId = null;
+    editorModel.contentKey = 'node';
+    graph.editorWidth = 0;
+  } else {
+    editorModel.itemId = params.nodeId;
+    editorModel.contentKey = 'node';
+    graph.editorWidth = 300;
+  }
+});
+
+emitter.on('open-canvas-card-editor-by-menu', (params) => {
   editorModel.itemId = params.nodeId;
   editorModel.contentKey = 'node';
   graph.editorWidth = 300;
 });
 
 emitter.on('open-backlog-editor', (params) => {
-  editorModel.itemId = params.id;
-  editorModel.contentKey = 'backlog';
-  graph.editorWidth = 300;
+  if (editorModel.itemId === params.id) {
+    editorModel.itemId = null;
+    editorModel.contentKey = 'backlog';
+    graph.editorWidth = 0;
+  } else {
+    editorModel.itemId = params.id;
+    editorModel.contentKey = 'backlog';
+    graph.editorWidth = 300;
+  }
 });
 
 /**
@@ -68,6 +86,14 @@ useEventListener(document, 'keydown', (e) => {
     graph.editorWidth = 0;
   }
 });
+
+function handleDeleteButton() {
+  if (editorModel.contentKey === 'node') {
+    graph.removeNode(editorModel.itemId!);
+  } else if (editorModel.contentKey === 'backlog') {
+    meno.remove(editorModel.itemId);
+  }
+}
 </script>
 
 <template>
@@ -102,7 +128,7 @@ useEventListener(document, 'keydown', (e) => {
       </template>
     </el-scrollbar>
     <div class="flex h-12 shrink-0 items-center justify-center border-t border-gray-200">
-      <el-button :icon="Delete" size="small" @click="" />
+      <el-button :icon="Delete" size="small" @click="handleDeleteButton" />
     </div>
   </div>
 </template>

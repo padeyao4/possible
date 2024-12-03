@@ -11,8 +11,7 @@ export class ClickCanvasMenu extends BaseBehavior {
   }
 
   handleEvent(e: PointerEvent, menuType: 'canvas' | 'node' | 'edge') {
-    const itemId =
-      menuType === 'node' && (<HTMLElement>e.target).getAttribute('data-graph-item-id');
+    const itemId = (<HTMLElement>e.target).getAttribute('data-graph-item-id');
 
     emitter.emit('open-canvas-menu', {
       menuType: menuType,

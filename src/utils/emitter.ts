@@ -19,6 +19,11 @@ type CustomEvents = {
     y: number;
     nodeId: ID;
   };
+  'open-canvas-card-editor-by-menu': {
+    x: number;
+    y: number;
+    nodeId: ID;
+  };
   'edite-project-name': Project;
   'open-backlog-editor': Backlog;
 };

@@ -40,6 +40,10 @@ export const useMeno = defineStore('meno', {
         status: false
       };
       this.backlogsMap.set(backlog.id, backlog);
+    },
+    remove(item: ID | Backlog) {
+      const id = typeof item === 'object' ? item.id : item;
+      this.backlogsMap.delete(id);
     }
   }
 });

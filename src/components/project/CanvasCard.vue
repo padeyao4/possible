@@ -26,7 +26,7 @@ defineProps<{
     <rect
       :width="data.w"
       :height="data.h"
-      opacity="0.7"
+      opacity="1"
       stroke-width="1"
       stroke="#000"
       :fill="data.color"

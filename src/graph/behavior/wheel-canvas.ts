@@ -1,5 +1,4 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
-import { clampMax } from '../math';
 
 export class WheelCanvas extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -9,6 +8,6 @@ export class WheelCanvas extends BaseBehavior {
   }
 
   onWheel(e: WheelEvent) {
-    this.project.y = clampMax(this.project.y - e.deltaY * 0.3, 0);
+    this.project.y = Math.min(this.project.y - e.deltaY * 0.3, 0);
   }
 }

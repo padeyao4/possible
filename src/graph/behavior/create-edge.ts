@@ -66,6 +66,10 @@ export class CreateEdge extends BaseBehavior {
       } else {
         this.tempEdge.target = nodeId;
       }
+
+      // 如果起点和终点相同，则删除
+      this.tempEdge.source === this.tempEdge.target && this.graph.removeEdge(this.tempEdge.id);
+
       // 如果已存在该边，则删除
       Array.from(this.graph.edgesMap.values()).find(
         (edge) =>

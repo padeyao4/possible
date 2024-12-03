@@ -23,10 +23,18 @@ const conf = {
       {
         name: '编辑',
         icon: 'edit',
-        action: () => {}
+        action: editeNode
       }
     ],
     [
+      {
+        name: '标记完成',
+        action: markNodeDone
+      },
+      {
+        name: '标记待办',
+        action: markNodeTodo
+      },
       {
         name: '追加节点',
         icon: 'append',
@@ -51,7 +59,7 @@ const conf = {
       {
         name: '删除',
         icon: 'delete',
-        action: undefined
+        action: deleteEdge
       }
     ]
   ],
@@ -74,6 +82,13 @@ const menuModel = reactive({
   visible: false,
   top: 0, // 菜单栏距离顶部的距离
   left: 0, // 菜单栏距离左侧的距离
+  /**
+   * 鼠标点击的地址
+   */
+  position: {
+    x: 0,
+    y: 0
+  },
   menuType: <MenuType>'canvas',
   itemId: <ID>undefined
 });
@@ -82,6 +97,8 @@ emitter.on('open-canvas-menu', (param) => {
   menuModel.visible = true;
   menuModel.top = param.y;
   menuModel.left = param.x;
+  menuModel.position.x = param.x;
+  menuModel.position.y = param.y;
   menuModel.menuType = param.menuType;
   menuModel.itemId = param.itemId;
 });
@@ -89,6 +106,31 @@ emitter.on('open-canvas-menu', (param) => {
 function deleteNode() {
   graph.removeNode(menuModel.itemId);
   menuModel.visible = false;
+}
+
+function editeNode() {
+  emitter.emit('open-canvas-card-editor-by-menu', {
+    x: menuModel.position.x,
+    y: menuModel.position.y,
+    nodeId: menuModel.itemId
+  });
+  menuModel.visible = false;
+}
+
+function markNodeDone() {
+  graph.nodesMap.get(menuModel.itemId).status = true;
+  menuModel.visible = false;
+}
+
+function markNodeTodo() {
+  graph.nodesMap.get(menuModel.itemId).status = false;
+  menuModel.visible = false;
+}
+
+function deleteEdge() {
+  graph.removeEdge(menuModel.itemId);
+  menuModel.visible = false;
+  console.log(menuModel);
 }
 
 function createNode() {
@@ -104,8 +146,8 @@ function createNode() {
     record: '',
     status: false,
     w: 1,
-    x: Math.floor((menuModel.left - svgBound.left - project.x) / graph.cardWidth),
-    y: Math.floor((menuModel.top - svgBound.top - project.y) / graph.cardHeight)
+    x: Math.floor((menuModel.position.x - svgBound.left - project.x) / graph.cardWidth),
+    y: Math.floor((menuModel.position.y - svgBound.top - project.y) / graph.cardHeight)
   });
   menuModel.visible = false;
 }

@@ -10,12 +10,11 @@ import { emitter } from '@/utils';
 //   tryMoveUpWhole
 // } from '@/service/common';
 // import type { Project } from '@/core';
-import { Node } from '@/core';
 import { type Project, useCursor } from '@/stores';
-import type { ItemType } from '@/graph/types';
 import { computed, type ComputedRef, inject, onBeforeUnmount, ref } from 'vue';
 import ContextmenuComponent from '@/components/project/ContextmenuComponent.vue';
 import type { OptionType } from '@/components/types';
+export type ItemType = 'node' | 'edge' | 'canvas';
 
 const container = ref<HTMLElement>();
 const visible = ref(false);
