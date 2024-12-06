@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useAccount } from '@/stores/account';
+import { useAccountStore } from '@/stores';
 
 const errorCode = {
   ERR_NETWORK: '网络错误',
@@ -15,7 +15,7 @@ export function axiosConfig() {
   axios.defaults.baseURL = import.meta.env.VITE_API_URL ?? '/';
 
   axios.interceptors.request.use((config) => {
-    const token = useAccount().token;
+    const token = useAccountStore().token;
     if (token) {
       config.headers['Token'] = token;
     }

@@ -94,6 +94,11 @@ function handleDeleteButton() {
     meno.remove(editorModel.itemId);
   }
 }
+
+function handleCloseButton() {
+  graph.editorWidth = 0;
+  editorModel.itemId = null;
+}
 </script>
 
 <template>
@@ -104,7 +109,7 @@ function handleDeleteButton() {
     >
       <close-icon-button
         class="no-drag-region ml-2.5 rounded-md border border-gray-300"
-        @click="graph.editorWidth = 0"
+        @click="handleCloseButton"
       />
     </header>
     <el-scrollbar class="grow">

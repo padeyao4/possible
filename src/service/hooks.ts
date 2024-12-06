@@ -1,4 +1,4 @@
-import { emitter, save } from '@/utils';
+// import { emitter, save } from '@/utils';
 import { useGraph } from '@/stores';
 
 /*export function useListenNotifyEvent() {
@@ -55,23 +55,23 @@ export function useListenBacklogEvent() {
   });
 }*/
 
-export function useListenElectronEvent() {
-  const projects = useGraph();
-
-  window.ipcRenderer.on('electron:exit', async () => {
-    await save();
-    window.ipcRenderer.send('electron:exit');
-  });
-
-  window.ipcRenderer.on('electron:close', async () => {
-    await save();
-  });
-
-  window.ipcRenderer.on('electron:schedule', async () => {
-    // projects.dailyUpdate();
-    console.log('daily update')
-  });
-}
+// export function useListenElectronEvent() {
+//   const projects = useGraph();
+//
+//   window.ipcRenderer.on('electron:exit', async () => {
+//     await save();
+//     window.ipcRenderer.send('electron:exit');
+//   });
+//
+//   window.ipcRenderer.on('electron:close', async () => {
+//     await save();
+//   });
+//
+//   window.ipcRenderer.on('electron:schedule', async () => {
+//     // projects.dailyUpdate();
+//     console.log('daily update')
+//   });
+// }
 
 /*export async function initApp() {
   useListenNotifyEvent();
@@ -85,15 +85,15 @@ export function useListenElectronEvent() {
   projects.dailyUpdate();
 }*/
 
-/**
- * 初始化事件监听
- */
-export async function initEventListen() {
-  emitter.on('*', async () => {
-    await save();
-  });
-  emitter.on('notify:error', (e) => {
-    console.error(e.message);
-  });
-  useListenElectronEvent();
-}
+// /**
+//  * 初始化事件监听
+//  */
+// export async function initEventListen() {
+//   emitter.on('*', async () => {
+//     await save();
+//   });
+//   emitter.on('notify:error', (e) => {
+//     console.error(e.message);
+//   });
+//   useListenElectronEvent();
+// }

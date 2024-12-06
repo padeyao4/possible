@@ -1,29 +1,28 @@
 <script setup lang="ts">
-import { Node } from '@/core/';
 import { Check } from '@element-plus/icons-vue';
 import { useGraph } from '@/stores';
 import { ref } from 'vue';
-import { emitter } from '@/utils';
+import type { Node } from '@/stores';
 
 const { node } = defineProps<{
   node: Node;
 }>();
 
-const projects = useGraph();
+const graph = useGraph();
 
-const project = projects.getProject(node.projectId);
+const project = graph.project;
 
 const showIcon = ref(false);
 
 const handleChange = () => {
-  node.update({ completed: !node.completed });
+  // node.update({ completed: !node.completed });
 };
 
 const handleItemClick = () => {
-  emitter.emit('editor:open', {
-    item: node,
-    type: 'node'
-  });
+  // emitter.emit('editor:open', {
+  //   item: node,
+  //   type: 'node'
+  // });
 };
 </script>
 
@@ -37,11 +36,11 @@ const handleItemClick = () => {
       class="mx-3 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-gray-500 hover:cursor-pointer"
       @click="handleChange"
     >
-      <el-icon v-show="node.completed" size="16"><Check /></el-icon>
+      <el-icon v-show="node.status" size="16"><Check /></el-icon>
     </div>
     <div class="flex h-full grow flex-col justify-center overflow-hidden" @click="handleItemClick">
       <div class="block truncate align-bottom text-base text-gray-500">
-        <del v-if="node.completed">{{ node.name }}</del>
+        <del v-if="node.status">{{ node.name }}</del>
         <template v-else>
           {{ node.name }}
         </template>
