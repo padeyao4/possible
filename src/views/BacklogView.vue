@@ -3,9 +3,9 @@ import { reactive, ref } from 'vue';
 import ECounterButton from '@/components/common/CounterButton.vue';
 import MagicDraggable from '@/components/common/MagicDraggable.vue';
 import BacklogItem from '@/components/BacklogItem.vue';
-import { type Backlog, type ID, useMeno } from '@/stores';
+import { type Backlog, type ID, useBacklogStore } from '@/stores';
 
-const meno = useMeno();
+const meno = useBacklogStore();
 
 const viewModel = reactive({
   doneBacklogsVisible: false,
@@ -25,6 +25,8 @@ function handleInput() {
 
 function handleUpdate(b1: Backlog, b2: Backlog) {
   [b1.index, b2.index] = [b2.index, b1.index];
+  meno.update(b1);
+  meno.update(b2);
 }
 </script>
 

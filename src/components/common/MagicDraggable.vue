@@ -134,7 +134,9 @@ function pointerDown(e: PointerEvent) {
 
   // 获取最底层可拖动元素
   const attrId = clickEl.getAttribute(handle);
-  const el = viewModel.refsMap.get(attrId);
+  console.log("attrId", attrId);
+  const el = viewModel.refsMap.get(attrId.toString());
+  console.log("el", el);
   const bound = el.getBoundingClientRect();
 
   // 记录原始位置

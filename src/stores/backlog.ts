@@ -1,18 +1,19 @@
 import { defineStore } from 'pinia';
 import { generateIndex, type ID } from '@/stores';
-import { v4 } from 'uuid';
+import { BacklogControllerApi, type BacklogPost } from '@/openapi'
 
 export interface Backlog {
-  id: ID;
+  id: number;
   name: string;
   index: number; //用于排序,时间毫秒值+随机数
   status: boolean; // true: 完成, false: 未完成
+  loading: boolean; // 是否在进行服务端保存
 }
 
 /**
  * 备忘录,用于存储待办事项
  */
-export const useMeno = defineStore('meno', {
+export const useBacklogStore = defineStore('meno', {
   state: () => ({
     backlogsMap: new Map<ID, Backlog>()
   }),
@@ -33,17 +34,42 @@ export const useMeno = defineStore('meno', {
   },
   actions: {
     add(name: string) {
-      const backlog = <Backlog>{
-        id: v4(),
+      const backlog = <BacklogPost>{
         name,
         index: generateIndex(),
-        status: false
+        status: false,
+        saving: true,
       };
-      this.backlogsMap.set(backlog.id, backlog);
+      const api = new BacklogControllerApi()
+      api.add(backlog).then((request) => {
+        const payload =  request.data.payload
+        this.backlogsMap.set(payload.id,{
+          id: payload.id,
+          name: payload.name,
+          index: payload.index,
+          status: payload.status,
+          loading: false,
+        })
+      })
     },
-    remove(item: ID | Backlog) {
+    update(backlog: Backlog) {
+      const api = new BacklogControllerApi()
+      api.update(backlog).then(response => {
+        const payload =  response.data.payload
+        const existed =  this.backlogsMap.get(payload.id)
+        Object.assign(existed, payload)
+        existed.loading = false;
+      })
+      const existed =  this.backlogsMap.get(backlog.id)
+      Object.assign(existed, backlog.id)
+      existed.loading = true;
+    },
+    remove(item: number | Backlog) {
       const id = typeof item === 'object' ? item.id : item;
-      this.backlogsMap.delete(id);
+      const api = new BacklogControllerApi()
+      api._delete(id).then(_ => {
+        this.backlogsMap.delete(id)
+      })
     }
   }
 });

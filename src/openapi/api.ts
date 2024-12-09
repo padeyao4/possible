@@ -40,13 +40,7 @@ export interface Backlog {
      * @type {string}
      * @memberof Backlog
      */
-    'uid'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Backlog
-     */
-    'title'?: string;
+    'name'?: string;
     /**
      * 
      * @type {number}
@@ -64,19 +58,81 @@ export interface Backlog {
      * @type {boolean}
      * @memberof Backlog
      */
-    'done'?: boolean;
+    'status'?: boolean;
     /**
      * 
      * @type {string}
      * @memberof Backlog
      */
-    'completeAt'?: string;
+    'updatedAt'?: string;
     /**
      * 
      * @type {number}
      * @memberof Backlog
      */
-    'orderIndex'?: number;
+    'index'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface BacklogPost
+ */
+export interface BacklogPost {
+    /**
+     * 
+     * @type {string}
+     * @memberof BacklogPost
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof BacklogPost
+     */
+    'index'?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof BacklogPost
+     */
+    'status'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof BacklogPost
+     */
+    'saving'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface BacklogUpdateParam
+ */
+export interface BacklogUpdateParam {
+    /**
+     * 
+     * @type {number}
+     * @memberof BacklogUpdateParam
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof BacklogUpdateParam
+     */
+    'index'?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof BacklogUpdateParam
+     */
+    'status'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof BacklogUpdateParam
+     */
+    'name'?: string;
 }
 /**
  * 
@@ -144,56 +200,6 @@ export interface RestResponseListBacklog {
 /**
  * 
  * @export
- * @interface RestResponseLong
- */
-export interface RestResponseLong {
-    /**
-     * 
-     * @type {string}
-     * @memberof RestResponseLong
-     */
-    'message'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof RestResponseLong
-     */
-    'code'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof RestResponseLong
-     */
-    'payload'?: number;
-}
-/**
- * 
- * @export
- * @interface RestResponseObject
- */
-export interface RestResponseObject {
-    /**
-     * 
-     * @type {string}
-     * @memberof RestResponseObject
-     */
-    'message'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof RestResponseObject
-     */
-    'code'?: number;
-    /**
-     * 
-     * @type {object}
-     * @memberof RestResponseObject
-     */
-    'payload'?: object;
-}
-/**
- * 
- * @export
  * @interface RestResponseSettingsPage
  */
 export interface RestResponseSettingsPage {
@@ -219,52 +225,27 @@ export interface RestResponseSettingsPage {
 /**
  * 
  * @export
- * @interface RestResponseStorage
+ * @interface RestResponseVoid
  */
-export interface RestResponseStorage {
+export interface RestResponseVoid {
     /**
      * 
      * @type {string}
-     * @memberof RestResponseStorage
+     * @memberof RestResponseVoid
      */
     'message'?: string;
     /**
      * 
      * @type {number}
-     * @memberof RestResponseStorage
+     * @memberof RestResponseVoid
      */
     'code'?: number;
     /**
      * 
-     * @type {Storage}
-     * @memberof RestResponseStorage
+     * @type {object}
+     * @memberof RestResponseVoid
      */
-    'payload'?: Storage;
-}
-/**
- * 
- * @export
- * @interface RestResponseUser
- */
-export interface RestResponseUser {
-    /**
-     * 
-     * @type {string}
-     * @memberof RestResponseUser
-     */
-    'message'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof RestResponseUser
-     */
-    'code'?: number;
-    /**
-     * 
-     * @type {User}
-     * @memberof RestResponseUser
-     */
-    'payload'?: User;
+    'payload'?: object;
 }
 /**
  * 
@@ -274,84 +255,10 @@ export interface RestResponseUser {
 export interface SettingsPage {
     /**
      * 
-     * @type {string}
-     * @memberof SettingsPage
-     */
-    'backendVersion'?: string;
-    /**
-     * 
      * @type {User}
      * @memberof SettingsPage
      */
     'user'?: User;
-}
-/**
- * 
- * @export
- * @interface Storage
- */
-export interface Storage {
-    /**
-     * 
-     * @type {number}
-     * @memberof Storage
-     */
-    'id'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Storage
-     */
-    'userId'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof Storage
-     */
-    'createAt'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Storage
-     */
-    'expireAt'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Storage
-     */
-    'uploadAt'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Storage
-     */
-    'content'?: string;
-}
-/**
- * 
- * @export
- * @interface StoragePutRequest
- */
-export interface StoragePutRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof StoragePutRequest
-     */
-    'uploadAt'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof StoragePutRequest
-     */
-    'content'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof StoragePutRequest
-     */
-    'dataVersion'?: number;
 }
 /**
  * 
@@ -429,14 +336,49 @@ export const BacklogControllerApiAxiosParamCreator = function (configuration?: C
     return {
         /**
          * 
-         * @param {Backlog} backlog 
+         * @param {number} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        add: async (backlog: Backlog, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'backlog' is not null or undefined
-            assertParamExists('add', 'backlog', backlog)
-            const localVarPath = `/api/backlog/`;
+        _delete: async (body: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('_delete', 'body', body)
+            const localVarPath = `/api/backlog/delete`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {BacklogPost} backlogPost 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        add: async (backlogPost: BacklogPost, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'backlogPost' is not null or undefined
+            assertParamExists('add', 'backlogPost', backlogPost)
+            const localVarPath = `/api/backlog/add`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -455,7 +397,7 @@ export const BacklogControllerApiAxiosParamCreator = function (configuration?: C
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(backlog, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(backlogPost, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -493,50 +435,14 @@ export const BacklogControllerApiAxiosParamCreator = function (configuration?: C
         },
         /**
          * 
-         * @param {number} arg0 
+         * @param {BacklogUpdateParam} backlogUpdateParam 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        remove: async (arg0: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'arg0' is not null or undefined
-            assertParamExists('remove', 'arg0', arg0)
-            const localVarPath = `/api/backlog/`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (arg0 !== undefined) {
-                localVarQueryParameter['arg0'] = arg0;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {Backlog} backlog 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        update: async (backlog: Backlog, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'backlog' is not null or undefined
-            assertParamExists('update', 'backlog', backlog)
-            const localVarPath = `/api/backlog/`;
+        update: async (backlogUpdateParam: BacklogUpdateParam, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'backlogUpdateParam' is not null or undefined
+            assertParamExists('update', 'backlogUpdateParam', backlogUpdateParam)
+            const localVarPath = `/api/backlog/update`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -555,7 +461,7 @@ export const BacklogControllerApiAxiosParamCreator = function (configuration?: C
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(backlog, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(backlogUpdateParam, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -574,12 +480,24 @@ export const BacklogControllerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {Backlog} backlog 
+         * @param {number} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async add(backlog: Backlog, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseBacklog>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.add(backlog, options);
+        async _delete(body: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseVoid>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator._delete(body, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BacklogControllerApi._delete']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {BacklogPost} backlogPost 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async add(backlogPost: BacklogPost, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseBacklog>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.add(backlogPost, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BacklogControllerApi.add']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -597,24 +515,12 @@ export const BacklogControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {number} arg0 
+         * @param {BacklogUpdateParam} backlogUpdateParam 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async remove(arg0: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseObject>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.remove(arg0, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BacklogControllerApi.remove']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {Backlog} backlog 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async update(backlog: Backlog, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseBacklog>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.update(backlog, options);
+        async update(backlogUpdateParam: BacklogUpdateParam, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseBacklog>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.update(backlogUpdateParam, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BacklogControllerApi.update']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -631,12 +537,21 @@ export const BacklogControllerApiFactory = function (configuration?: Configurati
     return {
         /**
          * 
-         * @param {Backlog} backlog 
+         * @param {number} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        add(backlog: Backlog, options?: RawAxiosRequestConfig): AxiosPromise<RestResponseBacklog> {
-            return localVarFp.add(backlog, options).then((request) => request(axios, basePath));
+        _delete(body: number, options?: RawAxiosRequestConfig): AxiosPromise<RestResponseVoid> {
+            return localVarFp._delete(body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BacklogPost} backlogPost 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        add(backlogPost: BacklogPost, options?: RawAxiosRequestConfig): AxiosPromise<RestResponseBacklog> {
+            return localVarFp.add(backlogPost, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -648,21 +563,12 @@ export const BacklogControllerApiFactory = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {number} arg0 
+         * @param {BacklogUpdateParam} backlogUpdateParam 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        remove(arg0: number, options?: RawAxiosRequestConfig): AxiosPromise<RestResponseObject> {
-            return localVarFp.remove(arg0, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {Backlog} backlog 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        update(backlog: Backlog, options?: RawAxiosRequestConfig): AxiosPromise<RestResponseBacklog> {
-            return localVarFp.update(backlog, options).then((request) => request(axios, basePath));
+        update(backlogUpdateParam: BacklogUpdateParam, options?: RawAxiosRequestConfig): AxiosPromise<RestResponseBacklog> {
+            return localVarFp.update(backlogUpdateParam, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -676,13 +582,24 @@ export const BacklogControllerApiFactory = function (configuration?: Configurati
 export class BacklogControllerApi extends BaseAPI {
     /**
      * 
-     * @param {Backlog} backlog 
+     * @param {number} body 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BacklogControllerApi
      */
-    public add(backlog: Backlog, options?: RawAxiosRequestConfig) {
-        return BacklogControllerApiFp(this.configuration).add(backlog, options).then((request) => request(this.axios, this.basePath));
+    public _delete(body: number, options?: RawAxiosRequestConfig) {
+        return BacklogControllerApiFp(this.configuration)._delete(body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BacklogPost} backlogPost 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BacklogControllerApi
+     */
+    public add(backlogPost: BacklogPost, options?: RawAxiosRequestConfig) {
+        return BacklogControllerApiFp(this.configuration).add(backlogPost, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -697,24 +614,13 @@ export class BacklogControllerApi extends BaseAPI {
 
     /**
      * 
-     * @param {number} arg0 
+     * @param {BacklogUpdateParam} backlogUpdateParam 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BacklogControllerApi
      */
-    public remove(arg0: number, options?: RawAxiosRequestConfig) {
-        return BacklogControllerApiFp(this.configuration).remove(arg0, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {Backlog} backlog 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BacklogControllerApi
-     */
-    public update(backlog: Backlog, options?: RawAxiosRequestConfig) {
-        return BacklogControllerApiFp(this.configuration).update(backlog, options).then((request) => request(this.axios, this.basePath));
+    public update(backlogUpdateParam: BacklogUpdateParam, options?: RawAxiosRequestConfig) {
+        return BacklogControllerApiFp(this.configuration).update(backlogUpdateParam, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -818,237 +724,6 @@ export class PageControllerApi extends BaseAPI {
 
 
 /**
- * StorageControllerApi - axios parameter creator
- * @export
- */
-export const StorageControllerApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        fetch: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/storage/fetch`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {StoragePutRequest} storagePutRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        forcePush: async (storagePutRequest: StoragePutRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'storagePutRequest' is not null or undefined
-            assertParamExists('forcePush', 'storagePutRequest', storagePutRequest)
-            const localVarPath = `/api/storage/force/push`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(storagePutRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {StoragePutRequest} storagePutRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        push: async (storagePutRequest: StoragePutRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'storagePutRequest' is not null or undefined
-            assertParamExists('push', 'storagePutRequest', storagePutRequest)
-            const localVarPath = `/api/storage/push`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(storagePutRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * StorageControllerApi - functional programming interface
- * @export
- */
-export const StorageControllerApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = StorageControllerApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async fetch(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseStorage>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.fetch(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['StorageControllerApi.fetch']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {StoragePutRequest} storagePutRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async forcePush(storagePutRequest: StoragePutRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseLong>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.forcePush(storagePutRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['StorageControllerApi.forcePush']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {StoragePutRequest} storagePutRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async push(storagePutRequest: StoragePutRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseLong>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.push(storagePutRequest, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['StorageControllerApi.push']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * StorageControllerApi - factory interface
- * @export
- */
-export const StorageControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = StorageControllerApiFp(configuration)
-    return {
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        fetch(options?: RawAxiosRequestConfig): AxiosPromise<RestResponseStorage> {
-            return localVarFp.fetch(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {StoragePutRequest} storagePutRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        forcePush(storagePutRequest: StoragePutRequest, options?: RawAxiosRequestConfig): AxiosPromise<RestResponseLong> {
-            return localVarFp.forcePush(storagePutRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {StoragePutRequest} storagePutRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        push(storagePutRequest: StoragePutRequest, options?: RawAxiosRequestConfig): AxiosPromise<RestResponseLong> {
-            return localVarFp.push(storagePutRequest, options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * StorageControllerApi - object-oriented interface
- * @export
- * @class StorageControllerApi
- * @extends {BaseAPI}
- */
-export class StorageControllerApi extends BaseAPI {
-    /**
-     * 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof StorageControllerApi
-     */
-    public fetch(options?: RawAxiosRequestConfig) {
-        return StorageControllerApiFp(this.configuration).fetch(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {StoragePutRequest} storagePutRequest 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof StorageControllerApi
-     */
-    public forcePush(storagePutRequest: StoragePutRequest, options?: RawAxiosRequestConfig) {
-        return StorageControllerApiFp(this.configuration).forcePush(storagePutRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {StoragePutRequest} storagePutRequest 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof StorageControllerApi
-     */
-    public push(storagePutRequest: StoragePutRequest, options?: RawAxiosRequestConfig) {
-        return StorageControllerApiFp(this.configuration).push(storagePutRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
  * TestControllerApi - axios parameter creator
  * @export
  */
@@ -1140,103 +815,6 @@ export class TestControllerApi extends BaseAPI {
      */
     public test(options?: RawAxiosRequestConfig) {
         return TestControllerApiFp(this.configuration).test(options).then((request) => request(this.axios, this.basePath));
-    }
-}
-
-
-
-/**
- * UserControllerApi - axios parameter creator
- * @export
- */
-export const UserControllerApiAxiosParamCreator = function (configuration?: Configuration) {
-    return {
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        userInfo: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/user/info`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-    }
-};
-
-/**
- * UserControllerApi - functional programming interface
- * @export
- */
-export const UserControllerApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = UserControllerApiAxiosParamCreator(configuration)
-    return {
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async userInfo(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseUser>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.userInfo(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UserControllerApi.userInfo']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-    }
-};
-
-/**
- * UserControllerApi - factory interface
- * @export
- */
-export const UserControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = UserControllerApiFp(configuration)
-    return {
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        userInfo(options?: RawAxiosRequestConfig): AxiosPromise<RestResponseUser> {
-            return localVarFp.userInfo(options).then((request) => request(axios, basePath));
-        },
-    };
-};
-
-/**
- * UserControllerApi - object-oriented interface
- * @export
- * @class UserControllerApi
- * @extends {BaseAPI}
- */
-export class UserControllerApi extends BaseAPI {
-    /**
-     * 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UserControllerApi
-     */
-    public userInfo(options?: RawAxiosRequestConfig) {
-        return UserControllerApiFp(this.configuration).userInfo(options).then((request) => request(this.axios, this.basePath));
     }
 }
 

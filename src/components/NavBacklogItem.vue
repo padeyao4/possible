@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useMeno } from '@/stores';
+import { useBacklogStore } from '@/stores';
 
-const meno = useMeno();
+const meno = useBacklogStore();
 </script>
 
 <template>

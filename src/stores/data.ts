@@ -69,10 +69,10 @@ export function cross(rect1: RectLike, rect2: RectLike): boolean {
 }
 
 /**
- * 生成唯一index,时间+随机数
+ * 生成唯一index,时间毫秒值
  */
 export function generateIndex() {
-  return Date.now() * 100 + Math.floor(Math.random() * 100);
+  return Date.now();
 }
 
 /**

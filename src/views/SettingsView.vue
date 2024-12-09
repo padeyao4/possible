@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import AccountInfo from '@/components/settings/AccountInfo.vue';
-import AboutComponent from '@/components/settings/AboutComponent.vue';
-import { Back } from '@element-plus/icons-vue';
-import UserDataInfo from '@/components/settings/UserDataInfo.vue';
-import { watchEffect } from 'vue'
+import AccountInfo from '@/components/settings/AccountInfo.vue'
+import AboutComponent from '@/components/settings/AboutComponent.vue'
+import { Back } from '@element-plus/icons-vue'
+import UserDataInfo from '@/components/settings/UserDataInfo.vue'
+import { onBeforeMount } from 'vue'
 import { PageControllerApi } from '@/openapi'
-import { axiosConfig } from '@/utils'
+import { useAccountStore } from '@/stores'
 
-watchEffect(async ()=>{
-  const api = new PageControllerApi()
+const accountStore = useAccountStore()
+const api = new PageControllerApi()
+
+onBeforeMount(async ()=>{
   const response = await api.getSettingsPage()
-  console.log(response)
+  accountStore.setUser(response.data.payload.user)
 })
 
 </script>
