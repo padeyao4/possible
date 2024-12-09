@@ -3,6 +3,13 @@ import AccountInfo from '@/components/settings/AccountInfo.vue';
 import AboutComponent from '@/components/settings/AboutComponent.vue';
 import { Back } from '@element-plus/icons-vue';
 import UserDataInfo from '@/components/settings/UserDataInfo.vue';
+import { watchEffect } from 'vue'
+import { PageControllerApi } from '@/openapi'
+
+watchEffect(()=>{
+  const api = new PageControllerApi()
+})
+
 </script>
 <template>
   <div class="flex flex-col items-center">
