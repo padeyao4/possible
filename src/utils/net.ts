@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useAccountStore } from '@/stores';
 
-const errorCode = {
+export const errorCode = {
   ERR_NETWORK: '网络错误',
   ERR_BAD_REQUEST: '请求错误',
   ERR_UNAUTHORIZED: '未授权，请重新登录',
@@ -17,7 +17,7 @@ export function axiosConfig() {
   axios.interceptors.request.use((config) => {
     const token = useAccountStore().token;
     if (token) {
-      config.headers['Token'] = token;
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   });

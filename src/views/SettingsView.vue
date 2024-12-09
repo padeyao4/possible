@@ -5,9 +5,12 @@ import { Back } from '@element-plus/icons-vue';
 import UserDataInfo from '@/components/settings/UserDataInfo.vue';
 import { watchEffect } from 'vue'
 import { PageControllerApi } from '@/openapi'
+import { axiosConfig } from '@/utils'
 
-watchEffect(()=>{
+watchEffect(async ()=>{
   const api = new PageControllerApi()
+  const response = await api.getSettingsPage()
+  console.log(response)
 })
 
 </script>
