@@ -13,7 +13,7 @@ export interface Backlog {
 /**
  * 备忘录,用于存储待办事项
  */
-export const useBacklogStore = defineStore('meno', {
+export const useBacklogStore = defineStore('backlog', {
   state: () => ({
     backlogsMap: new Map<ID, Backlog>()
   }),
@@ -52,17 +52,15 @@ export const useBacklogStore = defineStore('meno', {
         })
       })
     },
-    update(backlog: Backlog) {
-      const api = new BacklogControllerApi()
-      api.update(backlog).then(response => {
-        const payload =  response.data.payload
-        const existed =  this.backlogsMap.get(payload.id)
-        Object.assign(existed, payload)
-        existed.loading = false;
+    exchangeIndex(b1:Backlog,b2:Backlog) {
+      console.log(b1);
+      [b1.index,b2.index] = [b2.index,b1.index];
+      b1.loading = true;
+      b2.loading = true;
+      new BacklogControllerApi().exchangeIndex(b1,b2).then((request) => {
+        b1.loading = false;
+        b2.loading = false;
       })
-      const existed =  this.backlogsMap.get(backlog.id)
-      Object.assign(existed, backlog.id)
-      existed.loading = true;
     },
     remove(item: number | Backlog) {
       const id = typeof item === 'object' ? item.id : item;
@@ -71,5 +69,6 @@ export const useBacklogStore = defineStore('meno', {
         this.backlogsMap.delete(id)
       })
     }
-  }
+  },
+
 });

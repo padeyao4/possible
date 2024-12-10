@@ -33,7 +33,6 @@ watchEffect(() => {
 
 watchEffect(() => {
   // 没有token时跳转到登录页面
-  console.log('watch effect, accountStore', accountStore.token)
   if (!accountStore.token) {
     setTimeout(() => {
       router.push({ name: 'login' })

@@ -60,7 +60,7 @@ const viewModel = reactive({
 });
 
 function setRefs(e: Element, id: ID) {
-  e && viewModel.refsMap.set(id, e as HTMLElement);
+  e && viewModel.refsMap.set(id.toString(), e as HTMLElement);
 }
 
 /**
@@ -98,8 +98,8 @@ useEventListener(['pointermove'], (e) => {
   if (draggableEl) {
     const sourceId = viewModel.target.getAttribute(idAttr);
     const targetId = draggableEl.getAttribute(idAttr);
-    const source = list.find((item) => item.id === sourceId);
-    const target = list.find((item) => item.id === targetId);
+    const source = list.find((item) => item.id.toString()=== sourceId);
+    const target = list.find((item) => item.id.toString() === targetId);
     update(source as T, target as T);
   }
 });
@@ -134,9 +134,7 @@ function pointerDown(e: PointerEvent) {
 
   // 获取最底层可拖动元素
   const attrId = clickEl.getAttribute(handle);
-  console.log("attrId", attrId);
-  const el = viewModel.refsMap.get(attrId.toString());
-  console.log("el", el);
+  const el = viewModel.refsMap.get(attrId);
   const bound = el.getBoundingClientRect();
 
   // 记录原始位置

@@ -307,12 +307,6 @@ export interface User {
      * @type {string}
      * @memberof User
      */
-    'loginAt'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof User
-     */
     'name'?: string;
     /**
      * 
@@ -398,6 +392,50 @@ export const BacklogControllerApiAxiosParamCreator = function (configuration?: C
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(backlogPost, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {BacklogUpdateParam} arg1 
+         * @param {BacklogUpdateParam} backlogUpdateParam 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        exchangeIndex: async (arg1: BacklogUpdateParam, backlogUpdateParam: BacklogUpdateParam, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'arg1' is not null or undefined
+            assertParamExists('exchangeIndex', 'arg1', arg1)
+            // verify required parameter 'backlogUpdateParam' is not null or undefined
+            assertParamExists('exchangeIndex', 'backlogUpdateParam', backlogUpdateParam)
+            const localVarPath = `/api/backlog/exchange-index`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (arg1 !== undefined) {
+                for (const [key, value] of Object.entries(arg1)) {
+                    localVarQueryParameter[key] = value;
+                }
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(backlogUpdateParam, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -504,6 +542,19 @@ export const BacklogControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {BacklogUpdateParam} arg1 
+         * @param {BacklogUpdateParam} backlogUpdateParam 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async exchangeIndex(arg1: BacklogUpdateParam, backlogUpdateParam: BacklogUpdateParam, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseVoid>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.exchangeIndex(arg1, backlogUpdateParam, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BacklogControllerApi.exchangeIndex']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -555,6 +606,16 @@ export const BacklogControllerApiFactory = function (configuration?: Configurati
         },
         /**
          * 
+         * @param {BacklogUpdateParam} arg1 
+         * @param {BacklogUpdateParam} backlogUpdateParam 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        exchangeIndex(arg1: BacklogUpdateParam, backlogUpdateParam: BacklogUpdateParam, options?: RawAxiosRequestConfig): AxiosPromise<RestResponseVoid> {
+            return localVarFp.exchangeIndex(arg1, backlogUpdateParam, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -600,6 +661,18 @@ export class BacklogControllerApi extends BaseAPI {
      */
     public add(backlogPost: BacklogPost, options?: RawAxiosRequestConfig) {
         return BacklogControllerApiFp(this.configuration).add(backlogPost, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BacklogUpdateParam} arg1 
+     * @param {BacklogUpdateParam} backlogUpdateParam 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BacklogControllerApi
+     */
+    public exchangeIndex(arg1: BacklogUpdateParam, backlogUpdateParam: BacklogUpdateParam, options?: RawAxiosRequestConfig) {
+        return BacklogControllerApiFp(this.configuration).exchangeIndex(arg1, backlogUpdateParam, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

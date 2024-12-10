@@ -5,7 +5,7 @@ import MagicDraggable from '@/components/common/MagicDraggable.vue';
 import BacklogItem from '@/components/BacklogItem.vue';
 import { type Backlog, type ID, useBacklogStore } from '@/stores';
 
-const meno = useBacklogStore();
+const backlogStore = useBacklogStore();
 
 const viewModel = reactive({
   doneBacklogsVisible: false,
@@ -18,15 +18,13 @@ const inputRef = ref<HTMLInputElement>();
 
 function handleInput() {
   if (inputRef.value) {
-    meno.add(inputRef.value.value.trim());
+    backlogStore.add(inputRef.value.value.trim());
     inputRef.value.value = '';
   }
 }
 
 function handleUpdate(b1: Backlog, b2: Backlog) {
-  [b1.index, b2.index] = [b2.index, b1.index];
-  meno.update(b1);
-  meno.update(b2);
+  backlogStore.exchangeIndex(b1,b2)
 }
 </script>
 
@@ -39,16 +37,16 @@ function handleUpdate(b1: Backlog, b2: Backlog) {
       备忘录
     </div>
     <el-scrollbar class="grow px-3">
-      <magic-draggable :update="handleUpdate" :list="meno.todoBacklogs">
+      <magic-draggable :update="handleUpdate" :list="backlogStore.todoBacklogs">
         <template #default="{ item }">
           <backlog-item :item="item" :backlog-view-model="viewModel" />
         </template>
       </magic-draggable>
-      <e-counter-button :count="meno.doneBacklogs.length" v-model="viewModel.doneBacklogsVisible" />
+      <e-counter-button :count="backlogStore.doneBacklogs.length" v-model="viewModel.doneBacklogsVisible" />
       <magic-draggable
         v-if="viewModel.doneBacklogsVisible"
         :update="handleUpdate"
-        :list="meno.doneBacklogs"
+        :list="backlogStore.doneBacklogs"
       >
         <template #default="{ item }">
           <backlog-item :item="item" :backlog-view-model="viewModel" />
