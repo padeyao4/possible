@@ -1,6 +1,6 @@
 import mitt from 'mitt';
-import type {Project } from '@/stores';
-import type { Backlog } from '@/openapi'
+import type { Project } from '@/openapi';
+import type { Backlog } from '@/openapi';
 
 /**
  * @description

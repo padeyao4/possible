@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { RouterView } from 'vue-router';
 import { useAccountStore, useBacklogStore, useDataStore } from '@/stores';
-import { useWindowSize } from '@vueuse/core';
+import { useDebounceFn, useWindowSize } from '@vueuse/core';
 import { watchEffect } from 'vue';
 import router from '@/router';
 import { BacklogControllerApi, DataStoreControllerApi } from '@/openapi';
@@ -12,14 +12,17 @@ const { width, height } = useWindowSize();
 const backlogStore = useBacklogStore();
 
 backlogStore.fetch();
-backlogStore.$subscribe((mutation, state) => {
+
+const debounceBacklogsFn = useDebounceFn((mutation, state) => {
   if (!state.loading) {
     new BacklogControllerApi().add1(Array.from(state.backlogsMap.values()));
   }
-});
+}, 1000);
+
+backlogStore.$subscribe(debounceBacklogsFn);
 
 dataStore.fetch();
-dataStore.$subscribe((mutation, state) => {
+const debounceDataFn = useDebounceFn((mutation, state) => {
   if (!state.loading) {
     new DataStoreControllerApi().add({
       projects: Array.from(state.projectsMap.values()),
@@ -27,7 +30,8 @@ dataStore.$subscribe((mutation, state) => {
       edges: Array.from(state.edgesMap.values())
     });
   }
-});
+}, 1000);
+dataStore.$subscribe(debounceDataFn);
 
 watchEffect(() => {
   dataStore.viewWidth = width.value;
