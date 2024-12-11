@@ -6,7 +6,6 @@
  * data-graph-node-anchor 属性表示锚点类型。值可以为 source和target。source表示边的起点节点
  * data-graph-node-resize-region 属性表示是否可以缩放。表示八个方向的调整方向
  */
-import { type ID } from '@/stores';
 
 defineProps<{
   data: {
@@ -16,7 +15,7 @@ defineProps<{
     h: number;
     name: string;
     color: string;
-    id: ID;
+    id: string;
   };
 }>();
 </script>

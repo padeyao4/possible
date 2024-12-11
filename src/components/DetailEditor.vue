@@ -3,7 +3,7 @@ import { emitter } from '@/utils';
 import CloseIconButton from '@/components/common/CloseIconButton.vue';
 import { computed, reactive } from 'vue';
 import { Delete } from '@element-plus/icons-vue';
-import { type ID, useGraph, useBacklogStore } from '@/stores';
+import { useGraph, useBacklogStore } from '@/stores';
 import { useEventListener } from '@vueuse/core';
 
 const graph = useGraph();
@@ -13,7 +13,7 @@ type ContentType = 'node' | 'backlog';
 
 const editorModel = reactive({
   contentKey: <ContentType>undefined,
-  itemId: <ID>undefined
+  itemId: <string>undefined
 });
 
 const contents = {
@@ -91,7 +91,7 @@ function handleDeleteButton() {
   if (editorModel.contentKey === 'node') {
     graph.removeNode(editorModel.itemId!);
   } else if (editorModel.contentKey === 'backlog') {
-    meno.remove(editorModel.itemId as number);
+    meno.remove(editorModel.itemId);
   }
 }
 

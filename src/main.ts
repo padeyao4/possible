@@ -4,7 +4,7 @@ import './assets/main.css'
 import App from './App.vue'
 import router from './router'
 import { piniaPersisted } from '@/plugin'
-import { type ID, useGraph } from '@/stores'
+import { useGraph } from '@/stores'
 import axios from 'axios'
 
 const pinia = createPinia();
@@ -16,7 +16,7 @@ app.use(router);
 router.beforeEach(async (to, from, next) => {
   const graph = useGraph();
   if (to.name === 'project') {
-    graph.setProjectId(<ID>to.query['id']);
+    graph.setProjectId(to.query['id'] as string);
     if (!graph.project) {
       // 当项目id不存在时，跳转到today页面
       await router.push({ name: 'today' });

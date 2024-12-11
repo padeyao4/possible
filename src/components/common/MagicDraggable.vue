@@ -13,11 +13,10 @@
     </MagicDraggable>
 </template>
 -->
-<script setup lang="ts" generic="T extends { id: ID; [key: string]: any }">
+<script setup lang="ts" generic="T extends { [key: string]: any }">
 import { reactive } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import { useCursor } from '@/stores/cursor';
-import type { ID } from '@/stores';
 
 interface Props {
   update: (current: T, other: T) => void;
@@ -42,7 +41,7 @@ const {
 const cursor = useCursor();
 
 const viewModel = reactive({
-  refsMap: new Map<ID, HTMLElement>(),
+  refsMap: new Map<string, HTMLElement>(),
   start: {
     x: <number>undefined,
     y: <number>undefined
@@ -59,8 +58,8 @@ const viewModel = reactive({
   target: <HTMLElement>undefined // 点击后选择的元素
 });
 
-function setRefs(e: Element, id: ID) {
-  e && viewModel.refsMap.set(id.toString(), e as HTMLElement);
+function setRefs(e: Element, id: string) {
+  e && viewModel.refsMap.set(id, e as HTMLElement);
 }
 
 /**
@@ -98,8 +97,8 @@ useEventListener(['pointermove'], (e) => {
   if (draggableEl) {
     const sourceId = viewModel.target.getAttribute(idAttr);
     const targetId = draggableEl.getAttribute(idAttr);
-    const source = list.find((item) => item.id.toString()=== sourceId);
-    const target = list.find((item) => item.id.toString() === targetId);
+    const source = list.find((item) => item.id === sourceId);
+    const target = list.find((item) => item.id === targetId);
     update(source as T, target as T);
   }
 });

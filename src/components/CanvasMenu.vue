@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { computed, reactive, ref, watch, watchEffect } from 'vue';
+import { computed, reactive, ref, watchEffect } from 'vue';
 import { emitter } from '@/utils';
-import { generateIndex, type ID, useGraph } from '@/stores';
+import { generateIndex,  useGraph } from '@/stores';
 import { v4 } from 'uuid';
 
 const { svg } = defineProps<{ svg: SVGSVGElement }>();
@@ -90,7 +90,7 @@ const menuModel = reactive({
     y: 0
   },
   menuType: <MenuType>'canvas',
-  itemId: <ID>undefined
+  itemId: <string>undefined
 });
 
 emitter.on('open-canvas-menu', (param) => {

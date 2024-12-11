@@ -1,5 +1,6 @@
 import mitt from 'mitt';
-import type { Backlog, ID, Project } from '@/stores';
+import type {Project } from '@/stores';
+import type { Backlog } from '@/openapi'
 
 /**
  * @description
@@ -12,17 +13,17 @@ type CustomEvents = {
     menuType: 'canvas' | 'node' | 'edge';
     x: number;
     y: number;
-    itemId?: ID;
+    itemId?: string;
   };
   'open-canvas-card-editor': {
     x: number;
     y: number;
-    nodeId: ID;
+    nodeId: string;
   };
   'open-canvas-card-editor-by-menu': {
     x: number;
     y: number;
-    nodeId: ID;
+    nodeId: string;
   };
   'edite-project-name': Project;
   'open-backlog-editor': Backlog;

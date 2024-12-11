@@ -3,13 +3,14 @@ import { reactive, ref } from 'vue';
 import ECounterButton from '@/components/common/CounterButton.vue';
 import MagicDraggable from '@/components/common/MagicDraggable.vue';
 import BacklogItem from '@/components/BacklogItem.vue';
-import { type Backlog, type ID, useBacklogStore } from '@/stores';
+import { useBacklogStore } from '@/stores';
+import type { Backlog } from '@/openapi'
 
 const backlogStore = useBacklogStore();
 
 const viewModel = reactive({
   doneBacklogsVisible: false,
-  selectId: <ID>undefined // 选中的id
+  selectId: <string>undefined // 选中的id
 });
 
 export type BacklogViewModel = typeof viewModel;
@@ -24,7 +25,7 @@ function handleInput() {
 }
 
 function handleUpdate(b1: Backlog, b2: Backlog) {
-  backlogStore.exchangeIndex(b1,b2)
+  [b1.index,b2.index] = [b2.index,b1.index];
 }
 </script>
 

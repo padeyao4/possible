@@ -1,10 +1,9 @@
 <script lang="ts" setup>
-import { type ID } from '@/stores';
 import { computed, ref } from 'vue';
 
 const { data } = defineProps<{
   data: {
-    id: ID;
+    id: string;
     sourceX: number;
     sourceY: number;
     targetX: number;

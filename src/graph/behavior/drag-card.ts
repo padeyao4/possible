@@ -1,10 +1,11 @@
 import {
   BaseBehavior,
   type EventDispatch,
+  GRAPH_ITEM_ID,
   GRAPH_NODE_ANCHOR,
   GRAPH_NODE_RESIZE_REGION
-} from '@/graph/base';
-import type { Node } from '@/stores';
+} from '@/graph/base'
+import type { Node } from '@/stores'
 
 export class DragCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -27,8 +28,9 @@ export class DragCard extends BaseBehavior {
       el.hasAttribute(GRAPH_NODE_ANCHOR)
     )
       return;
-    const nodeId = el.getAttribute('data-graph-item-id');
-    const node = this.graph.nodesMap.get(nodeId);
+    // todo 判断是否为可拖拽节点
+    const id = el.getAttribute(GRAPH_ITEM_ID)
+    const node = this.graph.nodesMap.get(id);
     Object.assign(this.oldNode, node);
     this.down = true;
     this.mousePosition.x = e.x;

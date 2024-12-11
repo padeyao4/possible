@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia';
 import type { Ref } from 'vue';
 
-export type ID = string | number;
-
 /**
  * 一天的表示的毫秒值
  */
@@ -20,7 +18,7 @@ export type Point = {
 };
 
 export interface Project {
-  id: ID;
+  id: string;
   name: string;
   index: number; // 项目在项目列表中的排序,默认是创建时间毫秒值+随机数
   description: string;
@@ -30,8 +28,8 @@ export interface Project {
 }
 
 export interface Node {
-  id: ID;
-  projectId: ID;
+  id: string;
+  projectId: string;
   name: string;
   detail: string;
   record: string;
@@ -44,10 +42,10 @@ export interface Node {
 }
 
 export interface Edge {
-  id: ID;
-  projectId: ID;
-  source: ID | Point;
-  target: ID | Point;
+  id: string;
+  projectId: string;
+  source: string | Point;
+  target: string | Point;
 }
 
 export interface RectLike {
@@ -86,7 +84,7 @@ export function days(dateType: DateType) {
  * 计算边的控制点坐标,用于绘制曲线
  */
 export interface PathDraw {
-  id: ID;
+  string: string;
   sourceX: number;
   sourceY: number;
   targetX: number;
@@ -98,7 +96,7 @@ export interface PathDraw {
 }
 
 export interface CardDraw {
-  id: ID;
+  string: string;
   name: string;
   x: number; // 实际x点
   y: number; // 实际y点
@@ -138,12 +136,12 @@ export function scheduleMidnightTask(clear: Ref<any>, callback: () => void) {
 
 export const useGraph = defineStore('graph', {
   state: () => ({
-    projectId: <ID>undefined, // 当前项目id
-    projectsMap: new Map<ID, Project>(),
-    nodesMap: new Map<ID, Node>(),
-    edgesMap: new Map<ID, Edge>(),
-    inEdgesMap: new Map<ID, Set<Edge>>(), // Map中的ID表示edge中的target,Set中的Edge表示所有指向该节点的边
-    outEdgesMap: new Map<ID, Set<Edge>>(), // Map中的ID表示edge中的source,Set中的Edge表示所有从该节点出发的边
+    projectId: <string>undefined, // 当前项目id
+    projectsMap: new Map<string, Project>(),
+    nodesMap: new Map<string, Node>(),
+    edgesMap: new Map<string, Edge>(),
+    inEdgesMap: new Map<string, Set<Edge>>(), // Map中的ID表示edge中的target,Set中的Edge表示所有指向该节点的边
+    outEdgesMap: new Map<string, Set<Edge>>(), // Map中的ID表示edge中的source,Set中的Edge表示所有从该节点出发的边
     viewWidth: 0, // 可视化窗口大小
     viewHeight: 0, // 可视化窗口大小
     menuWidth: 240, // 菜单栏宽度
@@ -163,11 +161,11 @@ export const useGraph = defineStore('graph', {
     sortedProjects: (state) => {
       return Array.from(state.projectsMap.values()).sort((a, b) => a.index - b.index);
     },
-    getNodesByProjectId: (state) => (id: ID) => {
-      return Array.from(state.nodesMap.values()).filter((node) => node.projectId === id);
+    getNodesByProjectId: (state) => (string: string) => {
+      return Array.from(state.nodesMap.values()).filter((node) => node.projectId === string);
     },
-    getProjectById: (state) => (id: ID) => {
-      return state.projectsMap.get(id);
+    getProjectById: (state) => (string: string) => {
+      return state.projectsMap.get(string);
     } /**
      * canvas中用于显示图形的区域大小
      * @param state
@@ -195,7 +193,7 @@ export const useGraph = defineStore('graph', {
           const w = node.w * this.cardWidth - 10 * 2;
           const h = node.h * this.cardHeight - 10 * 2;
           return {
-            id: node.id,
+            string: node.id,
             name: node.name,
             x, // 实际x点
             y, // 实际y点
@@ -251,8 +249,8 @@ export const useGraph = defineStore('graph', {
      * 根据项目id获取所有边绘制信息
      */
     currentPaths(): PathDraw[] {
-      const cardsMap = new Map<ID, CardDraw>();
-      this.currentCards.forEach((card) => cardsMap.set(card.id, card));
+      const cardsMap = new Map<string, CardDraw>();
+      this.currentCards.forEach((card) => cardsMap.set(card.string, card));
       return Array.from(this.edgesMap.values())
         .filter((edge) => edge.projectId === this.projectId)
         .map((edge) => {
@@ -275,7 +273,7 @@ export const useGraph = defineStore('graph', {
           const dist = targetX - sourceX;
 
           return {
-            id: edge.id,
+            string: edge.id,
             sourceX,
             sourceY,
             targetX,
@@ -299,37 +297,37 @@ export const useGraph = defineStore('graph', {
     setProject(project: Project) {
       this.projectsMap.set(project.id, project);
     },
-    removeProject(item: ID | Project) {
-      const id = typeof item === 'object' ? item.id : item;
-      this.projectsMap.delete(id);
+    removeProject(item: string | Project) {
+      const string = typeof item === 'object' ? item.id : item;
+      this.projectsMap.delete(string);
       this.edgesMap.forEach((value, key, map) => {
-        value.projectId === id && this.edgesMap.delete(key);
+        value.projectId === string && this.edgesMap.delete(key);
       });
       this.nodesMap.forEach((value, key, map) => {
-        value.projectId === id && this.nodesMap.delete(key);
+        value.projectId === string && this.nodesMap.delete(key);
       });
     },
     setNode(node: Node) {
       this.nodesMap.set(node.id, node);
     },
-    removeNode(item: ID | Node) {
-      const id = typeof item === 'object' ? item.id : item;
+    removeNode(item: string | Node) {
+      const string = typeof item === 'object' ? item.id : item;
       this.edgesMap.forEach((value, key, map) => {
-        (value.source === id || value.target === id) && this.edgesMap.delete(key);
+        (value.source === string || value.target === string) && this.edgesMap.delete(key);
       });
-      this.nodesMap.delete(id);
+      this.nodesMap.delete(string);
       // todo 删除所有关联的边
     },
     setEdge(edge: Edge) {
       this.edgesMap.set(edge.id, edge);
       // todo 添加出边和入边
     },
-    removeEdge(item: ID | Edge) {
-      const id = typeof item === 'object' ? item.id : item;
-      this.edgesMap.delete(id);
+    removeEdge(item: string | Edge) {
+      const string = typeof item === 'object' ? item.id : item;
+      this.edgesMap.delete(string);
     },
-    setProjectId(id: ID) {
-      this.projectId = id;
+    setProjectId(string: string) {
+      this.projectId = string;
     },
     /**
      * 根据改变当前项目坐标

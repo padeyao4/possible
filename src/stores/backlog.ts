@@ -1,21 +1,15 @@
-import { defineStore } from 'pinia';
-import { generateIndex, type ID } from '@/stores';
-import { BacklogControllerApi, type BacklogPost } from '@/openapi'
-
-export interface Backlog {
-  id: number;
-  name: string;
-  index: number; //用于排序,时间毫秒值+随机数
-  status: boolean; // true: 完成, false: 未完成
-  loading: boolean; // 是否在进行服务端保存
-}
+import { defineStore } from 'pinia'
+import { v4 } from 'uuid'
+import { generateIndex } from '@/stores/data'
+import { type Backlog, BacklogControllerApi } from '@/openapi'
 
 /**
  * 备忘录,用于存储待办事项
  */
 export const useBacklogStore = defineStore('backlog', {
   state: () => ({
-    backlogsMap: new Map<ID, Backlog>()
+    backlogsMap: new Map<string, Backlog>(),
+    loading: false,
   }),
   getters: {
     backlogs: (state) => {
@@ -34,41 +28,29 @@ export const useBacklogStore = defineStore('backlog', {
   },
   actions: {
     add(name: string) {
-      const backlog = <BacklogPost>{
-        name,
+      const uuid  = v4()
+      this.backlogsMap.set(uuid, {
+        name: name,
         index: generateIndex(),
         status: false,
-        saving: true,
-      };
-      const api = new BacklogControllerApi()
-      api.add(backlog).then((request) => {
-        const payload =  request.data.payload
-        this.backlogsMap.set(payload.id,{
-          id: payload.id,
-          name: payload.name,
-          index: payload.index,
-          status: payload.status,
-          loading: false,
+        id: uuid
+      });
+    },
+    remove(item: string | Backlog) {
+      const uuid = typeof item === 'object' ? item.id : item;
+      this.backlogsMap.delete(uuid);
+    },
+    fetch(){
+      this.loading = true
+      new BacklogControllerApi().list().then((res) => {
+        const data = res.data.payload
+        this.backlogsMap.clear()
+        data.forEach((item)=>{
+          this.backlogsMap.set(item.id,item)
         })
-      })
-    },
-    exchangeIndex(b1:Backlog,b2:Backlog) {
-      console.log(b1);
-      [b1.index,b2.index] = [b2.index,b1.index];
-      b1.loading = true;
-      b2.loading = true;
-      new BacklogControllerApi().exchangeIndex(b1,b2).then((request) => {
-        b1.loading = false;
-        b2.loading = false;
-      })
-    },
-    remove(item: number | Backlog) {
-      const id = typeof item === 'object' ? item.id : item;
-      const api = new BacklogControllerApi()
-      api._delete(id).then(_ => {
-        this.backlogsMap.delete(id)
+      }).finally(()=>{
+        this.loading = false
       })
     }
-  },
-
+  }
 });

@@ -13,17 +13,12 @@ const accountStore = useAccountStore()
 const { width, height } = useWindowSize()
 const backlogStore = useBacklogStore()
 
-new BacklogControllerApi().list().then((res) => {
-  const payload = res.data.payload
-  payload.forEach((item) => {
-    backlogStore.backlogsMap.set(item.id, {
-      id: item.id,
-      index: item.index,
-      loading: false,
-      name: item.name,
-      status: item.status,
-    })
-  })
+backlogStore.fetch();
+
+backlogStore.$subscribe((mutation, state) => {
+  if(!state.loading){
+    new BacklogControllerApi().add(Array.from(state.backlogsMap.values()))
+  }
 })
 
 watchEffect(() => {
