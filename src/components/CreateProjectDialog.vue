@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { generateIndex, useGraph } from '@/stores';
+import { days, generateIndex, useDataStore } from '@/stores';
 import { emitter } from '@/utils';
 import { v4 } from 'uuid';
 
-const graph = useGraph();
+const graph = useDataStore();
 
 const visible = ref(false);
 const name = ref('');
@@ -19,9 +19,9 @@ function handleCreateProject() {
     id: v4(),
     index: generateIndex(),
     name: name.value,
-    x: 0,
+    x: -days(Date.now()) * graph.cardWidth,
     y: 0,
-    createdAt: Date.now().valueOf()
+    createdAt: Date.now()
   });
   visible.value = false;
   name.value = '';

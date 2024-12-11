@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import type { Ref } from 'vue';
+import { DataStoreControllerApi, type Edge, type Project, type Node } from '@/openapi';
 
 /**
  * 一天的表示的毫秒值
@@ -16,37 +17,6 @@ export type Point = {
   x: number;
   y: number;
 };
-
-export interface Project {
-  id: string;
-  name: string;
-  index: number; // 项目在项目列表中的排序,默认是创建时间毫秒值+随机数
-  description: string;
-  x: number; // 画布平移偏差值
-  y: number; // 画布平移偏差值
-  createdAt: number; // 创建时间系统时间毫秒值
-}
-
-export interface Node {
-  id: string;
-  projectId: string;
-  name: string;
-  detail: string;
-  record: string;
-  index: number; // 节点在项目中的排序,默认是创建时间毫秒值+随机数
-  x: number; // 距离1970年的天数
-  y: number;
-  w: number;
-  h: number;
-  status: boolean; // true 表示完成
-}
-
-export interface Edge {
-  id: string;
-  projectId: string;
-  source: string | Point;
-  target: string | Point;
-}
 
 export interface RectLike {
   x: number;
@@ -117,6 +87,13 @@ export interface CardDraw {
   color: string; // 根据状态设置颜色
 }
 
+interface TempEdge {
+  id: string;
+  source: string | Point;
+  target: string | Point;
+  projectId: string;
+}
+
 /**
  * 媒体晚上12点钟执行
  * @param clear
@@ -134,10 +111,11 @@ export function scheduleMidnightTask(clear: Ref<any>, callback: () => void) {
   }, delay);
 }
 
-export const useGraph = defineStore('graph', {
+export const useDataStore = defineStore('graph', {
   state: () => ({
     projectId: <string>undefined, // 当前项目id
     projectsMap: new Map<string, Project>(),
+    tempEdge: <TempEdge>undefined, // 临时边
     nodesMap: new Map<string, Node>(),
     edgesMap: new Map<string, Edge>(),
     inEdgesMap: new Map<string, Set<Edge>>(), // Map中的ID表示edge中的target,Set中的Edge表示所有指向该节点的边
@@ -148,7 +126,8 @@ export const useGraph = defineStore('graph', {
     editorWidth: 0, // 编辑框宽度
     cardWidth: 120, // 实际卡片宽度
     cardHeight: 80, // 实际卡片高度
-    timestamp: 0 // 时间戳,用于控制表头显示的时间格式
+    loading: false, // 加载状态
+    timestamp: Date.now() // 时间戳,用于控制表头显示的时间格式
   }),
   getters: {
     project: (state) => {
@@ -251,27 +230,39 @@ export const useGraph = defineStore('graph', {
     currentPaths(): PathDraw[] {
       const cardsMap = new Map<string, CardDraw>();
       this.currentCards.forEach((card) => cardsMap.set(card.id, card));
-      return Array.from(this.edgesMap.values())
+
+      const ans = [];
+
+      if (this.tempEdge?.projectId === this.projectId) {
+        const { x: sourceX, y: sourceY } =
+          typeof this.tempEdge.source === 'string'
+            ? cardsMap.get(this.tempEdge.source).anchor.source
+            : this.tempEdge.source;
+        const { x: targetX, y: targetY } =
+          typeof this.tempEdge.target === 'string'
+            ? cardsMap.get(this.tempEdge.target).anchor.target
+            : this.tempEdge.target;
+        const dist = targetX - sourceX;
+        const tmpPath = {
+          id: this.tempEdge.id,
+          sourceX,
+          sourceY,
+          targetX,
+          targetY,
+          controller1X: sourceX + dist / 2,
+          controller1Y: sourceY,
+          controller2X: targetX - dist / 2,
+          controller2Y: targetY
+        };
+        ans.push(tmpPath);
+      }
+
+      const realsPath = Array.from(this.edgesMap.values())
         .filter((edge) => edge.projectId === this.projectId)
         .map((edge) => {
-          const { x: sourceX, y: sourceY } =
-            typeof edge.source === 'object'
-              ? {
-                  x: edge.source.x,
-                  y: edge.source.y
-                }
-              : cardsMap.get(edge.source).anchor.source;
-
-          const { x: targetX, y: targetY } =
-            typeof edge.target === 'object'
-              ? {
-                  x: edge.target.x,
-                  y: edge.target.y
-                }
-              : cardsMap.get(edge.target).anchor.target;
-
+          const { x: sourceX, y: sourceY } = cardsMap.get(edge.source).anchor.source;
+          const { x: targetX, y: targetY } = cardsMap.get(edge.target).anchor.target;
           const dist = targetX - sourceX;
-
           return {
             id: edge.id,
             sourceX,
@@ -284,6 +275,7 @@ export const useGraph = defineStore('graph', {
             controller2Y: targetY
           };
         });
+      return ans.concat(realsPath);
     },
     gridTemplateColumns: (state) => {
       if (state.editorWidth !== 0) {
@@ -313,7 +305,8 @@ export const useGraph = defineStore('graph', {
     removeNode(item: string | Node) {
       const string = typeof item === 'object' ? item.id : item;
       this.edgesMap.forEach((value, key, map) => {
-        (value.source === string || value.target === string) && this.edgesMap.delete(key);
+        (typeof value.source === string || typeof value.target === string) &&
+          this.edgesMap.delete(key);
       });
       this.nodesMap.delete(string);
       // todo 删除所有关联的边
@@ -336,6 +329,23 @@ export const useGraph = defineStore('graph', {
       const offsetX = -days(dateType) * this.cardWidth;
       this.project.x = offsetX > 0 ? offsetX - 1 : offsetX;
       this.project.y = 0;
+    },
+    fetch() {
+      this.loading = true;
+      new DataStoreControllerApi()
+        .list()
+        .then((res) => {
+          const { projects, edges, nodes } = res.data.payload;
+          this.nodesMap.clear();
+          this.edgesMap.clear();
+          this.projectsMap.clear();
+          projects.forEach((project) => this.projectsMap.set(project.id, project));
+          edges.forEach((edge) => this.edgesMap.set(edge.id, edge));
+          nodes.forEach((node) => this.nodesMap.set(node.id, node));
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     }
   }
 });

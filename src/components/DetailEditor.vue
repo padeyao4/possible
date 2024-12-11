@@ -3,10 +3,10 @@ import { emitter } from '@/utils';
 import CloseIconButton from '@/components/common/CloseIconButton.vue';
 import { computed, reactive } from 'vue';
 import { Delete } from '@element-plus/icons-vue';
-import { useGraph, useBacklogStore } from '@/stores';
+import { useDataStore, useBacklogStore } from '@/stores';
 import { useEventListener } from '@vueuse/core';
 
-const graph = useGraph();
+const graph = useDataStore();
 const meno = useBacklogStore();
 
 type ContentType = 'node' | 'backlog';

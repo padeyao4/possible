@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { Check } from '@element-plus/icons-vue';
-import { useGraph } from '@/stores';
+import { useDataStore } from '@/stores';
 import { ref } from 'vue';
-import type { Node } from '@/stores';
+import type { Node } from '@/openapi';
 
 const { node } = defineProps<{
   node: Node;
 }>();
 
-const graph = useGraph();
+const graph = useDataStore();
 
 const project = graph.project;
 

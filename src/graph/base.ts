@@ -10,7 +10,7 @@
 import { useCursor } from '@/stores/cursor';
 import { useEventListener } from '@vueuse/core';
 import type { Ref } from 'vue';
-import { useGraph } from '@/stores';
+import { useDataStore } from '@/stores';
 
 export const GRAPH_ITEM_SHAPE = 'data-graph-item-shape';
 export const GRAPH_ITEM_ID = 'data-graph-item-id';
@@ -53,7 +53,7 @@ export type EventDispatch = {
 
 export abstract class BaseBehavior {
   mouseStyle = useCursor();
-  graph = useGraph();
+  graph = useDataStore();
   project = this.graph.project;
   container: Ref<Element>;
 

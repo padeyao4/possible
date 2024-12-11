@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue';
 import { useWindowSize } from '@vueuse/core';
-import { useGraph } from '@/stores';
+import { useDataStore } from '@/stores';
 
-const graph = useGraph();
+const graph = useDataStore();
 const project = graph.project;
 
 const rulers = ref<number[]>([]);

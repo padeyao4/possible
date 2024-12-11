@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { type Project, useGraph } from '@/stores';
+import { useDataStore } from '@/stores';
 import { RouterView } from 'vue-router';
 import NavTodayItem from '@/components/NavTodayItem.vue';
 import NavBacklogItem from '@/components/NavBacklogItem.vue';
@@ -11,7 +11,8 @@ import DeleteProjectDialog from '@/components/DeleteProjectDialog.vue';
 import DetailEditor from '@/components/DetailEditor.vue';
 import RenameProjectDialog from '@/components/RenameProjectDialog.vue';
 import MagicDraggable from '@/components/common/MagicDraggable.vue';
-const graph = useGraph();
+import type { Project } from '@/openapi';
+const graph = useDataStore();
 
 function handleUpdate(p1: Project, p2: Project) {
   [p1.index, p2.index] = [p2.index, p1.index];

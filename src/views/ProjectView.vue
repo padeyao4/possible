@@ -2,13 +2,13 @@
 import CanvasRuler from '@/components/project/CanvasRuler.vue';
 import CanvasHeader from '@/components/project/CanvasHeader.vue';
 import TheCanvas from '@/components/project/TheCanvas.vue';
-import { useGraph } from '@/stores';
+import { useDataStore } from '@/stores';
 import ProjectLockButton from '@/components/ProjectLockButton.vue';
 import ProjectLocationButton from '@/components/ProjectLocationButton.vue';
 import ProjectHomeButton from '@/components/ProjectHomeButton.vue';
 import ProjectCalenderButton from '@/components/ProjectCalenderButton.vue';
 
-const graph = useGraph();
+const graph = useDataStore();
 const project = graph.project;
 </script>
 

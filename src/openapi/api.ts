@@ -57,6 +57,62 @@ export interface Backlog {
 /**
  * 
  * @export
+ * @interface DataStoreDto
+ */
+export interface DataStoreDto {
+    /**
+     * 
+     * @type {Array<Edge>}
+     * @memberof DataStoreDto
+     */
+    'edges'?: Array<Edge>;
+    /**
+     * 
+     * @type {Array<Project>}
+     * @memberof DataStoreDto
+     */
+    'projects'?: Array<Project>;
+    /**
+     * 
+     * @type {Array<Node>}
+     * @memberof DataStoreDto
+     */
+    'nodes'?: Array<Node>;
+}
+/**
+ * 
+ * @export
+ * @interface Edge
+ */
+export interface Edge {
+    /**
+     * 
+     * @type {string}
+     * @memberof Edge
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Edge
+     */
+    'source'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Edge
+     */
+    'target'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Edge
+     */
+    'projectId'?: string;
+}
+/**
+ * 
+ * @export
  * @interface GrantedAuthority
  */
 export interface GrantedAuthority {
@@ -66,6 +122,153 @@ export interface GrantedAuthority {
      * @memberof GrantedAuthority
      */
     'authority'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface Node
+ */
+export interface Node {
+    /**
+     * 
+     * @type {string}
+     * @memberof Node
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Node
+     */
+    'projectId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Node
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Node
+     */
+    'detail'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Node
+     */
+    'record'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Node
+     */
+    'index'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Node
+     */
+    'x'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Node
+     */
+    'y'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Node
+     */
+    'w'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Node
+     */
+    'h'?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Node
+     */
+    'status'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface Project
+ */
+export interface Project {
+    /**
+     * 
+     * @type {string}
+     * @memberof Project
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Project
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Project
+     */
+    'index'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Project
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Project
+     */
+    'x'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Project
+     */
+    'y'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Project
+     */
+    'createdAt'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface RestResponseDataStoreDto
+ */
+export interface RestResponseDataStoreDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof RestResponseDataStoreDto
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof RestResponseDataStoreDto
+     */
+    'code'?: number;
+    /**
+     * 
+     * @type {DataStoreDto}
+     * @memberof RestResponseDataStoreDto
+     */
+    'payload'?: DataStoreDto;
 }
 /**
  * 
@@ -229,9 +432,9 @@ export const BacklogControllerApiAxiosParamCreator = function (configuration?: C
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        add: async (backlog: Array<Backlog>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        add1: async (backlog: Array<Backlog>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'backlog' is not null or undefined
-            assertParamExists('add', 'backlog', backlog)
+            assertParamExists('add1', 'backlog', backlog)
             const localVarPath = `/api/backlog/add`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -263,7 +466,7 @@ export const BacklogControllerApiAxiosParamCreator = function (configuration?: C
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        list: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        list1: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/backlog/list`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -303,10 +506,10 @@ export const BacklogControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async add(backlog: Array<Backlog>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseVoid>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.add(backlog, options);
+        async add1(backlog: Array<Backlog>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseVoid>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.add1(backlog, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BacklogControllerApi.add']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['BacklogControllerApi.add1']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -314,10 +517,10 @@ export const BacklogControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async list(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseListBacklog>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.list(options);
+        async list1(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseListBacklog>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.list1(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['BacklogControllerApi.list']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['BacklogControllerApi.list1']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -336,16 +539,16 @@ export const BacklogControllerApiFactory = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        add(backlog: Array<Backlog>, options?: RawAxiosRequestConfig): AxiosPromise<RestResponseVoid> {
-            return localVarFp.add(backlog, options).then((request) => request(axios, basePath));
+        add1(backlog: Array<Backlog>, options?: RawAxiosRequestConfig): AxiosPromise<RestResponseVoid> {
+            return localVarFp.add1(backlog, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        list(options?: RawAxiosRequestConfig): AxiosPromise<RestResponseListBacklog> {
-            return localVarFp.list(options).then((request) => request(axios, basePath));
+        list1(options?: RawAxiosRequestConfig): AxiosPromise<RestResponseListBacklog> {
+            return localVarFp.list1(options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -364,8 +567,8 @@ export class BacklogControllerApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof BacklogControllerApi
      */
-    public add(backlog: Array<Backlog>, options?: RawAxiosRequestConfig) {
-        return BacklogControllerApiFp(this.configuration).add(backlog, options).then((request) => request(this.axios, this.basePath));
+    public add1(backlog: Array<Backlog>, options?: RawAxiosRequestConfig) {
+        return BacklogControllerApiFp(this.configuration).add1(backlog, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -374,8 +577,172 @@ export class BacklogControllerApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof BacklogControllerApi
      */
+    public list1(options?: RawAxiosRequestConfig) {
+        return BacklogControllerApiFp(this.configuration).list1(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * DataStoreControllerApi - axios parameter creator
+ * @export
+ */
+export const DataStoreControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {DataStoreDto} dataStoreDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        add: async (dataStoreDto: DataStoreDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'dataStoreDto' is not null or undefined
+            assertParamExists('add', 'dataStoreDto', dataStoreDto)
+            const localVarPath = `/api/data/add`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(dataStoreDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        list: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/data/list`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * DataStoreControllerApi - functional programming interface
+ * @export
+ */
+export const DataStoreControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = DataStoreControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {DataStoreDto} dataStoreDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async add(dataStoreDto: DataStoreDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseVoid>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.add(dataStoreDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DataStoreControllerApi.add']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async list(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseDataStoreDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.list(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DataStoreControllerApi.list']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * DataStoreControllerApi - factory interface
+ * @export
+ */
+export const DataStoreControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = DataStoreControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {DataStoreDto} dataStoreDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        add(dataStoreDto: DataStoreDto, options?: RawAxiosRequestConfig): AxiosPromise<RestResponseVoid> {
+            return localVarFp.add(dataStoreDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        list(options?: RawAxiosRequestConfig): AxiosPromise<RestResponseDataStoreDto> {
+            return localVarFp.list(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * DataStoreControllerApi - object-oriented interface
+ * @export
+ * @class DataStoreControllerApi
+ * @extends {BaseAPI}
+ */
+export class DataStoreControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {DataStoreDto} dataStoreDto 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DataStoreControllerApi
+     */
+    public add(dataStoreDto: DataStoreDto, options?: RawAxiosRequestConfig) {
+        return DataStoreControllerApiFp(this.configuration).add(dataStoreDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DataStoreControllerApi
+     */
     public list(options?: RawAxiosRequestConfig) {
-        return BacklogControllerApiFp(this.configuration).list(options).then((request) => request(this.axios, this.basePath));
+        return DataStoreControllerApiFp(this.configuration).list(options).then((request) => request(this.axios, this.basePath));
     }
 }
 

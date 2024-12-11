@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { days, ONE_DAY_MS, useGraph } from '@/stores';
+import { days, ONE_DAY_MS, useDataStore } from '@/stores';
 
-const graph = useGraph();
+const graph = useDataStore();
 
 const project = graph.project;
 

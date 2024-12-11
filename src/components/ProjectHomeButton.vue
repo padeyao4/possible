@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useGraph } from '@/stores';
+import { useDataStore } from '@/stores';
 
-const graph = useGraph();
+const graph = useDataStore();
 
 function goHome() {
   graph.setCurrentProjectPositionByDate(graph.project.createdAt);

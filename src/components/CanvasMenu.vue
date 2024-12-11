@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, watchEffect } from 'vue';
 import { emitter } from '@/utils';
-import { generateIndex,  useGraph } from '@/stores';
+import { generateIndex, useDataStore } from '@/stores';
 import { v4 } from 'uuid';
 
 const { svg } = defineProps<{ svg: SVGSVGElement }>();
-const graph = useGraph();
+const graph = useDataStore();
 
 interface ConfType {
   name: string;

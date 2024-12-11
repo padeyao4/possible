@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useGraph } from '@/stores';
+import { useDataStore } from '@/stores';
 
-const projects = useGraph();
+const projects = useDataStore();
 </script>
 
 <template>

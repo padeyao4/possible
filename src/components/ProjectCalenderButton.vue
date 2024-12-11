@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
-import { days, useGraph } from '@/stores';
+import { days, useDataStore } from '@/stores';
 
-const graph = useGraph();
+const graph = useDataStore();
 
 const viewModel = reactive({
   inputValue: <string>undefined

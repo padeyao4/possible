@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue';
-import { useGraph } from '@/stores';
+import { useDataStore } from '@/stores';
 import {
   ClickCanvasMenu,
   ClickCard,
@@ -16,7 +16,7 @@ import CanvasCard from '@/components/project/CanvasCard.vue';
 import CanvasPath from '@/components/project/CanvasPath.vue';
 import CanvasMenu from '@/components/CanvasMenu.vue';
 
-const graph = useGraph();
+const graph = useDataStore();
 const project = graph.project;
 const svg = ref<SVGSVGElement>();
 const cards = computed(() => graph.drawableCards);

@@ -6,7 +6,6 @@ import {
   GRAPH_NODE_ANCHOR
 } from '@/graph';
 import { v4 } from 'uuid';
-import { type Edge } from '@/stores';
 import { reactive } from 'vue';
 
 export class CreateEdge extends BaseBehavior {
@@ -20,8 +19,6 @@ export class CreateEdge extends BaseBehavior {
     };
   }
 
-  tempEdge = <Edge>undefined;
-
   onmousedown(e: MouseEvent, el: Element) {
     if (e.button !== 0) return;
     if (!el.hasAttribute(GRAPH_NODE_ANCHOR)) return;
@@ -34,25 +31,24 @@ export class CreateEdge extends BaseBehavior {
     const source = direction === 'source' ? nodeId : { x, y };
     const target = direction === 'target' ? nodeId : { x, y };
 
-    this.tempEdge = reactive({
+    this.graph.tempEdge = reactive({
       id: v4(),
       projectId: this.project.id,
       source,
       target
     });
 
-    this.graph.setEdge(this.tempEdge);
     this.mouseStyle.lock('crosshair');
   }
 
   onmousemove(e: MouseEvent) {
     if (!this.down) return;
     const { x, y } = this.getNumbersByEvent(e);
-    if (typeof this.tempEdge.source === 'object') {
-      this.tempEdge.source = { x, y };
+    if (typeof this.graph.tempEdge.source === 'object') {
+      this.graph.tempEdge.source = { x, y };
     }
-    if (typeof this.tempEdge.target === 'object') {
-      this.tempEdge.target = { x, y };
+    if (typeof this.graph.tempEdge.target === 'object') {
+      this.graph.tempEdge.target = { x, y };
     }
   }
 
@@ -61,24 +57,26 @@ export class CreateEdge extends BaseBehavior {
     this.down = false;
     if (el.getAttribute(GRAPH_ITEM_SHAPE) === 'node') {
       const nodeId = el.getAttribute(GRAPH_ITEM_ID);
-      if (typeof this.tempEdge.source === 'object') {
-        this.tempEdge.source = nodeId;
+      if (typeof this.graph.tempEdge.source === 'object') {
+        this.graph.tempEdge.source = nodeId;
       } else {
-        this.tempEdge.target = nodeId;
+        this.graph.tempEdge.target = nodeId;
       }
 
       // 如果起点和终点相同，则删除
-      this.tempEdge.source === this.tempEdge.target && this.graph.removeEdge(this.tempEdge.id);
+      if (this.graph.tempEdge.source === this.graph.tempEdge.target) {
+        this.graph.tempEdge = null;
+      }
 
       // 如果已存在该边，则删除
       Array.from(this.graph.edgesMap.values()).find(
         (edge) =>
-          edge.source === this.tempEdge.source &&
-          edge.target === this.tempEdge.target &&
-          edge.id !== this.tempEdge.id
-      ) && this.graph.removeEdge(this.tempEdge.id);
+          edge.source === this.graph.tempEdge.source &&
+          edge.target === this.graph.tempEdge.target &&
+          edge.id !== this.graph.tempEdge.id
+      ) && (this.graph.tempEdge = null);
     } else {
-      this.graph.removeEdge(this.tempEdge.id);
+      this.graph.tempEdge = null;
     }
     this.mouseStyle.unlock();
     this.toggleMouseOver(e);

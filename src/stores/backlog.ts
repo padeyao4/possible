@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia'
-import { v4 } from 'uuid'
-import { generateIndex } from '@/stores/data'
-import { type Backlog, BacklogControllerApi } from '@/openapi'
+import { defineStore } from 'pinia';
+import { v4 } from 'uuid';
+import { generateIndex } from '@/stores/data';
+import { type Backlog, BacklogControllerApi } from '@/openapi';
 
 /**
  * 备忘录,用于存储待办事项
@@ -9,7 +9,7 @@ import { type Backlog, BacklogControllerApi } from '@/openapi'
 export const useBacklogStore = defineStore('backlog', {
   state: () => ({
     backlogsMap: new Map<string, Backlog>(),
-    loading: false,
+    loading: false
   }),
   getters: {
     backlogs: (state) => {
@@ -28,7 +28,7 @@ export const useBacklogStore = defineStore('backlog', {
   },
   actions: {
     add(name: string) {
-      const uuid  = v4()
+      const uuid = v4();
       this.backlogsMap.set(uuid, {
         name: name,
         index: generateIndex(),
@@ -40,17 +40,20 @@ export const useBacklogStore = defineStore('backlog', {
       const uuid = typeof item === 'object' ? item.id : item;
       this.backlogsMap.delete(uuid);
     },
-    fetch(){
-      this.loading = true
-      new BacklogControllerApi().list().then((res) => {
-        const data = res.data.payload
-        this.backlogsMap.clear()
-        data.forEach((item)=>{
-          this.backlogsMap.set(item.id,item)
+    fetch() {
+      this.loading = true;
+      new BacklogControllerApi()
+        .list1()
+        .then((res) => {
+          const data = res.data.payload;
+          this.backlogsMap.clear();
+          data.forEach((item) => {
+            this.backlogsMap.set(item.id, item);
+          });
         })
-      }).finally(()=>{
-        this.loading = false
-      })
+        .finally(() => {
+          this.loading = false;
+        });
     }
   }
 });

@@ -1,11 +1,11 @@
-import { createPinia } from 'pinia'
-import { createApp } from 'vue'
-import './assets/main.css'
-import App from './App.vue'
-import router from './router'
-import { piniaPersisted } from '@/plugin'
-import { useGraph } from '@/stores'
-import axios from 'axios'
+import { createPinia } from 'pinia';
+import { createApp } from 'vue';
+import './assets/main.css';
+import App from './App.vue';
+import router from './router';
+import { piniaPersisted } from '@/plugin';
+import { useDataStore } from '@/stores';
+import axios from 'axios';
 
 const pinia = createPinia();
 pinia.use(piniaPersisted);
@@ -14,7 +14,7 @@ app.use(pinia);
 app.use(router);
 // 页面每次跳转前记录跳转后的项目id
 router.beforeEach(async (to, from, next) => {
-  const graph = useGraph();
+  const graph = useDataStore();
   if (to.name === 'project') {
     graph.setProjectId(to.query['id'] as string);
     if (!graph.project) {
@@ -38,7 +38,7 @@ export const errorCode = {
 axios.defaults.baseURL = import.meta.env.VITE_API_URL ?? '/';
 
 axios.interceptors.request.use((config) => {
-  config.headers['Authorization'] = `Bearer ${localStorage.getItem("token")}`;
+  config.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
   return config;
 });
 

@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { type DateType, type Node, useGraph } from '@/stores';
+import { type DateType, useDataStore } from '@/stores';
 import { computed, ref } from 'vue';
 import ECounterButton from '@/components/common/CounterButton.vue';
 import EDraggable from '@/components/common/MagicDraggable.vue';
 import TodayItem from '@/components/TodayItem.vue';
+import { type Node } from '@/openapi';
 
 const completeVisible = ref(false);
 
-const graph = useGraph();
+const graph = useDataStore();
 
 /**
  * 表头显示的时间格式
