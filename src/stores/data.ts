@@ -84,7 +84,7 @@ export function days(dateType: DateType) {
  * 计算边的控制点坐标,用于绘制曲线
  */
 export interface PathDraw {
-  string: string;
+  id: string;
   sourceX: number;
   sourceY: number;
   targetX: number;
@@ -96,7 +96,7 @@ export interface PathDraw {
 }
 
 export interface CardDraw {
-  string: string;
+  id: string;
   name: string;
   x: number; // 实际x点
   y: number; // 实际y点
@@ -161,11 +161,11 @@ export const useGraph = defineStore('graph', {
     sortedProjects: (state) => {
       return Array.from(state.projectsMap.values()).sort((a, b) => a.index - b.index);
     },
-    getNodesByProjectId: (state) => (string: string) => {
-      return Array.from(state.nodesMap.values()).filter((node) => node.projectId === string);
+    getNodesByProjectId: (state) => (id: string) => {
+      return Array.from(state.nodesMap.values()).filter((node) => node.projectId === id);
     },
-    getProjectById: (state) => (string: string) => {
-      return state.projectsMap.get(string);
+    getProjectById: (state) => (id: string) => {
+      return state.projectsMap.get(id);
     } /**
      * canvas中用于显示图形的区域大小
      * @param state
@@ -193,7 +193,7 @@ export const useGraph = defineStore('graph', {
           const w = node.w * this.cardWidth - 10 * 2;
           const h = node.h * this.cardHeight - 10 * 2;
           return {
-            string: node.id,
+            id: node.id,
             name: node.name,
             x, // 实际x点
             y, // 实际y点
@@ -250,7 +250,7 @@ export const useGraph = defineStore('graph', {
      */
     currentPaths(): PathDraw[] {
       const cardsMap = new Map<string, CardDraw>();
-      this.currentCards.forEach((card) => cardsMap.set(card.string, card));
+      this.currentCards.forEach((card) => cardsMap.set(card.id, card));
       return Array.from(this.edgesMap.values())
         .filter((edge) => edge.projectId === this.projectId)
         .map((edge) => {
@@ -273,7 +273,7 @@ export const useGraph = defineStore('graph', {
           const dist = targetX - sourceX;
 
           return {
-            string: edge.id,
+            id: edge.id,
             sourceX,
             sourceY,
             targetX,
@@ -326,8 +326,8 @@ export const useGraph = defineStore('graph', {
       const string = typeof item === 'object' ? item.id : item;
       this.edgesMap.delete(string);
     },
-    setProjectId(string: string) {
-      this.projectId = string;
+    setProjectId(id: string) {
+      this.projectId = id;
     },
     /**
      * 根据改变当前项目坐标

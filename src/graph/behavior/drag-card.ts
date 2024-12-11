@@ -4,10 +4,14 @@ import {
   GRAPH_ITEM_ID,
   GRAPH_NODE_ANCHOR,
   GRAPH_NODE_RESIZE_REGION
-} from '@/graph/base'
-import type { Node } from '@/stores'
+} from '@/graph/base';
+import type { Node } from '@/stores';
 
 export class DragCard extends BaseBehavior {
+  down = false;
+  mousePosition = { x: 0, y: 0 };
+  oldNode = <Node>{};
+
   getEventDispatch(): EventDispatch {
     return {
       'node:mousedown': this.onmousedown.bind(this),
@@ -15,10 +19,6 @@ export class DragCard extends BaseBehavior {
       ':mousemove': this.onmousemove.bind(this)
     };
   }
-
-  down = false;
-  mousePosition = { x: 0, y: 0 };
-  oldNode = <Node>{};
 
   onmousedown(e: MouseEvent, el: Element) {
     if (
@@ -28,8 +28,7 @@ export class DragCard extends BaseBehavior {
       el.hasAttribute(GRAPH_NODE_ANCHOR)
     )
       return;
-    // todo 判断是否为可拖拽节点
-    const id = el.getAttribute(GRAPH_ITEM_ID)
+    const id = el.getAttribute(GRAPH_ITEM_ID);
     const node = this.graph.nodesMap.get(id);
     Object.assign(this.oldNode, node);
     this.down = true;
