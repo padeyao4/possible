@@ -13,8 +13,8 @@
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
-    "predeploy": "pnpm build",
-    "deploy": "pnpm gh-pages -d dist -b page",
+    "predeploy": "npm build",
+    "deploy": "npm gh-pages -d dist -b page",
     "openapi-generate": "npx openapi-generator-cli generate -i http://127.0.0.1:8080/v3/api-docs -g typescript-axios -o src/openapi/"
   },
   "devDependencies": {
@@ -65,5 +65,8 @@
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
     "vue-tsc": "^1.8.27"
+  },
+  "dependencies": {
+    "possible": "file:"
   }
 }
