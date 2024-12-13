@@ -30,7 +30,7 @@ jobs:
           host: ${{ vars.SERVER_ADDR }}
           username: ${{ vars.REMOTE_USER }}
           key: ${{ secrets.POSSIBLE_KEY }}
-          source: dist/*
+          source: dist/
           target: ${{ vars.WWW }}
 
       - name: executing remote ssh commands using password
