@@ -15,7 +15,7 @@
     "format": "prettier --write src/",
     "predeploy": "npm build",
     "deploy": "npm gh-pages -d dist -b page",
-    "openapi-generate": "npx openapi-generator-cli generate -i http://127.0.0.1:8080/v3/api-docs -g typescript-axios -o src/openapi/"
+    "openapi": "npx openapi-generator-cli generate -i http://127.0.0.1:8080/v3/api-docs -g typescript-axios -o src/openapi/ --additional-properties=supportsES6=true,npmName=api-client,npmVersion=1.0.0"
   },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.8.1",

@@ -21,7 +21,7 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "allowJs": true,
     "checkJs": false,
-    "strict": false,
+    "strict": true,
     "noImplicitAny": false,
     "baseUrl": ".",
     "paths": {

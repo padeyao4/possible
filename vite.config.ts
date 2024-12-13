@@ -10,35 +10,33 @@ import tailwindcss from 'tailwindcss';
 import pkg from './package.json';
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command }) => {
-  return {
-    define: {
-      'import.meta.env.VITE_APP_VERSION': JSON.stringify(pkg.version),
-      'import.meta.env.VITE_APP_AUTHOR': JSON.stringify(pkg.author)
-    },
-    css: {
-      postcss: {
-        plugins: [tailwindcss(), autoprefixer()]
-      }
-    },
-    plugins: [
-      vue(),
-      AutoImport({
-        resolvers: [ElementPlusResolver()]
-      }),
-      Components({
-        resolvers: [ElementPlusResolver()]
-      })
-    ],
-    resolve: {
-      alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url))
-      }
-    },
-    clearScreen: false,
-    base: '/',
-    build: {
-      chunkSizeWarningLimit: 10000
+export default defineConfig({
+  define: {
+    'import.meta.env.VITE_APP_VERSION': JSON.stringify(pkg.version),
+    'import.meta.env.VITE_APP_AUTHOR': JSON.stringify(pkg.author)
+  },
+  css: {
+    postcss: {
+      plugins: [tailwindcss(), autoprefixer()]
     }
-  };
+  },
+  plugins: [
+    vue(),
+    AutoImport({
+      resolvers: [ElementPlusResolver()]
+    }),
+    Components({
+      resolvers: [ElementPlusResolver()]
+    })
+  ],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  },
+  clearScreen: false,
+  base: '/',
+  build: {
+    chunkSizeWarningLimit: 10000
+  }
 });
