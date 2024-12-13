@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { type Project } from '@/stores';
 import MenuItemEditeButton from '@/components/MenuItemEditeButton.vue';
 import MenuItemDeleteButton from '@/components/MenuItemDeleteButton.vue';
 import MenuItemDraggableButton from '@/components/MenuItemDraggableButton.vue';
 import { useRouter } from 'vue-router';
+import type { Project } from '@/openapi';
 
 const { project } = defineProps<{ project: Project }>();
 const router = useRouter();

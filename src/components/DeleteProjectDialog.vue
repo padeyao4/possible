@@ -7,7 +7,7 @@ import type { Project } from '@/openapi';
 
 const model = reactive({
   visible: false,
-  project: <Project>undefined
+  project: undefined as Project | undefined
 });
 
 const router = useRouter();
@@ -25,7 +25,7 @@ const handleDelete = () => {
     route.query.id === model.project?.id &&
     router.push({ name: 'today' });
   setTimeout(() => {
-    graph.removeProject(model.project);
+    graph.removeProject(model.project!);
   });
 };
 </script>
@@ -39,8 +39,8 @@ const handleDelete = () => {
     style="border-radius: 6px !important"
   >
     <el-text truncated
-      >确定删除 <i>{{ model.project?.name }}</i
-      >项目吗</el-text
+      >确定删除 <i>"{{ model.project?.name }}"</i
+      > 项目吗</el-text
     >
     <template #footer>
       <div class="dialog-footer">
