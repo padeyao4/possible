@@ -12,8 +12,8 @@ const meno = useBacklogStore();
 type ContentType = 'node' | 'backlog';
 
 const editorModel = reactive({
-  contentKey: <ContentType>undefined,
-  itemId: <string>undefined
+  contentKey: null as ContentType | null,
+  itemId: null as string | null
 });
 
 const contents = {
@@ -34,7 +34,7 @@ const contents = {
 };
 
 const content = computed(() => {
-  return contents[editorModel.contentKey];
+  return contents[editorModel.contentKey!];
 });
 
 const itemModel = computed(() => {
@@ -72,7 +72,7 @@ emitter.on('open-backlog-editor', (params) => {
     editorModel.contentKey = 'backlog';
     graph.editorWidth = 0;
   } else {
-    editorModel.itemId = params.id;
+    editorModel.itemId = params.id!;
     editorModel.contentKey = 'backlog';
     graph.editorWidth = 300;
   }
@@ -91,7 +91,7 @@ function handleDeleteButton() {
   if (editorModel.contentKey === 'node') {
     graph.removeNode(editorModel.itemId!);
   } else if (editorModel.contentKey === 'backlog') {
-    meno.remove(editorModel.itemId);
+    meno.remove(editorModel.itemId!);
   }
 }
 
@@ -114,7 +114,7 @@ function handleCloseButton() {
     </header>
     <el-scrollbar class="grow">
       <template v-if="content && itemModel">
-        <div v-for="item in content" class="m-3">
+        <div v-for="item in content" :key="item.name" class="m-3">
           <el-input
             autosize
             input-style="padding: 16px;"
