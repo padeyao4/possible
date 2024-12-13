@@ -24,17 +24,6 @@ jobs:
       - name: Build
         run: npm install && npm run build
 
-      # Deploy
-      # - name: 部署到自己服务器
-      #   uses: easingthemes/ssh-deploy@v2.0.7
-      #   env:
-      #     SSH_PRIVATE_KEY: ${{ secrets.POSSIBLE_KEY }}
-      #     ARGS: "-avzr --delete"
-      #     SOURCE: "dist/"
-      #     REMOTE_HOST: ${{ vars.SERVER_ADDR }}
-      #     REMOTE_USER: ${{ vars.REMOTE_USER }}
-      #     TARGET: ${{ vars.WWW }}
-
       - name: Deploy
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -43,3 +32,14 @@ jobs:
           key: ${{ secrets.POSSIBLE_KEY }}
           source: dist/*
           target: ${{ vars.WWW }}
+
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ vars.SERVER_ADDR }}
+          username: ${{ vars.REMOTE_USER }}
+          key: ${{ secrets.POSSIBLE_KEY }}
+          script: |
+            cd ${{ vars.WWW }}
+            rm -rf *
+            mv dist/* .
