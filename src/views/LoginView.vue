@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { watchEffect, computed } from 'vue'
+import { watchEffect, computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAccountStore } from '@/stores'
 import router from '@/router'
 import GithubCorner from '@/components/other/GithubCorner.vue'
+import TermsDialog from '@/components/TermsDialog.vue'
 
 const route = useRoute()
 const accountStore = useAccountStore()
+const termsDialogRef = ref()
 
 watchEffect(()=>{
   if(route.query.token){
@@ -42,6 +44,10 @@ const backgroundClass = computed(() => {
   // 晚上 (20-5点): 深色调的紫色到蓝色
   return 'from-purple-500 to-indigo-400'
 })
+
+const showTerms = () => {
+  termsDialogRef.value?.showDialog()
+}
 </script>
 
 <template>
@@ -63,9 +69,18 @@ const backgroundClass = computed(() => {
         </a>
         
         <div class="mt-6 text-center text-sm text-gray-600">
-          <p>登录即表示您同意我们的服务条款和隐私政策</p>
+          <p>
+            登录即表示您同意我们的
+            <button 
+              @click="showTerms"
+              class="text-blue-600 hover:text-blue-800 hover:underline"
+            >
+              服务条款和隐私政策
+            </button>
+          </p>
         </div>
       </div>
     </div>
+    <TermsDialog ref="termsDialogRef" />
   </div>
 </template>
