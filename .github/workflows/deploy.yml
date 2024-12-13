@@ -40,6 +40,6 @@ jobs:
         with:
           host: ${{ vars.SERVER_ADDR }}
           username: ${{ vars.REMOTE_USER }}
-          ssh_private_key: ${{ secrets.POSSIBLE_KEY }}
+          key: ${{ secrets.POSSIBLE_KEY }}
           source: dist/
           target: ${{ vars.WWW }}
