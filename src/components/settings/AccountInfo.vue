@@ -1,28 +1,20 @@
 <script setup lang="ts">
 import SettingsItem from '@/components/settings/SettingsItem.vue';
-import { $resetPinia, useAccount } from '@/stores';
-import { saveAll } from '@/utils';
-
-const account = useAccount();
-
-const logout = async () => {
-  await saveAll();
-  await account.logout();
-  $resetPinia();
-};
+import { useAccountStore } from '@/stores'
+const accountStore = useAccountStore()
 </script>
 
 <template>
   <SettingsItem>
     <template #title>你的账号</template>
     <template #description>
-      当前登录账号为: <i>{{ account.user?.username ?? '本地账号' }}</i>
+      当前登录账号为: <i>{{accountStore?.user?.username??"未登录"}}</i>
     </template>
     <template #option>
       <el-button
-        @click="logout"
-        :loading="account.logoutLoading"
+        :disabled="!accountStore.token"
         style="background-color: #00000000"
+        @click="accountStore.logout()"
         >退出登录</el-button
       >
     </template>

@@ -7,5 +7,5 @@ export default {
   theme: {
     extend: {}
   },
-  plugins: [iconsPlugin(), addDynamicIconSelectors()]
+  plugins: [iconsPlugin(), addDynamicIconSelectors()],
 } satisfies Config;

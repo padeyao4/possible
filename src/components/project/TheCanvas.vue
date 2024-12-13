@@ -1,80 +1,69 @@
-<script setup lang="ts">
-import CanvasPaths from '@/components/project/CanvasPaths.vue';
-import CanvasCards from '@/components/project/CanvasCards.vue';
-import { computed, type ComputedRef, inject, onBeforeUnmount, onMounted, provide, ref } from 'vue';
-import CanvasTempPaths from '@/components/project/CanvasTempPaths.vue';
-import { Project } from '@/core';
-import { useSettings } from '@/stores';
-import { storeToRefs } from 'pinia';
+<script lang="ts" setup>
+import { computed, onMounted, ref } from 'vue';
+import { useDataStore } from '@/stores';
 import {
+  ClickCanvasMenu,
   ClickCard,
-  Contextmenu,
   CreateEdge,
   DefaultBehavior,
+  DragCanvas,
   DragCard,
   Register,
   ResizeCard,
-  DragCanvas,
   WheelCanvas
 } from '@/graph';
-import GraphContextmenuGroup from '@/components/project/GraphContextmenuGroup.vue';
+import CanvasCard from '@/components/project/CanvasCard.vue';
+import CanvasPath from '@/components/project/CanvasPath.vue';
+import CanvasMenu from '@/components/CanvasMenu.vue';
 
-const svg = ref();
-const settings = useSettings();
-const { unitHeight, unitWidth } = storeToRefs(settings);
-const project = inject<ComputedRef<Project>>('project');
-
-const register = new Register(svg);
-
-register.addBehaviors(
-  DefaultBehavior,
-  DragCanvas,
-  DragCard,
-  ResizeCard,
-  ClickCard,
-  CreateEdge,
-  Contextmenu,
-  WheelCanvas
-);
+const graph = useDataStore();
+const project = graph.project;
+const svg = ref<SVGSVGElement>();
+const cards = computed(() => graph.drawableCards);
+const paths = computed(() => graph.currentPaths);
 
 onMounted(() => {
+  const register = new Register(svg);
+
+  register.addBehaviors(
+    DefaultBehavior,
+    DragCanvas,
+    DragCard,
+    ResizeCard,
+    ClickCard,
+    CreateEdge,
+    ClickCanvasMenu,
+    WheelCanvas
+  );
+
   register.listen();
 });
 
-onBeforeUnmount(() => {
-  register.removeListen();
+const backgroundStyle = computed(() => {
+  return {
+    backgroundPositionX: project.x + 'px',
+    backgroundPositionY: project.y + 'px',
+    backgroundSize: `${graph.cardWidth}px ${graph.cardHeight}px`
+  };
 });
-
-const translateX = computed(() => project.value.offset.x);
-const translateY = computed(() => project.value.offset.y);
-
-const uW = computed(() => `${unitWidth.value}px`);
-const uH = computed(() => `${unitHeight.value}px`);
-
-const position = computed(() => {
-  return `${translateX.value}px ${translateY.value}px`;
-});
-
-provide('canvasContainer', svg);
 </script>
 
 <template>
   <div class="relative bg-transparent">
     <svg
       ref="svg"
+      :style="backgroundStyle"
       class="grid-line absolute h-full w-full"
+      data-graph-item-shape="canvas"
       @contextmenu.prevent
-      data-el-type="canvas"
-      data-type="canvas"
     >
-      <g :transform="`translate(${translateX},${translateY})`">
-        <canvas-paths></canvas-paths>
-        <canvas-cards></canvas-cards>
-        <canvas-temp-paths></canvas-temp-paths>
+      <g :transform="`translate(${project.x},${project.y})`">
+        <canvas-path v-for="item in paths" :key="item.id" :data="item" />
+        <canvas-card v-for="item in cards" :key="item.id" :data="item" />
       </g>
     </svg>
+    <canvas-menu :svg="svg" />
   </div>
-  <graph-contextmenu-group />
 </template>
 
 <style scoped>
@@ -94,8 +83,6 @@ provide('canvasContainer', svg);
       transparent 80px
     );
   background-repeat: repeat;
-  background-position: v-bind(position);
-  background-size: v-bind(uW) v-bind(uH);
   background-blend-mode: normal;
 }
 </style>

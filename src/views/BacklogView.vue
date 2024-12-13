@@ -1,35 +1,32 @@
 <script setup lang="ts">
-import { provide, ref } from 'vue';
+import { reactive, ref } from 'vue';
 import ECounterButton from '@/components/common/CounterButton.vue';
-import EDraggable from '@/components/common/MagicDraggable.vue';
-import { useBacklogs, useLayout } from '@/stores';
-import { Backlog } from '@/core';
+import MagicDraggable from '@/components/common/MagicDraggable.vue';
 import BacklogItem from '@/components/BacklogItem.vue';
+import { useBacklogStore } from '@/stores';
+import type { Backlog } from '@/openapi'
 
-const backlogs = useBacklogs();
-const layout = useLayout();
-layout.showRight = false;
+const backlogStore = useBacklogStore();
 
-const onUpdate = (current: Backlog, other: Backlog) => {
-  [current.orderIndex, other.orderIndex] = [other.orderIndex, current.orderIndex];
-};
+const viewModel = reactive({
+  doneBacklogsVisible: false,
+  selectId: <string>undefined // 选中的id
+});
 
-const inputEl = ref<HTMLInputElement>();
+export type BacklogViewModel = typeof viewModel;
 
-const addNew = () => {
-  const value = inputEl.value.value.trim();
-  if (!value) return;
-  backlogs.add(value);
-  inputEl.value.value = '';
-};
+const inputRef = ref<HTMLInputElement>();
 
-const editorVisible = ref(false);
-const editorBacklog = ref();
+function handleInput() {
+  if (inputRef.value) {
+    backlogStore.add(inputRef.value.value.trim());
+    inputRef.value.value = '';
+  }
+}
 
-provide('editorVisible', editorVisible);
-provide('editorBacklog', editorBacklog);
-
-const counterVisible = ref(false);
+function handleUpdate(b1: Backlog, b2: Backlog) {
+  [b1.index,b2.index] = [b2.index,b1.index];
+}
 </script>
 
 <template>
@@ -41,30 +38,29 @@ const counterVisible = ref(false);
       备忘录
     </div>
     <el-scrollbar class="grow px-3">
-      <e-draggable :update="onUpdate" :list="backlogs.todos" handle="data-move">
+      <magic-draggable :update="handleUpdate" :list="backlogStore.todoBacklogs">
         <template #default="{ item }">
-          <backlog-item :item="item as Backlog" class="my-1" />
+          <backlog-item :item="item" :backlog-view-model="viewModel" />
         </template>
-      </e-draggable>
-      <e-counter-button :count="backlogs.completes.length" v-model="counterVisible" />
-      <e-draggable
-        v-if="counterVisible"
-        :update="onUpdate"
-        :list="backlogs.completes"
-        handle="data-move"
+      </magic-draggable>
+      <e-counter-button :count="backlogStore.doneBacklogs.length" v-model="viewModel.doneBacklogsVisible" />
+      <magic-draggable
+        v-if="viewModel.doneBacklogsVisible"
+        :update="handleUpdate"
+        :list="backlogStore.doneBacklogs"
       >
         <template #default="{ item }">
-          <backlog-item :item="item as Backlog" class="my-1" />
+          <backlog-item :item="item" :backlog-view-model="viewModel" />
         </template>
-      </e-draggable>
+      </magic-draggable>
     </el-scrollbar>
     <div class="mx-3 my-4 flex h-12 shrink-0 flex-row items-center overflow-hidden rounded-md">
       <div class="flex h-full w-14 shrink-0 items-center justify-center bg-white">
         <span class="icon-[fe--plus] h-6 w-6 bg-gray-500"></span>
       </div>
       <input
-        @keydown.enter="addNew"
-        ref="inputEl"
+        @keydown.enter="handleInput"
+        ref="inputRef"
         class="h-full w-full grow text-base text-gray-500"
         style="
           :focus {

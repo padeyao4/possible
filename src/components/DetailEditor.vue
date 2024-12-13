@@ -1,124 +1,128 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { emitter } from '@/utils';
 import CloseIconButton from '@/components/common/CloseIconButton.vue';
-import { onBeforeUnmount, ref } from 'vue';
-import { useEventListener } from '@vueuse/core';
+import { computed, reactive } from 'vue';
 import { Delete } from '@element-plus/icons-vue';
-import { useBacklogs, useLayout, useProjects } from '@/stores';
+import { useDataStore, useBacklogStore } from '@/stores';
+import { useEventListener } from '@vueuse/core';
 
-const layout = useLayout();
+const graph = useDataStore();
+const meno = useBacklogStore();
 
-const item = ref();
-const itemType = ref();
+type ContentType = 'node' | 'backlog';
 
-emitter.on('editor:open', (e) => {
-  if (!layout.showRight || e.type !== itemType.value || e.item.id !== item.value?.id) {
-    layout.showRight = true;
-    item.value = e.item;
-    itemType.value = e.type;
-  } else {
-    layout.showRight = false;
-  }
+const editorModel = reactive({
+  contentKey: null as ContentType | null,
+  itemId: null as string | null
 });
 
-emitter.on('editor:close', () => {
-  layout.showRight = false;
-});
-
-onBeforeUnmount(() => {
-  emitter.off('editor:open');
-  emitter.off('editor:close');
-});
-
-useEventListener(window, 'keydown', (e) => {
-  if (e.key === 'Escape') {
-    layout.showRight = false;
-  }
-});
-
-const backlogs = useBacklogs();
-const projects = useProjects();
-
-const handleDelete = () => {
-  if (itemType.value === 'backlog') {
-    backlogs.remove(item.value.id);
-    emitter.emit('backlog:delete', { id: item.value.id });
-    item.value = null;
-    return;
-  }
-  if (itemType.value === 'node') {
-    const project = projects.getProject(item.value.projectId);
-    project.removeNode(item.value.id);
-    emitter.emit('node:delete', item.value);
-    item.value = null;
-    return;
-  }
+const contents = {
+  node: [
+    { name: 'name', placeholder: '请输入标题' },
+    { name: 'detail', placeholder: '请输入详情' },
+    {
+      name: 'record',
+      placeholder: '请输入内容'
+    }
+  ],
+  backlog: [
+    {
+      name: 'name',
+      placeholder: '请输入内容'
+    }
+  ]
 };
+
+const content = computed(() => {
+  return contents[editorModel.contentKey!];
+});
+
+const itemModel = computed(() => {
+  switch (editorModel.contentKey) {
+    case 'node':
+      return graph.nodesMap.get(editorModel.itemId!);
+    case 'backlog':
+      return meno.backlogsMap.get(editorModel.itemId!);
+    default:
+      return undefined;
+  }
+});
+
+emitter.on('open-canvas-card-editor', (params) => {
+  if (editorModel.itemId === params.nodeId) {
+    editorModel.itemId = null;
+    editorModel.contentKey = 'node';
+    graph.editorWidth = 0;
+  } else {
+    editorModel.itemId = params.nodeId;
+    editorModel.contentKey = 'node';
+    graph.editorWidth = 300;
+  }
+});
+
+emitter.on('open-canvas-card-editor-by-menu', (params) => {
+  editorModel.itemId = params.nodeId;
+  editorModel.contentKey = 'node';
+  graph.editorWidth = 300;
+});
+
+emitter.on('open-backlog-editor', (params) => {
+  if (editorModel.itemId === params.id) {
+    editorModel.itemId = null;
+    editorModel.contentKey = 'backlog';
+    graph.editorWidth = 0;
+  } else {
+    editorModel.itemId = params.id!;
+    editorModel.contentKey = 'backlog';
+    graph.editorWidth = 300;
+  }
+});
+
+/**
+ * 监听键盘事件，ESC关闭窗口
+ */
+useEventListener(document, 'keydown', (e) => {
+  if (e.key === 'Escape') {
+    graph.editorWidth = 0;
+  }
+});
+
+function handleDeleteButton() {
+  if (editorModel.contentKey === 'node') {
+    graph.removeNode(editorModel.itemId!);
+  } else if (editorModel.contentKey === 'backlog') {
+    meno.remove(editorModel.itemId!);
+  }
+}
+
+function handleCloseButton() {
+  graph.editorWidth = 0;
+  editorModel.itemId = null;
+}
 </script>
 
 <template>
-  <div class="flex h-screen flex-col" v-if="layout.showRight">
+  <div v-if="graph.editorWidth !== 0" class="flex h-screen flex-col">
     <header
       class="drag-region mb-3 flex w-full shrink-0 items-end justify-between"
       style="height: 36px"
     >
       <close-icon-button
         class="no-drag-region ml-2.5 rounded-md border border-gray-300"
-        @click="layout.showRight = false"
+        @click="handleCloseButton"
       />
-      <div
-        class="h-full rounded-bl-lg border border-b border-l border-gray-200"
-        style="width: 139px"
-      ></div>
     </header>
     <el-scrollbar class="grow">
-      <template v-if="itemType === 'backlog' && item !== null">
-        <div class="m-3">
+      <template v-if="content && itemModel">
+        <div v-for="item in content" :key="item.name" class="m-3">
           <el-input
-            type="textarea"
-            size="large"
-            v-model="item.title"
             autosize
-            resize="none"
-            placeholder="请输入内容"
             input-style="padding: 16px;"
-          />
-        </div>
-      </template>
-      <template v-else-if="itemType === 'node' && item !== null">
-        <div class="m-3">
-          <el-input
-            type="textarea"
+            v-model="itemModel[item.name]"
+            :placeholder="item.placeholder"
+            resize="none"
             size="large"
-            v-model="item.name"
-            autosize
-            resize="none"
-            placeholder="请输入标题"
-            input-style="padding: 16px;"
-          />
-        </div>
-        <div class="m-3">
-          <el-input
             type="textarea"
-            size="large"
-            v-model="item.detail"
-            autosize
-            resize="none"
-            placeholder="请输入详情"
-            input-style="padding: 16px;"
-            class="clear-el-style"
-          />
-        </div>
-        <div class="m-3">
-          <el-input
-            type="textarea"
-            size="large"
-            v-model="item.record"
-            autosize
-            resize="none"
-            placeholder="请输入记录"
-            input-style="padding: 16px;"
-            class="clear-el-style"
           />
         </div>
       </template>
@@ -129,7 +133,7 @@ const handleDelete = () => {
       </template>
     </el-scrollbar>
     <div class="flex h-12 shrink-0 items-center justify-center border-t border-gray-200">
-      <el-button :icon="Delete" size="small" @click="handleDelete" />
+      <el-button :icon="Delete" size="small" @click="handleDeleteButton" />
     </div>
   </div>
 </template>

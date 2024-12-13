@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useBacklogs } from '@/stores';
+import { useBacklogStore } from '@/stores';
 
-const backlogs = useBacklogs();
+const meno = useBacklogStore();
 </script>
 
 <template>
@@ -13,7 +13,7 @@ const backlogs = useBacklogs();
     <span class="icon-[fluent--task-list-ltr-20-filled] mx-2 bg-gray-600 text-2xl"></span>
     <el-text class="grow">备忘录</el-text>
     <div class="mx-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-200">
-      <el-text size="small">{{ backlogs.todos.length }}</el-text>
+      <el-text size="small">{{ meno.todoBacklogs.length }}</el-text>
     </div>
   </div>
 </template>

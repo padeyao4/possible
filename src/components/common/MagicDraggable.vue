@@ -1,9 +1,29 @@
-<script setup lang="ts" generic="T extends { id: ID; [key: string]: any }">
-import { computed, reactive, ref } from 'vue';
+<!--
+传入的可拖动元素
+
+用法:
+<template>
+    <MagicDraggable :list="list" :update="update">
+        <template #default="{ item }">
+            <div @pointerdown="onPointerDown(item.id)" />
+              <div>{{ item.name }}</div>
+              <div :data-draggable-move="item.id">button</div>
+            </div>
+        </template>
+    </MagicDraggable>
+</template>
+-->
+<script setup lang="ts" generic="T extends { [key: string]: any }">
+import { reactive } from 'vue';
 import { useEventListener } from '@vueuse/core';
-import type { RectLike } from '@/graph/math';
-import type { ID } from '@/core/types';
 import { useCursor } from '@/stores/cursor';
+
+interface Props {
+  update: (current: T, other: T) => void;
+  list: T[];
+  handle?: string;
+  idAttr?: string;
+}
 
 /**
  * props
@@ -11,123 +31,127 @@ import { useCursor } from '@/stores/cursor';
  * @param list 列表
  * @param handle 指定拖拽元素的属性,默认所有元素都可以拖拽
  */
-const props = defineProps<{
-  update: (current: T, other: T) => void;
-  list: T[];
-  handle?: string;
-}>();
-
-const { update, handle } = props;
-
-const mapper = computed(() => {
-  return new Map(props.list.map((item) => [item.id, item]));
-});
-
-const attr = 'data-draggable';
+const {
+  update,
+  handle = 'data-draggable-move',
+  list,
+  idAttr = 'data-draggable-id'
+} = defineProps<Props>();
 
 const cursor = useCursor();
 
-const refs = reactive<Map<ID, HTMLElement>>(new Map());
-
-const origin = reactive({ x: 0, y: 0 });
-const start = reactive({ x: 0, y: 0 });
-const end = reactive({ x: 0, y: 0 });
-
-const target = ref<HTMLElement | null>();
-const clone = ref<HTMLElement | null>();
-
-function setAttributeRecursively(element: Element, attributeName: string, attributeValue: string) {
-  element.setAttribute(attributeName, attributeValue);
-  for (let child of element.children) {
-    setAttributeRecursively(child, attributeName, attributeValue);
-  }
-}
-
-function setRefs(e: any) {
-  if (e) {
-    const el = e as HTMLElement;
-    setAttributeRecursively(el, 'data-draggable', el.id);
-    refs.set(el.id, el);
-  }
-}
-
-function collide(r1: RectLike, x: number, y: number) {
-  return !(x < r1.x || x > r1.x + r1.width || y < r1.y || y > r1.y + r1.height);
-}
-
-useEventListener(
-  ['pointerup', 'pointermove', 'pointercancel'],
-  (e: PointerEvent) => {
-    if (e.type === 'pointermove') {
-      if (target.value && clone.value) {
-        end.x = e.clientX;
-        end.y = e.clientY;
-        clone.value.style.top = `${origin.y + end.y - start.y}px`;
-        clone.value.style.left = `${origin.x + end.x - start.x}px`;
-
-        const el = Array.from(refs.values())
-          .filter((el) => el.id !== target.value?.id)
-          .find((el) => collide(el.getBoundingClientRect(), e.clientX, e.clientY));
-
-        if (el) {
-          update(
-            mapper.value.get(target.value.getAttribute('data-draggable')),
-            mapper.value.get(el.getAttribute('data-draggable'))
-          );
-        }
-      }
-    }
-
-    if (e.type === 'pointerup' || e.type === 'pointercancel') {
-      if (target.value && clone.value) {
-        document.body.removeChild(clone.value);
-        target.value.style.opacity = '1';
-        target.value = null;
-        clone.value = null;
-        cursor.unlock();
-        cursor.setWithUnlock('default');
-      }
-    }
+const viewModel = reactive({
+  refsMap: new Map<string, HTMLElement>(),
+  start: {
+    x: <number>undefined,
+    y: <number>undefined
   },
-  { passive: true }
-);
+  end: {
+    x: <number>undefined,
+    y: <number>undefined
+  },
+  origin: {
+    x: <number>undefined,
+    y: <number>undefined
+  },
+  clone: <HTMLElement>undefined, // 拖拽的元素
+  target: <HTMLElement>undefined // 点击后选择的元素
+});
 
-function getAttributeRecursively(element: Element) {
-  if (element.hasAttribute(attr)) {
-    return element.getAttribute(attr);
-  } else {
-    return getAttributeRecursively(element.parentElement);
-  }
+function setRefs(e: Element, id: string) {
+  e && viewModel.refsMap.set(id, e as HTMLElement);
 }
 
-function onPointerDown(e: PointerEvent) {
-  if (e.button !== 0) return;
-  const tmp = e.target as HTMLElement;
-  if (handle && !tmp.hasAttribute(handle)) {
+/**
+ * 判断两个矩形是否相交
+ */
+function isIntersect(r1: DOMRect, r2: DOMRect) {
+  return !(
+    r2.x > r1.x + r1.width ||
+    r2.x + r2.width < r1.x ||
+    r2.y > r1.y + r1.height ||
+    r2.y + r2.height < r1.y
+  );
+}
+
+/**
+ * 判断r1的水平中线是否在线段r2的矩形内
+ */
+function isInLine(r1: DOMRect, r2: DOMRect) {
+  return r2.y <= r1.y + r1.height / 2 && r1.y + r1.height / 2 <= r2.y + r2.height;
+}
+
+useEventListener(['pointermove'], (e) => {
+  if (!viewModel.target || !viewModel.clone) return;
+  viewModel.end.x = e.clientX;
+  viewModel.end.y = e.clientY;
+  viewModel.clone.style.top = `${viewModel.origin.y + viewModel.end.y - viewModel.start.y}px`;
+  viewModel.clone.style.left = `${viewModel.origin.x + viewModel.end.x - viewModel.start.x}px`;
+  const r1 = viewModel.clone.getBoundingClientRect();
+  const draggableEl = Array.from(viewModel.refsMap.values())
+    .filter((el) => el.getAttribute(idAttr) !== viewModel.target.getAttribute(idAttr))
+    .find((el) => {
+      const r2 = el.getBoundingClientRect();
+      return isIntersect(r1, r2) && isInLine(r1, r2);
+    });
+  if (draggableEl) {
+    const sourceId = viewModel.target.getAttribute(idAttr);
+    const targetId = draggableEl.getAttribute(idAttr);
+    const source = list.find((item) => item.id === sourceId);
+    const target = list.find((item) => item.id === targetId);
+    update(source as T, target as T);
+  }
+});
+
+useEventListener(['pointerup', 'pointercancel'], (e) => {
+  if (!viewModel.target || !viewModel.clone) return;
+  document.body.removeChild(viewModel.clone);
+  viewModel.target.style.opacity = '1';
+  viewModel.target = null;
+  viewModel.clone = null;
+  cursor.unlock();
+  cursor.setWithUnlock('default');
+});
+
+function pointerDown(e: PointerEvent) {
+  if (e.button !== 0) {
+    // 不是鼠标左键退出
+    return;
+  }
+  const clickEl = e.target as HTMLElement;
+  if (!clickEl.hasAttribute(handle)) {
+    // 不是拖拽元素退出
     return;
   }
   cursor.lock('move');
-  start.x = e.clientX;
-  start.y = e.clientY;
-  end.x = e.clientX;
-  end.y = e.clientY;
-  const el = refs.get(getAttributeRecursively(tmp));
-  const bound = el.getBoundingClientRect();
-  origin.x = bound.left;
-  origin.y = bound.top;
 
-  clone.value = el.cloneNode(true) as HTMLElement;
-  clone.value.style.position = 'fixed';
-  clone.value.style.top = `${bound.top}px`;
-  clone.value.style.left = `${bound.left}px`;
-  clone.value.style.width = `${bound.width}px`;
-  for (let child of clone.value.children) {
+  // 记录起始位置
+  viewModel.start.x = e.clientX;
+  viewModel.start.y = e.clientY;
+  viewModel.end.x = e.clientX;
+  viewModel.end.y = e.clientY;
+
+  // 获取最底层可拖动元素
+  const attrId = clickEl.getAttribute(handle);
+  const el = viewModel.refsMap.get(attrId);
+  const bound = el.getBoundingClientRect();
+
+  // 记录原始位置
+  viewModel.origin.x = bound.left;
+  viewModel.origin.y = bound.top;
+
+  // 创建克隆元素
+  viewModel.clone = el.cloneNode(true) as HTMLElement;
+  viewModel.clone.style.position = 'fixed';
+  viewModel.clone.style.top = `${bound.top}px`;
+  viewModel.clone.style.left = `${bound.left}px`;
+  viewModel.clone.style.width = `${bound.width}px`;
+  for (let child of viewModel.clone.children) {
     (<HTMLElement>child).style.boxShadow = '0 0 5px 2px rgba(0, 0, 0, 0.2)';
   }
-  document.body.appendChild(clone.value);
+  document.body.appendChild(viewModel.clone);
 
-  target.value = el;
-
+  viewModel.target = el;
   el.style.opacity = '0';
 }
 </script>
@@ -136,10 +160,9 @@ function onPointerDown(e: PointerEvent) {
   <div
     v-for="item in list"
     :key="item.id"
-    :id="item.id"
-    :ref="setRefs"
-    :data-draggable="item.id"
-    @pointerdown="onPointerDown"
+    :[idAttr]="item.id"
+    :ref="(e) => setRefs(e as Element, item.id)"
+    @pointerdown="pointerDown"
   >
     <slot name="default" :item="item" />
   </div>

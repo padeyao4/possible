@@ -1,86 +1,91 @@
-import { BaseBehavior, type EventDispatch } from '@/graph/base';
-import { type TempPath, useTempPaths } from '@/stores/temp-path';
-import type { ID } from '@/core/types';
-import { emitter } from '@/utils';
-import { inject, type Ref } from 'vue';
-import { Project } from '@/core';
+import {
+  BaseBehavior,
+  type EventDispatch,
+  GRAPH_ITEM_ID,
+  GRAPH_ITEM_SHAPE,
+  GRAPH_NODE_ANCHOR
+} from '@/graph';
+import type { Edge } from '@/openapi';
+import type { TempEdge } from '@/stores';
+import { v4 } from 'uuid';
+import { reactive } from 'vue';
 
 export class CreateEdge extends BaseBehavior {
-  isDown = false;
-  source: string;
-  target: string;
-  tempPaths = useTempPaths();
-  pathId: ID;
-  project = inject<Ref<Project>>('project');
+  down = false;
 
   getEventDispatch(): EventDispatch {
     return {
-      'anchor:mousedown': this.onmousedown.bind(this),
+      'node:mousedown': this.onmousedown.bind(this),
       ':mousemove': this.onmousemove.bind(this),
       ':mouseup': this.onmouseup.bind(this)
     };
   }
 
-  onmousedown(e: MouseEvent, el: Element) {
+  onmousedown(e: PointerEvent, el: Element) {
     if (e.button !== 0) return;
-    if (el.hasAttribute('data-anchor')) {
-      this.isDown = true;
-      const key = el.getAttribute('data-key');
-      const direction = el.getAttribute('data-anchor');
-      const point = this.project.value.getPointByOffsetPoint({ x: e.offsetX, y: e.offsetY });
-      const path = this.tempPaths.createTempPath(
-        key,
-        point,
-        direction === 'left' ? 'target' : 'source'
-      );
-      this.pathId = path.id;
-      this.mouseStyle.lock('crosshair');
-    }
+    if (!el.hasAttribute(GRAPH_NODE_ANCHOR)) return;
+    this.down = true;
+    const nodeId = el.getAttribute(GRAPH_ITEM_ID);
+    const direction = el.getAttribute(GRAPH_NODE_ANCHOR);
+
+    const { x, y } = this.getNumbersByEvent(e);
+
+    const source = direction === 'source' ? nodeId : { x, y };
+    const target = direction === 'target' ? nodeId : { x, y };
+
+    this.graph.tempEdge = reactive({
+      id: v4(),
+      projectId: this.project.id,
+      source,
+      target
+    } as TempEdge);
+
+    this.mouseStyle.lock('crosshair');
   }
 
   onmousemove(e: MouseEvent) {
-    if (this.isDown) {
-      this.updatePoint(e);
+    if (!this.down) return;
+    const { x, y } = this.getNumbersByEvent(e);
+    if (typeof this.graph.tempEdge!.source === 'object') {
+      this.graph.tempEdge!.source = { x, y };
+    }
+    if (typeof this.graph.tempEdge!.target === 'object') {
+      this.graph.tempEdge!.target = { x, y };
     }
   }
 
-  private updatePoint(e: MouseEvent) {
-    const point = this.project.value.getPointByOffsetPoint({ x: e.offsetX, y: e.offsetY });
-    const path = this.tempPaths.getPath(this.pathId);
-    path.location.x = point.x;
-    path.location.y = point.y;
-  }
-
-  onmouseup(e: MouseEvent, el: Element, __, elType: string) {
-    if (this.isDown) {
-      const point = this.project.value.getPointByOffsetPoint({ x: e.offsetX, y: e.offsetY });
-      const path = this.tempPaths.getPath(this.pathId);
-      path.location.x = point.x;
-      path.location.y = point.y;
-      this.isDown = false;
-      this.mouseStyle.unlock();
-      this.toggleMouseOver(e);
-      this.createEdge(el, elType, path);
-      this.tempPaths.deletePath(this.pathId);
-    }
-  }
-
-  private createEdge(el: Element, elType: string, path: TempPath) {
-    if (elType === 'node' || elType === 'anchor') {
-      const key = el.getAttribute('data-key');
-      if (key == path.nodeId) return;
-      path.opacity = 0;
-      if (path.dummy === 'source') {
-        if (!this.project.value.getEdge(path.nodeId, key)) {
-          const edge = this.project.value.addEdge(path.nodeId, key);
-          emitter.emit('edge:create', edge);
-        }
+  onmouseup(e: MouseEvent, el: Element) {
+    if (!this.down) return;
+    this.down = false;
+    if (el.getAttribute(GRAPH_ITEM_SHAPE) === 'node') {
+      const nodeId = el.getAttribute(GRAPH_ITEM_ID);
+      if (typeof this.graph.tempEdge!.source === 'object') {
+        this.graph.tempEdge!.source = nodeId!;
       } else {
-        if (!this.project.value.getEdge(key, path.nodeId)) {
-          const edge = this.project.value.addEdge(key, path.nodeId);
-          emitter.emit('edge:create', edge);
-        }
+        this.graph.tempEdge!.target = nodeId!;
       }
+
+      // 如果起点和终点相同，则删除
+      this.graph.tempEdge!.source === this.graph.tempEdge!.target && (this.graph.tempEdge = null);
+
+      // 如果已存在该边，则删除
+      Array.from(this.graph.edgesMap.values()).find(
+        (edge) =>
+          edge.source === this.graph.tempEdge!.source &&
+          edge.target === this.graph.tempEdge!.target &&
+          edge.id !== this.graph.tempEdge!.id
+      ) && (this.graph.tempEdge = null);
+
+      // 如果存在临时边，则添加到edgesMap中
+      this.graph.tempEdge !== null && this.graph.edgesMap.set(this.graph.tempEdge!.id, {
+        id: this.graph.tempEdge!.id,
+        source: this.graph.tempEdge!.source,
+        target: this.graph.tempEdge!.target,
+        projectId: this.graph.tempEdge!.projectId
+      } as Edge);
     }
+    this.graph.tempEdge = null;
+    this.mouseStyle.unlock();
+    this.toggleMouseOver(e);
   }
 }

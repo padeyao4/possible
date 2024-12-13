@@ -1,29 +1,26 @@
 <script setup lang="ts">
-import { computed, type ComputedRef, inject, ref, watchEffect } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { useWindowSize } from '@vueuse/core';
-import { useSettings } from '@/stores/settings';
-import type { Project } from '@/core';
+import { useDataStore } from '@/stores';
 
-const project = inject<ComputedRef<Project>>('project');
-const settings = useSettings();
+const graph = useDataStore();
+const project = graph.project;
 
 const rulers = ref<number[]>([]);
 
 const { height } = useWindowSize();
 
 watchEffect(() => {
-  const count = Math.ceil(height.value / settings.unitHeight);
+  const count = Math.ceil(height.value / graph.cardHeight);
   rulers.value = Array.from({ length: count }, (_, i) => i + 1);
 });
 
 const y = computed(() => {
-  const absY = Math.abs(project.value.offset.y);
-  return Math.floor(absY / settings.unitHeight) - 2;
+  const absY = Math.abs(project.y);
+  return Math.floor(absY / graph.cardHeight) - 2;
 });
 
-const translateY = computed(
-  () => (project.value.offset.y % settings.unitHeight) - settings.unitHeight + 'px'
-);
+const translateY = computed(() => (project.y % graph.cardHeight) - graph.cardHeight + 'px');
 </script>
 
 <template>
@@ -33,7 +30,7 @@ const translateY = computed(
         v-for="item in rulers"
         class="ruler-unit"
         :key="item"
-        :style="{ height: `${settings.unitHeight}px` }"
+        :style="{ height: `${graph.cardHeight}px` }"
       >
         {{ item + y }}
       </div>

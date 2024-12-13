@@ -2,7 +2,6 @@
 import { Icon } from '@iconify/vue';
 import { computed, inject, type Ref, ref } from 'vue';
 import type { OptionType } from '@/components/types';
-import { clampMax } from '@/graph/math';
 
 const { x, y, items, parents } = defineProps<{
   items: OptionType[];
@@ -18,14 +17,14 @@ const canvasContainer = inject<Ref<HTMLElement>>('canvasContainer');
 const top = computed(() => {
   const canvasContainerBound = canvasContainer.value.getBoundingClientRect();
   const elementBound = element.value?.getBoundingClientRect() ?? { height: 0 };
-  return clampMax(y, canvasContainerBound.bottom - elementBound.height);
+  return Math.min(y, canvasContainerBound.bottom - elementBound.height);
 });
 
 const left = computed(() => {
   const canvasContainerBound = canvasContainer.value.getBoundingClientRect();
 
   if (parents.length === 0) {
-    return clampMax(x, canvasContainerBound.right - width);
+    return Math.min(x, canvasContainerBound.right - width);
   } else {
     return x + width > canvasContainerBound.right ? x - width - parents.length * width : x;
   }

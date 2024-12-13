@@ -1,8 +1,4 @@
-import { clampMax } from '@/graph/math';
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
-import { emitter } from '@/utils';
-import { Project } from '@/core'
-import { inject, type Ref } from 'vue'
 
 export class DragCanvas extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -16,14 +12,13 @@ export class DragCanvas extends BaseBehavior {
   isDown = false;
   position = { x: 0, y: 0 };
   offset = { x: 0, y: 0 };
-  project = inject<Ref<Project>>('project')
 
   onmousedown(e: MouseEvent) {
     if (this.isDown || e.button !== 0) return;
     this.isDown = true;
     this.position.x = e.x;
     this.position.y = e.y;
-    const { x, y } = this.project.value.offset;
+    const { x, y } = this.project;
 
     this.offset.x = x;
     this.offset.y = y;
@@ -34,8 +29,8 @@ export class DragCanvas extends BaseBehavior {
     if (!this.isDown) return;
     const dx = e.x - this.position.x;
     const dy = e.y - this.position.y;
-    this.project.value.offset.x = clampMax(this.offset.x + dx, 0);
-    this.project.value.offset.y = clampMax(this.offset.y + dy, 0);
+    this.project.x = this.offset.x + dx;
+    this.project.y = Math.min(this.offset.y + dy, 0);
   }
 
   onmouseup(e: MouseEvent) {
@@ -43,7 +38,6 @@ export class DragCanvas extends BaseBehavior {
       this.isDown = false;
       this.mouseStyle.unlock();
       this.toggleMouseOver(e);
-      emitter.emit('project:update', this.project.value);
     }
   }
 }

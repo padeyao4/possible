@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useCounter } from '@/stores';
+import { useDataStore } from '@/stores';
 
-const counter = useCounter();
+const projects = useDataStore();
 </script>
 
 <template>
@@ -15,7 +15,7 @@ const counter = useCounter();
     <span class="icon-[solar--sun-broken] mx-2 bg-gray-600 text-2xl" />
     <el-text class="grow">我的一天</el-text>
     <div class="mx-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-200">
-      <el-text size="small">{{ counter.count }}</el-text>
+      <el-text size="small">{{ 0 }}</el-text>
     </div>
   </div>
 </template>

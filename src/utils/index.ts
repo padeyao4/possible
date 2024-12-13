@@ -1,2 +1,2 @@
 export * from './emitter';
-export * from './ipc';
+export * from './net';
