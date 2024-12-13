@@ -298,6 +298,31 @@ export interface RestResponseListBacklog {
 /**
  * 
  * @export
+ * @interface RestResponseString
+ */
+export interface RestResponseString {
+    /**
+     * 
+     * @type {string}
+     * @memberof RestResponseString
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof RestResponseString
+     */
+    'code'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof RestResponseString
+     */
+    'payload'?: string;
+}
+/**
+ * 
+ * @export
  * @interface RestResponseUser
  */
 export interface RestResponseUser {
@@ -827,6 +852,103 @@ export class DataStoreControllerApi extends BaseAPI {
      */
     public list(options?: RawAxiosRequestConfig) {
         return DataStoreControllerApiFp(this.configuration).list(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * InfoControllerApi - axios parameter creator
+ * @export
+ */
+export const InfoControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        version: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/info/version`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * InfoControllerApi - functional programming interface
+ * @export
+ */
+export const InfoControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = InfoControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async version(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseString>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.version(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InfoControllerApi.version']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * InfoControllerApi - factory interface
+ * @export
+ */
+export const InfoControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = InfoControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        version(options?: RawAxiosRequestConfig): AxiosPromise<RestResponseString> {
+            return localVarFp.version(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * InfoControllerApi - object-oriented interface
+ * @export
+ * @class InfoControllerApi
+ * @extends {BaseAPI}
+ */
+export class InfoControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InfoControllerApi
+     */
+    public version(options?: RawAxiosRequestConfig) {
+        return InfoControllerApiFp(this.configuration).version(options).then((request) => request(this.axios, this.basePath));
     }
 }
 
