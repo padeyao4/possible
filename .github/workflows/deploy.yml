@@ -25,22 +25,21 @@ jobs:
         run: npm install && npm run build
 
       # Deploy
-      - name: 部署到自己服务器
-        uses: easingthemes/ssh-deploy@v2.0.7
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.POSSIBLE_KEY }}
-          ARGS: "-avz --delete"
-          SOURCE: "dist/"
-          REMOTE_HOST: ${{ vars.SERVER_ADDR }}
-          REMOTE_USER: ${{ vars.REMOTE_USER }}
-          TARGET: ${{ vars.WWW }}
+      # - name: 部署到自己服务器
+      #   uses: easingthemes/ssh-deploy@v2.0.7
+      #   env:
+      #     SSH_PRIVATE_KEY: ${{ secrets.POSSIBLE_KEY }}
+      #     ARGS: "-avz --delete"
+      #     SOURCE: "dist/"
+      #     REMOTE_HOST: ${{ vars.SERVER_ADDR }}
+      #     REMOTE_USER: ${{ vars.REMOTE_USER }}
+      #     TARGET: ${{ vars.WWW }}
 
-      # 2、部署到 GitHub Pages
-      # - name: Deploy
-      #   uses: JamesIves/github-pages-deploy-action@releases/v3
-      #   with:
-      #     ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      #     REPOSITORY_NAME: padeyao4/possible
-      #     BRANCH: page
-      #     FOLDER: dist
-          #注意这里的 public 是仓库根目录下的 public，也就是 npm run build 生成静态资源的路径，比如有的人是 `docs/.vuepress/dist`
+      - name: deploy file to server
+        uses: wlixcc/SFTP-Deploy-Action@v1.0 
+        with:  
+          username: ${{ vars.REMOTE_USER }}   #ssh user name
+          server: ${{ vars.SERVER_ADDR }} #引用之前创建好的secret
+          ssh_private_key: ${{ secrets.POSSIBLE_KEY }} #引用之前创建好的secret
+          local_path: 'dist/*'  # 对应我们项目build的文件夹路径
+          remote_path: ${{ vars.WWW }}
