@@ -21,28 +21,28 @@ watchEffect(()=>{
 
 const apiUrl = import.meta.env.VITE_API_URL
 
-// 根据时间计算背景色
+// 修改背景色计算逻辑
 const backgroundClass = computed(() => {
   const hour = new Date().getHours()
   
-  // 清晨 (5-8点): 温暖的橙色到粉色
+  // 清晨 (5-8点): 柔和的蓝紫色渐变
   if (hour >= 5 && hour < 8) {
-    return 'from-orange-300 to-pink-300'
+    return 'from-blue-300/90 to-purple-300/90'
   }
-  // 上午 (8-12点): 明亮的橙色到黄色
+  // 上午 (8-12点): 温暖的蓝色渐变
   if (hour >= 8 && hour < 12) {
-    return 'from-orange-400 to-yellow-200'
+    return 'from-blue-400/90 to-cyan-300/90'
   }
-  // 下午 (12-17点): 温暖的橙色到红色
+  // 下午 (12-17点): 清新的青色渐变
   if (hour >= 12 && hour < 17) {
-    return 'from-orange-500 to-red-300'
+    return 'from-cyan-400/90 to-teal-300/90'
   }
-  // 傍晚 (17-20点): 柔和的粉色到紫色
+  // 傍晚 (17-20点): 温暖的紫色渐变
   if (hour >= 17 && hour < 20) {
-    return 'from-pink-400 to-purple-300'
+    return 'from-purple-400/90 to-pink-300/90'
   }
-  // 晚上 (20-5点): 深色调的紫色到蓝色
-  return 'from-purple-500 to-indigo-400'
+  // 晚上 (20-5点): 深邃的靛蓝渐变
+  return 'from-indigo-500/90 to-blue-400/90'
 })
 
 const showTerms = () => {
@@ -51,36 +51,68 @@ const showTerms = () => {
 </script>
 
 <template>
-  <div :class="`min-h-screen bg-gradient-to-br ${backgroundClass}`">
+  <div :class="`min-h-screen bg-gradient-to-br ${backgroundClass} bg-gray-50`">
     <GithubCorner />
-    <div class="flex min-h-screen items-center justify-center px-4">
-      <div class="w-full max-w-md rounded-lg bg-white/90 backdrop-blur-sm p-8 shadow-2xl">
-        <div class="mb-8 text-center">
-          <h1 class="mb-2 text-3xl font-bold text-gray-800">Welcome to Possible</h1>
-          <p class="text-gray-600">登录以开始使用目标管理工具</p>
-        </div>
-        
-        <a
-          :href="`${apiUrl}/oauth2/authorization/github`"
-          class="flex w-full items-center justify-center gap-2 rounded-lg bg-gray-900 px-4 py-3 text-white transition-colors hover:bg-gray-700"
-        >
-          <span class="icon-[mdi--github] h-6 w-6"></span>
-          <span>使用 GitHub 账号登录</span>
-        </a>
-        
-        <div class="mt-6 text-center text-sm text-gray-600">
-          <p>
-            登录即表示您同意我们的
-            <button 
-              @click="showTerms"
-              class="text-blue-600 hover:text-blue-800 hover:underline"
+    <div class="flex min-h-screen items-center justify-center">
+      <div class="w-full max-w-md px-4">
+        <div class="flex justify-center">
+          <div class="w-full max-w-md rounded-2xl bg-white/95 p-10 shadow-xl backdrop-blur-sm">
+            <div class="mb-10 space-y-3 text-center">
+              <h2 class="text-3xl font-bold text-gray-800">欢迎回来</h2>
+              <p class="text-base text-gray-600">登录以继续你的目标之旅</p>
+            </div>
+            
+            <a
+              :href="`${apiUrl}/oauth2/authorization/github`"
+              class="login-button group"
             >
-              服务条款和隐私政策
-            </button>
-          </p>
+              <span class="icon-[mdi--github] h-6 w-6 transition-transform group-hover:scale-110"></span>
+              <span class="text-lg">使用 GitHub 账号登录</span>
+            </a>
+            
+            <div class="mt-8 text-center">
+              <p class="text-sm text-gray-500">
+                登录即表示您同意我们的
+                <button 
+                  @click="showTerms"
+                  class="text-blue-600 transition-colors hover:text-blue-800 hover:underline"
+                >
+                  服务条款和隐私政策
+                </button>
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <TermsDialog ref="termsDialogRef" />
   </div>
 </template>
+
+<style scoped>
+.login-button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  border-radius: 0.75rem;
+  background-color: #111827;
+  padding: 1rem 1.5rem;
+  color: white;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  transition: all 0.2s;
+}
+
+.login-button:hover {
+  background-color: #1f2937;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
+
+.login-button:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: #111827;
+  ring-offset: 2px;
+}
+</style>
