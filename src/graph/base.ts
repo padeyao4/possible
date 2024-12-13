@@ -48,13 +48,13 @@ export type GraphShape = 'canvas' | 'node' | 'edge' | '';
 export type CanvasEvent = `${GraphShape}:${EventType}`;
 
 export type EventDispatch = {
-  [key in CanvasEvent]?: (e: Event, el: Element, elType: string) => void;
+  [key in CanvasEvent]?: (e: PointerEvent, el: Element, elType: string) => void;
 };
 
 export abstract class BaseBehavior {
   mouseStyle = useCursor();
   graph = useDataStore();
-  project = this.graph.project;
+  project = this.graph.project!;
   container: Ref<Element>;
 
   constructor(container: Ref<Element>) {
@@ -65,10 +65,10 @@ export abstract class BaseBehavior {
    * 根据事件获取坐标获取graph中的坐标
    * @param e
    */
-  getPositionByEvent(e: MouseEvent) {
+  getPositionByEvent(e: PointerEvent) {
     const bound = this.container.value.getBoundingClientRect();
-    const x = Math.floor((e.x - bound.left - this.project.x) / this.graph.cardWidth);
-    const y = Math.floor((e.y - bound.top - this.project.y) / this.graph.cardHeight);
+    const x = Math.floor((e.x - bound.left - this.project.x!) / this.graph.cardWidth);
+    const y = Math.floor((e.y - bound.top - this.project.y!) / this.graph.cardHeight);
     return {
       x,
       y
@@ -81,8 +81,8 @@ export abstract class BaseBehavior {
    */
   getNumbersByEvent(e: MouseEvent) {
     const bound = this.container.value.getBoundingClientRect();
-    const x = e.x - bound.left - this.project.x;
-    const y = e.y - bound.top - this.project.y;
+    const x = e.x - bound.left - this.project.x!;
+    const y = e.y - bound.top - this.project.y!;
     return {
       x,
       y

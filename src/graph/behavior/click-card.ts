@@ -1,4 +1,4 @@
-import { BaseBehavior, type EventDispatch } from '@/graph/base';
+import { BaseBehavior, GRAPH_ITEM_ID, type EventDispatch } from '@/graph/base';
 import { emitter } from '@/utils';
 
 export class ClickCard extends BaseBehavior {
@@ -25,7 +25,7 @@ export class ClickCard extends BaseBehavior {
       emitter.emit('open-canvas-card-editor', {
         x: e.x,
         y: e.y,
-        nodeId: el.getAttribute('data-graph-item-id')
+        nodeId: el.getAttribute(GRAPH_ITEM_ID)!
       });
     }
     this.distance = 100;

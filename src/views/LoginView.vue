@@ -37,7 +37,7 @@ const backgroundClass = computed(() => {
   if (hour >= 12 && hour < 17) {
     return 'from-cyan-400/90 to-teal-300/90'
   }
-  // 傍晚 (17-20点): 温暖的紫色渐变
+  // 傍晚 (17-20点): 温��的紫色渐变
   if (hour >= 17 && hour < 20) {
     return 'from-purple-400/90 to-pink-300/90'
   }
@@ -111,8 +111,6 @@ const showTerms = () => {
 
 .login-button:focus {
   outline: none;
-  ring: 2px;
-  ring-color: #111827;
-  ring-offset: 2px;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #111827;
 }
 </style>

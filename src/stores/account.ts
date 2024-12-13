@@ -2,10 +2,10 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import type { User } from '@/openapi'
 
-export const useAccountStore = defineStore("account",{
+export const useAccountStore = defineStore("account", {
   state: () => ({
-    token: <string>localStorage.getItem('token'),
-    user: <User>undefined,
+    token: localStorage.getItem('token') as string | null,
+    user: undefined as User | undefined,
   }),
   actions: {
     setToken(token: string) {
@@ -15,12 +15,11 @@ export const useAccountStore = defineStore("account",{
         config.headers['Authorization'] = `Bearer ${this.token}`;
         return config;
       });
-      console.log("set token", token)
     },
-    setUser(user:User){
+    setUser(user: User) {
       this.user = user
     },
-    logout(){
+    logout() {
       this.token = null;
       localStorage.clear();
     }
