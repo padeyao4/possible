@@ -8,12 +8,15 @@ const accountStore = useAccountStore()
 
 watchEffect(()=>{
   if(route.query.token){
-    accountStore.setToken(<string>route.query.token)
+    accountStore.setToken(route.query.token as string)
     setTimeout(()=>{
       router.push({name:'today'})
     })
   }
 })
+
+const apiUrl = import.meta.env.VITE_API_URL
+
 </script>
 
 <template>
@@ -21,7 +24,7 @@ watchEffect(()=>{
     <div class="drag-region h-screen w-1/2 bg-blue-400"></div>
     <div class="drag-region flex h-screen w-1/2 items-center justify-center bg-white">
       <div class="no-drag-region h-fit w-60">
-        <a href="http://127.0.0.1:8080/oauth2/authorization/github">github login</a>
+        <a :href="`${apiUrl}/oauth2/authorization/github`">github login</a>
       </div>
     </div>
   </div>

@@ -36,7 +36,7 @@ export default defineConfig(({ command }) => {
       }
     },
     clearScreen: false,
-    base: '/possible',
+    base: '/',
     build: {
       chunkSizeWarningLimit: 10000
     }
