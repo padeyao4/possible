@@ -25,21 +25,12 @@ jobs:
         run: npm install && npm run build
 
       # Deploy
-      # - name: 部署到自己服务器
-      #   uses: easingthemes/ssh-deploy@v2.0.7
-      #   env:
-      #     SSH_PRIVATE_KEY: ${{ secrets.POSSIBLE_KEY }}
-      #     ARGS: "-avz --delete"
-      #     SOURCE: "dist/"
-      #     REMOTE_HOST: ${{ vars.SERVER_ADDR }}
-      #     REMOTE_USER: ${{ vars.REMOTE_USER }}
-      #     TARGET: ${{ vars.WWW }}
-
-      - name: deploy file to server
-        uses: wlixcc/SFTP-Deploy-Action@v1.0 
-        with:  
-          username: ${{ vars.REMOTE_USER }}   #ssh user name
-          server: ${{ vars.SERVER_ADDR }} #引用之前创建好的secret
-          ssh_private_key: ${{ secrets.POSSIBLE_KEY }} #引用之前创建好的secret
-          local_path: 'dist/*'  # 对应我们项目build的文件夹路径
-          remote_path: ${{ vars.WWW }}
+      - name: 部署到自己服务器
+        uses: easingthemes/ssh-deploy@v2.0.7
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.POSSIBLE_KEY }}
+          ARGS: "-avzr --delete"
+          SOURCE: "dist/"
+          REMOTE_HOST: ${{ vars.SERVER_ADDR }}
+          REMOTE_USER: ${{ vars.REMOTE_USER }}
+          TARGET: ${{ vars.WWW }}
