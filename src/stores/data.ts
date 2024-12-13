@@ -276,7 +276,7 @@ export const useDataStore = defineStore('graph', {
             controller2X: targetX - dist / 2,
             controller2Y: targetY
           };
-        });
+        })
       return ans.concat(realsPath);
     },
     gridTemplateColumns: (state) => {
@@ -297,6 +297,7 @@ export const useDataStore = defineStore('graph', {
       this.edgesMap.forEach((value, key) => {
         value.projectId === id && this.edgesMap.delete(key);
       });
+
       this.nodesMap.forEach((value, key) => {
         value.projectId === id && this.nodesMap.delete(key);
       });
@@ -306,10 +307,12 @@ export const useDataStore = defineStore('graph', {
     },
     removeNode(item: string | Node) {
       const id = typeof item === 'object' ? item.id : item;
+
+      // 找到soure或者target为id的边,删除
       this.edgesMap.forEach((value, key) => {
-        (typeof value.source === id || typeof value.target === id) &&
-          this.edgesMap.delete(key);
+        (value.source === id || value.target === id) && this.edgesMap.delete(key);
       });
+
       this.nodesMap.delete(id!);
       // todo 删除所有关联的边
     },

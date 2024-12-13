@@ -18,7 +18,7 @@ interface ConfType {
  * 菜单列表
  */
 const conf = {
-  node: <ConfType[][]>[
+  node: [
     [
       {
         name: '编辑',
@@ -38,12 +38,12 @@ const conf = {
       {
         name: '追加节点',
         icon: 'append',
-        action: () => {}
+        action: () => { }
       },
       {
         name: '插入节点',
         icon: 'insert',
-        action: () => {}
+        action: () => { }
       }
     ],
     [
@@ -53,8 +53,8 @@ const conf = {
         action: deleteNode
       }
     ]
-  ],
-  edge: <ConfType[][]>[
+  ] as ConfType[][],
+  edge: [
     [
       {
         name: '删除',
@@ -62,8 +62,8 @@ const conf = {
         action: deleteEdge
       }
     ]
-  ],
-  canvas: <ConfType[][]>[
+  ] as ConfType[][],
+  canvas: [
     [
       {
         name: '创建节点',
@@ -71,7 +71,7 @@ const conf = {
         action: createNode
       }
     ]
-  ]
+  ] as ConfType[][]
 };
 
 type MenuType = keyof typeof conf;
@@ -89,8 +89,8 @@ const menuModel = reactive({
     x: 0,
     y: 0
   },
-  menuType: <MenuType>'canvas',
-  itemId: <string>undefined
+  menuType: 'canvas' as MenuType,
+  itemId: ''
 });
 
 emitter.on('open-canvas-menu', (param) => {
@@ -100,7 +100,7 @@ emitter.on('open-canvas-menu', (param) => {
   menuModel.position.x = param.x;
   menuModel.position.y = param.y;
   menuModel.menuType = param.menuType;
-  menuModel.itemId = param.itemId;
+  menuModel.itemId = param.itemId!;
 });
 
 function deleteNode() {
@@ -118,12 +118,12 @@ function editeNode() {
 }
 
 function markNodeDone() {
-  graph.nodesMap.get(menuModel.itemId).status = true;
+  graph.nodesMap.get(menuModel.itemId)!.status = true;
   menuModel.visible = false;
 }
 
 function markNodeTodo() {
-  graph.nodesMap.get(menuModel.itemId).status = false;
+  graph.nodesMap.get(menuModel.itemId)!.status = false;
   menuModel.visible = false;
 }
 
@@ -142,12 +142,12 @@ function createNode() {
     id: v4(),
     index: generateIndex(),
     name: 'untitled',
-    projectId: project.id,
+    projectId: project!.id,
     record: '',
     status: false,
     w: 1,
-    x: Math.floor((menuModel.position.x - svgBound.left - project.x) / graph.cardWidth),
-    y: Math.floor((menuModel.position.y - svgBound.top - project.y) / graph.cardHeight)
+    x: Math.floor((menuModel.position.x - svgBound.left - project!.x!) / graph.cardWidth),
+    y: Math.floor((menuModel.position.y - svgBound.top - project!.y!) / graph.cardHeight)
   });
   menuModel.visible = false;
 }
@@ -174,17 +174,10 @@ const list = computed(() => {
 </script>
 
 <template>
-  <div
-    v-if="menuModel.visible"
-    ref="menuRef"
-    :style="{ top: menuModel.top + 'px', left: menuModel.left + 'px' }"
-    class="container"
-    tabindex="0"
-    @blur="menuModel.visible = false"
-    @contextmenu.prevent
-  >
-    <div v-for="group in list" class="group">
-      <div v-for="item in group" class="item" @click="item.action">
+  <div v-if="menuModel.visible" ref="menuRef" :style="{ top: menuModel.top + 'px', left: menuModel.left + 'px' }"
+    class="container" tabindex="0" @blur="menuModel.visible = false" @contextmenu.prevent>
+    <div v-for="(group, groupIndex) in list" :key="groupIndex" class="group">
+      <div v-for="(item, itemIndex) in group" :key="itemIndex" class="item" @click="item.action">
         {{ item.name }}
       </div>
     </div>
