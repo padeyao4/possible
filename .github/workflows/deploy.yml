@@ -41,5 +41,7 @@ jobs:
           key: ${{ secrets.POSSIBLE_KEY }}
           script: |
             cd ${{ vars.WWW }}
-            rm -rf *
-            mv dist/* .
+            mkdir tmp
+            mv * tmp
+            mv tmp/dist/* .
+            rm -rf tmp
