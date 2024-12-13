@@ -1,6 +1,6 @@
+import { AccountControllerApi, type User } from '@/openapi'
+import router from '@/router'
 import { defineStore } from 'pinia'
-import axios from 'axios'
-import type { User } from '@/openapi'
 
 export const useAccountStore = defineStore("account", {
   state: () => ({
@@ -11,9 +11,10 @@ export const useAccountStore = defineStore("account", {
     setToken(token: string) {
       this.token = token
       localStorage.setItem("token", token)
-      axios.interceptors.request.use((config) => {
-        config.headers['Authorization'] = `Bearer ${this.token}`;
-        return config;
+    },
+    fetchUser() {
+      new AccountControllerApi().getUser().then((res) => {
+        this.user = res.data.payload;
       });
     },
     setUser(user: User) {
@@ -22,6 +23,7 @@ export const useAccountStore = defineStore("account", {
     logout() {
       this.token = null;
       localStorage.clear();
+      router.push({ name: 'login' });
     }
   }
 })

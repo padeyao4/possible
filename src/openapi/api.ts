@@ -298,27 +298,27 @@ export interface RestResponseListBacklog {
 /**
  * 
  * @export
- * @interface RestResponseSettingsPage
+ * @interface RestResponseUser
  */
-export interface RestResponseSettingsPage {
+export interface RestResponseUser {
     /**
      * 
      * @type {string}
-     * @memberof RestResponseSettingsPage
+     * @memberof RestResponseUser
      */
     'message'?: string;
     /**
      * 
      * @type {number}
-     * @memberof RestResponseSettingsPage
+     * @memberof RestResponseUser
      */
     'code'?: number;
     /**
      * 
-     * @type {SettingsPage}
-     * @memberof RestResponseSettingsPage
+     * @type {User}
+     * @memberof RestResponseUser
      */
-    'payload'?: SettingsPage;
+    'payload'?: User;
 }
 /**
  * 
@@ -344,19 +344,6 @@ export interface RestResponseVoid {
      * @memberof RestResponseVoid
      */
     'payload'?: object;
-}
-/**
- * 
- * @export
- * @interface SettingsPage
- */
-export interface SettingsPage {
-    /**
-     * 
-     * @type {User}
-     * @memberof SettingsPage
-     */
-    'user'?: User;
 }
 /**
  * 
@@ -419,6 +406,103 @@ export interface User {
      */
     'authorities'?: Array<GrantedAuthority>;
 }
+
+/**
+ * AccountControllerApi - axios parameter creator
+ * @export
+ */
+export const AccountControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUser: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/user/info`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * AccountControllerApi - functional programming interface
+ * @export
+ */
+export const AccountControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AccountControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUser(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseUser>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUser(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AccountControllerApi.getUser']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * AccountControllerApi - factory interface
+ * @export
+ */
+export const AccountControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AccountControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUser(options?: RawAxiosRequestConfig): AxiosPromise<RestResponseUser> {
+            return localVarFp.getUser(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * AccountControllerApi - object-oriented interface
+ * @export
+ * @class AccountControllerApi
+ * @extends {BaseAPI}
+ */
+export class AccountControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AccountControllerApi
+     */
+    public getUser(options?: RawAxiosRequestConfig) {
+        return AccountControllerApiFp(this.configuration).getUser(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
 
 /**
  * BacklogControllerApi - axios parameter creator
@@ -749,18 +833,18 @@ export class DataStoreControllerApi extends BaseAPI {
 
 
 /**
- * PageControllerApi - axios parameter creator
+ * TestControllerApi - axios parameter creator
  * @export
  */
-export const PageControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+export const TestControllerApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getSettingsPage: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/page/settings`;
+        hello: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/test`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -787,59 +871,59 @@ export const PageControllerApiAxiosParamCreator = function (configuration?: Conf
 };
 
 /**
- * PageControllerApi - functional programming interface
+ * TestControllerApi - functional programming interface
  * @export
  */
-export const PageControllerApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = PageControllerApiAxiosParamCreator(configuration)
+export const TestControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = TestControllerApiAxiosParamCreator(configuration)
     return {
         /**
          * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getSettingsPage(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RestResponseSettingsPage>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getSettingsPage(options);
+        async hello(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.hello(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PageControllerApi.getSettingsPage']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['TestControllerApi.hello']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
 };
 
 /**
- * PageControllerApi - factory interface
+ * TestControllerApi - factory interface
  * @export
  */
-export const PageControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = PageControllerApiFp(configuration)
+export const TestControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = TestControllerApiFp(configuration)
     return {
         /**
          * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getSettingsPage(options?: RawAxiosRequestConfig): AxiosPromise<RestResponseSettingsPage> {
-            return localVarFp.getSettingsPage(options).then((request) => request(axios, basePath));
+        hello(options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.hello(options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * PageControllerApi - object-oriented interface
+ * TestControllerApi - object-oriented interface
  * @export
- * @class PageControllerApi
+ * @class TestControllerApi
  * @extends {BaseAPI}
  */
-export class PageControllerApi extends BaseAPI {
+export class TestControllerApi extends BaseAPI {
     /**
      * 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof PageControllerApi
+     * @memberof TestControllerApi
      */
-    public getSettingsPage(options?: RawAxiosRequestConfig) {
-        return PageControllerApiFp(this.configuration).getSettingsPage(options).then((request) => request(this.axios, this.basePath));
+    public hello(options?: RawAxiosRequestConfig) {
+        return TestControllerApiFp(this.configuration).hello(options).then((request) => request(this.axios, this.basePath));
     }
 }
 

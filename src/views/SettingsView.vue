@@ -1,18 +1,15 @@
 <script setup lang="ts">
-import AccountInfo from '@/components/settings/AccountInfo.vue'
 import AboutComponent from '@/components/settings/AboutComponent.vue'
-import { Back } from '@element-plus/icons-vue'
+import AccountInfo from '@/components/settings/AccountInfo.vue'
 import UserDataInfo from '@/components/settings/UserDataInfo.vue'
-import { onBeforeMount } from 'vue'
-import { PageControllerApi } from '@/openapi'
 import { useAccountStore } from '@/stores'
+import { Back } from '@element-plus/icons-vue'
+import { onBeforeMount } from 'vue'
 
 const accountStore = useAccountStore()
-const api = new PageControllerApi()
 
-onBeforeMount(async ()=>{
-  const response = await api.getSettingsPage()
-  accountStore.setUser(response.data.payload.user)
+onBeforeMount(()=>{
+  accountStore.fetchUser()
 })
 
 </script>
