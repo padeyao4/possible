@@ -145,10 +145,11 @@ export const useDataStore = defineStore('graph', {
     },
     getProjectById: (state) => (id: string) => {
       return state.projectsMap.get(id);
-    } /**
+    },
+    /**
      * canvas中用于显示图形的区域大小
      * @param state
-     */,
+     */
     viewBounds: (state) => {
       const project = state.projectsMap.get(state.projectId);
       return {
@@ -158,7 +159,6 @@ export const useDataStore = defineStore('graph', {
         h: state.viewHeight
       };
     },
-
     /**
      * 根据项目id获取待绘制卡片信息,所有当前项目下的卡片数据
      */
@@ -276,7 +276,7 @@ export const useDataStore = defineStore('graph', {
             controller2X: targetX - dist / 2,
             controller2Y: targetY
           };
-        })
+        });
       return ans.concat(realsPath);
     },
     gridTemplateColumns: (state) => {
@@ -285,6 +285,33 @@ export const useDataStore = defineStore('graph', {
       } else {
         return { gridTemplateColumns: `${state.menuWidth}px 1fr` };
       }
+    },
+    /**
+     * 根据项目id和节点id利用bfs获取所有子节点
+     */
+    getChildrenNodes: (state) => (projectId: string, nodeId: string) => {
+      console.log('getChildrenNodes', projectId, nodeId);
+      const ans = [] as Node[];
+      const queue = [nodeId];
+      const visited = new Set<string>();
+      while (queue.length > 0) {
+        const nodeId = queue.shift()!;
+        if (visited.has(nodeId)) continue;
+        visited.add(nodeId);
+        ans.push(state.nodesMap.get(nodeId)!);
+        const outEdges = state.outEdgesMap.get(nodeId);
+        const inEdges = state.inEdgesMap.get(nodeId);
+        const edges = [...(outEdges || []), ...(inEdges || [])];
+        if (edges) {
+          for (const edge of edges) {
+            if (edge.projectId === projectId) {
+              queue.push(edge.target!);
+              queue.push(edge.source!);
+            }
+          }
+        }
+      }
+      return ans;
     }
   },
   actions: {
@@ -302,26 +329,54 @@ export const useDataStore = defineStore('graph', {
         value.projectId === id && this.nodesMap.delete(key);
       });
     },
-    setNode(node: Node) {
+    addNode(node: Node) {
       this.nodesMap.set(node.id!, node);
     },
     removeNode(item: string | Node) {
       const id = typeof item === 'object' ? item.id : item;
+      // 删除入边和出边,
+      this.inEdgesMap.get(id!)?.forEach((edge) => {
+        this.outEdgesMap.get(edge.source!)?.delete(edge);
+      });
+      this.outEdgesMap.get(id!)?.forEach((edge) => {
+        this.inEdgesMap.get(edge.target!)?.delete(edge);
+      });
+      this.inEdgesMap.delete(id!);
+      this.outEdgesMap.delete(id!);
 
-      // 找到soure或者target为id的边,删除
+      // 找到source或者target为id的边,删除
       this.edgesMap.forEach((value, key) => {
         (value.source === id || value.target === id) && this.edgesMap.delete(key);
       });
-
+      // 删除节点
       this.nodesMap.delete(id!);
-      // todo 删除所有关联的边
     },
-    setEdge(edge: Edge) {
+    addEdge(edge: Edge) {
       this.edgesMap.set(edge.id!, edge);
-      // todo 添加出边和入边
+
+      const { source, target } = edge;
+      // 添加入边
+      if (this.inEdgesMap.has(target!)) {
+        this.inEdgesMap.get(target!)!.add(edge);
+      } else {
+        this.inEdgesMap.set(target!, new Set([edge]));
+      }
+      // 添加出边
+      if (this.outEdgesMap.has(source!)) {
+        this.outEdgesMap.get(source!)!.add(edge);
+      } else {
+        this.outEdgesMap.set(source!, new Set([edge]));
+      }
     },
     removeEdge(item: string | Edge) {
       const id = typeof item === 'object' ? item.id : item;
+      const edge = this.edgesMap.get(id!)!;
+      const { source, target } = edge;
+      // 删除入边
+      this.inEdgesMap.get(target!)?.delete(edge);
+      // 删除出边
+      this.outEdgesMap.get(source!)?.delete(edge);
+      // 删除边
       this.edgesMap.delete(id!);
     },
     setProjectId(id: string) {
@@ -345,8 +400,8 @@ export const useDataStore = defineStore('graph', {
           this.edgesMap.clear();
           this.projectsMap.clear();
           projects!.forEach((project) => this.projectsMap.set(project.id!, project));
-          edges!.forEach((edge) => this.edgesMap.set(edge.id!, edge));
           nodes!.forEach((node) => this.nodesMap.set(node.id!, node));
+          edges!.forEach((edge) => this.addEdge(edge));
         })
         .finally(() => {
           this.loading = false;

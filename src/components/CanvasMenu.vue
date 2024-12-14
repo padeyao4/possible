@@ -38,12 +38,12 @@ const conf = {
       {
         name: '追加节点',
         icon: 'append',
-        action: () => { }
+        action: () => {}
       },
       {
         name: '插入节点',
         icon: 'insert',
-        action: () => { }
+        action: () => {}
       }
     ],
     [
@@ -130,13 +130,12 @@ function markNodeTodo() {
 function deleteEdge() {
   graph.removeEdge(menuModel.itemId);
   menuModel.visible = false;
-  console.log(menuModel);
 }
 
 function createNode() {
   const project = graph.project;
   const svgBound = svg.getBoundingClientRect();
-  graph.setNode({
+  graph.addNode({
     detail: '',
     h: 1,
     id: v4(),
@@ -174,8 +173,15 @@ const list = computed(() => {
 </script>
 
 <template>
-  <div v-if="menuModel.visible" ref="menuRef" :style="{ top: menuModel.top + 'px', left: menuModel.left + 'px' }"
-    class="container" tabindex="0" @blur="menuModel.visible = false" @contextmenu.prevent>
+  <div
+    v-if="menuModel.visible"
+    ref="menuRef"
+    :style="{ top: menuModel.top + 'px', left: menuModel.left + 'px' }"
+    class="container"
+    tabindex="0"
+    @blur="menuModel.visible = false"
+    @contextmenu.prevent
+  >
     <div v-for="(group, groupIndex) in list" :key="groupIndex" class="group">
       <div v-for="(item, itemIndex) in group" :key="itemIndex" class="item" @click="item.action">
         {{ item.name }}

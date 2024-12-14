@@ -69,20 +69,23 @@ export class CreateEdge extends BaseBehavior {
       this.graph.tempEdge!.source === this.graph.tempEdge!.target && (this.graph.tempEdge = null);
 
       // 如果已存在该边，则删除
-      Array.from(this.graph.edgesMap.values()).find(
-        (edge) =>
-          edge.source === this.graph.tempEdge!.source &&
-          edge.target === this.graph.tempEdge!.target &&
-          edge.id !== this.graph.tempEdge!.id
-      ) && (this.graph.tempEdge = null);
+      this.graph.tempEdge &&
+        Array.from(this.graph.edgesMap.values()).find(
+          (edge) =>
+            edge.source === this.graph.tempEdge!.source &&
+            edge.target === this.graph.tempEdge!.target &&
+            edge.id !== this.graph.tempEdge!.id
+        ) &&
+        (this.graph.tempEdge = null);
 
       // 如果存在临时边，则添加到edgesMap中
-      this.graph.tempEdge !== null && this.graph.edgesMap.set(this.graph.tempEdge!.id, {
-        id: this.graph.tempEdge!.id,
-        source: this.graph.tempEdge!.source,
-        target: this.graph.tempEdge!.target,
-        projectId: this.graph.tempEdge!.projectId
-      } as Edge);
+      this.graph.tempEdge !== null &&
+        this.graph.addEdge({
+          id: this.graph.tempEdge!.id,
+          source: this.graph.tempEdge!.source,
+          target: this.graph.tempEdge!.target,
+          projectId: this.graph.tempEdge!.projectId
+        } as Edge);
     }
     this.graph.tempEdge = null;
     this.mouseStyle.unlock();
