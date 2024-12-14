@@ -290,7 +290,6 @@ export const useDataStore = defineStore('graph', {
      * 根据项目id和节点id利用bfs获取所有子节点
      */
     getChildrenNodes: (state) => (projectId: string, nodeId: string) => {
-      console.log('getChildrenNodes', projectId, nodeId);
       const ans = [] as Node[];
       const queue = [nodeId];
       const visited = new Set<string>();
