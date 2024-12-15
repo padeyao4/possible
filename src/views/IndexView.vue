@@ -15,6 +15,7 @@ import { useDebounceFn, useIntervalFn, useWindowSize } from '@vueuse/core';
 import { onUnmounted, watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import NavTestItem from '@/components/NavTestItem.vue';
+import ExpandIcon from '@/components/icon/ExpandIcon.vue';
 const dataStore = useDataStore();
 
 const { width, height } = useWindowSize();
@@ -62,8 +63,12 @@ const isDev = import.meta.env.MODE !== 'production';
 
 <template>
   <div :style="dataStore.gridTemplateColumns" class="grid h-screen w-screen">
-    <div class="flex h-screen w-full flex-col">
-      <header class="mt-4 flex h-fit flex-col border-b border-b-gray-200 pb-1">
+    <div v-if="dataStore.menuVisible" class="flex h-screen w-full flex-col">
+      <header class="mt-2 flex h-fit flex-col border-b border-b-gray-200 pb-1">
+        <div class="mx-2 flex h-6 w-6 items-center justify-center rounded-md hover:bg-blue-50 ml-auto"
+          @click="dataStore.menuVisible = !dataStore.menuVisible">
+          <expand-icon class="text-gray-600 text-sm" />
+        </div>
         <nav-today-item />
         <nav-backlog-item />
         <nav-test-item v-if="isDev" />

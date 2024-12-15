@@ -124,7 +124,9 @@ export const useDataStore = defineStore('graph', {
     viewWidth: 0, // 可视化窗口大小
     viewHeight: 0, // 可视化窗口大小
     menuWidth: 240, // 菜单栏宽度
+    menuVisible: true, // 菜单栏是否显示
     editorWidth: 0, // 编辑框宽度
+    editorVisible: true, // 编辑框是否显示
     cardWidth: 120, // 实际卡片宽度
     cardHeight: 80, // 实际卡片高度
     loading: false, // 加载状态
@@ -280,12 +282,11 @@ export const useDataStore = defineStore('graph', {
         });
       return ans.concat(realsPath);
     },
+
     gridTemplateColumns: (state) => {
-      if (state.editorWidth !== 0) {
-        return { gridTemplateColumns: `${state.menuWidth}px 1fr ${state.editorWidth}px` };
-      } else {
-        return { gridTemplateColumns: `${state.menuWidth}px 1fr` };
-      }
+      const menuStyle = state.menuVisible ? `${state.menuWidth}px` : '';
+      const editorStyle = state.editorVisible ? `${state.editorWidth}px` : '';
+      return { gridTemplateColumns: `${menuStyle} 1fr ${editorStyle}` };
     },
     /**
      * 根据项目id和节点id利用bfs获取所有子节点
@@ -358,7 +359,7 @@ export const useDataStore = defineStore('graph', {
       Array.from(this.nodesMap.values())
         .sort((a, b) => a.x! - b.x!)
         .filter((node) => !visited.has(node.id!))
-        .filter(({type}) => !type || type === NodeTypeEnum.Normal)
+        .filter(({ type }) => !type || type === NodeTypeEnum.Normal)
         .filter((node) => !node.status)
         .filter((node) => node.x! + node.w! <= this.currentIndex)
         .forEach((node) => {

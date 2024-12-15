@@ -38,6 +38,7 @@ declare module 'vue' {
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElText: typeof import('element-plus/es')['ElText']
+    ExpandIcon: typeof import('./src/components/icon/ExpandIcon.vue')['default']
     GithubCorner: typeof import('./src/components/other/GithubCorner.vue')['default']
     GraphContextmenuGroup: typeof import('./src/components/project/GraphContextmenuGroup.vue')['default']
     MagicDraggable: typeof import('./src/components/common/MagicDraggable.vue')['default']
