@@ -6,7 +6,7 @@ const graph = useDataStore();
 
 const project = graph.project;
 
-const offsetX = computed(() => Math.floor(-project.x / graph.cardWidth));
+const offsetX = computed(() => Math.floor(-project?.x! / graph.cardWidth));
 
 const numbers = computed(() =>
   Array.from(
@@ -15,7 +15,7 @@ const numbers = computed(() =>
   )
 );
 
-const translateX = computed(() => (project.x % graph.cardWidth) - graph.cardWidth + 'px');
+const translateX = computed(() => (project?.x! % graph.cardWidth) - graph.cardWidth + 'px');
 
 const unitWidth = computed(() => graph.cardWidth + 'px');
 

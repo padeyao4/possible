@@ -1,5 +1,6 @@
 import { DataStoreControllerApi, type Edge, type Node, NodeTypeEnum, type Project } from '@/openapi';
 import { defineStore } from 'pinia';
+import { v4 } from 'uuid';
 import type { Ref } from 'vue';
 
 /**
@@ -467,6 +468,20 @@ export const useDataStore = defineStore('graph', {
           nodes!.forEach((node) => this.nodesMap.set(node.id!, node));
           edges!.forEach((edge) => this.addEdge(edge));
           this.updateNodes();
+          // 在测试环境下添加模拟项目数据
+          if (import.meta.env.MODE !== 'production') {
+            console.log('添加模拟项目数据');
+            this.addProject({
+              id: v4(),
+              name: '测试项目',
+              description: '这是一个测试项目',
+              x: 0,
+              y: 0,
+              index: generateIndex(),
+              createdAt: new Date('1970-01-01').getTime()
+            });
+          }
+
         })
         .finally(() => {
           this.loading = false;
