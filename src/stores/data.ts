@@ -320,14 +320,10 @@ export const useDataStore = defineStore('graph', {
     },
     removeProject(item: string | Project) {
       const id = typeof item === 'object' ? item.id : item;
-      this.projectsMap.delete(id!);
-      this.edgesMap.forEach((value, key) => {
-        value.projectId === id && this.edgesMap.delete(key);
-      });
-
       this.nodesMap.forEach((value, key) => {
-        value.projectId === id && this.nodesMap.delete(key);
+        value.projectId === id && this.removeNode(key);
       });
+      this.projectsMap.delete(id!);
     },
     addNode(node: Node) {
       this.nodesMap.set(node.id!, node);
