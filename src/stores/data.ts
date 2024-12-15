@@ -358,7 +358,7 @@ export const useDataStore = defineStore('graph', {
       Array.from(this.nodesMap.values())
         .sort((a, b) => a.x! - b.x!)
         .filter((node) => !visited.has(node.id!))
-        .filter((node) => node.type === NodeTypeEnum.Normal)
+        .filter(({type}) => !type || type === NodeTypeEnum.Normal)
         .filter((node) => !node.status)
         .filter((node) => node.x! + node.w! <= this.currentIndex)
         .forEach((node) => {
