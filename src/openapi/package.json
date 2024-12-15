@@ -24,6 +24,7 @@
     "prepare": "npm run build"
   },
   "dependencies": {
+    "api-client": "file:",
     "axios": "^1.6.1"
   },
   "devDependencies": {

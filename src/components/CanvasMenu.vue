@@ -2,6 +2,7 @@
 import { computed, reactive, ref, watchEffect } from 'vue';
 import { emitter } from '@/utils';
 import { generateIndex, useDataStore } from '@/stores';
+import { NodeTypeEnum } from '@/openapi';
 import { v4 } from 'uuid';
 
 const { svg } = defineProps<{ svg: SVGSVGElement }>();
@@ -154,6 +155,7 @@ function createNode() {
     record: '',
     status: false,
     w: 1,
+    type: NodeTypeEnum.Normal,
     x: Math.floor((menuModel.position.x - svgBound.left - project!.x!) / graph.cardWidth),
     y: Math.floor((menuModel.position.y - svgBound.top - project!.y!) / graph.cardHeight)
   });

@@ -4,7 +4,7 @@ import { useDataStore } from '@/stores';
 const graph = useDataStore();
 
 function goHome() {
-  graph.setCurrentProjectPositionByDate(graph.project.createdAt);
+  graph.setCurrentProjectPositionByDate(graph.project?.createdAt ?? 0);
 }
 </script>
 

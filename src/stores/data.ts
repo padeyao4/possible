@@ -1,6 +1,6 @@
+import { DataStoreControllerApi, type Edge, type Node, NodeTypeEnum, type Project } from '@/openapi';
 import { defineStore } from 'pinia';
 import type { Ref } from 'vue';
-import { DataStoreControllerApi, type Edge, type Project, type Node } from '@/openapi';
 
 /**
  * 一天的表示的毫秒值
@@ -312,11 +312,67 @@ export const useDataStore = defineStore('graph', {
         }
       }
       return ans;
+    },
+    /**
+     * 根据项目id和节点id利用bfs获取所有出边节点
+     */
+    getOutChildrenNodes: (state) => (item: Node | string) => {
+      const node = typeof item === 'string' ? state.nodesMap.get(item)! : item;
+      const ans = [] as Node[];
+      const queue = [node.id];
+      const visited = new Set<string>();
+      while (queue.length > 0) {
+        const nodeId = queue.shift()!;
+        if (visited.has(nodeId)) continue;
+        visited.add(nodeId);
+        ans.push(state.nodesMap.get(nodeId)!);
+        const edges = state.outEdgesMap.get(nodeId);
+        if (edges) {
+          for (const edge of edges) {
+            if (edge.projectId === node.projectId) {
+              queue.push(edge.target!);
+            }
+          }
+        }
+      }
+      return ans;
+    },
+    /**
+     * 根据当前时间戳获取画布index坐标
+     * @param state
+     */
+    currentIndex: (state) => {
+      return days(state.timestamp);
     }
   },
   actions: {
-    setProject(project: Project) {
+    addProject(project: Project) {
       this.projectsMap.set(project.id!, project);
+    },
+    /**
+     * 按时间更新项目节点
+     */
+    updateNodes() {
+      const visited = new Set<string>();
+
+      Array.from(this.nodesMap.values())
+        .sort((a, b) => a.x! - b.x!)
+        .filter((node) => !visited.has(node.id!))
+        .filter((node) => node.type === NodeTypeEnum.Normal)
+        .filter((node) => !node.status)
+        .filter((node) => node.x! + node.w! - 1 < this.currentIndex)
+        .forEach((node) => {
+          const dx = this.currentIndex - (node.x! + node.w! - 1);
+          node.w = node.w! + dx;
+          visited.add(node.id!);
+          // 递归找到node所有右侧节点，更新x,更新规则为w=w+dx
+          this.getOutChildrenNodes(node).forEach((child) => {
+            if (!visited.has(child.id!)) {
+              child.x = child.x! + dx;
+              visited.add(child.id!);
+            }
+          });
+        });
     },
     removeProject(item: string | Project) {
       const id = typeof item === 'object' ? item.id : item;

@@ -195,7 +195,22 @@ export interface Node {
      * @memberof Node
      */
     'status'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof Node
+     */
+    'type'?: NodeTypeEnum;
 }
+
+export const NodeTypeEnum = {
+    Normal: 'NORMAL',
+    Periodic: 'PERIODIC',
+    TimeLimited: 'TIME_LIMITED'
+} as const;
+
+export type NodeTypeEnum = typeof NodeTypeEnum[keyof typeof NodeTypeEnum];
+
 /**
  * 
  * @export

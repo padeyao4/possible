@@ -15,9 +15,10 @@ emitter.on('open-create-project-dialog', () => {
 });
 
 function handleCreateProject() {
-  const projectName = name.value.trim() === '' ? `新建项目(${graph.projectsMap.size + 1})` : name.value.trim();
+  const projectName =
+    name.value.trim() === '' ? `新建项目(${graph.projectsMap.size + 1})` : name.value.trim();
   const projectId = v4();
-  graph.setProject({
+  graph.addProject({
     description: '',
     id: projectId,
     index: generateIndex(),
@@ -30,7 +31,7 @@ function handleCreateProject() {
   name.value = '';
   setTimeout(() => {
     router.push({ name: 'project', query: { id: projectId } });
-  })
+  });
 }
 
 function handleCancel() {
@@ -40,7 +41,13 @@ function handleCancel() {
 </script>
 
 <template>
-  <el-dialog v-model="visible" title="创建项目" width="300" align-center style="border-radius: 6px !important">
+  <el-dialog
+    v-model="visible"
+    title="创建项目"
+    width="300"
+    align-center
+    style="border-radius: 6px !important"
+  >
     <el-input v-model="name" placeholder="请输入项目名称" />
     <template #footer>
       <div class="dialog-footer">

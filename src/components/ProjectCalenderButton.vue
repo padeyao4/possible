@@ -5,7 +5,7 @@ import { days, useDataStore } from '@/stores';
 const graph = useDataStore();
 
 const viewModel = reactive({
-  inputValue: <string>undefined
+  inputValue: ''
 });
 
 const dateInputRef = ref<HTMLElement & { showPicker: () => void }>();
@@ -17,7 +17,7 @@ function handleCalendar() {
 function handleChange() {
   if (viewModel.inputValue) {
     const offsetX = -days(new Date(viewModel.inputValue)) * graph.cardWidth;
-    graph.project.x = offsetX > 0 ? offsetX - 1 : offsetX;
+    graph.project!.x = offsetX > 0 ? offsetX - 1 : offsetX;
   }
 }
 </script>
