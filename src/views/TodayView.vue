@@ -5,6 +5,7 @@ import ECounterButton from '@/components/common/CounterButton.vue';
 import EDraggable from '@/components/common/MagicDraggable.vue';
 import TodayItem from '@/components/TodayItem.vue';
 import { type Node } from '@/openapi';
+import BasePageLayout from '@/components/layout/BasePageLayout.vue';
 
 const completeVisible = ref(false);
 
@@ -31,15 +32,13 @@ function onUpdate(n1: Node, n2: Node) {
 </script>
 
 <template>
-  <div class="flex h-screen flex-col" style="background-color: #82bbb5">
-    <div class="drag-region mb-3">
-      <div class="flex w-full shrink-0 items-end px-3 text-xl text-gray-600" style="height: 52px">
-        我的一天
-      </div>
-      <div class="ml-3 text-xs text-gray-500">{{ dateTime }}</div>
-    </div>
-    <div v-if="true" class="grow px-3" />
-    <el-scrollbar v-else class="grow px-3" always>
+  <base-page-layout title="我的一天">
+    <template #subtitle>
+      <div class="text-xs text-gray-500">{{ dateTime }}</div>
+    </template>
+    
+    <div v-if="true" />
+    <template v-else>
       <e-draggable :update="onUpdate" :list="[]" handle="data-move">
         <template #default="{ item }">
           <today-item :node="item" class="odd:my-1" />
@@ -52,6 +51,6 @@ function onUpdate(n1: Node, n2: Node) {
         </template>
       </e-draggable>
       <div class="h-1" />
-    </el-scrollbar>
-  </div>
+    </template>
+  </base-page-layout>
 </template>
