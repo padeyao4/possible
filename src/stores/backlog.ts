@@ -22,7 +22,7 @@ export const useBacklogStore = defineStore('backlog', {
     },
     doneBacklogs: (state) => {
       return Array.from(state.backlogsMap.values())
-        .sort((a, b) => a.index!- b.index!)
+        .sort((a, b) => a.index! - b.index!)
         .filter((b) => b.status);
     }
   },
@@ -54,6 +54,10 @@ export const useBacklogStore = defineStore('backlog', {
         .finally(() => {
           this.loading = false;
         });
+    },
+    upload() {
+      new BacklogControllerApi().add1(Array.from(this.backlogsMap.values()));
     }
   }
 });
+

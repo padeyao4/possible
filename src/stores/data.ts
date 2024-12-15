@@ -355,7 +355,6 @@ export const useDataStore = defineStore('graph', {
      */
     updateNodes() {
       const visited = new Set<string>();
-
       Array.from(this.nodesMap.values())
         .sort((a, b) => a.x! - b.x!)
         .filter((node) => !visited.has(node.id!))
@@ -363,8 +362,9 @@ export const useDataStore = defineStore('graph', {
         .filter((node) => !node.status)
         .filter((node) => node.x! + node.w! - 1 < this.currentIndex)
         .forEach((node) => {
+          console.log(node, this.currentIndex);
           const dx = this.currentIndex - (node.x! + node.w! - 1);
-          node.w = node.w! + dx;
+          node.w! += dx;
           visited.add(node.id!);
           // 递归找到node所有右侧节点，更新x,更新规则为w=w+dx
           this.getOutChildrenNodes(node).forEach((child) => {
@@ -455,6 +455,21 @@ export const useDataStore = defineStore('graph', {
         this.removeEdge(edge);
       });
     },
+    /**
+     * 追加节点,会是后续节点后移，并继承所有连线关系
+     */
+    appendNode(node: Node) {
+      // todo 追加节点
+    },
+    /**
+     * 插入节点,会插入到指定位置，并继承所有连线关系
+     */
+    insertNode(node: Node) {
+      // todo 插入节点
+    },
+    /**
+     * 获取项目数据
+     */
     fetch() {
       this.loading = true;
       new DataStoreControllerApi()
@@ -486,6 +501,17 @@ export const useDataStore = defineStore('graph', {
         .finally(() => {
           this.loading = false;
         });
+    },
+    /**
+     * 上传项目数据
+     */
+    upload() {
+      // todo 上传项目数据
+      new DataStoreControllerApi().add({
+        projects: Array.from(this.projectsMap.values()),
+        nodes: Array.from(this.nodesMap.values()),
+        edges: Array.from(this.edgesMap.values())
+      });
     }
   }
 });

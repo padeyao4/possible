@@ -9,7 +9,7 @@ import NavTodayItem from '@/components/NavTodayItem.vue';
 import RenameProjectDialog from '@/components/RenameProjectDialog.vue';
 import SettingsButton from '@/components/SettingsButton.vue';
 import MagicDraggable from '@/components/common/MagicDraggable.vue';
-import { BacklogControllerApi, DataStoreControllerApi, type Project } from '@/openapi';
+import { type Project } from '@/openapi';
 import { useBacklogStore, useDataStore } from '@/stores';
 import { useDebounceFn, useIntervalFn, useWindowSize } from '@vueuse/core';
 import { onUnmounted, watchEffect } from 'vue';
@@ -22,7 +22,7 @@ const backlogStore = useBacklogStore();
 backlogStore.fetch();
 const debounceBacklogsFn = useDebounceFn((_mutation, state) => {
   if (!state.loading) {
-    new BacklogControllerApi().add1(Array.from(state.backlogsMap.values()));
+    backlogStore.upload();
   }
 }, 1000);
 backlogStore.$subscribe(debounceBacklogsFn);
@@ -30,11 +30,7 @@ backlogStore.$subscribe(debounceBacklogsFn);
 dataStore.fetch();
 const debounceDataFn = useDebounceFn((_mutation, state) => {
   if (!state.loading) {
-    new DataStoreControllerApi().add({
-      projects: Array.from(state.projectsMap.values()),
-      nodes: Array.from(state.nodesMap.values()),
-      edges: Array.from(state.edgesMap.values())
-    });
+    dataStore.upload();
   }
 }, 1000);
 dataStore.$subscribe(debounceDataFn);
@@ -65,8 +61,8 @@ function handleUpdate(p1: Project, p2: Project) {
   <div :style="dataStore.gridTemplateColumns" class="grid h-screen w-screen">
     <div class="flex h-screen w-full flex-col">
       <header class="mt-4 flex h-fit flex-col border-b border-b-gray-200 pb-1">
-        <nav-today-item class="my-1" />
-        <nav-backlog-item class="my-1" />
+        <nav-today-item />
+        <nav-backlog-item />
       </header>
       <el-scrollbar class="flex-grow px-2.5 py-1.5">
         <magic-draggable :update="handleUpdate" :list="dataStore.sortedProjects">
