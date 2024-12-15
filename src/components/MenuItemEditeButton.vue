@@ -1,6 +1,6 @@
 <!--导航编辑按钮-->
 <script setup lang="ts">
-import type { Project } from '@/stores';
+import type { Project } from '@/openapi';
 import { emitter } from '@/utils';
 
 const props = defineProps<{ project: Project }>();

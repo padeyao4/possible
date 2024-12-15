@@ -360,16 +360,16 @@ export const useDataStore = defineStore('graph', {
         .filter((node) => !visited.has(node.id!))
         .filter((node) => node.type === NodeTypeEnum.Normal)
         .filter((node) => !node.status)
-        .filter((node) => node.x! + node.w! - 1 < this.currentIndex)
+        .filter((node) => node.x! + node.w! <= this.currentIndex)
         .forEach((node) => {
-          console.log(node, this.currentIndex);
+          if (visited.has(node.id!)) return;
+          visited.add(node.id!);
           const dx = this.currentIndex - (node.x! + node.w! - 1);
           node.w! += dx;
-          visited.add(node.id!);
           // 递归找到node所有右侧节点，更新x,更新规则为w=w+dx
           this.getOutChildrenNodes(node).forEach((child) => {
             if (!visited.has(child.id!)) {
-              child.x = child.x! + dx;
+              child.x! += dx;
               visited.add(child.id!);
             }
           });
@@ -483,20 +483,6 @@ export const useDataStore = defineStore('graph', {
           nodes!.forEach((node) => this.nodesMap.set(node.id!, node));
           edges!.forEach((edge) => this.addEdge(edge));
           this.updateNodes();
-          // 在测试环境下添加模拟项目数据
-          if (import.meta.env.MODE !== 'production') {
-            console.log('添加模拟项目数据');
-            this.addProject({
-              id: v4(),
-              name: '测试项目',
-              description: '这是一个测试项目',
-              x: 0,
-              y: 0,
-              index: generateIndex(),
-              createdAt: new Date('1970-01-01').getTime()
-            });
-          }
-
         })
         .finally(() => {
           this.loading = false;
@@ -506,7 +492,6 @@ export const useDataStore = defineStore('graph', {
      * 上传项目数据
      */
     upload() {
-      // todo 上传项目数据
       new DataStoreControllerApi().add({
         projects: Array.from(this.projectsMap.values()),
         nodes: Array.from(this.nodesMap.values()),

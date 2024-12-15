@@ -1,10 +1,26 @@
 <script setup lang="ts">
 import { useDataStore } from '@/stores';
 import { computed } from 'vue';
+import { faker } from '@faker-js/faker';
+import { v4 } from 'uuid';
+import { generateIndex } from '@/stores/data';
 
 const dataStore = useDataStore();
 
 const tableData = computed(() => Array.from(dataStore.projectsMap.values()));
+
+function createTestProject() {
+  const projectId = v4();
+  dataStore.addProject({
+    description: faker.lorem.paragraph(),
+    id: projectId,
+    index: generateIndex(),
+    name: faker.company.name(),
+    x: 0,
+    y: 0,
+    createdAt: faker.date.past().getTime()
+  });
+}
 </script>
 
 <template>
@@ -15,6 +31,12 @@ const tableData = computed(() => Array.from(dataStore.projectsMap.values()));
       </div>
     </div>
     <el-scrollbar class="grow px-3" always>
+      <div class="mb-3 flex justify-end">
+        <el-button type="primary" @click="createTestProject">
+          <span class="icon-[mdi--plus] mr-1" />
+          创建测试项目
+        </el-button>
+      </div>
       <el-table :data="tableData">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="name" label="项目名称" />

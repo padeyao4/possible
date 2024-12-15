@@ -39,12 +39,16 @@ const conf = {
       {
         name: '追加节点',
         icon: 'append',
-        action: () => {}
+        action: () => { }
       },
       {
         name: '插入节点',
         icon: 'insert',
-        action: () => {}
+        action: () => { }
+      },
+      {
+        name: '测试',
+        action: test
       }
     ],
     [
@@ -107,6 +111,15 @@ emitter.on('open-canvas-menu', (param) => {
   menuModel.menuType = param.menuType;
   menuModel.itemId = param.itemId!;
 });
+
+function test() {
+  const nodes = graph.getOutChildrenNodes(menuModel.itemId);
+  nodes.forEach((node) => {
+    console.log(node.name);
+  });
+  menuModel.visible = false;
+}
+
 
 function stripNode() {
   graph.stripNode(menuModel.itemId);
@@ -184,15 +197,8 @@ const list = computed(() => {
 </script>
 
 <template>
-  <div
-    v-if="menuModel.visible"
-    ref="menuRef"
-    :style="{ top: menuModel.top + 'px', left: menuModel.left + 'px' }"
-    class="container"
-    tabindex="0"
-    @blur="menuModel.visible = false"
-    @contextmenu.prevent
-  >
+  <div v-if="menuModel.visible" ref="menuRef" :style="{ top: menuModel.top + 'px', left: menuModel.left + 'px' }"
+    class="container" tabindex="0" @blur="menuModel.visible = false" @contextmenu.prevent>
     <div v-for="(group, groupIndex) in list" :key="groupIndex" class="group">
       <div v-for="(item, itemIndex) in group" :key="itemIndex" class="item" @click="item.action">
         {{ item.name }}
