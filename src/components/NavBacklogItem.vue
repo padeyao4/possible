@@ -1,19 +1,17 @@
 <script setup lang="ts">
+import NavItem from './NavItem.vue';
 import { useBacklogStore } from '@/stores';
 
 const meno = useBacklogStore();
 </script>
 
 <template>
-  <div @click="$router.push({ name: 'backlog' })"
-    class="mx-2.5 my-1 flex h-12 flex-row items-center rounded-md hover:bg-blue-50"
-    :class="{ 'bg-blue-50': $route.name === 'backlog' }">
-    <span class="icon-[fluent--task-list-ltr-20-filled] mx-2 bg-gray-600 text-2xl"></span>
-    <el-text class="grow">备忘录</el-text>
-    <div class="mx-2 flex h-6 w-6 items-center justify-center rounded-full bg-gray-200">
-      <el-text size="small">{{ meno.todoBacklogs.length }}</el-text>
-    </div>
-  </div>
+  <nav-item
+    icon="icon-[fluent--task-list-ltr-20-filled]"
+    text="备忘录"
+    route-name="backlog"
+    :count="meno.todoBacklogs.length"
+  />
 </template>
 
 <style scoped></style>

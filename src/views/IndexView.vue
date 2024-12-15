@@ -14,6 +14,7 @@ import { useBacklogStore, useDataStore } from '@/stores';
 import { useDebounceFn, useIntervalFn, useWindowSize } from '@vueuse/core';
 import { onUnmounted, watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
+import NavTestItem from '@/components/NavTestItem.vue';
 const dataStore = useDataStore();
 
 const { width, height } = useWindowSize();
@@ -55,6 +56,8 @@ onUnmounted(() => {
 function handleUpdate(p1: Project, p2: Project) {
   [p1.index, p2.index] = [p2.index, p1.index];
 }
+
+const isDev = import.meta.env.MODE !== 'production';
 </script>
 
 <template>
@@ -63,6 +66,7 @@ function handleUpdate(p1: Project, p2: Project) {
       <header class="mt-4 flex h-fit flex-col border-b border-b-gray-200 pb-1">
         <nav-today-item />
         <nav-backlog-item />
+        <nav-test-item v-if="isDev" />
       </header>
       <el-scrollbar class="flex-grow px-2.5 py-1.5">
         <magic-draggable :update="handleUpdate" :list="dataStore.sortedProjects">

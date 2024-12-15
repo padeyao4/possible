@@ -10,7 +10,7 @@ const backlogStore = useBacklogStore();
 
 const viewModel = reactive({
   doneBacklogsVisible: false,
-  selectId: <string>undefined // 选中的id
+  selectId: '' // 选中的id
 });
 
 export type BacklogViewModel = typeof viewModel;

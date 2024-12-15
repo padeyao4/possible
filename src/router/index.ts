@@ -35,7 +35,12 @@ const router = createRouter({
           name: 'project',
           props: (route) => ({ id: route.query.id }),
           component: ProjectView
-        }
+        },
+        {
+          path: '/test',
+          name: 'test',
+          component: () => import('@/views/TestView.vue')
+        },
       ]
     },
     {
@@ -47,11 +52,6 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView
-    },
-    {
-      path: '/test',
-      name: 'test',
-      component: () => import('@/views/TestView.vue')
     },
     { path: '/', redirect: '/index/today' }
   ]
