@@ -289,9 +289,10 @@ export const useDataStore = defineStore('graph', {
     /**
      * 根据项目id和节点id利用bfs获取所有子节点
      */
-    getChildrenNodes: (state) => (projectId: string, nodeId: string) => {
+    getChildrenNodes: (state) => (item: Node | string) => {
+      const node = typeof item === 'string' ? state.nodesMap.get(item)! : item;
       const ans = [] as Node[];
-      const queue = [nodeId];
+      const queue = [node.id];
       const visited = new Set<string>();
       while (queue.length > 0) {
         const nodeId = queue.shift()!;
@@ -303,7 +304,7 @@ export const useDataStore = defineStore('graph', {
         const edges = [...(outEdges || []), ...(inEdges || [])];
         if (edges) {
           for (const edge of edges) {
-            if (edge.projectId === projectId) {
+            if (edge.projectId === node.projectId) {
               queue.push(edge.target!);
               queue.push(edge.source!);
             }
@@ -388,6 +389,18 @@ export const useDataStore = defineStore('graph', {
       const offsetX = -days(dateType) * this.cardWidth;
       this.project!.x = offsetX > 0 ? offsetX - 1 : offsetX;
       this.project!.y = 0;
+    },
+    /**
+     * 剥离节点
+     */
+    stripNode(item: Node | string) {
+      const node = typeof item === 'string' ? this.nodesMap.get(item)! : item;
+      this.inEdgesMap.get(node.id!)?.forEach((edge) => {
+        this.removeEdge(edge);
+      });
+      this.outEdgesMap.get(node.id!)?.forEach((edge) => {
+        this.removeEdge(edge);
+      });
     },
     fetch() {
       this.loading = true;

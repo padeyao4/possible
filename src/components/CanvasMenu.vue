@@ -48,6 +48,10 @@ const conf = {
     ],
     [
       {
+        name: '剥离',
+        action: stripNode
+      },
+      {
         name: '删除',
         icon: 'delete',
         action: deleteNode
@@ -102,6 +106,11 @@ emitter.on('open-canvas-menu', (param) => {
   menuModel.menuType = param.menuType;
   menuModel.itemId = param.itemId!;
 });
+
+function stripNode() {
+  graph.stripNode(menuModel.itemId);
+  menuModel.visible = false;
+}
 
 function deleteNode() {
   graph.removeNode(menuModel.itemId);
