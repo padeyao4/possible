@@ -121,8 +121,6 @@ export const useDataStore = defineStore('graph', {
     edgesMap: new Map<string, Edge>(),
     inEdgesMap: new Map<string, Set<Edge>>(), // Map中的ID表示edge中的target,Set中的Edge表示所有指向该节点的边
     outEdgesMap: new Map<string, Set<Edge>>(), // Map中的ID表示edge中的source,Set中的Edge表示所有从该节点出发的边
-    viewWidth: 0, // 可视化窗口大小
-    viewHeight: 0, // 可视化窗口大小
     menuWidth: 240, // 菜单栏宽度
     menuVisible: true, // 菜单栏是否显示
     editorWidth: 0, // 编辑框宽度
@@ -148,19 +146,6 @@ export const useDataStore = defineStore('graph', {
     },
     getProjectById: (state) => (id: string) => {
       return state.projectsMap.get(id);
-    },
-    /**
-     * canvas中用于显示图形的区域大小
-     * @param state
-     */
-    viewBounds: (state) => {
-      const project = state.projectsMap.get(state.projectId);
-      return {
-        x: -(project?.x ?? 0),
-        y: -(project?.y ?? 0),
-        w: state.viewWidth,
-        h: state.viewHeight
-      };
     },
     /**
      * 根据项目id获取待绘制卡片信息,所有当前项目下的卡片数据
@@ -222,12 +207,6 @@ export const useDataStore = defineStore('graph', {
           }
         };
       });
-    },
-    /**
-     * 根据显示区域裁剪后的用于显示的卡片数据
-     */
-    drawableCards(): CardDraw[] {
-      return this.currentCards.filter((card) => cross(this.viewBounds, card));
     },
     /**
      * 根据项目id获取所有边绘制信息

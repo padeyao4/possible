@@ -8,10 +8,37 @@ import ProjectLocationButton from '@/components/ProjectLocationButton.vue';
 import ProjectHomeButton from '@/components/ProjectHomeButton.vue';
 import ProjectCalenderButton from '@/components/ProjectCalenderButton.vue';
 import MenuToggleButton from '@/components/common/MenuToggleButton.vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 
 const graph = useDataStore();
 const project = graph.project;
 const isDev = import.meta.env.MODE !== 'production';
+const canvasContainer = ref<HTMLElement | null>(null);
+const mainHeight = ref(0);
+const mainWidth = ref(0);
+
+// 创建 ResizeObserver 监听 main 元素大小变化
+let resizeObserver: ResizeObserver | null = null;
+
+onMounted(() => {
+  if (canvasContainer.value) {
+    resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        mainHeight.value = entry.contentRect.height;
+        mainWidth.value = entry.contentRect.width;
+      }
+    });
+
+    resizeObserver.observe(canvasContainer.value);
+  }
+});
+
+onUnmounted(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect();
+    resizeObserver = null;
+  }
+});
 </script>
 
 <template>
@@ -24,11 +51,11 @@ const isDev = import.meta.env.MODE !== 'production';
         {{ project?.name }}
       </div>
     </header>
-    <main class="main relative grid flex-1 border-t border-gray-200 overflow-hidden">
+    <main class="main relative grid flex-1 border-t border-gray-200 overflow-hidden" ref="canvasContainer">
       <project-lock-button />
-      <canvas-header />
-      <canvas-ruler />
-      <the-canvas />
+      <canvas-header :height="mainHeight" :width="mainWidth" />
+      <canvas-ruler :height="mainHeight" :width="mainWidth" />
+      <the-canvas :height="mainHeight" :width="mainWidth" />
     </main>
     <footer class="h-[48px] shrink-0 border-t border-gray-200 bg-transparent bg-white">
       <ProjectHomeButton />

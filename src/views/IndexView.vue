@@ -5,21 +5,19 @@ import DeleteProjectDialog from '@/components/DeleteProjectDialog.vue';
 import DetailEditor from '@/components/DetailEditor.vue';
 import MenuItem from '@/components/MenuItem.vue';
 import NavBacklogItem from '@/components/NavBacklogItem.vue';
+import NavTestItem from '@/components/NavTestItem.vue';
 import NavTodayItem from '@/components/NavTodayItem.vue';
 import RenameProjectDialog from '@/components/RenameProjectDialog.vue';
 import SettingsButton from '@/components/SettingsButton.vue';
 import MagicDraggable from '@/components/common/MagicDraggable.vue';
+import MenuToggleButton from '@/components/common/MenuToggleButton.vue';
 import { type Project } from '@/openapi';
 import { useBacklogStore, useDataStore } from '@/stores';
-import { useDebounceFn, useIntervalFn, useWindowSize } from '@vueuse/core';
-import { onUnmounted, watchEffect } from 'vue';
+import { useDebounceFn, useIntervalFn } from '@vueuse/core';
+import { onUnmounted } from 'vue';
 import { RouterView } from 'vue-router';
-import NavTestItem from '@/components/NavTestItem.vue';
-import ExpandIcon from '@/components/icon/ExpandIcon.vue';
-import MenuToggleButton from '@/components/common/MenuToggleButton.vue';
 const dataStore = useDataStore();
 
-const { width, height } = useWindowSize();
 const backlogStore = useBacklogStore();
 
 backlogStore.fetch();
@@ -37,11 +35,6 @@ const debounceDataFn = useDebounceFn((_mutation, state) => {
   }
 }, 1000);
 dataStore.$subscribe(debounceDataFn);
-
-watchEffect(() => {
-  dataStore.viewWidth = width.value;
-  dataStore.viewHeight = height.value;
-});
 
 const { pause } = useIntervalFn(() => {
   const now = new Date();

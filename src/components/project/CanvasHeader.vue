@@ -2,6 +2,11 @@
 import { computed } from 'vue';
 import { days, ONE_DAY_MS, useDataStore } from '@/stores';
 
+const props = defineProps<{
+  height: number;
+  width: number;
+}>();
+
 const graph = useDataStore();
 
 const project = graph.project;
@@ -10,7 +15,7 @@ const offsetX = computed(() => Math.floor(-project?.x! / graph.cardWidth));
 
 const numbers = computed(() =>
   Array.from(
-    { length: Math.ceil(graph.viewWidth / graph.cardWidth) },
+    { length: Math.ceil(props.width / graph.cardWidth) + 1 },
     (_, i) => i + (offsetX.value < 0 ? offsetX.value + 1 : offsetX.value) - 2
   )
 );
@@ -46,11 +51,7 @@ const todayIndex = computed(() => {
 <template>
   <div class="canvas-header">
     <div class="container">
-      <div
-        v-for="n in numbers"
-        :key="n"
-        :class="['item time-cell', { today: n + 1 === todayIndex }]"
-      >
+      <div v-for="n in numbers" :key="n" :class="['item time-cell', { today: n + 1 === todayIndex }]">
         {{ showDateInfo(n) }}
       </div>
     </div>

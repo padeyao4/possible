@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, type Ref } from 'vue';
-import { useDataStore } from '@/stores';
+import { computed, onMounted, ref, type Ref, watch } from 'vue';
+import { cross, useDataStore } from '@/stores';
 import {
   ClickCanvasMenu,
   ClickCard,
@@ -16,10 +16,36 @@ import CanvasCard from '@/components/project/CanvasCard.vue';
 import CanvasPath from '@/components/project/CanvasPath.vue';
 import CanvasMenu from '@/components/CanvasMenu.vue';
 
+const props = defineProps<{
+  height: number;
+  width: number;
+}>();
+
+
 const graph = useDataStore();
 const project = graph.project;
+
 const svg = ref<SVGSVGElement>();
-const cards = computed(() => graph.drawableCards);
+const bounds = ref({
+  x: 0,
+  y: 0,
+  w: 0,
+  h: 0
+});
+
+watch([() => props.width, () => props.height, () => project?.x, () => project?.y], () => {
+  if (svg.value) {
+    const rect = svg.value.getBoundingClientRect();
+    bounds.value = {
+      x: -(project?.x ?? 0),
+      y: -(project?.y ?? 0),
+      w: rect.width,
+      h: rect.height
+    };
+  }
+});
+
+const cards = computed(() => graph.currentCards.filter((card) => cross(bounds.value, card)));
 const paths = computed(() => graph.currentPaths);
 
 onMounted(() => {
