@@ -466,6 +466,7 @@ export const useDataStore = defineStore('graph', {
           projects!.forEach((project) => this.projectsMap.set(project.id!, project));
           nodes!.forEach((node) => this.nodesMap.set(node.id!, node));
           edges!.forEach((edge) => this.addEdge(edge));
+          this.updateNodes();
         })
         .finally(() => {
           this.loading = false;

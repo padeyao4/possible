@@ -1,19 +1,19 @@
 <script lang="ts" setup>
-import { useBacklogStore, useDataStore } from '@/stores';
-import { RouterView } from 'vue-router';
-import NavTodayItem from '@/components/NavTodayItem.vue';
-import NavBacklogItem from '@/components/NavBacklogItem.vue';
-import MenuItem from '@/components/MenuItem.vue';
 import CreateProjectButton from '@/components/CreateProjectButton.vue';
-import SettingsButton from '@/components/SettingsButton.vue';
 import CreateProjectDialog from '@/components/CreateProjectDialog.vue';
 import DeleteProjectDialog from '@/components/DeleteProjectDialog.vue';
 import DetailEditor from '@/components/DetailEditor.vue';
+import MenuItem from '@/components/MenuItem.vue';
+import NavBacklogItem from '@/components/NavBacklogItem.vue';
+import NavTodayItem from '@/components/NavTodayItem.vue';
 import RenameProjectDialog from '@/components/RenameProjectDialog.vue';
+import SettingsButton from '@/components/SettingsButton.vue';
 import MagicDraggable from '@/components/common/MagicDraggable.vue';
 import { BacklogControllerApi, DataStoreControllerApi, type Project } from '@/openapi';
-import { useDebounceFn, useWindowSize } from '@vueuse/core';
-import { watchEffect } from 'vue';
+import { useBacklogStore, useDataStore } from '@/stores';
+import { useDebounceFn, useIntervalFn, useWindowSize } from '@vueuse/core';
+import { onUnmounted, watchEffect } from 'vue';
+import { RouterView } from 'vue-router';
 const dataStore = useDataStore();
 
 const { width, height } = useWindowSize();
@@ -44,6 +44,17 @@ watchEffect(() => {
   dataStore.viewHeight = height.value;
 });
 
+const { pause } = useIntervalFn(() => {
+  const now = new Date();
+  if (now.getHours() === 0 && now.getMinutes() === 0) {
+    dataStore.updateNodes();
+  }
+  dataStore.timestamp = now.getTime();
+}, 60 * 1000); // 每分钟检查一次
+
+onUnmounted(() => {
+  pause(); // 组件卸载时清除定时器
+});
 
 function handleUpdate(p1: Project, p2: Project) {
   [p1.index, p2.index] = [p2.index, p1.index];
