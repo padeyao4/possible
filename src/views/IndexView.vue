@@ -80,10 +80,15 @@ const isDev = import.meta.env.MODE !== 'production';
         <settings-button />
       </footer>
     </div>
-    <router-view :key="$route.fullPath" class="min-w-48 flex-grow rounded-tl-lg" />
+    <router-view :key="$route.fullPath" class="min-w-48 flex-grow route-container" />
     <detail-editor />
   </div>
   <create-project-dialog />
   <delete-project-dialog />
   <rename-project-dialog />
 </template>
+<style scoped>
+.route-container {
+  border-radius: 8px 0 0 0;
+}
+</style>

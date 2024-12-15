@@ -13,7 +13,10 @@ interface ConfType {
   icon?: string;
   action?: () => void;
   group?: ConfType[][];
+  visible?: boolean;
 }
+
+const isDev = import.meta.env.DEV;
 
 /**
  * 菜单列表
@@ -39,15 +42,16 @@ const conf = {
       {
         name: '追加节点',
         icon: 'append',
-        action: () => { }
+        action: appendNode
       },
       {
         name: '插入节点',
         icon: 'insert',
-        action: () => { }
+        action: insertNode
       },
       {
         name: '测试',
+        visible: isDev,
         action: test
       }
     ],
@@ -120,6 +124,15 @@ function test() {
   menuModel.visible = false;
 }
 
+function appendNode() {
+  graph.appendNode(menuModel.itemId);
+  menuModel.visible = false;
+}
+
+function insertNode() {
+  graph.insertNode(menuModel.itemId);
+  menuModel.visible = false;
+}
 
 function stripNode() {
   graph.stripNode(menuModel.itemId);
@@ -200,9 +213,11 @@ const list = computed(() => {
   <div v-if="menuModel.visible" ref="menuRef" :style="{ top: menuModel.top + 'px', left: menuModel.left + 'px' }"
     class="container" tabindex="0" @blur="menuModel.visible = false" @contextmenu.prevent>
     <div v-for="(group, groupIndex) in list" :key="groupIndex" class="group">
-      <div v-for="(item, itemIndex) in group" :key="itemIndex" class="item" @click="item.action">
-        {{ item.name }}
-      </div>
+      <template v-for="(item, itemIndex) in group" :key="itemIndex">
+        <div v-if="item.visible === undefined || item.visible === true" class="item" @click="item.action">
+          {{ item.name }}
+        </div>
+      </template>
     </div>
   </div>
 </template>

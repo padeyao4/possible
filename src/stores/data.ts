@@ -458,14 +458,96 @@ export const useDataStore = defineStore('graph', {
     /**
      * 追加节点,会是后续节点后移，并继承所有连线关系
      */
-    appendNode(node: Node) {
-      // todo 追加节点
+    appendNode(item: Node | string) {
+      const node = typeof item === 'string' ? this.nodesMap.get(item)! : item;
+      const visited = new Set<string>();
+      this.outEdgesMap.get(node.id!)?.forEach((edge) => {
+        const { target } = edge;
+        const targetNode = this.nodesMap.get(target!)!;
+        if (targetNode.x === node.x! + node.w!) {
+          this.getOutChildrenNodes(targetNode)
+            .filter((child) => !visited.has(child.id!))
+            .forEach((child) => {
+              child.x! += 1;
+              visited.add(child.id!);
+            });
+        }
+      });
+      const newNodeId = v4();
+      this.addNode({
+        ...node,
+        id: newNodeId,
+        name: 'untitled',
+        w: 1,
+        h: 1,
+        x: node.x! + node.w!,
+        y: node.y!,
+        status: false
+      });
+      // 处理边
+      this.outEdgesMap.get(node.id!)?.forEach((edge) => {
+        this.removeEdge(edge);
+        this.addEdge({
+          id: v4(),
+          source: newNodeId,
+          target: edge.target!,
+          projectId: node.projectId!
+        })
+      });
+      this.addEdge({
+        id: v4(),
+        source: node.id!,
+        target: newNodeId,
+        projectId: node.projectId!
+      });
     },
     /**
      * 插入节点,会插入到指定位置，并继承所有连线关系
      */
-    insertNode(node: Node) {
-      // todo 插入节点
+    insertNode(item: Node | string) {
+      const node = typeof item === 'string' ? this.nodesMap.get(item)! : item;
+      const visited = new Set<string>();
+
+      // 创建新节点
+      const newNodeId = v4();
+      this.addNode({
+        ...node,
+        id: newNodeId,
+        name: 'untitled',
+        w: 1,
+        h: 1,
+        x: node.x!,
+        y: node.y!,
+        status: false
+      });
+
+      // 将目标节点及其所有子节点向右移动一格
+      this.getOutChildrenNodes(node)
+        .filter((child) => !visited.has(child.id!))
+        .forEach((child) => {
+          child.x! += 1;
+          visited.add(child.id!);
+        });
+
+
+      // 处理入边 - 将原来指向node的边指向新节点
+      this.inEdgesMap.get(node.id!)?.forEach((edge) => {
+        this.removeEdge(edge);
+        this.addEdge({
+          id: v4(),
+          source: edge.source!,
+          target: newNodeId,
+          projectId: node.projectId!
+        });
+      });
+
+      // 添加新节点到原节点的边
+      this.addEdge({
+        id: v4(),
+        source: newNodeId,
+        target: node.id!,
+        projectId: node.projectId!
+      });
     },
     /**
      * 获取项目数据
