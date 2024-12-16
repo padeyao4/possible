@@ -27,7 +27,7 @@ const translateY = computed(() => (project?.y! % graph.cardHeight) - graph.cardH
 </script>
 
 <template>
-  <div class="canvas-ruler">
+  <div class="canvas-ruler pl-5">
     <div class="container">
       <div v-for="item in rulers" class="ruler-unit" :key="item" :style="{ height: `${graph.cardHeight}px` }">
         {{ item + y }}
@@ -38,8 +38,7 @@ const translateY = computed(() => (project?.y! % graph.cardHeight) - graph.cardH
 
 <style scoped>
 .canvas-ruler {
-  width: 40px;
-  padding-left: 16px;
+  width: 50px;
   overflow-y: hidden;
   background-color: transparent;
   border-right: 1px solid rgba(27, 31, 35, 0.06);

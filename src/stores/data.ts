@@ -121,7 +121,7 @@ export const useDataStore = defineStore('graph', {
     edgesMap: new Map<string, Edge>(),
     inEdgesMap: new Map<string, Set<Edge>>(), // Map中的ID表示edge中的target,Set中的Edge表示所有指向该节点的边
     outEdgesMap: new Map<string, Set<Edge>>(), // Map中的ID表示edge中的source,Set中的Edge表示所有从该节点出发的边
-    menuWidth: 240, // 菜单栏宽度
+    menuWidth: 260, // 菜单栏宽度
     menuVisible: true, // 菜单栏是否显示
     editorWidth: 0, // 编辑框宽度
     editorVisible: true, // 编辑框是否显示

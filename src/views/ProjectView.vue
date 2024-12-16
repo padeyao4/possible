@@ -82,7 +82,7 @@ onUnmounted(() => {
 <style>
 .main {
   grid-template-rows: 40px 1fr;
-  grid-template-columns: 40px calc(100% - 40px);
+  grid-template-columns: 50px calc(100% - 50px);
   background-color: #f2f4f7;
 }
 

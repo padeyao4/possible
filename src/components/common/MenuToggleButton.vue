@@ -6,8 +6,8 @@ const dataStore = useDataStore();
 </script>
 
 <template>
-    <div class="flex h-6 w-6 items-center justify-center rounded-md hover:bg-blue-50"
+    <div class="flex h-6 w-6 items-center justify-center rounded-md hover:bg-blue-50/50"
         @click="dataStore.menuVisible = !dataStore.menuVisible">
-        <expand-icon class="text-gray-600 text-[10px]" />
+        <expand-icon class="text-gray-400 text-[10px]" />
     </div>
 </template>

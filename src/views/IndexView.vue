@@ -12,11 +12,44 @@ import SettingsButton from '@/components/SettingsButton.vue';
 import MagicDraggable from '@/components/common/MagicDraggable.vue';
 import MenuToggleButton from '@/components/common/MenuToggleButton.vue';
 import { type Project } from '@/openapi';
-import { useBacklogStore, useDataStore } from '@/stores';
+import { useBacklogStore, useCursor, useDataStore } from '@/stores';
 import { useDebounceFn, useIntervalFn } from '@vueuse/core';
-import { onUnmounted } from 'vue';
+import { onUnmounted, ref } from 'vue';
 import { RouterView } from 'vue-router';
 const dataStore = useDataStore();
+const resizer = ref<HTMLElement>();
+let startX = 0;
+let startWidth = 0;
+
+const cursor = useCursor();
+
+function initDrag(e: MouseEvent) {
+  startX = e.clientX;
+  startWidth = dataStore.menuWidth;
+  document.addEventListener('mousemove', doDrag);
+  document.addEventListener('mouseup', stopDrag);
+  cursor.lock('col-resize');
+  document.body.style.userSelect = 'none';
+}
+
+function doDrag(e: MouseEvent) {
+  const newLocal = startWidth + e.clientX - startX;
+  if (newLocal <= 260) {
+    dataStore.menuWidth = 260;
+    dataStore.menuVisible = false;
+  } else {
+    dataStore.menuWidth = Math.min(460, newLocal);
+    dataStore.menuVisible = true;
+  }
+}
+
+function stopDrag() {
+  document.removeEventListener('mousemove', doDrag);
+  document.removeEventListener('mouseup', stopDrag);
+  document.body.style.userSelect = '';
+  cursor.unlock();
+  cursor.setWithUnlock('default');
+}
 
 const backlogStore = useBacklogStore();
 
@@ -76,6 +109,12 @@ const isDev = import.meta.env.MODE !== 'production';
         <settings-button />
       </footer>
     </div>
+    <div v-if="dataStore.menuVisible" ref="resizer" class="absolute inset-0 hover:cursor-col-resize" :style="{
+      width: '5px',
+      left: `${dataStore.menuWidth}px`,
+      zIndex: 999,
+      backgroundColor: 'transparent'
+    }" @mousedown="initDrag" />
     <router-view :key="$route.fullPath" class="min-w-48 flex-grow route-container" />
     <detail-editor />
   </div>
