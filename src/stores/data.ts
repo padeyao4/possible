@@ -331,7 +331,7 @@ export const useDataStore = defineStore('graph', {
     todayNodes: (state) => {
       const currentIndex = days(state.timestamp);
       return Array.from(state.nodesMap.values())
-        .filter((node) => node.x! + node.w! - 1 === currentIndex)
+        .filter((node) => node.x! <= currentIndex && node.x! + node.w! - 1 >= currentIndex)
         .sort((a, b) => a.index! - b.index!);
     },
     /**
