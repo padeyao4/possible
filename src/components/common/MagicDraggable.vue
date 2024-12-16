@@ -13,16 +13,14 @@
     </MagicDraggable>
 </template>
 -->
-<script setup lang="ts" generic="T extends { [key: string]: any }">
+<script setup lang="ts">
 import { reactive } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import { useCursor } from '@/stores/cursor';
 
-interface Props {
-  update: (current: T, other: T) => void;
-  list: T[];
-  handle?: string;
-  idAttr?: string;
+export interface T {
+  id?: string;
+  [key: string]: any;
 }
 
 /**
@@ -36,26 +34,31 @@ const {
   handle = 'data-draggable-move',
   list,
   idAttr = 'data-draggable-id'
-} = defineProps<Props>();
+} = defineProps<{
+  update: (current: T, other: T) => void;
+  list: T[];
+  handle?: string;
+  idAttr?: string;
+}>();
 
 const cursor = useCursor();
 
 const viewModel = reactive({
   refsMap: new Map<string, HTMLElement>(),
   start: {
-    x: <number>undefined,
-    y: <number>undefined
+    x: 0,
+    y: 0
   },
   end: {
-    x: <number>undefined,
-    y: <number>undefined
+    x: 0,
+    y: 0
   },
   origin: {
-    x: <number>undefined,
-    y: <number>undefined
+    x: 0,
+    y: 0
   },
-  clone: <HTMLElement>undefined, // 拖拽的元素
-  target: <HTMLElement>undefined // 点击后选择的元素
+  clone: null as HTMLElement | null, // 拖拽的元素
+  target: null as HTMLElement | null // 点击后选择的元素
 });
 
 function setRefs(e: Element, id: string) {
@@ -89,7 +92,7 @@ useEventListener(['pointermove'], (e) => {
   viewModel.clone.style.left = `${viewModel.origin.x + viewModel.end.x - viewModel.start.x}px`;
   const r1 = viewModel.clone.getBoundingClientRect();
   const draggableEl = Array.from(viewModel.refsMap.values())
-    .filter((el) => el.getAttribute(idAttr) !== viewModel.target.getAttribute(idAttr))
+    .filter((el) => el.getAttribute(idAttr) !== viewModel.target?.getAttribute(idAttr))
     .find((el) => {
       const r2 = el.getBoundingClientRect();
       return isIntersect(r1, r2) && isInLine(r1, r2);
@@ -99,11 +102,11 @@ useEventListener(['pointermove'], (e) => {
     const targetId = draggableEl.getAttribute(idAttr);
     const source = list.find((item) => item.id === sourceId);
     const target = list.find((item) => item.id === targetId);
-    update(source as T, target as T);
+    update(source!, target!);
   }
 });
 
-useEventListener(['pointerup', 'pointercancel'], (e) => {
+useEventListener(['pointerup', 'pointercancel'], () => {
   if (!viewModel.target || !viewModel.clone) return;
   document.body.removeChild(viewModel.clone);
   viewModel.target.style.opacity = '1';
@@ -133,37 +136,32 @@ function pointerDown(e: PointerEvent) {
 
   // 获取最底层可拖动元素
   const attrId = clickEl.getAttribute(handle);
-  const el = viewModel.refsMap.get(attrId);
-  const bound = el.getBoundingClientRect();
+  const el = viewModel.refsMap.get(attrId!);
+  const bound = el!.getBoundingClientRect();
 
   // 记录原始位置
   viewModel.origin.x = bound.left;
   viewModel.origin.y = bound.top;
 
   // 创建克隆元素
-  viewModel.clone = el.cloneNode(true) as HTMLElement;
+  viewModel.clone = el!.cloneNode(true) as HTMLElement;
   viewModel.clone.style.position = 'fixed';
   viewModel.clone.style.top = `${bound.top}px`;
   viewModel.clone.style.left = `${bound.left}px`;
   viewModel.clone.style.width = `${bound.width}px`;
   for (let child of viewModel.clone.children) {
-    (<HTMLElement>child).style.boxShadow = '0 0 5px 2px rgba(0, 0, 0, 0.2)';
+    (child as HTMLElement).style.boxShadow = '0 0 5px 2px rgba(0, 0, 0, 0.2)';
   }
   document.body.appendChild(viewModel.clone);
 
-  viewModel.target = el;
-  el.style.opacity = '0';
+  viewModel.target = el!;
+  el!.style.opacity = '0';
 }
 </script>
 
 <template>
-  <div
-    v-for="item in list"
-    :key="item.id"
-    :[idAttr]="item.id"
-    :ref="(e) => setRefs(e as Element, item.id)"
-    @pointerdown="pointerDown"
-  >
+  <div v-for="item in list" :key="item.id" :[idAttr]="item.id" :ref="(e) => setRefs(e as Element, item.id!)"
+    @pointerdown="pointerDown">
     <slot name="default" :item="item" />
   </div>
 </template>

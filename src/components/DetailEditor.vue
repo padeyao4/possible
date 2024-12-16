@@ -52,29 +52,29 @@ emitter.on('open-canvas-card-editor', (params) => {
   if (editorModel.itemId === params.nodeId) {
     editorModel.itemId = null;
     editorModel.contentKey = 'node';
-    graph.editorWidth = 0;
+    graph.editorVisible = false;
   } else {
     editorModel.itemId = params.nodeId;
     editorModel.contentKey = 'node';
-    graph.editorWidth = 300;
+    graph.editorVisible = true;
   }
 });
 
 emitter.on('open-canvas-card-editor-by-menu', (params) => {
   editorModel.itemId = params.nodeId;
   editorModel.contentKey = 'node';
-  graph.editorWidth = 300;
+  graph.editorVisible = true;
 });
 
 emitter.on('open-backlog-editor', (params) => {
   if (editorModel.itemId === params.id) {
     editorModel.itemId = null;
     editorModel.contentKey = 'backlog';
-    graph.editorWidth = 0;
+    graph.editorVisible = false;
   } else {
     editorModel.itemId = params.id!;
     editorModel.contentKey = 'backlog';
-    graph.editorWidth = 300;
+    graph.editorVisible = true;
   }
 });
 
@@ -83,7 +83,8 @@ emitter.on('open-backlog-editor', (params) => {
  */
 useEventListener(document, 'keydown', (e) => {
   if (e.key === 'Escape') {
-    graph.editorWidth = 0;
+    graph.editorVisible = false;
+    editorModel.itemId = null;
   }
 });
 
@@ -96,34 +97,21 @@ function handleDeleteButton() {
 }
 
 function handleCloseButton() {
-  graph.editorWidth = 0;
+  graph.editorVisible = false;
   editorModel.itemId = null;
 }
 </script>
 
 <template>
   <div v-if="graph.editorWidth !== 0" class="flex h-screen flex-col">
-    <header
-      class="drag-region mb-3 flex w-full shrink-0 items-end justify-between"
-      style="height: 36px"
-    >
-      <close-icon-button
-        class="no-drag-region ml-2.5 rounded-md border border-gray-300"
-        @click="handleCloseButton"
-      />
+    <header class="drag-region mb-3 flex w-full shrink-0 items-end justify-between" style="height: 36px">
+      <close-icon-button class="no-drag-region ml-2.5 rounded-md border border-gray-300" @click="handleCloseButton" />
     </header>
     <el-scrollbar class="grow">
       <template v-if="content && itemModel">
         <div v-for="item in content" :key="item.name" class="m-3">
-          <el-input
-            autosize
-            input-style="padding: 16px;"
-            v-model="itemModel[item.name]"
-            :placeholder="item.placeholder"
-            resize="none"
-            size="large"
-            type="textarea"
-          />
+          <el-input autosize input-style="padding: 16px;" v-model="itemModel[item.name]" :placeholder="item.placeholder"
+            resize="none" size="large" type="textarea" />
         </div>
       </template>
       <template v-else>

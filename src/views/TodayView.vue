@@ -2,7 +2,7 @@
 import { type DateType, useDataStore } from '@/stores';
 import { computed, ref } from 'vue';
 import ECounterButton from '@/components/common/CounterButton.vue';
-import EDraggable from '@/components/common/MagicDraggable.vue';
+import MagicDraggable from '@/components/common/MagicDraggable.vue';
 import TodayItem from '@/components/TodayItem.vue';
 import { type Node } from '@/openapi';
 import BasePageLayout from '@/components/layout/BasePageLayout.vue';
@@ -36,20 +36,20 @@ function onUpdate(n1: Node, n2: Node) {
     <template #subtitle>
       <div class="text-xs text-gray-500">{{ dateTime }}</div>
     </template>
-    
-    <div v-if="true" />
+
+    <div v-if="graph.todayNodes.length === 0" />
     <template v-else>
-      <e-draggable :update="onUpdate" :list="[]" handle="data-move">
+      <MagicDraggable :update="onUpdate" :list="graph.todoNodes">
         <template #default="{ item }">
-          <today-item :node="item" class="odd:my-1" />
+          <today-item :node="item" class="odd:my-1" @update-status="(status) => item.status = status" />
         </template>
-      </e-draggable>
-      <e-counter-button :count="0" v-model="completeVisible" />
-      <e-draggable v-if="completeVisible" :update="() => {}" :list="[]" handle="data-move">
+      </MagicDraggable>
+      <e-counter-button :count="graph.doneNodes.length" v-model="completeVisible" />
+      <MagicDraggable v-if="completeVisible" :update="onUpdate" :list="graph.doneNodes">
         <template #default="{ item }">
-          <today-item :node="item" class="my-1" />
+          <today-item :node="item" class="my-1" @update-status="(status) => item.status = status" />
         </template>
-      </e-draggable>
+      </MagicDraggable>
       <div class="h-1" />
     </template>
   </base-page-layout>

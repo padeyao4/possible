@@ -123,8 +123,8 @@ export const useDataStore = defineStore('graph', {
     outEdgesMap: new Map<string, Set<Edge>>(), // Map中的ID表示edge中的source,Set中的Edge表示所有从该节点出发的边
     menuWidth: 260, // 菜单栏宽度
     menuVisible: true, // 菜单栏是否显示
-    editorWidth: 0, // 编辑框宽度
-    editorVisible: true, // 编辑框是否显示
+    editorWidth: 300, // 编辑框宽度
+    editorVisible: false, // 编辑框是否显示
     cardWidth: 120, // 实际卡片宽度
     cardHeight: 80, // 实际卡片高度
     loading: false, // 加载状态
@@ -324,6 +324,27 @@ export const useDataStore = defineStore('graph', {
      */
     currentIndex: (state) => {
       return days(state.timestamp);
+    },
+    /**
+     * 获取所有项目下所有当前时间戳的节点
+     */
+    todayNodes: (state) => {
+      const currentIndex = days(state.timestamp);
+      return Array.from(state.nodesMap.values())
+        .filter((node) => node.x! + node.w! - 1 === currentIndex)
+        .sort((a, b) => a.index! - b.index!);
+    },
+    /**
+     * 获取所有项目下所有当前时间戳的未处理节点
+     */
+    todoNodes(): Node[] {
+      return this.todayNodes.filter((node) => !node.status);
+    },
+    /**
+     * 获取所有项目下所有当前时间戳的已处理节点
+     */
+    doneNodes(): Node[] {
+      return this.todayNodes.filter((node) => node.status);
     }
   },
   actions: {

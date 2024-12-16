@@ -16,8 +16,6 @@ type CustomEvents = {
     itemId?: string;
   };
   'open-canvas-card-editor': {
-    x: number;
-    y: number;
     nodeId: string;
   };
   'open-canvas-card-editor-by-menu': {

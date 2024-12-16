@@ -2,18 +2,21 @@
 import { ref } from 'vue';
 import { Check } from '@element-plus/icons-vue';
 import { emitter } from '@/utils';
-import type { Backlog } from '@/stores';
-import type { BacklogViewModel } from '@/views/BacklogView.vue';
+import type { Backlog } from '@/openapi';
 
-const { item, backlogViewModel } = defineProps<{
+const { item } = defineProps<{
   item: Backlog;
-  backlogViewModel: BacklogViewModel;
 }>();
 
-const handleIconClick = () => (item.status = !item.status);
+const emit = defineEmits<{
+  'update-status': [status: boolean]
+  'select': [id: string | undefined]
+}>();
+
+const handleIconClick = () => emit('update-status', !item.status);
 
 const handleClick = () => {
-  backlogViewModel.selectId = item.id;
+  emit('select', item.id);
   emitter.emit('open-backlog-editor', item);
 };
 

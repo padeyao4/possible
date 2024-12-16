@@ -34,7 +34,7 @@ function handleUpdate(b1: Backlog, b2: Backlog) {
   <base-page-layout title="备忘录" backgroundColor="#a0b6cd">
     <magic-draggable :update="handleUpdate" :list="backlogStore.todoBacklogs">
       <template #default="{ item }">
-        <backlog-item :item="item" :backlog-view-model="viewModel" />
+        <backlog-item :item="item" @update-status="(status) => item.status = status" @select="(id) => id && (viewModel.selectId = id)" />
       </template>
     </magic-draggable>
     <e-counter-button :count="backlogStore.doneBacklogs.length" v-model="viewModel.doneBacklogsVisible" />
@@ -44,11 +44,11 @@ function handleUpdate(b1: Backlog, b2: Backlog) {
       :list="backlogStore.doneBacklogs"
     >
       <template #default="{ item }">
-        <backlog-item :item="item" :backlog-view-model="viewModel" />
+        <backlog-item :item="item" @update-status="(status) => item.status = status" @select="(id) => id && (viewModel.selectId = id)" />
       </template>
     </magic-draggable>
     <template #footer>
-      <div class="mx-3 my-4 flex h-12 shrink-0 flex-row items-center overflow-hidden rounded-md">
+      <div class="mx-5 my-4 flex h-12 shrink-0 flex-row items-center overflow-hidden rounded-md">
         <div class="flex h-full w-14 shrink-0 items-center justify-center bg-white">
           <span class="icon-[fe--plus] h-6 w-6 bg-gray-500"></span>
         </div>
