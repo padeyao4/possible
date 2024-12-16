@@ -20,8 +20,8 @@ export class DragCanvas extends BaseBehavior {
     this.position.y = e.y;
     const { x, y } = this.project;
 
-    this.offset.x = x;
-    this.offset.y = y;
+    this.offset.x = x!;
+    this.offset.y = y!;
     this.mouseStyle.lock('grabbing');
   }
 

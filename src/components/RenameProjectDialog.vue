@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
-import { type Project } from '@/stores';
 import { emitter } from '@/utils';
+import type { Project } from '@/openapi';
 
 const dialogModel = reactive({
   visible: false,
-  project: <Project>undefined
+  project: null as Project | null
 });
 
 emitter.on('edite-project-name', (params) => {
