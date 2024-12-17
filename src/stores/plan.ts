@@ -152,8 +152,8 @@ export const usePlanStore = defineStore('plan', {
         },
         todayPlans(): Plan[] {
             const set = new Set(this.backlogsList);
-            const dataStore = useLayoutStore();
-            const idx = days(dataStore.timestamp);
+            const layoutStore = useLayoutStore();
+            const idx = days(layoutStore.timestamp);
 
             // 提取通用的过滤条件
             const isInTimeRange = (plan: Plan) => idx >= plan.x! && idx < plan.x! + plan.width!;

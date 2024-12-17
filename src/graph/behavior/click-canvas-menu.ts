@@ -1,4 +1,4 @@
-import { BaseBehavior, type EventDispatch } from '@/graph/base';
+import { BaseBehavior, GRAPH_ITEM_ID, type EventDispatch } from '@/graph';
 import { emitter } from '@/utils';
 
 export class ClickCanvasMenu extends BaseBehavior {
@@ -11,7 +11,7 @@ export class ClickCanvasMenu extends BaseBehavior {
   }
 
   handleEvent(e: PointerEvent, menuType: 'canvas' | 'node' | 'edge') {
-    const itemId = (<HTMLElement>e.target).getAttribute('data-graph-item-id')!;
+    const itemId = (<HTMLElement>e.target).getAttribute(GRAPH_ITEM_ID)!;
 
     emitter.emit('open-canvas-menu', {
       menuType: menuType,

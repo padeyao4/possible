@@ -1,6 +1,7 @@
 import mitt from 'mitt';
 import type { Project } from '@/openapi';
 import type { Backlog } from '@/openapi';
+import type { Plan } from '@/stores';
 
 /**
  * @description
@@ -8,7 +9,7 @@ import type { Backlog } from '@/openapi';
  */
 type CustomEvents = {
   'open-create-project-dialog': null;
-  'open-delete-project-dialog': Project;
+  'open-delete-project-dialog': Plan;
   'open-canvas-menu': {
     menuType: 'canvas' | 'node' | 'edge';
     x: number;

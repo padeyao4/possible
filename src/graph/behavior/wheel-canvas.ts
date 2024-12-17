@@ -1,4 +1,4 @@
-import { BaseBehavior, type EventDispatch } from '@/graph/base';
+import { BaseBehavior, type EventDispatch } from '@/graph';
 
 export class WheelCanvas extends BaseBehavior {
   getEventDispatch(): EventDispatch {

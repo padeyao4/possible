@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { usePlanStore, type Plan } from '@/stores';
 import { emitter } from '@/utils';
-import { useLayoutStore } from '@/stores';
+import { reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import type { Project } from '@/openapi';
 
 const model = reactive({
   visible: false,
-  project: undefined as Project | undefined
+  project: undefined as Plan | undefined
 });
 
 const router = useRouter();
 const route = useRoute();
-const graph = useLayoutStore();
+const planStore = usePlanStore();
 
 emitter.on('open-delete-project-dialog', (project) => {
   model.project = project;
@@ -25,23 +24,14 @@ const handleDelete = () => {
     route.query.id === model.project?.id &&
     router.push({ name: 'today' });
   setTimeout(() => {
-    graph.removeProject(model.project!);
+    planStore.removePlan(model.project?.id!);
   });
 };
 </script>
 
 <template>
-  <el-dialog
-    v-model="model.visible"
-    title="删除"
-    width="500"
-    align-center
-    style="border-radius: 6px !important"
-  >
-    <el-text truncated
-      >确定删除 <i>"{{ model.project?.name }}"</i
-      > 项目吗</el-text
-    >
+  <el-dialog v-model="model.visible" title="删除" width="500" align-center style="border-radius: 6px !important">
+    <el-text truncated>确定删除 <i>"{{ model.project?.name }}"</i> 项目吗</el-text>
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="model.visible = false">取消</el-button>

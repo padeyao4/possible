@@ -102,27 +102,8 @@ emitter.on('open-canvas-menu', (param) => {
 });
 
 function test() {
-  // const nodes = graph.getOutChildrenNodes(menuModel.itemId);
-  // nodes.forEach((node) => {
-  //   console.log(node.name);
-  // });
-  // menuModel.visible = false;
 }
 
-// function appendNode() {
-//   planStore.appendNode(menuModel.itemId);
-//   menuModel.visible = false;
-// }
-
-// function insertNode() {
-//   graph.insertNode(menuModel.itemId);
-//   menuModel.visible = false;
-// }
-
-// function stripNode() {
-//   graph.stripNode(menuModel.itemId);
-//   menuModel.visible = false;
-// }
 
 function deleteNode() {
   planStore.removePlan(menuModel.itemId);

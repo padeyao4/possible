@@ -7,7 +7,7 @@ import { useEventListener } from '@vueuse/core';
 import { computed, reactive } from 'vue';
 
 const planStore = usePlanStore();
-const graph = useLayoutStore();
+const layoutStore = useLayoutStore();
 
 const editorModel = reactive({
   id: null as string | null,
@@ -24,7 +24,7 @@ const content = [
 
 emitter.on('open-editor', (params) => {
   editorModel.id = params.id;
-  graph.editorVisible = !graph.editorVisible;
+  layoutStore.editorVisible = !layoutStore.editorVisible;
 });
 
 /**
@@ -32,7 +32,7 @@ emitter.on('open-editor', (params) => {
  */
 useEventListener(document, 'keydown', (e) => {
   if (e.key === 'Escape') {
-    graph.editorVisible = false;
+    layoutStore.editorVisible = false;
     editorModel.id = null;
   }
 });
@@ -43,13 +43,13 @@ function handleDeleteButton() {
 }
 
 function handleCloseButton() {
-  graph.editorVisible = false;
+  layoutStore.editorVisible = false;
   editorModel.id = null;
 }
 </script>
 
 <template>
-  <div v-if="graph.editorVisible" class="flex h-screen flex-col">
+  <div v-if="layoutStore.editorVisible" class="flex h-screen flex-col">
     <header class="drag-region mb-3 flex w-full shrink-0 items-end justify-between" style="height: 36px">
       <close-icon-button class="no-drag-region ml-2.5 rounded-md border border-gray-300" @click="handleCloseButton" />
     </header>

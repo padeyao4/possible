@@ -4,7 +4,7 @@ import {
   GRAPH_ITEM_ID,
   GRAPH_NODE_RESIZE_REGION,
   MOUSE_STYLE
-} from '@/graph/base';
+} from '@/graph';
 import { CARD_HEIGHT, CARD_WIDTH, type Plan } from '@/stores';
 
 export class ResizeCard extends BaseBehavior {

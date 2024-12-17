@@ -6,7 +6,7 @@ import MagicDraggable from '@/components/common/MagicDraggable.vue';
 import TodayItem from '@/components/TodayItem.vue';
 import BasePageLayout from '@/components/layout/BasePageLayout.vue';
 
-const graph = useLayoutStore();
+const layoutStore = useLayoutStore();
 const completeVisible = ref(false);
 
 const planStore = usePlanStore();
@@ -24,7 +24,7 @@ function showWeekAndLocalDate(dateType: DateType) {
   return `${localDate} ${days[dayIndex]}`;
 }
 
-const dateTime = computed(() => showWeekAndLocalDate(graph.timestamp));
+const dateTime = computed(() => showWeekAndLocalDate(layoutStore.timestamp));
 
 function onUpdate(n1: Plan, n2: Plan) {
   [n1.index, n2.index] = [n2.index, n1.index];

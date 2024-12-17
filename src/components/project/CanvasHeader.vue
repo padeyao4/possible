@@ -8,7 +8,7 @@ const { project, width } = defineProps<{
   width: number;
 }>();
 
-const graph = useLayoutStore();
+const layoutStore = useLayoutStore();
 
 
 const numbers = computed(() => {
@@ -41,7 +41,7 @@ function showDateInfo(index: number) {
 }
 
 const todayIndex = computed(() => {
-  return days(graph.timestamp);
+  return days(layoutStore.timestamp);
 });
 </script>
 

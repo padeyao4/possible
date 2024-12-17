@@ -1,4 +1,4 @@
-import { BaseBehavior, type EventDispatch } from '@/graph/base';
+import { BaseBehavior, type EventDispatch } from '@/graph';
 
 export class DefaultBehavior extends BaseBehavior {
   getEventDispatch(): EventDispatch {

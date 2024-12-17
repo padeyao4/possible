@@ -1,4 +1,4 @@
-import { BaseBehavior, GRAPH_ITEM_ID, type EventDispatch } from '@/graph/base';
+import { BaseBehavior, GRAPH_ITEM_ID, type EventDispatch } from '@/graph';
 import { emitter } from '@/utils';
 
 export class ClickCard extends BaseBehavior {

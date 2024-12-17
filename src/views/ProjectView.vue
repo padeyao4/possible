@@ -14,9 +14,8 @@ const props = defineProps<{
   id: string;
 }>()
 
-const graph = useLayoutStore();
+const layoutStore = useLayoutStore();
 const planStore = usePlanStore();
-// const project = planStore.projects.find((p) => p.id === route.query.id);
 const project = computed(() => planStore.getPlan(props.id));
 
 const isDev = import.meta.env.MODE !== 'production';
@@ -52,7 +51,7 @@ onUnmounted(() => {
   <div class="flex h-screen flex-col border-l border-r overflow-hidden">
     <header
       class="drag-region flex h-[60px] mt-2 px-5 shrink-0 flex-col items-start justify-end pb-3 text-xl text-gray-500">
-      <menu-toggle-button v-if="!graph.menuVisible" />
+      <menu-toggle-button v-if="!layoutStore.menuVisible" />
       <div v-else class="w-6 h-6"></div>
       <div class="truncate">
         {{ project?.name }}
@@ -76,7 +75,7 @@ onUnmounted(() => {
           <line x1="12" y1="3" x2="12" y2="15" />
         </svg>
       </button>
-      <button v-if="isDev" @click="graph.timestamp += ONE_DAY_MS">
+      <button v-if="isDev" @click="layoutStore.timestamp += ONE_DAY_MS">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
           stroke="rgba(0,0,0,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10" />

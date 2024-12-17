@@ -1,4 +1,4 @@
-import { BaseBehavior, type EventDispatch } from '@/graph/base';
+import { BaseBehavior, type EventDispatch } from '@/graph';
 import type { Plan } from '@/stores';
 import type { Ref } from 'vue';
 
