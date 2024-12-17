@@ -17,14 +17,13 @@ const plan = computed(() => {
   return planStore.getPlan(editorModel.id!);
 });
 
-const content = [
-  { name: 'name', placeholder: '请输入标题' },
-  { name: 'description', placeholder: '请输入详情' },
-];
-
 emitter.on('open-editor', (params) => {
-  editorModel.id = params.id;
-  layoutStore.editorVisible = !layoutStore.editorVisible;
+  if (editorModel.id !== params.id) {
+    layoutStore.editorVisible = true;
+    editorModel.id = params.id;
+  } else {
+    layoutStore.editorVisible = !layoutStore.editorVisible;
+  }
 });
 
 /**
@@ -55,9 +54,9 @@ function handleCloseButton() {
     </header>
     <el-scrollbar class="grow">
       <template v-if="plan">
-        <div v-for="item in content" :key="item.name" class="m-3">
-          <el-input autosize input-style="padding: 16px;" v-model="plan[item.name]" :placeholder="item.placeholder"
-            resize="none" size="large" type="textarea" />
+        <div class="m-3">
+          <el-input autosize input-style="padding: 16px;" v-model="plan.name" placeholder="请输入标题" resize="none"
+            size="large" type="textarea" />
         </div>
       </template>
       <template v-else>

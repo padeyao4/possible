@@ -72,6 +72,23 @@ export class DragCard extends BaseBehavior {
       const node = this.planStore.getPlan(this.oldNode.id!);
       node!.x = Math.round(node!.x!);
       node!.y = Math.max(Math.round(node!.y!), 0);
+      // 获取所有其他计划的位置信息
+      const otherPlans = Array.from(this.planStore.plansMap.values())
+        .filter(p => p.id !== node!.id && p.parentId === this.project.id);
+      
+      // 检查是否与其他计划相交
+      const hasIntersection = otherPlans.some(other => {
+        return node!.x! < other.x! + other.width! &&
+               node!.x! + node!.width! > other.x! &&
+               node!.y! < other.y! + other.height! &&
+               node!.y! + node!.height! > other.y!;
+      });
+
+      // 如果相交则还原到原位置
+      if (hasIntersection) {
+        node!.x = this.oldNode.x;
+        node!.y = this.oldNode.y;
+      }
       this.mouseStyle.unlock();
     }
   }
