@@ -1,5 +1,5 @@
 export * from './base';
-export * from './behavior/default';
+export * from './behavior/default-behavior';
 export * from './behavior/click-card';
 export * from './behavior/click-canvas-menu';
 export * from './behavior/create-edge';

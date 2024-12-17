@@ -1,23 +1,20 @@
-import { BaseBehavior, GRAPH_ITEM_ID, type EventDispatch } from '@/graph';
+import { BaseBehavior, GRAPH_ITEM_ID, type GraphEventType, type CanvasEvent } from '@/graph';
 import { emitter } from '@/utils';
 
 export class ClickCanvasMenu extends BaseBehavior {
-  getEventDispatch(): EventDispatch {
-    return {
-      'canvas:contextmenu': (e) => this.handleEvent(<PointerEvent>e, 'canvas'),
-      'node:contextmenu': (e) => this.handleEvent(<PointerEvent>e, 'node'),
-      'edge:contextmenu': (e) => this.handleEvent(<PointerEvent>e, 'edge')
-    };
+  handleEvent(evt: GraphEventType): void {
+    if (evt.type === 'contextmenu' && evt.shape) {
+      const itemId = evt.element.getAttribute(GRAPH_ITEM_ID)!;
+      emitter.emit('open-canvas-menu', {
+        menuType: evt.shape as 'canvas' | 'node' | 'edge',
+        x: evt.event.x,
+        y: evt.event.y,
+        itemId
+      });
+    }
   }
 
-  handleEvent(e: PointerEvent, menuType: 'canvas' | 'node' | 'edge') {
-    const itemId = (<HTMLElement>e.target).getAttribute(GRAPH_ITEM_ID)!;
-
-    emitter.emit('open-canvas-menu', {
-      menuType: menuType,
-      x: e.x,
-      y: e.y,
-      itemId
-    });
+  getEvents(): Set<CanvasEvent> {
+    return new Set(['canvas:contextmenu', 'node:contextmenu', 'edge:contextmenu']);
   }
 }

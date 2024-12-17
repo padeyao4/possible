@@ -1,23 +1,35 @@
 import {
   BaseBehavior,
-  type EventDispatch,
   GRAPH_ITEM_ID,
   GRAPH_ITEM_SHAPE,
-  GRAPH_NODE_ANCHOR
+  GRAPH_NODE_ANCHOR,
+  type GraphEventType,
+  type CanvasEvent
 } from '@/graph';
 import { v4 } from 'uuid';
 import { reactive } from 'vue';
 
 export class CreateEdge extends BaseBehavior {
-  down = false;
-
-  getEventDispatch(): EventDispatch {
-    return {
-      'node:mousedown': this.onmousedown.bind(this),
-      ':mousemove': this.onmousemove.bind(this),
-      ':mouseup': this.onmouseup.bind(this)
-    };
+  handleEvent(evt: GraphEventType): void {
+    const el = evt.element;
+    switch (evt.type) {
+      case 'mousedown':
+        this.onmousedown(evt.event, el);
+        break;
+      case 'mousemove':
+        this.onmousemove(evt.event);
+        break;
+      case 'mouseup':
+        this.onmouseup(evt.event, el);
+        break;
+    }
   }
+
+  getEvents(): Set<CanvasEvent> {
+    return new Set(['node:mousedown', ':mousemove', ':mouseup']);
+  }
+
+  down = false;
 
   onmousedown(e: PointerEvent, el: Element) {
     if (e.button !== 0) return;
@@ -26,7 +38,7 @@ export class CreateEdge extends BaseBehavior {
     const nodeId = el.getAttribute(GRAPH_ITEM_ID)!;
     const direction = el.getAttribute(GRAPH_NODE_ANCHOR);
 
-    const { x, y } = this.getNumbersByEvent(e);
+    const { x, y } = this.getClientPositionByEvent(e);
 
     if (direction === 'left') {
       this.planStore.tempPath = reactive({
@@ -48,7 +60,7 @@ export class CreateEdge extends BaseBehavior {
 
   onmousemove(e: MouseEvent) {
     if (!this.down) return;
-    const { x, y } = this.getNumbersByEvent(e);
+    const { x, y } = this.getClientPositionByEvent(e);
     if (this.planStore.tempPath?.from) {
       this.planStore.tempPath!.from!.x = x;
       this.planStore.tempPath!.from!.y = y;
@@ -76,6 +88,5 @@ export class CreateEdge extends BaseBehavior {
     }
     this.planStore.tempPath = null;
     this.mouseStyle.unlock();
-    this.toggleMouseOver(e);
   }
 }

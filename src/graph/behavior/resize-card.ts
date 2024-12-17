@@ -1,19 +1,31 @@
 import {
   BaseBehavior,
-  type EventDispatch,
   GRAPH_ITEM_ID,
   GRAPH_NODE_RESIZE_REGION,
-  MOUSE_STYLE
+  MOUSE_STYLE,
+  type CanvasEvent,
+  type GraphEventType
 } from '@/graph';
 import { CARD_HEIGHT, CARD_WIDTH, type Plan } from '@/stores';
 
 export class ResizeCard extends BaseBehavior {
-  getEventDispatch(): EventDispatch {
-    return {
-      'node:mousedown': this.onmousedown.bind(this),
-      ':mousemove': this.onmousemove.bind(this),
-      ':mouseup': this.onmouseup.bind(this)
-    };
+  handleEvent(evt: GraphEventType): void {
+    const el = evt.element;
+    switch (evt.type) {
+      case 'mousedown':
+        this.onmousedown(evt.event, el);
+        break;
+      case 'mousemove':
+        this.onmousemove(evt.event);
+        break;
+      case 'mouseup':
+        this.onmouseup();
+        break;
+    }
+  }
+
+  getEvents(): Set<CanvasEvent> {
+    return new Set(['node:mousedown', ':mousemove', ':mouseup']);
   }
 
   down = false;
@@ -42,7 +54,7 @@ export class ResizeCard extends BaseBehavior {
     }
   }
 
-  onmouseup(e: MouseEvent) {
+  onmouseup() {
     if (this.down) {
       this.down = false;
       const node = this.planStore.getPlan(this.oldNode.id!)!;
@@ -51,7 +63,6 @@ export class ResizeCard extends BaseBehavior {
       node.x = Math.round(node.x!);
       node.y = Math.round(node.y!);
       this.mouseStyle.unlock();
-      this.toggleMouseOver(e);
     }
   }
 

@@ -1,17 +1,25 @@
-import { BaseBehavior, GRAPH_ITEM_ID, type EventDispatch } from '@/graph';
+import { BaseBehavior, GRAPH_ITEM_ID, type GraphEventType, type CanvasEvent } from '@/graph';
 import { emitter } from '@/utils';
 
 export class ClickCard extends BaseBehavior {
+  handleEvent(evt: GraphEventType): void {
+    switch (evt.type) {
+      case 'mousedown':
+        this.onMouseDown(evt.event);
+        break;
+      case 'mouseup':
+        this.onMouseUp(evt.event, evt.element);
+        break;
+    }
+  }
+
+  getEvents(): Set<CanvasEvent> {
+    return new Set(['node:mousedown', ':mouseup']);
+  }
+
   distance = 100;
   start = { x: 0, y: 0 };
   down = false;
-
-  getEventDispatch(): EventDispatch {
-    return {
-      'node:mousedown': this.onMouseDown.bind(this),
-      ':mouseup': this.onMouseUp.bind(this)
-    };
-  }
 
   onMouseDown(e: MouseEvent) {
     if (e.button !== 0) return;

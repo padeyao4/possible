@@ -1,14 +1,24 @@
-import { BaseBehavior, type EventDispatch } from '@/graph';
+import { BaseBehavior, type GraphEventType, type CanvasEvent } from '@/graph';
 import type { Plan } from '@/stores';
 import type { Ref } from 'vue';
 
 export class DragCanvas extends BaseBehavior {
-  getEventDispatch(): EventDispatch {
-    return {
-      'canvas:mousedown': this.onmousedown.bind(this),
-      ':mousemove': this.onmousemove.bind(this),
-      ':mouseup': this.onmouseup.bind(this)
-    };
+  handleEvent(evt: GraphEventType): void {
+    switch (evt.type) {
+      case 'mousedown':
+        this.onmousedown(evt.event);
+        break;
+      case 'mousemove':
+        this.onmousemove(evt.event);
+        break;
+      case 'mouseup':
+        this.onmouseup();
+        break;
+    }
+  }
+
+  getEvents(): Set<CanvasEvent> {
+    return new Set(['canvas:mousedown', ':mousemove', ':mouseup']);
   }
 
   isDown = false;
@@ -41,11 +51,10 @@ export class DragCanvas extends BaseBehavior {
     this.project.offsetY = Math.min(this.offset.y + dy, 0);
   }
 
-  onmouseup(e: MouseEvent) {
+  onmouseup() {
     if (this.isDown) {
       this.isDown = false;
       this.mouseStyle.unlock();
-      this.toggleMouseOver(e);
     }
   }
 }

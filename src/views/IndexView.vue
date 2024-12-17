@@ -14,7 +14,7 @@ import NavBacklogItem from '@/components/NavBacklogItem.vue';
 import NavTodayItem from '@/components/NavTodayItem.vue';
 import { useLayoutStore, usePlanStore, type Plan } from '@/stores';
 import { RouterView } from 'vue-router';
-const dataStore = useLayoutStore();
+const layoutStore = useLayoutStore();
 
 // backlogStore.fetch();
 // const debounceBacklogsFn = useDebounceFn((_mutation, state) => {
@@ -55,8 +55,8 @@ const planStore = usePlanStore();
 </script>
 
 <template>
-  <div :style="dataStore.gridTemplateColumns" class="grid h-screen w-screen">
-    <div v-if="dataStore.menuVisible" class="flex h-screen w-full flex-col">
+  <div :style="layoutStore.gridTemplateColumns" class="grid h-screen w-screen">
+    <div v-if="layoutStore.menuVisible" class="flex h-screen w-full flex-col">
       <header class="mt-2 flex h-fit flex-col border-b border-b-gray-200 pb-1">
         <menu-toggle-button class="mx-2 ml-auto" />
         <nav-today-item />

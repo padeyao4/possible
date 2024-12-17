@@ -47,114 +47,146 @@ export type EventType =
 export type GraphShape = 'canvas' | 'node' | 'edge' | '';
 export type CanvasEvent = `${GraphShape}:${EventType}`;
 
-export type EventDispatch = {
-  [key in CanvasEvent]?: (e: PointerEvent, el: Element, elType: string) => void;
+export type GraphEventType = {
+  type: EventType;
+  shape: GraphShape;
+  event: PointerEvent;
+  element: Element;
 };
 
-export abstract class BaseBehavior {
-  mouseStyle = useCursor();
-  planStore = usePlanStore();
-  project: Plan;
-  container: Ref<Element>;
+export interface IBehavior {
+  // 初始化行为
+  init?(): void;
+  // 清理行为
+  destroy?(): void;
+  // 处理事件
+  handleEvent(evt: GraphEventType): void;
+  // 获取此行为关注的事件类型
+  getEvents(): Set<CanvasEvent>;
+}
+
+export abstract class BaseBehavior implements IBehavior {
+  protected mouseStyle = useCursor();
+  protected planStore = usePlanStore();
+  protected project: Plan;
+  protected container: Ref<Element>;
 
   constructor(container: Ref<Element>, project: Plan) {
     this.container = container;
     this.project = project;
   }
 
-  /**
-   * 根据事件获取坐标获取graph中的坐标
-   * @param e
-   */
-  getPositionByEvent(e: PointerEvent) {
+  // 添加 init 方法的声明
+  init?(): void {}
+
+  // 添加 destroy 方法声明
+  destroy?(): void {}
+
+  // 获取画布坐标
+  protected getCanvasPositionByEvent(e: PointerEvent) {
     const bound = this.container.value.getBoundingClientRect();
-    const x = Math.floor((e.x - bound.left - this.project.x!) / CARD_WIDTH);
-    const y = Math.floor((e.y - bound.top - this.project.y!) / CARD_HEIGHT);
     return {
-      x,
-      y
+      x: Math.floor((e.x - bound.left - this.project.x!) / CARD_WIDTH),
+      y: Math.floor((e.y - bound.top - this.project.y!) / CARD_HEIGHT)
     };
   }
 
-  /**
-   * 根据事件获取坐标获取graph画布中的坐标,没有取整数
-   * @param e
-   */
-  getNumbersByEvent(e: MouseEvent) {
+  // 获取实际坐标
+  protected getClientPositionByEvent(e: MouseEvent) {
     const bound = this.container.value.getBoundingClientRect();
-    const x = e.x - bound.left - this.project.offsetX!;
-    const y = e.y - bound.top - this.project.offsetY!;
     return {
-      x,
-      y
+      x: e.x - bound.left - this.project.offsetX!,
+      y: e.y - bound.top - this.project.offsetY!
     };
   }
 
-  abstract getEventDispatch(): EventDispatch;
-  
-  toggleMouseOver(e: MouseEvent) {
-    const el = e.target as Element;
-    const type = el.getAttribute(MOUSE_STYLE);
-    this.mouseStyle.setWithUnlock(type !== null ? type : 'default');
-  }
-
-  toggleMouseOut() {
-    this.mouseStyle.setWithUnlock('default');
-  }
+  abstract handleEvent(evt: GraphEventType): void;
+  abstract getEvents(): Set<CanvasEvent>;
 }
 
 export class Register {
-  behaviors: BaseBehavior[];
-  container: Ref<Element>;
-  globalListenerCleanup: any;
-  project: Plan;
+  private behaviors: BaseBehavior[] = [];
+  private eventMap = new Map<CanvasEvent, BaseBehavior[]>();
+  private container: Ref<Element>;
+  private project: Plan;
+  private cleanup?: () => void;
 
   constructor(container: Ref<Element>, project: Plan) {
-    this.behaviors = [];
     this.container = container;
     this.project = project;
   }
 
-  public addBehaviors(...behaviors: (typeof BaseBehavior)[]) {
-    behaviors.forEach((b) => {
-      this.behaviors.push(Reflect.construct(b, [this.container, this.project]));
+  public addBehaviors(...behaviors: (new (container: Ref<Element>, project: Plan) => BaseBehavior)[]) {
+    behaviors.forEach((Behavior) => {
+      const behavior = new Behavior(this.container, this.project);
+      this.behaviors.push(behavior);
+      
+      // 注册行为事件
+      behavior.getEvents().forEach(eventType => {
+        if (!this.eventMap.has(eventType)) {
+          this.eventMap.set(eventType, []);
+        }
+        this.eventMap.get(eventType)!.push(behavior);
+      });
+      
+      // 调用初始化
+      behavior.init?.();
     });
   }
 
   public listen() {
-    eventTypes.forEach((mouseType) => {
-      this.container.value.addEventListener(mouseType, this.processEvent.bind(this), {
+    // 监听所有鼠标事件
+    eventTypes.forEach(type => {
+      this.container.value.addEventListener(type, this.handleEvent.bind(this), {
         passive: true
       });
     });
-    this.globalListenerCleanup = useEventListener(
+
+    // 全局鼠标抬起事件
+    this.cleanup = useEventListener(
       document,
       'mouseup',
-      this.processEvent.bind(this)
+      this.handleEvent.bind(this)
     );
   }
 
-  public removeListen() {
-    eventTypes.forEach((mouseType) => {
-      this.container.value?.removeEventListener(mouseType, this.processEvent);
+  public destroy() {
+    // 移除事件监听
+    eventTypes.forEach(type => {
+      this.container.value?.removeEventListener(type, this.handleEvent);
     });
-    this.globalListenerCleanup();
+    this.cleanup?.();
+
+    // 清理行为
+    this.behaviors.forEach(behavior => behavior.destroy?.());
+    
+    // 清空数据
+    this.behaviors = [];
+    this.eventMap.clear();
   }
 
-  private processEvent(e: Event) {
-    const el = e.target as Element;
-    const eventType = e.type as EventType;
-    const elShape = el.getAttribute(GRAPH_ITEM_SHAPE) ?? 'unknown';
-    this.behaviors
-      .filter((behavior) => {
-        const dispatch = behavior.getEventDispatch();
-        const set = new Set(Object.keys(dispatch));
-        return set.has(elShape + ':' + eventType) || set.has(':' + eventType);
-      })
-      .forEach((behavior) => {
-        const dispatchEvent = behavior.getEventDispatch();
-        dispatchEvent[elShape + ':' + eventType]?.(e, el, eventType, elShape);
-        dispatchEvent[':' + eventType]?.(e, el, eventType, elShape);
-      });
+  private handleEvent(e: Event) {
+    const event = e as PointerEvent;
+    const element = event.target as Element;
+    const shape = element.getAttribute(GRAPH_ITEM_SHAPE) as GraphShape ?? '';
+    const eventType = `${shape}:${event.type}` as CanvasEvent;
+
+    // 构造事件对象
+    const graphEvent: GraphEventType = {
+      type: event.type as EventType,
+      shape,
+      event,
+      element
+    };
+
+    // 触发对应的行为处理器
+    this.eventMap.get(eventType)?.forEach(behavior => {
+      behavior.handleEvent(graphEvent);
+    });
+
+    // 触发全局事件处理器
+    this.eventMap.get(`:${event.type}` as CanvasEvent)?.forEach(behavior => {
+      behavior.handleEvent(graphEvent);
+    });
   }
 }

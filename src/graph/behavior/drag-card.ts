@@ -1,9 +1,10 @@
 import {
   BaseBehavior,
-  type EventDispatch,
   GRAPH_ITEM_ID,
   GRAPH_NODE_ANCHOR,
-  GRAPH_NODE_RESIZE_REGION
+  GRAPH_NODE_RESIZE_REGION,
+  type GraphEventType,
+  type CanvasEvent
 } from '@/graph';
 import { CARD_HEIGHT, CARD_WIDTH, type Plan } from '@/stores';
 import type { Ref } from 'vue';
@@ -14,17 +15,28 @@ export class DragCard extends BaseBehavior {
   oldNode = {} as Plan;
   project: Plan;
 
+  handleEvent(evt: GraphEventType): void {
+    const el = evt.element;
+    switch (evt.type) {
+      case 'mousedown':
+        this.onmousedown(evt.event, el);
+        break;
+      case 'mousemove':
+        this.onmousemove(evt.event);
+        break;
+      case 'mouseup':
+        this.onmouseup();
+        break;
+    }
+  }
+
+  getEvents(): Set<CanvasEvent> {
+    return new Set(['node:mousedown', ':mousemove', ':mouseup']);
+  }
+
   constructor(container: Ref<Element>, project: Plan) {
     super(container, project);
     this.project = project;
-  }
-
-  getEventDispatch(): EventDispatch {
-    return {
-      'node:mousedown': this.onmousedown.bind(this),
-      ':mouseup': this.onmouseup.bind(this),
-      ':mousemove': this.onmousemove.bind(this)
-    };
   }
 
   onmousedown(e: MouseEvent, el: Element) {
@@ -54,14 +66,13 @@ export class DragCard extends BaseBehavior {
     this.mouseStyle.lock('move');
   }
 
-  onmouseup(e: MouseEvent) {
+  onmouseup() {
     if (this.down) {
       this.down = false;
       const node = this.planStore.getPlan(this.oldNode.id!);
       node!.x = Math.round(node!.x!);
       node!.y = Math.max(Math.round(node!.y!), 0);
       this.mouseStyle.unlock();
-      this.toggleMouseOver(e);
     }
   }
 }

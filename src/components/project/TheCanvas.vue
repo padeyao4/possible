@@ -50,7 +50,6 @@ watchEffect(() => {
 
 onMounted(() => {
   const register = new Register(svg as Ref<Element>, project);
-
   register.addBehaviors(
     DefaultBehavior,
     DragCanvas,
@@ -61,7 +60,6 @@ onMounted(() => {
     ClickCanvasMenu,
     WheelCanvas
   );
-
   register.listen();
 });
 
