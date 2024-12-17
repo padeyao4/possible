@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import CloseIconButton from '@/components/common/CloseIconButton.vue';
-import { useLayoutStore, usePlanStore } from '@/stores';
+import { useLayoutStore, usePlanStore, days } from '@/stores';
 import { emitter } from '@/utils';
 import { Delete } from '@element-plus/icons-vue';
 import { useEventListener } from '@vueuse/core';
@@ -45,6 +45,18 @@ function handleCloseButton() {
   layoutStore.editorVisible = false;
   editorModel.id = null;
 }
+
+// 添加日期格式化函数
+const formatDate = (timestamp: number) => {
+  return new Date(timestamp).toLocaleString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
 </script>
 
 <template>
@@ -54,9 +66,57 @@ function handleCloseButton() {
     </header>
     <el-scrollbar class="grow">
       <template v-if="plan">
-        <div class="m-3">
-          <el-input autosize input-style="padding: 16px;" v-model="plan.name" placeholder="请输入标题" resize="none"
-            size="large" type="textarea" />
+        <div class="px-4 py-2 space-y-4">
+          <!-- 标题输入 -->
+          <div class="space-y-2">
+            <div class="text-sm text-gray-500">标题</div>
+            <el-input v-model="plan.name" placeholder="请输入标题" size="large" />
+          </div>
+
+          <!-- 描述输入 -->
+          <div class="space-y-2">
+            <div class="text-sm text-gray-500">描述</div>
+            <el-input v-model="plan.description" type="textarea" :rows="4" placeholder="请输入描述" />
+          </div>
+
+          <!-- 时间信息 -->
+          <div class="space-y-2">
+            <div class="text-sm text-gray-500">创建时间</div>
+            <div class="text-sm">{{ formatDate(plan.createdAt) }}</div>
+          </div>
+
+          <div v-if="plan.updatedAt" class="space-y-2">
+            <div class="text-sm text-gray-500">更新时间</div>
+            <div class="text-sm">{{ formatDate(plan.updatedAt) }}</div>
+          </div>
+
+          <!-- 状态信息 -->
+          <div class="space-y-2">
+            <div class="text-sm text-gray-500">状态</div>
+            <el-switch v-model="plan.isDone" active-text="已完成" inactive-text="进行中" />
+          </div>
+
+          <!-- 位置信息 -->
+          <div class="space-y-2">
+            <div class="text-sm text-gray-500">位置</div>
+            <div class="grid grid-cols-2 gap-4">
+              <el-input-number v-model="plan.x" :min="1" :precision="0" :step="1" :controls="false" size="small"
+                placeholder="X坐标" />
+              <el-input-number v-model="plan.y" :min="0" :precision="0" :step="1" :controls="false" size="small"
+                placeholder="Y坐标" />
+            </div>
+          </div>
+
+          <!-- 尺寸信息 -->
+          <div class="space-y-2">
+            <div class="text-sm text-gray-500">尺寸</div>
+            <div class="grid grid-cols-2 gap-4">
+              <el-input-number v-model="plan.width" :min="1" :precision="0" :step="1" :controls="false" size="small"
+                placeholder="宽度" />
+              <el-input-number v-model="plan.height" :min="1" :precision="0" :step="1" :controls="false" size="small"
+                placeholder="高度" />
+            </div>
+          </div>
         </div>
       </template>
       <template v-else>
@@ -70,3 +130,9 @@ function handleCloseButton() {
     </div>
   </div>
 </template>
+
+<style scoped>
+.el-input {
+  width: 100%;
+}
+</style>
