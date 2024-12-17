@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import CloseIconButton from '@/components/common/CloseIconButton.vue';
-import { useLayoutStore, usePlanStore, days } from '@/stores';
+import { useLayoutStore, usePlanStore } from '@/stores';
 import { emitter } from '@/utils';
 import { Delete } from '@element-plus/icons-vue';
 import { useEventListener } from '@vueuse/core';
