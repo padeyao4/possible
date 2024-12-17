@@ -4,88 +4,54 @@ import CreateProjectDialog from '@/components/CreateProjectDialog.vue';
 import DeleteProjectDialog from '@/components/DeleteProjectDialog.vue';
 import DetailEditor from '@/components/DetailEditor.vue';
 import MenuItem from '@/components/MenuItem.vue';
-import NavBacklogItem from '@/components/NavBacklogItem.vue';
 import NavTestItem from '@/components/NavTestItem.vue';
-import NavTodayItem from '@/components/NavTodayItem.vue';
 import RenameProjectDialog from '@/components/RenameProjectDialog.vue';
 import SettingsButton from '@/components/SettingsButton.vue';
 import MagicDraggable from '@/components/common/MagicDraggable.vue';
+import MenuResizer from '@/components/common/MenuResizer.vue';
 import MenuToggleButton from '@/components/common/MenuToggleButton.vue';
-import { type Project } from '@/openapi';
-import { useBacklogStore, useCursor, useDataStore } from '@/stores';
-import { useDebounceFn, useIntervalFn } from '@vueuse/core';
-import { onUnmounted, ref } from 'vue';
+import NavBacklogItem from '@/components/NavBacklogItem.vue';
+import NavTodayItem from '@/components/NavTodayItem.vue';
+import { useDataStore, usePlanStore, type Plan } from '@/stores';
 import { RouterView } from 'vue-router';
 const dataStore = useDataStore();
-const resizer = ref<HTMLElement>();
-let startX = 0;
-let startWidth = 0;
 
-const cursor = useCursor();
+// backlogStore.fetch();
+// const debounceBacklogsFn = useDebounceFn((_mutation, state) => {
+//   if (!state.loading) {
+//     backlogStore.upload();
+//   }
+// }, 1000);
+// backlogStore.$subscribe(debounceBacklogsFn);
 
-function initDrag(e: MouseEvent) {
-  startX = e.clientX;
-  startWidth = dataStore.menuWidth;
-  document.addEventListener('mousemove', doDrag);
-  document.addEventListener('mouseup', stopDrag);
-  cursor.lock('col-resize');
-  document.body.style.userSelect = 'none';
-}
+// dataStore.fetch();
+// const debounceDataFn = useDebounceFn((_mutation, state) => {
+//   if (!state.loading) {
+//     dataStore.upload();
+//   }
+// }, 1000);
+// dataStore.$subscribe(debounceDataFn);
 
-function doDrag(e: MouseEvent) {
-  const newLocal = startWidth + e.clientX - startX;
-  if (newLocal <= 260) {
-    dataStore.menuWidth = 260;
-    dataStore.menuVisible = false;
-  } else {
-    dataStore.menuWidth = Math.min(460, newLocal);
-    dataStore.menuVisible = true;
-  }
-}
+// const { pause } = useIntervalFn(() => {
+//   const now = new Date();
+//   if (now.getHours() === 0 && now.getMinutes() === 0) {
+//     dataStore.updateNodes();
+//   }
+//   dataStore.timestamp = now.getTime();
+// }, 60 * 1000); // 每分钟检查一次
 
-function stopDrag() {
-  document.removeEventListener('mousemove', doDrag);
-  document.removeEventListener('mouseup', stopDrag);
-  document.body.style.userSelect = '';
-  cursor.unlock();
-  cursor.setWithUnlock('default');
-}
+// onUnmounted(() => {
+//   pause(); // 组件卸载时清除定时器
+// });
 
-const backlogStore = useBacklogStore();
-
-backlogStore.fetch();
-const debounceBacklogsFn = useDebounceFn((_mutation, state) => {
-  if (!state.loading) {
-    backlogStore.upload();
-  }
-}, 1000);
-backlogStore.$subscribe(debounceBacklogsFn);
-
-dataStore.fetch();
-const debounceDataFn = useDebounceFn((_mutation, state) => {
-  if (!state.loading) {
-    dataStore.upload();
-  }
-}, 1000);
-dataStore.$subscribe(debounceDataFn);
-
-const { pause } = useIntervalFn(() => {
-  const now = new Date();
-  if (now.getHours() === 0 && now.getMinutes() === 0) {
-    dataStore.updateNodes();
-  }
-  dataStore.timestamp = now.getTime();
-}, 60 * 1000); // 每分钟检查一次
-
-onUnmounted(() => {
-  pause(); // 组件卸载时清除定时器
-});
-
-function handleUpdate(p1: Project, p2: Project) {
+function onUpdate(p1: Plan, p2: Plan) {
   [p1.index, p2.index] = [p2.index, p1.index];
 }
 
 const isDev = import.meta.env.MODE !== 'production';
+
+const planStore = usePlanStore();
+
 </script>
 
 <template>
@@ -98,7 +64,7 @@ const isDev = import.meta.env.MODE !== 'production';
         <nav-test-item v-if="isDev" />
       </header>
       <el-scrollbar class="flex-grow px-2.5 py-1.5">
-        <magic-draggable :update="handleUpdate" :list="dataStore.sortedProjects">
+        <magic-draggable :update="onUpdate" :list="planStore.projects">
           <template #default="{ item }">
             <menu-item :project="item" />
           </template>
@@ -109,12 +75,7 @@ const isDev = import.meta.env.MODE !== 'production';
         <settings-button />
       </footer>
     </div>
-    <div v-if="dataStore.menuVisible" ref="resizer" class="absolute inset-0 hover:cursor-col-resize" :style="{
-      width: '5px',
-      left: `${dataStore.menuWidth}px`,
-      zIndex: 999,
-      backgroundColor: 'transparent'
-    }" @mousedown="initDrag" />
+    <menu-resizer />
     <router-view :key="$route.fullPath" class="min-w-48 flex-grow route-container" />
     <detail-editor />
   </div>

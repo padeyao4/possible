@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import NavItem from './NavItem.vue';
-import { useBacklogStore } from '@/stores';
+import { usePlanStore } from '@/stores';
 
-const meno = useBacklogStore();
+const planStore = usePlanStore();
 </script>
 
 <template>
-  <nav-item
-    icon="icon-[fluent--task-list-ltr-20-filled]"
-    text="备忘录"
-    route-name="backlog"
-    :count="meno.todoBacklogs.length"
-  />
+  <nav-item icon="icon-[fluent--task-list-ltr-20-filled]" text="备忘录" route-name="backlog"
+    :count="planStore.todoBacklogs.length" />
 </template>
 
 <style scoped></style>

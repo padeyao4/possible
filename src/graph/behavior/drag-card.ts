@@ -5,12 +5,19 @@ import {
   GRAPH_NODE_ANCHOR,
   GRAPH_NODE_RESIZE_REGION
 } from '@/graph/base';
-import type { Node } from '@/stores';
+import { CARD_HEIGHT, CARD_WIDTH, type Plan } from '@/stores';
+import type { Ref } from 'vue';
 
 export class DragCard extends BaseBehavior {
   down = false;
   mousePosition = { x: 0, y: 0 };
-  oldNode = <Node>{};
+  oldNode = {} as Plan;
+  project: Plan;
+
+  constructor(container: Ref<Element>, project: Plan) {
+    super(container, project);
+    this.project = project;
+  }
 
   getEventDispatch(): EventDispatch {
     return {
@@ -29,7 +36,7 @@ export class DragCard extends BaseBehavior {
     )
       return;
     const id = el.getAttribute(GRAPH_ITEM_ID);
-    const node = this.graph.nodesMap.get(id);
+    const node = this.planStore.getPlan(id!);
     Object.assign(this.oldNode, node);
     this.down = true;
     this.mousePosition.x = e.x;
@@ -40,19 +47,19 @@ export class DragCard extends BaseBehavior {
     if (!this.down) return;
     const dx = e.x - this.mousePosition.x;
     const dy = e.y - this.mousePosition.y;
-    const node = this.graph.nodesMap.get(this.oldNode.id);
+    const node = this.planStore.getPlan(this.oldNode.id!);
 
-    node.x = this.oldNode.x + dx / this.graph.cardWidth;
-    node.y = this.oldNode.y + dy / this.graph.cardHeight;
+    node!.x = this.oldNode.x! + dx / CARD_WIDTH;
+    node!.y = this.oldNode.y! + dy / CARD_HEIGHT;
     this.mouseStyle.lock('move');
   }
 
   onmouseup(e: MouseEvent) {
     if (this.down) {
       this.down = false;
-      const node = this.graph.nodesMap.get(this.oldNode.id);
-      node.x = Math.round(node.x);
-      node.y = Math.max(Math.round(node.y), 0);
+      const node = this.planStore.getPlan(this.oldNode.id!);
+      node!.x = Math.round(node!.x!);
+      node!.y = Math.max(Math.round(node!.y!), 0);
       this.mouseStyle.unlock();
       this.toggleMouseOver(e);
     }

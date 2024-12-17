@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { Check } from '@element-plus/icons-vue';
-import { useDataStore } from '@/stores';
-import { computed, ref } from 'vue';
-import type { Node } from '@/openapi';
+import { usePlanStore, type Plan } from '@/stores';
 import { emitter } from '@/utils';
+import { Check } from '@element-plus/icons-vue';
+import { computed, ref } from 'vue';
 
-const { node } = defineProps<{
-  node: Node;
+const { plan } = defineProps<{
+  plan: Plan;
 }>();
 
-const graph = useDataStore();
+const planStore = usePlanStore();
 
-const project = computed(() => graph.projectsMap.get(node.projectId!));
+const project = computed(() => planStore.getPlan(plan.parentId!));
 
 const showIcon = ref(false);
 
@@ -19,11 +18,11 @@ const emit = defineEmits<{
   'update-status': [status: boolean]
 }>();
 
-const handleChange = () => emit('update-status', !node.status);
+const handleChange = () => emit('update-status', !plan.isDone);
 
 const handleItemClick = () => {
-  emitter.emit('open-canvas-card-editor', {
-    nodeId: node.id!
+  emitter.emit('open-editor', {
+    id: plan.id!
   });
 };
 </script>
@@ -34,15 +33,15 @@ const handleItemClick = () => {
     <div
       class="mx-3 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-gray-500 hover:cursor-pointer"
       @click="handleChange">
-      <el-icon v-show="node.status" size="16">
+      <el-icon v-show="plan.isDone" size="16">
         <Check />
       </el-icon>
     </div>
     <div class="flex h-full grow flex-col justify-center overflow-hidden" @click="handleItemClick">
       <div class="block truncate align-bottom text-base text-gray-500">
-        <del v-if="node.status">{{ node.name }}</del>
+        <del v-if="plan.isDone">{{ plan.name }}</del>
         <template v-else>
-          {{ node.name }}
+          {{ plan.name }}
         </template>
       </div>
       <div class="block h-fit items-start truncate text-xs text-gray-500">
@@ -53,6 +52,6 @@ const handleItemClick = () => {
     </div>
     <div v-show="showIcon"
       class="icon-[icon-park-outline--drag] ml-auto mr-2 block w-10 shrink-0 border border-black bg-gray-500 text-xl"
-      :data-draggable-move="node.id" />
+      :data-draggable-move="plan.id" />
   </div>
 </template>

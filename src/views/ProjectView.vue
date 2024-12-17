@@ -2,16 +2,23 @@
 import CanvasRuler from '@/components/project/CanvasRuler.vue';
 import CanvasHeader from '@/components/project/CanvasHeader.vue';
 import TheCanvas from '@/components/project/TheCanvas.vue';
-import { useDataStore, ONE_DAY_MS } from '@/stores';
+import { useDataStore, ONE_DAY_MS, usePlanStore } from '@/stores';
 import ProjectLockButton from '@/components/ProjectLockButton.vue';
 import ProjectLocationButton from '@/components/ProjectLocationButton.vue';
 import ProjectHomeButton from '@/components/ProjectHomeButton.vue';
 import ProjectCalenderButton from '@/components/ProjectCalenderButton.vue';
 import MenuToggleButton from '@/components/common/MenuToggleButton.vue';
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
+
+const props = defineProps<{
+  id: string;
+}>()
 
 const graph = useDataStore();
-const project = graph.project;
+const planStore = usePlanStore();
+// const project = planStore.projects.find((p) => p.id === route.query.id);
+const project = computed(() => planStore.getPlan(props.id));
+
 const isDev = import.meta.env.MODE !== 'production';
 const canvasContainer = ref<HTMLElement | null>(null);
 const mainHeight = ref(0);
@@ -53,9 +60,9 @@ onUnmounted(() => {
     </header>
     <main class="main relative grid flex-1 border-t border-gray-200 overflow-hidden" ref="canvasContainer">
       <project-lock-button />
-      <canvas-header :height="mainHeight" :width="mainWidth" />
-      <canvas-ruler :height="mainHeight" :width="mainWidth" />
-      <the-canvas :height="mainHeight" :width="mainWidth" />
+      <canvas-header :height="mainHeight" :width="mainWidth" :project="project!" />
+      <canvas-ruler :height="mainHeight" :width="mainWidth" :project="project!" />
+      <the-canvas :height="mainHeight" :width="mainWidth" :project="project!" />
     </main>
     <footer class="h-[48px] shrink-0 border-t border-gray-200 bg-transparent bg-white">
       <ProjectHomeButton />

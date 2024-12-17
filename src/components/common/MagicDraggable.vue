@@ -17,11 +17,7 @@
 import { reactive } from 'vue';
 import { useEventListener } from '@vueuse/core';
 import { useCursor } from '@/stores/cursor';
-
-export interface T {
-  id?: string;
-  [key: string]: any;
-}
+import type { Plan } from '@/stores';
 
 /**
  * props
@@ -35,8 +31,8 @@ const {
   list,
   idAttr = 'data-draggable-id'
 } = defineProps<{
-  update: (current: T, other: T) => void;
-  list: T[];
+  update: (current: Plan, other: Plan) => void;
+  list: Plan[];
   handle?: string;
   idAttr?: string;
 }>();

@@ -1,4 +1,6 @@
 import { BaseBehavior, type EventDispatch } from '@/graph/base';
+import type { Plan } from '@/stores';
+import type { Ref } from 'vue';
 
 export class DragCanvas extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -12,16 +14,22 @@ export class DragCanvas extends BaseBehavior {
   isDown = false;
   position = { x: 0, y: 0 };
   offset = { x: 0, y: 0 };
+  project: Plan;
+  container: Ref<Element>;
+
+  constructor(container: Ref<Element>, project: Plan) {
+    super(container, project);
+    this.project = project;
+    this.container = container;
+  }
 
   onmousedown(e: MouseEvent) {
     if (this.isDown || e.button !== 0) return;
     this.isDown = true;
     this.position.x = e.x;
     this.position.y = e.y;
-    const { x, y } = this.project;
-
-    this.offset.x = x!;
-    this.offset.y = y!;
+    this.offset.x = this.project.offsetX!;
+    this.offset.y = this.project.offsetY!;
     this.mouseStyle.lock('grabbing');
   }
 
@@ -29,8 +37,8 @@ export class DragCanvas extends BaseBehavior {
     if (!this.isDown) return;
     const dx = e.x - this.position.x;
     const dy = e.y - this.position.y;
-    this.project.x = this.offset.x + dx;
-    this.project.y = Math.min(this.offset.y + dy, 0);
+    this.project.offsetX = this.offset.x + dx;
+    this.project.offsetY = Math.min(this.offset.y + dy, 0);
   }
 
   onmouseup(e: MouseEvent) {

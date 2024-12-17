@@ -2,7 +2,7 @@
  * canvas卡片组件
  * data-graph-item-shape 属性表示graph中有哪些类型。node edge canvas
  * data-graph-item-id 属性表示节点id
- * data-graph-node-anchor 属性表示锚点类型。值可以为 left right top bottom
+ * data-graph-node-anchor 属性表示锚点类型。值可以为 left right
  * data-graph-node-resize-region 属性表示是否可以缩放。表示八个方向的调整方向
  * data-mouse-style 属性表示鼠标样式。值可以为 default pointer grab
  */
@@ -10,7 +10,7 @@
 import { useCursor } from '@/stores/cursor';
 import { useEventListener } from '@vueuse/core';
 import type { Ref } from 'vue';
-import { useDataStore } from '@/stores';
+import { CARD_HEIGHT, CARD_WIDTH, usePlanStore, type Plan } from '@/stores';
 
 export const GRAPH_ITEM_SHAPE = 'data-graph-item-shape';
 export const GRAPH_ITEM_ID = 'data-graph-item-id';
@@ -53,12 +53,13 @@ export type EventDispatch = {
 
 export abstract class BaseBehavior {
   mouseStyle = useCursor();
-  graph = useDataStore();
-  project = this.graph.project!;
+  planStore = usePlanStore();
+  project: Plan;
   container: Ref<Element>;
 
-  constructor(container: Ref<Element>) {
+  constructor(container: Ref<Element>, project: Plan) {
     this.container = container;
+    this.project = project;
   }
 
   /**
@@ -67,8 +68,8 @@ export abstract class BaseBehavior {
    */
   getPositionByEvent(e: PointerEvent) {
     const bound = this.container.value.getBoundingClientRect();
-    const x = Math.floor((e.x - bound.left - this.project.x!) / this.graph.cardWidth);
-    const y = Math.floor((e.y - bound.top - this.project.y!) / this.graph.cardHeight);
+    const x = Math.floor((e.x - bound.left - this.project.x!) / CARD_WIDTH);
+    const y = Math.floor((e.y - bound.top - this.project.y!) / CARD_HEIGHT);
     return {
       x,
       y
@@ -81,8 +82,8 @@ export abstract class BaseBehavior {
    */
   getNumbersByEvent(e: MouseEvent) {
     const bound = this.container.value.getBoundingClientRect();
-    const x = e.x - bound.left - this.project.x!;
-    const y = e.y - bound.top - this.project.y!;
+    const x = e.x - bound.left - this.project.offsetX!;
+    const y = e.y - bound.top - this.project.offsetY!;
     return {
       x,
       y
@@ -90,7 +91,7 @@ export abstract class BaseBehavior {
   }
 
   abstract getEventDispatch(): EventDispatch;
-
+  
   toggleMouseOver(e: MouseEvent) {
     const el = e.target as Element;
     const type = el.getAttribute(MOUSE_STYLE);
@@ -106,15 +107,17 @@ export class Register {
   behaviors: BaseBehavior[];
   container: Ref<Element>;
   globalListenerCleanup: any;
+  project: Plan;
 
-  constructor(container: Ref<Element>) {
+  constructor(container: Ref<Element>, project: Plan) {
     this.behaviors = [];
     this.container = container;
+    this.project = project;
   }
 
   public addBehaviors(...behaviors: (typeof BaseBehavior)[]) {
     behaviors.forEach((b) => {
-      this.behaviors.push(Reflect.construct(b, [this.container]));
+      this.behaviors.push(Reflect.construct(b, [this.container, this.project]));
     });
   }
 

@@ -47,6 +47,7 @@ declare module 'vue' {
     MenuItemDeleteButton: typeof import('./src/components/MenuItemDeleteButton.vue')['default']
     MenuItemDraggableButton: typeof import('./src/components/MenuItemDraggableButton.vue')['default']
     MenuItemEditeButton: typeof import('./src/components/MenuItemEditeButton.vue')['default']
+    MenuResizer: typeof import('./src/components/common/MenuResizer.vue')['default']
     MenuToggleButton: typeof import('./src/components/common/MenuToggleButton.vue')['default']
     NavBacklogItem: typeof import('./src/components/NavBacklogItem.vue')['default']
     NavItem: typeof import('./src/components/NavItem.vue')['default']

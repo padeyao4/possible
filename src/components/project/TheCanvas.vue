@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, type Ref, watch } from 'vue';
-import { cross, useDataStore } from '@/stores';
+import CanvasMenu from '@/components/CanvasMenu.vue';
+import CanvasCard from '@/components/project/CanvasCard.vue';
+import CanvasPath from '@/components/project/CanvasPath.vue';
 import {
   ClickCanvasMenu,
   ClickCard,
@@ -12,44 +13,43 @@ import {
   ResizeCard,
   WheelCanvas
 } from '@/graph';
-import CanvasCard from '@/components/project/CanvasCard.vue';
-import CanvasPath from '@/components/project/CanvasPath.vue';
-import CanvasMenu from '@/components/CanvasMenu.vue';
+import { cross, usePlanStore, type Plan } from '@/stores';
+import { toReactive } from '@vueuse/core';
+import { computed, onMounted, ref, watchEffect, type Ref } from 'vue';
 
 const props = defineProps<{
   height: number;
   width: number;
+  project: Plan;
 }>();
 
+const planStore = usePlanStore();
 
-const graph = useDataStore();
-const project = graph.project;
+const { project } = toReactive(props);
+
 
 const svg = ref<SVGSVGElement>();
 const bounds = ref({
   x: 0,
   y: 0,
-  w: 0,
-  h: 0
+  width: 0,
+  height: 0
 });
 
-watch([() => props.width, () => props.height, () => project?.x, () => project?.y], () => {
+watchEffect(() => {
   if (svg.value) {
     const rect = svg.value.getBoundingClientRect();
     bounds.value = {
-      x: -(project?.x ?? 0),
-      y: -(project?.y ?? 0),
-      w: rect.width,
-      h: rect.height
+      x: -(project.offsetX ?? 0),
+      y: -(project.offsetY ?? 0),
+      width: rect.width,
+      height: rect.height
     };
   }
 });
 
-const cards = computed(() => graph.currentCards.filter((card) => cross(bounds.value, card)));
-const paths = computed(() => graph.currentPaths);
-
 onMounted(() => {
-  const register = new Register(svg as Ref<Element>);
+  const register = new Register(svg as Ref<Element>, project);
 
   register.addBehaviors(
     DefaultBehavior,
@@ -67,19 +67,24 @@ onMounted(() => {
 
 const backgroundStyle = computed(() => {
   return {
-    backgroundPositionX: project?.x + 'px',
-    backgroundPositionY: project?.y + 'px',
+    backgroundPositionX: project.offsetX + 'px',
+    backgroundPositionY: project.offsetY + 'px',
   };
 });
+
+
+
+const cards = computed(() => planStore.cards.filter((card) => cross(bounds.value, card)));
+const paths = computed(() => planStore.paths.concat(planStore.tempPathWithCtls??[]));
 </script>
 
 <template>
   <div class="relative bg-transparent">
     <svg ref="svg" :style="backgroundStyle" class="grid-line absolute h-full w-full" data-graph-item-shape="canvas"
       @contextmenu.prevent>
-      <g :transform="`translate(${project?.x},${project?.y})`">
-        <canvas-path v-for="item in paths" :key="item.id" :data="item" />
-        <canvas-card v-for="item in cards" :key="item.id" :data="item" />
+      <g :transform="`translate(${project.offsetX},${project.offsetY})`">
+        <canvas-path v-for="item in paths" :key="item.id" :path="item" />
+        <canvas-card v-for="item in cards" :key="item.id" :card="item" />
       </g>
     </svg>
     <canvas-menu :svg="svg! as SVGSVGElement" />

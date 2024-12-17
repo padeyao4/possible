@@ -1,13 +1,11 @@
 <!--导航编辑按钮-->
 <script setup lang="ts">
-import type { Project } from '@/openapi';
+import type { Plan } from '@/stores';
 import { emitter } from '@/utils';
 
-const props = defineProps<{ project: Project }>();
+const props = defineProps<{ project: Plan }>();
 
 function handleClick() {
-  // todo
-  console.log('点击编辑按钮', props.project);
   emitter.emit('edite-project-name', props.project);
 }
 </script>

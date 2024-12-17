@@ -5,8 +5,6 @@ import {
   GRAPH_ITEM_SHAPE,
   GRAPH_NODE_ANCHOR
 } from '@/graph';
-import type { Edge } from '@/openapi';
-import type { TempEdge } from '@/stores';
 import { v4 } from 'uuid';
 import { reactive } from 'vue';
 
@@ -25,32 +23,38 @@ export class CreateEdge extends BaseBehavior {
     if (e.button !== 0) return;
     if (!el.hasAttribute(GRAPH_NODE_ANCHOR)) return;
     this.down = true;
-    const nodeId = el.getAttribute(GRAPH_ITEM_ID);
+    const nodeId = el.getAttribute(GRAPH_ITEM_ID)!;
     const direction = el.getAttribute(GRAPH_NODE_ANCHOR);
 
     const { x, y } = this.getNumbersByEvent(e);
 
-    const source = direction === 'source' ? nodeId : { x, y };
-    const target = direction === 'target' ? nodeId : { x, y };
-
-    this.graph.tempEdge = reactive({
-      id: v4(),
-      projectId: this.project.id,
-      source,
-      target
-    } as TempEdge);
-
+    if (direction === 'left') {
+      this.planStore.tempPath = reactive({
+        id: v4(),
+        to: { x, y },
+        ctls: [],
+        fromId: nodeId,
+      });
+    } else {
+      this.planStore.tempPath = reactive({
+        id: v4(),
+        from: { x, y },
+        ctls: [],
+        toId: nodeId,
+      });
+    }
     this.mouseStyle.lock('crosshair');
   }
 
   onmousemove(e: MouseEvent) {
     if (!this.down) return;
     const { x, y } = this.getNumbersByEvent(e);
-    if (typeof this.graph.tempEdge!.source === 'object') {
-      this.graph.tempEdge!.source = { x, y };
-    }
-    if (typeof this.graph.tempEdge!.target === 'object') {
-      this.graph.tempEdge!.target = { x, y };
+    if (this.planStore.tempPath?.from) {
+      this.planStore.tempPath!.from!.x = x;
+      this.planStore.tempPath!.from!.y = y;
+    } else {
+      this.planStore.tempPath!.to!.x = x;
+      this.planStore.tempPath!.to!.y = y;
     }
   }
 
@@ -59,35 +63,18 @@ export class CreateEdge extends BaseBehavior {
     this.down = false;
     if (el.getAttribute(GRAPH_ITEM_SHAPE) === 'node') {
       const nodeId = el.getAttribute(GRAPH_ITEM_ID);
-      if (typeof this.graph.tempEdge!.source === 'object') {
-        this.graph.tempEdge!.source = nodeId!;
+
+      if (this.planStore.tempPath?.fromId) {
+        this.planStore.tempPath!.toId! = nodeId!;
       } else {
-        this.graph.tempEdge!.target = nodeId!;
+        this.planStore.tempPath!.fromId! = nodeId!;
       }
 
-      // 如果起点和终点相同，则删除
-      this.graph.tempEdge!.source === this.graph.tempEdge!.target && (this.graph.tempEdge = null);
-
-      // 如果已存在该边，则删除
-      this.graph.tempEdge &&
-        Array.from(this.graph.edgesMap.values()).find(
-          (edge) =>
-            edge.source === this.graph.tempEdge!.source &&
-            edge.target === this.graph.tempEdge!.target &&
-            edge.id !== this.graph.tempEdge!.id
-        ) &&
-        (this.graph.tempEdge = null);
-
-      // 如果存在临时边，则添加到edgesMap中
-      this.graph.tempEdge !== null &&
-        this.graph.addEdge({
-          id: this.graph.tempEdge!.id,
-          source: this.graph.tempEdge!.source,
-          target: this.graph.tempEdge!.target,
-          projectId: this.graph.tempEdge!.projectId
-        } as Edge);
+      if (this.planStore.tempPath?.fromId !== this.planStore.tempPath?.toId) {
+        this.planStore.addRelation(this.planStore.tempPath!.fromId!, this.planStore.tempPath!.toId!);
+      }
     }
-    this.graph.tempEdge = null;
+    this.planStore.tempPath = null;
     this.mouseStyle.unlock();
     this.toggleMouseOver(e);
   }

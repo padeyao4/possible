@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { type DateType, useDataStore } from '@/stores';
+import { type DateType, type Plan, useDataStore, usePlanStore } from '@/stores';
 import { computed, ref } from 'vue';
 import ECounterButton from '@/components/common/CounterButton.vue';
 import MagicDraggable from '@/components/common/MagicDraggable.vue';
 import TodayItem from '@/components/TodayItem.vue';
-import { type Node } from '@/openapi';
 import BasePageLayout from '@/components/layout/BasePageLayout.vue';
 
+const graph = useDataStore();
 const completeVisible = ref(false);
 
-const graph = useDataStore();
+const planStore = usePlanStore();
 
 /**
  * 表头显示的时间格式
@@ -26,7 +26,7 @@ function showWeekAndLocalDate(dateType: DateType) {
 
 const dateTime = computed(() => showWeekAndLocalDate(graph.timestamp));
 
-function onUpdate(n1: Node, n2: Node) {
+function onUpdate(n1: Plan, n2: Plan) {
   [n1.index, n2.index] = [n2.index, n1.index];
 }
 </script>
@@ -37,17 +37,17 @@ function onUpdate(n1: Node, n2: Node) {
       <div class="text-xs text-gray-500">{{ dateTime }}</div>
     </template>
 
-    <div v-if="graph.todayNodes.length === 0" />
+    <div v-if="planStore.todayPlans.length === 0" />
     <template v-else>
-      <MagicDraggable :update="onUpdate" :list="graph.todoNodes">
+      <MagicDraggable :update="onUpdate" :list="planStore.todoPlans">
         <template #default="{ item }">
-          <today-item :node="item" class="odd:my-1" @update-status="(status) => item.status = status" />
+          <today-item :plan="item" class="odd:my-1" @update-status="(status) => item.isDone = status" />
         </template>
       </MagicDraggable>
-      <e-counter-button :count="graph.doneNodes.length" v-model="completeVisible" />
-      <MagicDraggable v-if="completeVisible" :update="onUpdate" :list="graph.doneNodes">
+      <e-counter-button :count="planStore.donePlans.length" v-model="completeVisible" />
+      <MagicDraggable v-if="completeVisible" :update="onUpdate" :list="planStore.donePlans">
         <template #default="{ item }">
-          <today-item :node="item" class="my-1" @update-status="(status) => item.status = status" />
+          <today-item :plan="item" class="my-1" @update-status="(status) => item.isDone = status" />
         </template>
       </MagicDraggable>
       <div class="h-1" />

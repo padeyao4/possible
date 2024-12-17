@@ -25,6 +25,9 @@ type CustomEvents = {
   };
   'edite-project-name': Project;
   'open-backlog-editor': Backlog;
+  'open-editor': {
+    id: string;
+  };
 };
 
 export const emitter = mitt<CustomEvents>();

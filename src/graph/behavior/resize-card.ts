@@ -5,7 +5,7 @@ import {
   GRAPH_NODE_RESIZE_REGION,
   MOUSE_STYLE
 } from '@/graph/base';
-import { type Node } from '@/stores';
+import { CARD_HEIGHT, CARD_WIDTH, type Plan } from '@/stores';
 
 export class ResizeCard extends BaseBehavior {
   getEventDispatch(): EventDispatch {
@@ -24,12 +24,12 @@ export class ResizeCard extends BaseBehavior {
   onmousedown(e: MouseEvent, el: Element) {
     if (this.down || e.button !== 0 || !el.hasAttribute(GRAPH_NODE_RESIZE_REGION)) return;
     this.down = true;
-    this.direction = el.getAttribute(GRAPH_NODE_RESIZE_REGION);
-    const style = el.getAttribute(MOUSE_STYLE);
+    this.direction = el.getAttribute(GRAPH_NODE_RESIZE_REGION)!;
+    const style = el.getAttribute(MOUSE_STYLE)??'defalut';
     this.mouseStyle.lock(style);
     this.mousePoint.x = e.x;
     this.mousePoint.y = e.y;
-    const node = this.graph.nodesMap.get(el.getAttribute(GRAPH_ITEM_ID));
+    const node = this.planStore.getPlan(el.getAttribute(GRAPH_ITEM_ID)!);
     Object.assign(this.oldNode, node);
   }
 
@@ -37,71 +37,83 @@ export class ResizeCard extends BaseBehavior {
     if (this.down) {
       const dx = e.x - this.mousePoint.x;
       const dy = e.y - this.mousePoint.y;
-      const node = this.graph.nodesMap.get(this.oldNode.id);
-      this.changeSize(dx, dy, node);
+      const node = this.planStore.getPlan(this.oldNode.id!)!;
+      this.resizeNode(dx, dy, node);
     }
   }
 
   onmouseup(e: MouseEvent) {
     if (this.down) {
       this.down = false;
-      const node = this.graph.nodesMap.get(this.oldNode.id);
-      node.w = Math.round(node.w);
-      node.h = Math.round(node.h);
-      node.x = Math.round(node.x);
-      node.y = Math.round(node.y);
+      const node = this.planStore.getPlan(this.oldNode.id!)!;
+      node.width = Math.round(node.width!);
+      node.height = Math.round(node.height!);
+      node.x = Math.round(node.x!);
+      node.y = Math.round(node.y!);
       this.mouseStyle.unlock();
       this.toggleMouseOver(e);
     }
   }
 
-  private changeSize(dx: number, dy: number, node: Node) {
-    const dtW = dx / this.graph.cardWidth;
-    const dtH = dy / this.graph.cardHeight;
-    const rw = Math.max(this.oldNode.w + dtW, 1);
-    const lw = Math.max(this.oldNode.w - dtW, 1);
-    const bh = Math.max(this.oldNode.h + dtH, 1);
-    const th = Math.max(this.oldNode.h - dtH, 1);
-    const x = this.oldNode.x + (lw === 1 ? this.oldNode.w - 1 : dtW);
-    const y = this.oldNode.y + (th === 1 ? this.oldNode.h - 1 : dtH);
+  private resizeNode(dx: number, dy: number, node: Plan) {
+    // 计算宽高变化量
+    const deltaWidth = dx / CARD_WIDTH;
+    const deltaHeight = dy / CARD_HEIGHT;
 
-    switch (this.direction) {
-      case 'l':
-        node.w = lw;
-        node.x = x;
-        break;
-      case 'r':
-        node.w = rw;
-        break;
-      case 't':
-        node.h = th;
-        node.y = y;
-        break;
-      case 'b':
-        node.h = bh;
-        break;
-      case 'lt':
-        node.w = lw;
-        node.h = th;
-        node.x = x;
-        node.y = y;
-        break;
-      case 'rb':
-        node.w = rw;
-        node.h = bh;
-        break;
-      case 'rt':
-        node.w = rw;
-        node.h = th;
-        node.y = y;
-        break;
-      case 'lb':
-        node.w = lw;
-        node.h = bh;
-        node.x = x;
-        break;
-      default:
-        break;
-    }
+    // 计算新的宽高
+    const newWidth = {
+      right: Math.max(this.oldNode.width! + deltaWidth, 1),
+      left: Math.max(this.oldNode.width! - deltaWidth, 1)
+    };
+    const newHeight = {
+      bottom: Math.max(this.oldNode.height! + deltaHeight, 1),
+      top: Math.max(this.oldNode.height! - deltaHeight, 1)
+    };
+
+    // 计算新的位置
+    const newPosition = {
+      x: this.oldNode.x + (newWidth.left === 1 ? this.oldNode.width! - 1 : deltaWidth),
+      y: this.oldNode.y + (newHeight.top === 1 ? this.oldNode.height! - 1 : deltaHeight)
+    };
+
+    // 根据拖拽方向更新节点属性
+    const resizeMap = {
+      l: () => {
+        node.width = newWidth.left;
+        node.x = newPosition.x;
+      },
+      r: () => {
+        node.width = newWidth.right;
+      },
+      t: () => {
+        node.height = newHeight.top;
+        node.y = newPosition.y;
+      },
+      b: () => {
+        node.height = newHeight.bottom;
+      },
+      lt: () => {
+        node.width = newWidth.left;
+        node.height = newHeight.top;
+        node.x = newPosition.x;
+        node.y = newPosition.y;
+      },
+      rb: () => {
+        node.width = newWidth.right;
+        node.height = newHeight.bottom;
+      },
+      rt: () => {
+        node.width = newWidth.right;
+        node.height = newHeight.top;
+        node.y = newPosition.y;
+      },
+      lb: () => {
+        node.width = newWidth.left;
+        node.height = newHeight.bottom;
+        node.x = newPosition.x;
+      }
+    };
+
+    resizeMap[this.direction as keyof typeof resizeMap]?.();
   }
 }

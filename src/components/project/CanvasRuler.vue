@@ -1,36 +1,31 @@
 <script setup lang="ts">
-import { useDataStore } from '@/stores';
+import { CARD_HEIGHT, type Plan } from '@/stores';
 import { computed, ref, watchEffect } from 'vue';
 
-const props = defineProps<{
+const { height, project } = defineProps<{
   height: number;
   width: number;
+  project: Plan;
 }>();
-
-const graph = useDataStore();
-const project = graph.project;
 
 const rulers = ref<number[]>([]);
 
-
 watchEffect(() => {
-  const count = Math.ceil(props.height / graph.cardHeight) + 1;
+  const count = Math.ceil(height / CARD_HEIGHT) + 1;
   rulers.value = Array.from({ length: count }, (_, i) => i + 1);
 });
 
-const y = computed(() => {
-  const absY = Math.abs(project?.y!);
-  return Math.floor(absY / graph.cardHeight) - 2;
-});
 
-const translateY = computed(() => (project?.y! % graph.cardHeight) - graph.cardHeight + 'px');
+const rulerInfo = computed(() => {
+  return { translateY: (project.offsetY! % CARD_HEIGHT) - CARD_HEIGHT + 'px', y: Math.floor(Math.abs(project.offsetY!) / CARD_HEIGHT) - 2 }
+});
 </script>
 
 <template>
   <div class="canvas-ruler pl-5">
-    <div class="container">
-      <div v-for="item in rulers" class="ruler-unit" :key="item" :style="{ height: `${graph.cardHeight}px` }">
-        {{ item + y }}
+    <div :style="{ transform: `translateY(${rulerInfo.translateY})` }">
+      <div v-for="item in rulers" class="ruler-unit" :key="item" :style="{ height: `${CARD_HEIGHT}px` }">
+        {{ item + rulerInfo.y }}
       </div>
     </div>
   </div>
@@ -43,10 +38,6 @@ const translateY = computed(() => (project?.y! % graph.cardHeight) - graph.cardH
   background-color: transparent;
   border-right: 1px solid rgba(27, 31, 35, 0.06);
   pointer-events: none;
-}
-
-.container {
-  transform: translateY(v-bind(translateY));
 }
 
 .ruler-unit {

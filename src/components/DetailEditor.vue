@@ -1,81 +1,30 @@
 <script lang="ts" setup>
-import { emitter } from '@/utils';
 import CloseIconButton from '@/components/common/CloseIconButton.vue';
-import { computed, reactive } from 'vue';
+import { useDataStore, usePlanStore } from '@/stores';
+import { emitter } from '@/utils';
 import { Delete } from '@element-plus/icons-vue';
-import { useDataStore, useBacklogStore } from '@/stores';
 import { useEventListener } from '@vueuse/core';
+import { computed, reactive } from 'vue';
 
+const planStore = usePlanStore();
 const graph = useDataStore();
-const meno = useBacklogStore();
-
-type ContentType = 'node' | 'backlog';
 
 const editorModel = reactive({
-  contentKey: null as ContentType | null,
-  itemId: null as string | null
+  id: null as string | null,
 });
 
-const contents = {
-  node: [
-    { name: 'name', placeholder: '请输入标题' },
-    { name: 'detail', placeholder: '请输入详情' },
-    {
-      name: 'record',
-      placeholder: '请输入内容'
-    }
-  ],
-  backlog: [
-    {
-      name: 'name',
-      placeholder: '请输入内容'
-    }
-  ]
-};
-
-const content = computed(() => {
-  return contents[editorModel.contentKey!];
+const plan = computed(() => {
+  return planStore.getPlan(editorModel.id!);
 });
 
-const itemModel = computed(() => {
-  switch (editorModel.contentKey) {
-    case 'node':
-      return graph.nodesMap.get(editorModel.itemId!);
-    case 'backlog':
-      return meno.backlogsMap.get(editorModel.itemId!);
-    default:
-      return undefined;
-  }
-});
+const content = [
+  { name: 'name', placeholder: '请输入标题' },
+  { name: 'description', placeholder: '请输入详情' },
+];
 
-emitter.on('open-canvas-card-editor', (params) => {
-  if (editorModel.itemId === params.nodeId) {
-    editorModel.itemId = null;
-    editorModel.contentKey = 'node';
-    graph.editorVisible = false;
-  } else {
-    editorModel.itemId = params.nodeId;
-    editorModel.contentKey = 'node';
-    graph.editorVisible = true;
-  }
-});
-
-emitter.on('open-canvas-card-editor-by-menu', (params) => {
-  editorModel.itemId = params.nodeId;
-  editorModel.contentKey = 'node';
-  graph.editorVisible = true;
-});
-
-emitter.on('open-backlog-editor', (params) => {
-  if (editorModel.itemId === params.id) {
-    editorModel.itemId = null;
-    editorModel.contentKey = 'backlog';
-    graph.editorVisible = false;
-  } else {
-    editorModel.itemId = params.id!;
-    editorModel.contentKey = 'backlog';
-    graph.editorVisible = true;
-  }
+emitter.on('open-editor', (params) => {
+  editorModel.id = params.id;
+  graph.editorVisible = !graph.editorVisible;
 });
 
 /**
@@ -84,33 +33,30 @@ emitter.on('open-backlog-editor', (params) => {
 useEventListener(document, 'keydown', (e) => {
   if (e.key === 'Escape') {
     graph.editorVisible = false;
-    editorModel.itemId = null;
+    editorModel.id = null;
   }
 });
 
 function handleDeleteButton() {
-  if (editorModel.contentKey === 'node') {
-    graph.removeNode(editorModel.itemId!);
-  } else if (editorModel.contentKey === 'backlog') {
-    meno.remove(editorModel.itemId!);
-  }
+  planStore.removePlan(editorModel.id!);
+  editorModel.id = null;
 }
 
 function handleCloseButton() {
   graph.editorVisible = false;
-  editorModel.itemId = null;
+  editorModel.id = null;
 }
 </script>
 
 <template>
-  <div v-if="graph.editorWidth !== 0" class="flex h-screen flex-col">
+  <div v-if="graph.editorVisible" class="flex h-screen flex-col">
     <header class="drag-region mb-3 flex w-full shrink-0 items-end justify-between" style="height: 36px">
       <close-icon-button class="no-drag-region ml-2.5 rounded-md border border-gray-300" @click="handleCloseButton" />
     </header>
     <el-scrollbar class="grow">
-      <template v-if="content && itemModel">
+      <template v-if="plan">
         <div v-for="item in content" :key="item.name" class="m-3">
-          <el-input autosize input-style="padding: 16px;" v-model="itemModel[item.name]" :placeholder="item.placeholder"
+          <el-input autosize input-style="padding: 16px;" v-model="plan[item.name]" :placeholder="item.placeholder"
             resize="none" size="large" type="textarea" />
         </div>
       </template>

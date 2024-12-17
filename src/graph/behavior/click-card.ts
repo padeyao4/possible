@@ -22,8 +22,8 @@ export class ClickCard extends BaseBehavior {
   onMouseUp(e: MouseEvent, el: Element) {
     this.distance = Math.sqrt(e.offsetX - this.start.x) ** 2 + (e.offsetY - this.start.y) ** 2;
     if (this.distance <= 25 && this.down) {
-      emitter.emit('open-canvas-card-editor', {
-        nodeId: el.getAttribute(GRAPH_ITEM_ID)!
+      emitter.emit('open-editor', {
+        id: el.getAttribute(GRAPH_ITEM_ID)!
       });
     }
     this.distance = 100;

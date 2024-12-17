@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { computed, reactive, ref, watchEffect } from 'vue';
+import { CARD_HEIGHT, CARD_WIDTH, generateIndex, usePlanStore } from '@/stores';
 import { emitter } from '@/utils';
-import { generateIndex, useDataStore } from '@/stores';
-import { NodeTypeEnum } from '@/openapi';
 import { v4 } from 'uuid';
+import { computed, reactive, ref, watchEffect } from 'vue';
 
 const { svg } = defineProps<{ svg: SVGSVGElement }>();
-const graph = useDataStore();
+const planStore = usePlanStore();
 
 interface ConfType {
   name: string;
@@ -40,26 +39,12 @@ const conf = {
         action: markNodeTodo
       },
       {
-        name: '追加节点',
-        icon: 'append',
-        action: appendNode
-      },
-      {
-        name: '插入节点',
-        icon: 'insert',
-        action: insertNode
-      },
-      {
         name: '测试',
         visible: isDev,
         action: test
       }
     ],
     [
-      {
-        name: '剥离',
-        action: stripNode
-      },
       {
         name: '删除',
         icon: 'delete',
@@ -117,30 +102,30 @@ emitter.on('open-canvas-menu', (param) => {
 });
 
 function test() {
-  const nodes = graph.getOutChildrenNodes(menuModel.itemId);
-  nodes.forEach((node) => {
-    console.log(node.name);
-  });
-  menuModel.visible = false;
+  // const nodes = graph.getOutChildrenNodes(menuModel.itemId);
+  // nodes.forEach((node) => {
+  //   console.log(node.name);
+  // });
+  // menuModel.visible = false;
 }
 
-function appendNode() {
-  graph.appendNode(menuModel.itemId);
-  menuModel.visible = false;
-}
+// function appendNode() {
+//   planStore.appendNode(menuModel.itemId);
+//   menuModel.visible = false;
+// }
 
-function insertNode() {
-  graph.insertNode(menuModel.itemId);
-  menuModel.visible = false;
-}
+// function insertNode() {
+//   graph.insertNode(menuModel.itemId);
+//   menuModel.visible = false;
+// }
 
-function stripNode() {
-  graph.stripNode(menuModel.itemId);
-  menuModel.visible = false;
-}
+// function stripNode() {
+//   graph.stripNode(menuModel.itemId);
+//   menuModel.visible = false;
+// }
 
 function deleteNode() {
-  graph.removeNode(menuModel.itemId);
+  planStore.removePlan(menuModel.itemId);
   menuModel.visible = false;
 }
 
@@ -154,37 +139,39 @@ function editeNode() {
 }
 
 function markNodeDone() {
-  graph.nodesMap.get(menuModel.itemId)!.status = true;
+  planStore.getPlan(menuModel.itemId)!.isDone = true;
   menuModel.visible = false;
 }
 
 function markNodeTodo() {
-  graph.nodesMap.get(menuModel.itemId)!.status = false;
+  planStore.getPlan(menuModel.itemId)!.isDone = false;
   menuModel.visible = false;
 }
 
 function deleteEdge() {
-  graph.removeEdge(menuModel.itemId);
+  const path = planStore.paths.find(path => path.id === menuModel.itemId);
+  if (path?.fromId && path?.toId) {
+    planStore.removeRelation(path.fromId, path.toId);
+  }
   menuModel.visible = false;
 }
 
 function createNode() {
-  const project = graph.project;
-  const svgBound = svg.getBoundingClientRect();
-  graph.addNode({
-    detail: '',
-    h: 1,
+  const project = planStore.project;
+  const bound = svg.getBoundingClientRect();
+
+  planStore.addPlan({
     id: v4(),
-    index: generateIndex(),
     name: 'untitled',
-    projectId: project!.id,
-    record: '',
-    status: false,
-    w: 1,
-    type: NodeTypeEnum.Normal,
-    x: Math.floor((menuModel.position.x - svgBound.left - project!.x!) / graph.cardWidth),
-    y: Math.floor((menuModel.position.y - svgBound.top - project!.y!) / graph.cardHeight)
+    x: Math.floor((menuModel.position.x - bound.left - project!.offsetX!) / CARD_WIDTH),
+    y: Math.floor((menuModel.position.y - bound.top - project!.offsetY!) / CARD_HEIGHT),
+    width: 1,
+    height: 1,
+    createdAt: Date.now(),
+    index: generateIndex(),
+    parentId: project!.id,
   });
+
   menuModel.visible = false;
 }
 

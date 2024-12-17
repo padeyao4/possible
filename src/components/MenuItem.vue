@@ -4,9 +4,9 @@ import MenuItemEditeButton from '@/components/MenuItemEditeButton.vue';
 import MenuItemDeleteButton from '@/components/MenuItemDeleteButton.vue';
 import MenuItemDraggableButton from '@/components/MenuItemDraggableButton.vue';
 import { useRouter } from 'vue-router';
-import type { Project } from '@/openapi';
+import type { Plan } from '@/stores';
 
-const { project } = defineProps<{ project: Project }>();
+const { project } = defineProps<{ project: Plan }>();
 const router = useRouter();
 const showIcon = ref(false);
 

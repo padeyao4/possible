@@ -1,28 +1,25 @@
 <script setup lang="ts">
+import { CARD_WIDTH, days, ONE_DAY_MS, useDataStore, type Plan } from '@/stores';
 import { computed } from 'vue';
-import { days, ONE_DAY_MS, useDataStore } from '@/stores';
 
-const props = defineProps<{
+const { project, width } = defineProps<{
+  project: Plan;
   height: number;
   width: number;
 }>();
 
 const graph = useDataStore();
 
-const project = graph.project;
 
-const offsetX = computed(() => Math.floor(-project?.x! / graph.cardWidth));
+const numbers = computed(() => {
+  const ox = -Math.ceil(project.offsetX! / CARD_WIDTH);
+  return Array.from(
+    { length: Math.ceil(width / CARD_WIDTH) + 1 },
+    (_, i) => i + (ox < 0 ? ox + 1 : ox) - 2
+  );
+});
 
-const numbers = computed(() =>
-  Array.from(
-    { length: Math.ceil(props.width / graph.cardWidth) + 1 },
-    (_, i) => i + (offsetX.value < 0 ? offsetX.value + 1 : offsetX.value) - 2
-  )
-);
-
-const translateX = computed(() => (project?.x! % graph.cardWidth) - graph.cardWidth + 'px');
-
-const unitWidth = computed(() => graph.cardWidth + 'px');
+const translateX = computed(() => project.offsetX! % CARD_WIDTH - CARD_WIDTH);
 
 /**
  * 显示一个日期是周几
@@ -35,7 +32,7 @@ function formatWeek(date: Date): string {
  * 格式化日期 显示格式为：
  * 2023-01-01 周一
  */
-function formatDate(date: Date) {
+function formatDate(date: Date): string {
   return new Intl.DateTimeFormat('zh-Hans').format(date) + ' ' + formatWeek(date);
 }
 
@@ -50,8 +47,9 @@ const todayIndex = computed(() => {
 
 <template>
   <div class="canvas-header">
-    <div class="container">
-      <div v-for="n in numbers" :key="n" :class="['item time-cell', { today: n + 1 === todayIndex }]">
+    <div class="container" :style="{ transform: `translateX(${translateX}px)` }">
+      <div v-for="n in numbers" :key="n" :class="['item time-cell', { today: n + 1 === todayIndex }]"
+        :style="{ width: `${CARD_WIDTH}px` }">
         {{ showDateInfo(n) }}
       </div>
     </div>
@@ -72,7 +70,6 @@ const todayIndex = computed(() => {
 .container {
   display: flex;
   flex-direction: row;
-  transform: translateX(v-bind(translateX));
 }
 
 .item {
@@ -80,7 +77,6 @@ const todayIndex = computed(() => {
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: v-bind(unitWidth);
   height: 100%;
   font-weight: lighter;
   font-size: 14px;
