@@ -295,6 +295,35 @@ export const usePlanStore = defineStore('plan', {
             plan.nexts?.forEach(next => {
                 this.removeRelation(id, next);
             });
+        },
+        /**
+         * 根据时间戳更新计划位置
+         */
+        updatePlans() {
+            const layoutStore = useLayoutStore();
+            const idx = days(layoutStore.timestamp);
+            const backlogsSet = new Set(this.backlogsList);
+            const visibled = new Set<string>();
+            const queue = [] as string[];
+            Array.from(this.plansMap.values())
+                .filter(plan => !plan.isDone)
+                .filter(plan => !backlogsSet.has(plan.id!))
+                .filter(plan => plan.x! + plan.width! - 1 < idx)
+                .forEach(plan => {
+                    if (visibled.has(plan.id!)) return;
+                    visibled.add(plan.id!);
+                    const dt = idx - (plan.x! + plan.width! - 1);
+                    plan.width = plan.width! + dt;
+                    queue.push(...(plan.nexts || []).filter(id => !visibled.has(id)));
+                    while (queue.length > 0) {
+                        const id = queue.shift()!;
+                        if (visibled.has(id)) continue;
+                        visibled.add(id);
+                        const next = this.plansMap.get(id)!;
+                        next.x = next.x! + dt;
+                        queue.push(...(next.nexts || []).filter(id => !visibled.has(id)));
+                    }
+                });
         }
     },
 })
