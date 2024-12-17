@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useDataStore } from '@/stores';
+import { useLayoutStore } from '@/stores';
 import MenuToggleButton from '@/components/common/MenuToggleButton.vue';
 
 defineProps<{
@@ -7,7 +7,7 @@ defineProps<{
     backgroundColor?: string;
 }>();
 
-const dataStore = useDataStore();
+const dataStore = useLayoutStore();
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CARD_WIDTH, days, ONE_DAY_MS, useDataStore, type Plan } from '@/stores';
+import { CARD_WIDTH, days, ONE_DAY_MS, useLayoutStore, type Plan } from '@/stores';
 import { computed } from 'vue';
 
 const { project, width } = defineProps<{
@@ -8,7 +8,7 @@ const { project, width } = defineProps<{
   width: number;
 }>();
 
-const graph = useDataStore();
+const graph = useLayoutStore();
 
 
 const numbers = computed(() => {

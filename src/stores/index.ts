@@ -3,8 +3,7 @@ import { getActivePinia } from 'pinia';
 
 export * from './account';
 export * from './cursor';
-export * from './backlog';
-export * from './data';
+export * from './layout';
 export * from './plan';
 
 interface ExtendedPinia extends Pinia {

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import CloseIconButton from '@/components/common/CloseIconButton.vue';
-import { useDataStore, usePlanStore } from '@/stores';
+import { useLayoutStore, usePlanStore } from '@/stores';
 import { emitter } from '@/utils';
 import { Delete } from '@element-plus/icons-vue';
 import { useEventListener } from '@vueuse/core';
 import { computed, reactive } from 'vue';
 
 const planStore = usePlanStore();
-const graph = useDataStore();
+const graph = useLayoutStore();
 
 const editorModel = reactive({
   id: null as string | null,

@@ -12,9 +12,9 @@ import MenuResizer from '@/components/common/MenuResizer.vue';
 import MenuToggleButton from '@/components/common/MenuToggleButton.vue';
 import NavBacklogItem from '@/components/NavBacklogItem.vue';
 import NavTodayItem from '@/components/NavTodayItem.vue';
-import { useDataStore, usePlanStore, type Plan } from '@/stores';
+import { useLayoutStore, usePlanStore, type Plan } from '@/stores';
 import { RouterView } from 'vue-router';
-const dataStore = useDataStore();
+const dataStore = useLayoutStore();
 
 // backlogStore.fetch();
 // const debounceBacklogsFn = useDebounceFn((_mutation, state) => {

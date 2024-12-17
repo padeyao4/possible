@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useDataStore } from '@/stores';
+import { useLayoutStore } from '@/stores';
 import { useCursor } from '@/stores/cursor';
 
-const dataStore = useDataStore();
+const layoutStore = useLayoutStore();
 const cursor = useCursor();
 
 let startX = 0;
@@ -10,7 +10,7 @@ let startWidth = 0;
 
 function initDrag(e: MouseEvent) {
   startX = e.clientX;
-  startWidth = dataStore.menuWidth;
+  startWidth = layoutStore.menuWidth;
   document.addEventListener('mousemove', doDrag);
   document.addEventListener('mouseup', stopDrag);
   cursor.lock('col-resize');
@@ -20,11 +20,11 @@ function initDrag(e: MouseEvent) {
 function doDrag(e: MouseEvent) {
   const newWidth = startWidth + e.clientX - startX;
   if (newWidth <= 260) {
-    dataStore.menuWidth = 260;
-    dataStore.menuVisible = false;
+    layoutStore.menuWidth = 260;
+    layoutStore.menuVisible = false;
   } else {
-    dataStore.menuWidth = Math.min(460, newWidth);
-    dataStore.menuVisible = true;
+    layoutStore.menuWidth = Math.min(460, newWidth);
+    layoutStore.menuVisible = true;
   }
 }
 
@@ -39,11 +39,11 @@ function stopDrag() {
 
 <template>
   <div 
-    v-if="dataStore.menuVisible" 
+    v-if="layoutStore.menuVisible" 
     class="absolute inset-0 hover:cursor-col-resize" 
     :style="{
       width: '5px',
-      left: `${dataStore.menuWidth}px`,
+      left: `${layoutStore.menuWidth}px`,
       zIndex: 999,
       backgroundColor: 'transparent'
     }" 

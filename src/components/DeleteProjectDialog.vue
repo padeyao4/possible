@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
 import { emitter } from '@/utils';
-import { useDataStore } from '@/stores';
+import { useLayoutStore } from '@/stores';
 import { useRoute, useRouter } from 'vue-router';
 import type { Project } from '@/openapi';
 
@@ -12,7 +12,7 @@ const model = reactive({
 
 const router = useRouter();
 const route = useRoute();
-const graph = useDataStore();
+const graph = useLayoutStore();
 
 emitter.on('open-delete-project-dialog', (project) => {
   model.project = project;

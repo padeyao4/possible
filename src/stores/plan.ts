@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { days, useDataStore } from '.';
+import { days, useLayoutStore } from '.';
 
 export interface Plan {
     id: string;
@@ -152,7 +152,7 @@ export const usePlanStore = defineStore('plan', {
         },
         todayPlans(): Plan[] {
             const set = new Set(this.backlogsList);
-            const dataStore = useDataStore();
+            const dataStore = useLayoutStore();
             const idx = days(dataStore.timestamp);
 
             // 提取通用的过滤条件

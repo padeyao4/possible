@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { type DateType, type Plan, useDataStore, usePlanStore } from '@/stores';
+import { type DateType, type Plan, useLayoutStore, usePlanStore } from '@/stores';
 import { computed, ref } from 'vue';
 import ECounterButton from '@/components/common/CounterButton.vue';
 import MagicDraggable from '@/components/common/MagicDraggable.vue';
 import TodayItem from '@/components/TodayItem.vue';
 import BasePageLayout from '@/components/layout/BasePageLayout.vue';
 
-const graph = useDataStore();
+const graph = useLayoutStore();
 const completeVisible = ref(false);
 
 const planStore = usePlanStore();

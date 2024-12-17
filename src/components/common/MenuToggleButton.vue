@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useDataStore } from '@/stores';
+import { useLayoutStore } from '@/stores';
 import ExpandIcon from '@/components/icon/ExpandIcon.vue';
 
-const dataStore = useDataStore();
+const dataStore = useLayoutStore();
 </script>
 
 <template>

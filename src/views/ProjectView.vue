@@ -2,7 +2,7 @@
 import CanvasRuler from '@/components/project/CanvasRuler.vue';
 import CanvasHeader from '@/components/project/CanvasHeader.vue';
 import TheCanvas from '@/components/project/TheCanvas.vue';
-import { useDataStore, ONE_DAY_MS, usePlanStore } from '@/stores';
+import { useLayoutStore, ONE_DAY_MS, usePlanStore } from '@/stores';
 import ProjectLockButton from '@/components/ProjectLockButton.vue';
 import ProjectLocationButton from '@/components/ProjectLocationButton.vue';
 import ProjectHomeButton from '@/components/ProjectHomeButton.vue';
@@ -14,7 +14,7 @@ const props = defineProps<{
   id: string;
 }>()
 
-const graph = useDataStore();
+const graph = useLayoutStore();
 const planStore = usePlanStore();
 // const project = planStore.projects.find((p) => p.id === route.query.id);
 const project = computed(() => planStore.getPlan(props.id));
@@ -68,7 +68,7 @@ onUnmounted(() => {
       <ProjectHomeButton />
       <ProjectLocationButton />
       <ProjectCalenderButton />
-      <button v-if="isDev" @click="graph.updateNodes()">
+      <button v-if="isDev" @click="() => { }">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
           stroke="rgba(0,0,0,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />

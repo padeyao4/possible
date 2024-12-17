@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import BasePageLayout from '@/components/layout/BasePageLayout.vue';
 import { usePlanStore } from '@/stores';
-import { generateIndex } from '@/stores/data';
+import { generateIndex } from '@/stores/layout';
 import { faker } from '@faker-js/faker';
 import { v4 } from 'uuid';
 import { computed } from 'vue';
