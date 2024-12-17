@@ -1,207 +1,185 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import { CARD_HEIGHT, CARD_WIDTH, generateIndex, usePlanStore } from '@/stores';
 import { emitter } from '@/utils';
+import { ArrowDown, ArrowRight, Check, Close, Delete, Edit, ArrowUp, Plus } from '@element-plus/icons-vue';
 import { v4 } from 'uuid';
-import { computed, reactive, ref, watchEffect } from 'vue';
+import { computed, nextTick, reactive, ref, watchEffect, type Component } from 'vue';
 
 const { svg } = defineProps<{ svg: SVGSVGElement }>();
 const planStore = usePlanStore();
 
-interface ConfType {
+// 菜单项类型定义
+interface MenuItem {
   name: string;
-  icon?: string;
+  icon?: Component;
   action?: () => void;
-  group?: ConfType[][];
   visible?: boolean;
 }
 
-const isDev = import.meta.env.DEV;
+type MenuGroup = MenuItem[][];
+type MenuConfig = Record<MenuType, MenuGroup>;
+type MenuType = 'node' | 'edge' | 'canvas';
 
-/**
- * 菜单列表
- */
-const conf = {
-  node: [
-    [
-      {
-        name: '编辑',
-        icon: 'edit',
-        action: editeNode
-      }
-    ],
-    [
-      {
-        name: '标记完成',
-        action: markNodeDone
-      },
-      {
-        name: '标记待办',
-        action: markNodeTodo
-      },
-      {
-        name: '追加计划',
-        action: appendPlan
-      },
-      {
-        name: '插入计划',
-        action: insertPlan
-      },
-      {
-        name: '测试',
-        visible: isDev,
-        action: test
-      }
-    ],
-    [
-      {
-        name: '删除',
-        icon: 'delete',
-        action: deleteNode
-      }
-    ]
-  ] as ConfType[][],
-  edge: [
-    [
-      {
-        name: '删除',
-        icon: 'delete',
-        action: deleteEdge
-      }
-    ]
-  ] as ConfType[][],
-  canvas: [
-    [
-      {
-        name: '创建节点',
-        icon: 'add',
-        action: createNode
-      }
-    ]
-  ] as ConfType[][]
-};
-
-type MenuType = keyof typeof conf;
-
+// 菜单状态管理
 const menuRef = ref<HTMLElement | null>(null);
-
 const menuModel = reactive({
   visible: false,
-  top: 0, // 菜单栏距离顶部的距离
-  left: 0, // 菜单栏距离左侧的距离
-  /**
-   * 鼠标点击的地址
-   */
-  position: {
-    x: 0,
-    y: 0
-  },
+  top: 0,
+  left: 0,
+  position: { x: 0, y: 0 },
   menuType: 'canvas' as MenuType,
   itemId: ''
 });
 
-emitter.on('open-canvas-menu', (param) => {
-  menuModel.visible = true;
-  menuModel.top = param.y;
-  menuModel.left = param.x;
-  menuModel.position.x = param.x;
-  menuModel.position.y = param.y;
-  menuModel.menuType = param.menuType;
-  menuModel.itemId = param.itemId!;
-});
+// 菜单动作定义
+const menuActions = {
+  node: {
+    edit: () => {
+      emitter.emit('open-canvas-card-editor-by-menu', {
+        x: menuModel.position.x,
+        y: menuModel.position.y,
+        nodeId: menuModel.itemId
+      });
+      hideMenu();
+    },
+    markDone: () => {
+      planStore.getPlan(menuModel.itemId)!.isDone = true;
+      hideMenu();
+    },
+    markTodo: () => {
+      planStore.getPlan(menuModel.itemId)!.isDone = false;
+      hideMenu();
+    },
+    append: () => {
+      planStore.appendPlan(menuModel.itemId);
+      hideMenu();
+    },
+    insert: () => {
+      planStore.insertPlan(menuModel.itemId);
+      hideMenu();
+    },
+    addChild: () => {
+      planStore.addChildPlan(menuModel.itemId);
+      hideMenu();
+    },
+    delete: () => {
+      planStore.removePlan(menuModel.itemId);
+      hideMenu();
+    },
+    expand: () => {
+      planStore.getPlan(menuModel.itemId)!.isExpanded = true;
+      hideMenu();
+    },
+    collapse: () => {
+      planStore.getPlan(menuModel.itemId)!.isExpanded = false;
+      hideMenu();
+    }
+  },
+  edge: {
+    delete: () => {
+      const path = planStore.paths.find(path => path.id === menuModel.itemId);
+      if (path?.fromId && path?.toId) {
+        planStore.removeRelation(path.fromId, path.toId);
+      }
+      hideMenu();
+    }
+  },
+  canvas: {
+    create: () => {
+      const project = planStore.project;
+      const bound = svg.getBoundingClientRect();
 
-function test() {
-}
-
-
-function deleteNode() {
-  planStore.removePlan(menuModel.itemId);
-  menuModel.visible = false;
-}
-
-function editeNode() {
-  emitter.emit('open-canvas-card-editor-by-menu', {
-    x: menuModel.position.x,
-    y: menuModel.position.y,
-    nodeId: menuModel.itemId
-  });
-  menuModel.visible = false;
-}
-
-function markNodeDone() {
-  planStore.getPlan(menuModel.itemId)!.isDone = true;
-  menuModel.visible = false;
-}
-
-function markNodeTodo() {
-  planStore.getPlan(menuModel.itemId)!.isDone = false;
-  menuModel.visible = false;
-}
-
-function deleteEdge() {
-  const path = planStore.paths.find(path => path.id === menuModel.itemId);
-  if (path?.fromId && path?.toId) {
-    planStore.removeRelation(path.fromId, path.toId);
+      planStore.addPlan({
+        id: v4(),
+        name: 'untitled',
+        x: Math.floor((menuModel.position.x - bound.left - project!.offsetX!) / CARD_WIDTH),
+        y: Math.floor((menuModel.position.y - bound.top - project!.offsetY!) / CARD_HEIGHT),
+        width: 1,
+        height: 1,
+        createdAt: Date.now(),
+        index: generateIndex(),
+        parentId: project!.id,
+      });
+      hideMenu();
+    }
   }
-  menuModel.visible = false;
-}
+};
 
-function createNode() {
-  const project = planStore.project;
-  const bound = svg.getBoundingClientRect();
+// 菜单配置
+const menuConfig: MenuConfig = {
+  node: [
+    [{ name: '编辑', icon: Edit, action: menuActions.node.edit }],
+    [
+      { name: '标记完成', icon: Check, action: menuActions.node.markDone },
+      { name: '标记待办', icon: Close, action: menuActions.node.markTodo },
+      { name: '追加计划', icon: ArrowRight, action: menuActions.node.append },
+      { name: '插入计划', icon: ArrowDown, action: menuActions.node.insert },
+      { name: '添加子计划', icon: ArrowRight, action: menuActions.node.addChild },
+      { name: '展开', icon: ArrowDown, action: menuActions.node.expand },
+      { name: '折叠', icon: ArrowUp, action: menuActions.node.collapse },
+      { name: '测试', visible: import.meta.env.DEV, icon: Edit }
+    ],
+    [{ name: '删除', icon: Delete, action: menuActions.node.delete }]
+  ],
+  edge: [
+    [{ name: '删除', icon: Delete, action: menuActions.edge.delete }]
+  ],
+  canvas: [
+    [{ name: '创建节点', icon: Plus, action: menuActions.canvas.create }]
+  ]
+};
 
-  planStore.addPlan({
-    id: v4(),
-    name: 'untitled',
-    x: Math.floor((menuModel.position.x - bound.left - project!.offsetX!) / CARD_WIDTH),
-    y: Math.floor((menuModel.position.y - bound.top - project!.offsetY!) / CARD_HEIGHT),
-    width: 1,
-    height: 1,
-    createdAt: Date.now(),
-    index: generateIndex(),
-    parentId: project!.id,
-  });
+// 计算当前菜单列表
+const menuList = computed(() => menuConfig[menuModel.menuType]);
 
+// 显示/隐藏菜单
+function hideMenu() {
   menuModel.visible = false;
 }
 
 watchEffect(() => {
-  // 解决焦点问题
-  menuRef.value?.focus?.();
-  // 监听菜单栏显示状态,调整菜单位置
-  if (menuModel.visible && menuRef.value) {
-    const svgBounding = svg.getBoundingClientRect();
-    const menuBounding = menuRef.value?.getBoundingClientRect();
-    if (menuBounding.right > svgBounding.right) {
-      menuModel.left = svgBounding.right - menuBounding.width;
-    }
-    if (menuBounding.bottom > svgBounding.bottom) {
-      menuModel.top = menuModel.top - (menuBounding.bottom - svgBounding.bottom);
-    }
+  if (menuRef.value) {
+    menuRef.value.focus();
   }
 });
 
-const list = computed(() => {
-  return conf[menuModel.menuType];
+// 监听菜单打开事件
+emitter.on('open-canvas-menu', (param) => {
+  menuModel.visible = true;
+  menuModel.top = param.y;
+  menuModel.left = param.x;
+  menuModel.position = { x: param.x, y: param.y };
+  menuModel.menuType = param.menuType;
+  menuModel.itemId = param.itemId!;
+
+  // 下一个tick调整菜单位置
+  nextTick(() => {
+    if (!menuRef.value) return;
+
+    const svgBound = svg.getBoundingClientRect();
+    const menuBound = menuRef.value.getBoundingClientRect();
+
+    // 确保菜单不超出视图范围
+    if (menuBound.right > svgBound.right) {
+      menuModel.left = svgBound.right - menuBound.width;
+    }
+    if (menuBound.bottom > svgBound.bottom) {
+      menuModel.top = menuModel.top - (menuBound.bottom - svgBound.bottom);
+    }
+  });
 });
-
-function appendPlan(): void {
-  planStore.appendPlan(menuModel.itemId);
-  menuModel.visible = false;
-}
-
-function insertPlan(): void {
-  planStore.insertPlan(menuModel.itemId);
-  menuModel.visible = false;
-}
 </script>
 
 <template>
   <div v-if="menuModel.visible" ref="menuRef" :style="{ top: menuModel.top + 'px', left: menuModel.left + 'px' }"
-    class="container" tabindex="0" @blur="menuModel.visible = false" @contextmenu.prevent>
-    <div v-for="(group, groupIndex) in list" :key="groupIndex" class="group">
+    class="menu-container" tabindex="0" @blur="hideMenu" @contextmenu.prevent>
+    <div v-for="(group, groupIndex) in menuList" :key="groupIndex" class="menu-group">
       <template v-for="(item, itemIndex) in group" :key="itemIndex">
-        <div v-if="item.visible === undefined || item.visible === true" class="item" @click="item.action">
-          {{ item.name }}
+        <div v-if="item.visible !== false" class="menu-item" @click="item.action">
+          <el-icon v-if="item.icon">
+            <component :is="item.icon" />
+          </el-icon>
+          <span>{{ item.name }}</span>
         </div>
       </template>
     </div>
@@ -209,49 +187,66 @@ function insertPlan(): void {
 </template>
 
 <style scoped>
-.container {
+.menu-container {
   position: fixed;
   z-index: 4;
   width: 200px;
-  padding: 2px;
+  padding: 4px;
   background-color: #ffffff;
-  border: 1px solid #00000020;
-  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
   box-shadow:
-    0 0 10px rgba(0, 0, 0, 0.5),
-    0 0 20px rgba(247, 247, 249, 0.25);
-  animation: fadeIn 200ms ease-in;
-}
-
-div:focus {
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  animation: fadeIn 150ms ease-out;
   outline: none;
 }
 
-.group {
-  border-bottom: 1px solid #33333350;
+.menu-group {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 
   &:last-child {
     border-bottom: none;
   }
 }
 
-.item {
+.menu-item {
   display: flex;
   align-items: center;
-  padding: 5px 10px;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  min-height: 32px;
 
   &:hover {
-    background-color: #00000010;
+    background-color: rgba(0, 0, 0, 0.04);
+    color: #409EFF;
+  }
+
+  .el-icon {
+    font-size: 16px;
+    width: 16px;
+    flex-shrink: 0;
+  }
+
+  span {
+    flex: 1;
   }
 }
 
 @keyframes fadeIn {
-  0% {
+  from {
     opacity: 0;
+    transform: scale(0.95);
   }
 
-  100% {
+  to {
     opacity: 1;
+    transform: scale(1);
   }
 }
 </style>

@@ -13,6 +13,7 @@ export interface Plan {
     isDone?: boolean;
     parentId?: string;
     childrenIds?: string[];
+    isExpanded?: boolean; // 是否展开子节点
     // 下一个计划
     nexts?: string[];
     // 上一个计划
@@ -61,6 +62,8 @@ export interface Card {
     color: string; // 根据状态设置颜色
     left: { x: number, y: number }; // 左侧锚点
     right: { x: number, y: number }; // 右侧锚点
+    isExpanded?: boolean; // 是否展开
+    children?: string[]; // 子节点
 }
 
 export interface Path {
@@ -97,19 +100,78 @@ export const usePlanStore = defineStore('plan', {
         cardsMap: (state) => {
             const cardsMap = new Map<string, Card>();
             const OFFSET_LEN = 20
-            Array.from(state.plansMap.values()).filter(plan => plan.parentId === state.projectId).map(plan => {
-                cardsMap.set(plan.id, {
-                    id: plan.id,
-                    name: plan.name,
-                    x: plan.x! * CARD_WIDTH + OFFSET_LEN / 2,
-                    y: plan.y! * CARD_HEIGHT + OFFSET_LEN / 2,
-                    width: plan.width! * CARD_WIDTH - OFFSET_LEN,
-                    height: plan.height! * CARD_HEIGHT - OFFSET_LEN,
-                    color: plan.isDone ? '#ddd' : '#fff',
-                    left: { x: plan.x! * CARD_WIDTH + OFFSET_LEN / 2, y: (plan.y! + plan.height! / 2) * CARD_HEIGHT },
-                    right: { x: (plan.x! + plan.width!) * CARD_WIDTH - OFFSET_LEN / 2, y: (plan.y! + plan.height! / 2) * CARD_HEIGHT },
+            Array.from(state.plansMap.values())
+                .filter(plan => plan.parentId === state.projectId)
+                .map(plan => {
+                    // 如果有子节点，计算包围盒
+                    if (plan.childrenIds?.length) {
+                        const children = plan.childrenIds.map(id => state.plansMap.get(id)!);
+                        // 获取所有子节点中最小的x和y
+                        const minX = Math.min(...children.map(child => child.x!));
+                        const minY = Math.min(...children.map(child => child.y!));
+                        // 获取最右边子节点的x+width作为包围盒右边界
+                        const maxX = Math.max(...children.map(child => child.x! + child.width!));
+                        // 获取最下方子节点的y+height作为包围盒下边界
+                        const maxY = Math.max(...children.map(child => child.y! + child.height!));
+
+                        // 更新plan的位置和大小
+                        plan.x = minX;
+                        plan.y = minY;
+                        plan.width = maxX - minX;
+                        plan.height = maxY - minY;
+                    }
+                    return {
+                        id: plan.id,
+                        name: plan.name,
+                        x: plan.x! * CARD_WIDTH,
+                        y: plan.y! * CARD_HEIGHT,
+                        width: plan.width! * CARD_WIDTH,
+                        height: plan.height! * CARD_HEIGHT,
+                        color: plan.isDone ? '#ddd' : '#fff',
+                        left: { x: plan.x! * CARD_WIDTH, y: (plan.y! + plan.height! / 2) * CARD_HEIGHT },
+                        right: { x: (plan.x! + plan.width!) * CARD_WIDTH, y: (plan.y! + plan.height! / 2) * CARD_HEIGHT },
+                        children: plan.childrenIds,
+                        isExpanded: plan.isExpanded,
+                    }
+                })
+                .map(card => {
+                    if (card.isExpanded) {
+                        return {
+                            ...card,
+                            x: card.x + OFFSET_LEN / 4,
+                            y: card.y + OFFSET_LEN / 4,
+                            width: card.width - OFFSET_LEN / 2,
+                            height: card.height - OFFSET_LEN / 2,
+                            left: {
+                                ...card.left,
+                                x: card.x + OFFSET_LEN / 4
+                            },
+                            right: {
+                                ...card.right,
+                                x: card.x + card.width - OFFSET_LEN / 4
+                            }
+                        };
+                    } else {
+                        return {
+                            ...card,
+                            x: card.x + OFFSET_LEN / 2,
+                            y: card.y + OFFSET_LEN / 2,
+                            width: card.width - OFFSET_LEN,
+                            height: card.height - OFFSET_LEN,
+                            left: {
+                                ...card.left,
+                                x: card.x + OFFSET_LEN / 2
+                            },
+                            right: {
+                                ...card.right,
+                                x: card.x + card.width - OFFSET_LEN / 2
+                            }
+                        };
+                    }
+                })
+                .forEach(card => {
+                    cardsMap.set(card.id, card);
                 });
-            });
             return cardsMap;
         },
         cards(): Card[] {
@@ -324,6 +386,27 @@ export const usePlanStore = defineStore('plan', {
                         queue.push(...(next.nexts || []).filter(id => !visibled.has(id)));
                     }
                 });
+        },
+        /**
+         * 添加子计划
+         * @param id 
+         */
+        addChildPlan(id: string) {
+            const plan = this.plansMap.get(id)!;
+            const newPlanId = v4();
+            const newPlan = {
+                id: newPlanId,
+                name: '未命名',
+                x: plan.x!,
+                y: plan.y!,
+                width: 1,
+                height: 1,
+                index: generateIndex(),
+                isDone: false,
+                createdAt: Date.now(),
+                parentId: plan.id,
+            }
+            this.addPlan(newPlan);
         }
     },
 })

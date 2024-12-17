@@ -61,7 +61,15 @@ const resizePoints: ResizePoint[] = [
 <template>
   <g :transform="`translate(${card.x},${card.y})`">
     <!-- 卡片主体 -->
-    <rect :width="card.width" :height="card.height" stroke-width="1" stroke="#000" :fill="card.color" rx="8" />
+    <rect 
+      :width="card.width" 
+      :height="card.height" 
+      :stroke-width="card.isExpanded ? 1 : 1"
+      :stroke="card.isExpanded ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.6)'"
+      :stroke-dasharray="card.isExpanded ? '4,4' : 'none'"
+      :rx="card.isExpanded ? 0 : 8"
+      :fill="card.color" 
+    />
 
     <!-- 卡片内容 -->
     <foreignObject :width="card.width" :height="card.height">
@@ -71,8 +79,15 @@ const resizePoints: ResizePoint[] = [
     </foreignObject>
 
     <!-- 交互区域 -->
-    <rect v-bind="nodeAttrs" :width="card.width" :height="card.height" :data-graph-item-id="card.id" class="key-shape"
-      opacity="0" rx="8" />
+    <rect 
+      v-bind="nodeAttrs" 
+      :width="card.width" 
+      :height="card.height" 
+      :data-graph-item-id="card.id" 
+      class="key-shape"
+      opacity="0" 
+      :rx="card.isExpanded ? 0 : 8"
+    />
 
     <!-- 调整大小的控制点 -->
     <g class="resize-handles" opacity="0">
@@ -89,8 +104,18 @@ const resizePoints: ResizePoint[] = [
     <!-- 连接锚点 -->
     <g class="anchor">
       <template v-for="(anchor, i) in ['right', 'left']" :key="anchor">
-        <circle v-bind="nodeAttrs" :data-graph-item-id="card.id" :data-graph-node-anchor="anchor" :cx="i * card.width"
-          :cy="card.height / 2" r="5" stroke="#000" fill="#fff" stroke-width="0.8" />
+        <circle 
+          v-bind="nodeAttrs" 
+          :data-graph-item-id="card.id" 
+          :data-graph-node-anchor="anchor" 
+          :cx="i * card.width"
+          :cy="card.height / 2" 
+          r="5" 
+          :stroke="card.isExpanded ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.6)'"
+          :stroke-dasharray="card.isExpanded ? '2,2' : 'none'"
+          fill="#fff" 
+          stroke-width="0.8" 
+        />
       </template>
     </g>
   </g>

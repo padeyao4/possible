@@ -100,7 +100,7 @@ const formatDate = (timestamp: number) => {
           <div class="space-y-2">
             <div class="text-sm text-gray-500">位置</div>
             <div class="grid grid-cols-2 gap-4">
-              <el-input-number v-model="plan.x" :min="1" :precision="0" :step="1" :controls="false" size="small"
+              <el-input-number v-model="plan.x" :min="-999" :precision="0" :step="1" :controls="false" size="small"
                 placeholder="X坐标" />
               <el-input-number v-model="plan.y" :min="0" :precision="0" :step="1" :controls="false" size="small"
                 placeholder="Y坐标" />
