@@ -36,9 +36,10 @@ const bounds = ref({
   height: 0
 });
 
-watchEffect(() => {
-  if (svg.value) {
-    const rect = svg.value.getBoundingClientRect();
+// 使用ResizeObserver监听svg元素大小变化
+const observer = new ResizeObserver((entries) => {
+  for (const entry of entries) {
+    const rect = entry.contentRect;
     bounds.value = {
       x: -(project.offsetX ?? 0),
       y: -(project.offsetY ?? 0),
@@ -46,6 +47,28 @@ watchEffect(() => {
       height: rect.height
     };
   }
+});
+
+watchEffect(() => {
+  if (svg.value) {
+    // 初始化bounds
+    const rect = svg.value.getBoundingClientRect();
+    bounds.value = {
+      x: -(project.offsetX ?? 0),
+      y: -(project.offsetY ?? 0),
+      width: rect.width,
+      height: rect.height
+    };
+    // 开始监听大小变化
+    observer.observe(svg.value);
+  }
+  
+  // 清理函数
+  return () => {
+    if (svg.value) {
+      observer.unobserve(svg.value);
+    }
+  };
 });
 
 onMounted(() => {
@@ -69,8 +92,6 @@ const backgroundStyle = computed(() => {
     backgroundPositionY: project.offsetY + 'px',
   };
 });
-
-
 
 const cards = computed(() => planStore.cards.filter((card) => cross(bounds.value, card)));
 const paths = computed(() => planStore.paths.concat(planStore.tempPathWithCtls??[]));

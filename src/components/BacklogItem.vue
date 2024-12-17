@@ -2,10 +2,10 @@
 import { ref } from 'vue';
 import { Check } from '@element-plus/icons-vue';
 import { emitter } from '@/utils';
-import type { Backlog } from '@/openapi';
+import type { Plan } from '@/stores';
 
 const { item } = defineProps<{
-  item: Backlog;
+  item: Plan;
 }>();
 
 const emit = defineEmits<{
@@ -13,7 +13,7 @@ const emit = defineEmits<{
   'select': [id: string | undefined]
 }>();
 
-const handleIconClick = () => emit('update-status', !item.status);
+const handleIconClick = () => emit('update-status', !item.isDone);
 
 const handleClick = () => {
   emit('select', item.id);
@@ -31,12 +31,12 @@ const showIcon = ref(false);
     <div
       class="mx-3 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-gray-500 hover:cursor-pointer"
       @click="handleIconClick">
-      <el-icon v-show="item.status" size="16">
+      <el-icon v-show="item.isDone" size="16">
         <Check />
       </el-icon>
     </div>
     <div class="flex h-full grow items-center overflow-hidden" @click="handleClick">
-      <el-text truncated :tag="item.status ? 'del' : 'span'"> {{ item.name }} </el-text>
+      <el-text truncated :tag="item.isDone ? 'del' : 'span'"> {{ item.name }} </el-text>
     </div>
     <div v-show="showIcon"
       class="icon-[icon-park-outline--drag] ml-auto mr-2 block shrink-0 border border-black bg-gray-500 text-xl"

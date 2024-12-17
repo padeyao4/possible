@@ -39,6 +39,14 @@ const conf = {
         action: markNodeTodo
       },
       {
+        name: '追加计划',
+        action: appendPlan
+      },
+      {
+        name: '插入计划',
+        action: insertPlan
+      },
+      {
         name: '测试',
         visible: isDev,
         action: test
@@ -175,6 +183,16 @@ watchEffect(() => {
 const list = computed(() => {
   return conf[menuModel.menuType];
 });
+
+function appendPlan(): void {
+  planStore.appendPlan(menuModel.itemId);
+  menuModel.visible = false;
+}
+
+function insertPlan(): void {
+  planStore.insertPlan(menuModel.itemId);
+  menuModel.visible = false;
+}
 </script>
 
 <template>

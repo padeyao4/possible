@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
-import { days, useLayoutStore } from '.';
+import { days, generateIndex, useLayoutStore } from '.';
+import { v4 } from 'uuid';
 
 export interface Plan {
     id: string;
@@ -36,8 +37,19 @@ export interface Plan {
     offsetY?: number;
 }
 
-export const CARD_WIDTH = 120;
-export const CARD_HEIGHT = 80;
+// 卡片尺寸常量
+export const CARD_CONSTRAINTS = {
+    MIN_WIDTH: 1,  // 最小宽度(格)
+    MIN_HEIGHT: 1, // 最小高度(格)
+    MAX_WIDTH: 10, // 最大宽度(格)
+    MAX_HEIGHT: 5, // 最大高度(格)
+    GRID_WIDTH: 120,  // 网格宽度(px)
+    GRID_HEIGHT: 80   // 网格高度(px)
+} as const;
+
+// 调整现有的 CARD_WIDTH 和 CARD_HEIGHT 常量
+export const CARD_WIDTH = CARD_CONSTRAINTS.GRID_WIDTH;
+export const CARD_HEIGHT = CARD_CONSTRAINTS.GRID_HEIGHT;
 
 export interface Card {
     id: string;
@@ -84,17 +96,18 @@ export const usePlanStore = defineStore('plan', {
         },
         cardsMap: (state) => {
             const cardsMap = new Map<string, Card>();
+            const OFFSET_LEN = 20
             Array.from(state.plansMap.values()).filter(plan => plan.parentId === state.projectId).map(plan => {
                 cardsMap.set(plan.id, {
                     id: plan.id,
                     name: plan.name,
-                    x: plan.x! * CARD_WIDTH,
-                    y: plan.y! * CARD_HEIGHT,
-                    width: plan.width! * CARD_WIDTH,
-                    height: plan.height! * CARD_HEIGHT,
+                    x: plan.x! * CARD_WIDTH + OFFSET_LEN / 2,
+                    y: plan.y! * CARD_HEIGHT + OFFSET_LEN / 2,
+                    width: plan.width! * CARD_WIDTH - OFFSET_LEN,
+                    height: plan.height! * CARD_HEIGHT - OFFSET_LEN,
                     color: plan.isDone ? '#ddd' : '#fff',
-                    left: { x: plan.x! * CARD_WIDTH, y: (plan.y! + plan.height! / 2) * CARD_HEIGHT },
-                    right: { x: (plan.x! + plan.width!) * CARD_WIDTH, y: (plan.y! + plan.height! / 2) * CARD_HEIGHT },
+                    left: { x: plan.x! * CARD_WIDTH + OFFSET_LEN / 2, y: (plan.y! + plan.height! / 2) * CARD_HEIGHT },
+                    right: { x: (plan.x! + plan.width!) * CARD_WIDTH - OFFSET_LEN / 2, y: (plan.y! + plan.height! / 2) * CARD_HEIGHT },
                 });
             });
             return cardsMap;
@@ -215,6 +228,73 @@ export const usePlanStore = defineStore('plan', {
         },
         setProjectId(id: string) {
             this.projectId = id;
+        },
+        /**
+         * 追加计划。继承上一个计划的后续依赖，并和上一个计划连接，将新计划插入到上一个计划之后
+         * @param id 
+         */
+        appendPlan(id: string) {
+            const plan = this.plansMap.get(id)!;
+            const newPlanId = v4();
+            const newPlan = {
+                id: newPlanId,
+                name: '未命名',
+                x: plan.x! + plan.width!,
+                y: plan.y!,
+                width: 1,
+                height: 1,
+                index: generateIndex(),
+                isDone: false,
+                createdAt: Date.now(),
+                parentId: plan.parentId,
+            }
+            this.addPlan(newPlan);
+            plan.nexts?.forEach(next => {
+                this.addRelation(newPlanId, next);
+                this.removeRelation(id, next);
+            });
+            this.addRelation(id, newPlanId);
+        },
+        /**
+         * 插入计划。将计划替换到当前任务的位置，被替换的任务后移一格，
+         * 插入的计划继承当前位置计划的所有前依赖关系
+         * @param id 
+         */
+        insertPlan(id: string) {
+            const plan = this.plansMap.get(id)!;
+            const newPlanId = v4();
+            const newPlan = {
+                id: newPlanId,
+                name: '未命名',
+                x: plan.x!,
+                y: plan.y!,
+                width: 1,
+                height: 1,
+                index: generateIndex(),
+                isDone: false,
+                createdAt: Date.now(),
+                parentId: plan.parentId,
+            }
+            this.addPlan(newPlan);
+            plan.prevs?.forEach(prev => {
+                this.addRelation(prev, newPlanId);
+                this.removeRelation(prev, id);
+            });
+            this.addRelation(newPlanId, id);
+            plan.x = plan.x! + 1;
+        },
+        /**
+         * 移除计划所有依赖关系
+         * @param id 
+         */
+        removeAllRelations(id: string) {
+            const plan = this.plansMap.get(id)!;
+            plan.prevs?.forEach(prev => {
+                this.removeRelation(prev, id);
+            });
+            plan.nexts?.forEach(next => {
+                this.removeRelation(id, next);
+            });
         }
     },
 })

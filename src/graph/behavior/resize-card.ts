@@ -6,7 +6,7 @@ import {
   type CanvasEvent,
   type GraphEventType
 } from '@/graph';
-import { CARD_HEIGHT, CARD_WIDTH, type Plan } from '@/stores';
+import { CARD_CONSTRAINTS, type Plan } from '@/stores';
 
 export class ResizeCard extends BaseBehavior {
   handleEvent(evt: GraphEventType): void {
@@ -37,7 +37,7 @@ export class ResizeCard extends BaseBehavior {
     if (this.down || e.button !== 0 || !el.hasAttribute(GRAPH_NODE_RESIZE_REGION)) return;
     this.down = true;
     this.direction = el.getAttribute(GRAPH_NODE_RESIZE_REGION)!;
-    const style = el.getAttribute(MOUSE_STYLE)??'defalut';
+    const style = el.getAttribute(MOUSE_STYLE) ?? 'defalut';
     this.mouseStyle.lock(style);
     this.mousePoint.x = e.x;
     this.mousePoint.y = e.y;
@@ -67,24 +67,24 @@ export class ResizeCard extends BaseBehavior {
   }
 
   private resizeNode(dx: number, dy: number, node: Plan) {
-    // 计算宽高变化量
-    const deltaWidth = dx / CARD_WIDTH;
-    const deltaHeight = dy / CARD_HEIGHT;
+    const deltaWidth = dx / CARD_CONSTRAINTS.GRID_WIDTH;
+    const deltaHeight = dy / CARD_CONSTRAINTS.GRID_HEIGHT;
 
-    // 计算新的宽高
+    // 计算新的宽高，不再应用约束
     const newWidth = {
-      right: Math.max(this.oldNode.width! + deltaWidth, 1),
-      left: Math.max(this.oldNode.width! - deltaWidth, 1)
-    };
-    const newHeight = {
-      bottom: Math.max(this.oldNode.height! + deltaHeight, 1),
-      top: Math.max(this.oldNode.height! - deltaHeight, 1)
+      right: Math.max(1, this.oldNode.width! + deltaWidth),
+      left: Math.max(1, this.oldNode.width! - deltaWidth)
     };
 
-    // 计算新的位置
+    const newHeight = {
+      bottom: Math.max(1, this.oldNode.height! + deltaHeight),
+      top: Math.max(1, this.oldNode.height! - deltaHeight)
+    };
+
+    // 计算新位置
     const newPosition = {
-      x: this.oldNode.x + (newWidth.left === 1 ? this.oldNode.width! - 1 : deltaWidth),
-      y: this.oldNode.y + (newHeight.top === 1 ? this.oldNode.height! - 1 : deltaHeight)
+      x: this.oldNode.x + (this.direction.includes('l') ? this.oldNode.width! - newWidth.left : 0),
+      y: this.oldNode.y + (this.direction.includes('t') ? this.oldNode.height! - newHeight.top : 0)
     };
 
     // 根据拖拽方向更新节点属性
@@ -125,6 +125,16 @@ export class ResizeCard extends BaseBehavior {
       }
     };
 
-    resizeMap[this.direction as keyof typeof resizeMap]?.();
+    const handler = resizeMap[this.direction as keyof typeof resizeMap];
+    if (handler) {
+      handler();
+      this.emitResize(node);
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private emitResize(node: Plan) {
+    // 可以添加调整大小完成后的回调
+    // 比如更新连接线、触发保存等
   }
 }

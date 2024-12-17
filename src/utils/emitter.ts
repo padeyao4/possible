@@ -1,7 +1,5 @@
-import mitt from 'mitt';
-import type { Project } from '@/openapi';
-import type { Backlog } from '@/openapi';
 import type { Plan } from '@/stores';
+import mitt from 'mitt';
 
 /**
  * @description
@@ -19,13 +17,12 @@ type CustomEvents = {
   'open-canvas-card-editor': {
     nodeId: string;
   };
+  'edite-project-name': Plan;
   'open-canvas-card-editor-by-menu': {
     x: number;
     y: number;
     nodeId: string;
   };
-  'edite-project-name': Project;
-  'open-backlog-editor': Backlog;
   'open-editor': {
     id: string;
   };

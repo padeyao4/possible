@@ -1,11 +1,10 @@
-import { AccountControllerApi, type User } from '@/openapi'
 import router from '@/router'
 import { defineStore } from 'pinia'
 
 export const useAccountStore = defineStore("account", {
   state: () => ({
     token: localStorage.getItem('token') as string | null,
-    user: undefined as User | undefined,
+    user: undefined
   }),
   actions: {
     setToken(token: string) {
@@ -13,12 +12,8 @@ export const useAccountStore = defineStore("account", {
       localStorage.setItem("token", token)
     },
     fetchUser() {
-      new AccountControllerApi().getUser().then((res) => {
-        this.user = res.data.payload;
-      });
     },
-    setUser(user: User) {
-      this.user = user
+    setUser() {
     },
     logout() {
       this.token = null;
