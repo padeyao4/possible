@@ -31,6 +31,10 @@ const menuModel = reactive({
   itemId: ''
 });
 
+watchEffect(() => {
+  console.log(menuModel);
+});
+
 // 菜单动作定义
 const menuActions = {
   node: {
@@ -59,7 +63,21 @@ const menuActions = {
       hideMenu();
     },
     addChild: () => {
-      planStore.addChildPlan(menuModel.itemId);
+      const parent = planStore.getPlan(menuModel.itemId)!;
+      const bound = svg.getBoundingClientRect();
+      const project = planStore.project;
+      planStore.addPlan({
+        id: v4(),
+        name: '未命名',
+        x: Math.floor((menuModel.position.x - bound.left - project!.offsetX!) / CARD_WIDTH) - parent.x!,
+        y: Math.floor((menuModel.position.y - bound.top - project!.offsetY!) / CARD_HEIGHT) - parent.y!,
+        width: 1,
+        height: 1,
+        index: generateIndex(),
+        isDone: false,
+        createdAt: Date.now(),
+        parentId: menuModel.itemId,
+      })
       hideMenu();
     },
     delete: () => {

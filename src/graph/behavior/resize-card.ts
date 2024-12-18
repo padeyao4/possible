@@ -8,7 +8,27 @@ import {
 } from '@/graph';
 import { CARD_CONSTRAINTS, type Plan } from '@/stores';
 
+interface ResizeState {
+  down: boolean;
+  mousePoint: { x: number; y: number };
+  oldNode: Plan;
+  direction: string;
+}
+
+interface ResizePosition {
+  width: { right: number; left: number };
+  height: { bottom: number; top: number };
+  position: { x: number; y: number };
+}
+
 export class ResizeCard extends BaseBehavior {
+  private state: ResizeState = {
+    down: false,
+    mousePoint: { x: 0, y: 0 },
+    oldNode: {} as Plan,
+    direction: ''
+  };
+
   handleEvent(evt: GraphEventType): void {
     const el = evt.element;
     switch (evt.type) {
@@ -28,111 +48,147 @@ export class ResizeCard extends BaseBehavior {
     return new Set(['node:mousedown', ':mousemove', ':mouseup']);
   }
 
-  down = false;
-  mousePoint = { x: 0, y: 0 };
-  oldNode = {} as any;
-  direction = '';
-
-  onmousedown(e: MouseEvent, el: Element) {
-    if (this.down || e.button !== 0 || !el.hasAttribute(GRAPH_NODE_RESIZE_REGION)) return;
-    this.down = true;
-    this.direction = el.getAttribute(GRAPH_NODE_RESIZE_REGION)!;
-    const style = el.getAttribute(MOUSE_STYLE) ?? 'defalut';
-    this.mouseStyle.lock(style);
-    this.mousePoint.x = e.x;
-    this.mousePoint.y = e.y;
+  private onmousedown(e: MouseEvent, el: Element) {
+    if (this.state.down || e.button !== 0 || !el.hasAttribute(GRAPH_NODE_RESIZE_REGION)) return;
+    
+    this.state.down = true;
+    this.state.direction = el.getAttribute(GRAPH_NODE_RESIZE_REGION)!;
+    this.state.mousePoint = { x: e.x, y: e.y };
+    
     const node = this.planStore.getPlan(el.getAttribute(GRAPH_ITEM_ID)!);
-    Object.assign(this.oldNode, node);
+    Object.assign(this.state.oldNode, node);
+    
+    const style = el.getAttribute(MOUSE_STYLE) ?? 'default';
+    this.mouseStyle.lock(style);
   }
 
-  onmousemove(e: MouseEvent) {
-    if (this.down) {
-      const dx = e.x - this.mousePoint.x;
-      const dy = e.y - this.mousePoint.y;
-      const node = this.planStore.getPlan(this.oldNode.id!)!;
-      this.resizeNode(dx, dy, node);
-    }
+  private onmousemove(e: MouseEvent) {
+    if (!this.state.down) return;
+    
+    const dx = e.x - this.state.mousePoint.x;
+    const dy = e.y - this.state.mousePoint.y;
+    const node = this.planStore.getPlan(this.state.oldNode.id!)!;
+    
+    this.resizeNode(dx, dy, node);
   }
 
-  onmouseup() {
-    if (this.down) {
-      this.down = false;
-      const node = this.planStore.getPlan(this.oldNode.id!)!;
-      node.width = Math.round(node.width!);
-      node.height = Math.round(node.height!);
-      node.x = Math.round(node.x!);
-      node.y = Math.round(node.y!);
-      this.mouseStyle.unlock();
-    }
+  private onmouseup() {
+    if (!this.state.down) return;
+    
+    const node = this.planStore.getPlan(this.state.oldNode.id!)!;
+    this.roundNodePositions(node);
+    
+    this.state.down = false;
+    this.mouseStyle.unlock();
   }
 
-  private resizeNode(dx: number, dy: number, node: Plan) {
+  private roundNodePositions(node: Plan) {
+    node.width = Math.round(node.width!);
+    node.height = Math.round(node.height!);
+    node.x = Math.round(node.x!);
+    node.y = Math.round(node.y!);
+
+    node.childrenIds?.forEach(childId => {
+      const child = this.planStore.getPlan(childId)!;
+      child.x = Math.round(child.x!);
+      child.y = Math.round(child.y!);
+    });
+  }
+
+  private calculateResizePosition(dx: number, dy: number): ResizePosition {
     const deltaWidth = dx / CARD_CONSTRAINTS.GRID_WIDTH;
     const deltaHeight = dy / CARD_CONSTRAINTS.GRID_HEIGHT;
 
-    // 计算新的宽高，不再应用约束
-    const newWidth = {
-      right: Math.max(1, this.oldNode.width! + deltaWidth),
-      left: Math.max(1, this.oldNode.width! - deltaWidth)
-    };
-
-    const newHeight = {
-      bottom: Math.max(1, this.oldNode.height! + deltaHeight),
-      top: Math.max(1, this.oldNode.height! - deltaHeight)
-    };
-
-    // 计算新位置
-    const newPosition = {
-      x: this.oldNode.x + (this.direction.includes('l') ? this.oldNode.width! - newWidth.left : 0),
-      y: this.oldNode.y + (this.direction.includes('t') ? this.oldNode.height! - newHeight.top : 0)
-    };
-
-    // 根据拖拽方向更新节点属性
-    const resizeMap = {
-      l: () => {
-        node.width = newWidth.left;
-        node.x = newPosition.x;
+    return {
+      width: {
+        right: Math.max(1, this.state.oldNode.width! + deltaWidth),
+        left: Math.max(1, this.state.oldNode.width! - deltaWidth)
       },
-      r: () => {
-        node.width = newWidth.right;
+      height: {
+        bottom: Math.max(1, this.state.oldNode.height! + deltaHeight),
+        top: Math.max(1, this.state.oldNode.height! - deltaHeight)
       },
-      t: () => {
-        node.height = newHeight.top;
-        node.y = newPosition.y;
-      },
-      b: () => {
-        node.height = newHeight.bottom;
-      },
-      lt: () => {
-        node.width = newWidth.left;
-        node.height = newHeight.top;
-        node.x = newPosition.x;
-        node.y = newPosition.y;
-      },
-      rb: () => {
-        node.width = newWidth.right;
-        node.height = newHeight.bottom;
-      },
-      rt: () => {
-        node.width = newWidth.right;
-        node.height = newHeight.top;
-        node.y = newPosition.y;
-      },
-      lb: () => {
-        node.width = newWidth.left;
-        node.height = newHeight.bottom;
-        node.x = newPosition.x;
+      position: {
+        x: this.state.oldNode.x! + (this.state.direction.includes('l') ? this.state.oldNode.width! - Math.max(1, this.state.oldNode.width! - deltaWidth) : 0),
+        y: this.state.oldNode.y! + (this.state.direction.includes('t') ? this.state.oldNode.height! - Math.max(1, this.state.oldNode.height! - deltaHeight) : 0)
       }
     };
+  }
 
-    const handler = resizeMap[this.direction as keyof typeof resizeMap];
+  private getChildrenRelativePositions(node: Plan, originalX: number, originalY: number) {
+    const positions = new Map<string, { x: number, y: number }>();
+    
+    node.childrenIds?.forEach(childId => {
+      const child = this.planStore.getPlan(childId)!;
+      positions.set(childId, {
+        x: child.x! + originalX,
+        y: child.y! + originalY
+      });
+    });
+    
+    return positions;
+  }
+
+  private updateChildrenPositions(node: Plan, relativePositions: Map<string, { x: number, y: number }>) {
+    node.childrenIds?.forEach(childId => {
+      const child = this.planStore.getPlan(childId)!;
+      const relativePos = relativePositions.get(childId)!;
+      child.x = relativePos.x - node.x!;
+      child.y = relativePos.y - node.y!;
+    });
+  }
+
+  private resizeNode(dx: number, dy: number, node: Plan) {
+    const { width, height, position } = this.calculateResizePosition(dx, dy);
+    const childrenPositions = this.getChildrenRelativePositions(node, node.x!, node.y!);
+    
+    const resizeHandlers = this.createResizeHandlers(node, width, height, position);
+    const handler = resizeHandlers[this.state.direction as keyof typeof resizeHandlers];
+    
     if (handler) {
       handler();
+      this.updateChildrenPositions(node, childrenPositions);
       this.emitResize(node);
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private createResizeHandlers(node: Plan, width: ResizePosition['width'], height: ResizePosition['height'], position: ResizePosition['position']) {
+    const checkParentBounds = (bounds: { x?: number, y?: number, width?: number, height?: number }) => {
+      if (!node.parentId) return true;
+      
+      const parent = this.planStore.getPlan(node.parentId);
+      if (!parent?.width || !parent?.height) return true;
+      
+      const x = bounds.x ?? node.x!;
+      const y = bounds.y ?? node.y!;
+      const w = bounds.width ?? node.width!;
+      const h = bounds.height ?? node.height!;
+      
+      return x >= 0 && y >= 0 && x + w <= parent.width && y + h <= parent.height;
+    };
+
+    return {
+      l: () => this.applyResize(node, { width: width.left, x: position.x }, checkParentBounds),
+      r: () => this.applyResize(node, { width: width.right }, checkParentBounds),
+      t: () => this.applyResize(node, { height: height.top, y: position.y }, checkParentBounds),
+      b: () => this.applyResize(node, { height: height.bottom }, checkParentBounds),
+      lt: () => this.applyResize(node, { width: width.left, height: height.top, x: position.x, y: position.y }, checkParentBounds),
+      rb: () => this.applyResize(node, { width: width.right, height: height.bottom }, checkParentBounds),
+      rt: () => this.applyResize(node, { width: width.right, height: height.top, y: position.y }, checkParentBounds),
+      lb: () => this.applyResize(node, { width: width.left, height: height.bottom, x: position.x }, checkParentBounds)
+    };
+  }
+
+  private applyResize(node: Plan, changes: { width?: number; height?: number; x?: number; y?: number }, checkBounds: (bounds: any) => boolean) {
+    if (!checkBounds(changes)) return;
+    
+    Object.entries(changes).forEach(([key, value]) => {
+      if (value !== undefined) {
+        (node as any)[key] = value;
+      }
+    });
+  }
+
   private emitResize(node: Plan) {
     // 可以添加调整大小完成后的回调
     // 比如更新连接线、触发保存等

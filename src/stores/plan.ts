@@ -29,9 +29,9 @@ export interface Plan {
     // 坐标
     x?: number;
     y?: number;
-    // 宽度
+    // 宽度,当值不存在时，表示不绘制
     width?: number;
-    // 高度
+    // 高度,当值不存在时，表示不绘制
     height?: number;
     // 偏移量
     offsetX?: number;
@@ -127,47 +127,79 @@ export const usePlanStore = defineStore('plan', {
                 return false;
             };
 
-            // 计算包围盒
-            const calculateBoundingBox = (plan: Plan) => {
-                if (plan.childrenIds?.length) {  // 移除 && plan.isExpanded 条件
-                    const children = plan.childrenIds
-                        .map(id => state.plansMap.get(id)!)
-                        .filter(child => shouldShowPlan(child) || !plan.isExpanded);  // 未展开时也要考虑所有子节点
+            // 获取节点的绝对坐标
+            const getAbsolutePosition = (plan: Plan): { x: number, y: number } => {
+                let absoluteX = plan.x!;
+                let absoluteY = plan.y!;
+                let current = plan;
 
-                    if (children.length > 0) {
-                        // 获取所有子节点中最小的x和y
-                        const minX = Math.min(...children.map(child => child.x!));
-                        const minY = Math.min(...children.map(child => child.y!));
-                        // 获取最右边子节点的x+width作为包围盒右边界
-                        const maxX = Math.max(...children.map(child => child.x! + child.width!));
-                        // 获取最下方子节点的y+height作为包围盒下边界
-                        const maxY = Math.max(...children.map(child => child.y! + child.height!));
-
-                        plan.x = Math.min(minX, Math.ceil(plan.x!));
-                        plan.y = Math.min(minY, Math.ceil(plan.y!));
-                        plan.width = Math.max(plan.width!, Math.ceil(maxX - plan.x!));
-                        plan.height = Math.max(plan.height!, Math.ceil(maxY - plan.y!));
-                    }
+                // 向上累加所有父节点的坐标
+                while (current.parentId) {
+                    const parent = state.plansMap.get(current.parentId);
+                    if (!parent) break;
+                    absoluteX += parent.x!;
+                    absoluteY += parent.y!;
+                    current = parent;
                 }
+
+                return { x: absoluteX, y: absoluteY };
             };
+
+            // // 计算包围盒
+            // const calculateBoundingBox = (plan: Plan) => {
+            //     if (plan.childrenIds?.length) {
+            //         const children = plan.childrenIds
+            //             .map(id => state.plansMap.get(id)!)
+            //             .filter(child => shouldShowPlan(child) || !plan.isExpanded);
+
+            //         if (children.length > 0) {
+            //             // 获取子节点的绝对坐标
+            //             const childrenAbsPos = children.map(child => ({
+            //                 ...getAbsolutePosition(child),
+            //                 width: child.width!,
+            //                 height: child.height!
+            //             }));
+
+            //             // 计算包围盒
+            //             const minX = Math.min(...childrenAbsPos.map(pos => pos.x));
+            //             const minY = Math.min(...childrenAbsPos.map(pos => pos.y));
+            //             const maxX = Math.max(...childrenAbsPos.map(pos => pos.x + pos.width));
+            //             const maxY = Math.max(...childrenAbsPos.map(pos => pos.y + pos.height));
+
+            //             // 更新父节点的尺寸和位置
+            //             plan.width = Math.max(plan.width!, Math.ceil(maxX - minX));
+            //             plan.height = Math.max(plan.height!, Math.ceil(maxY - minY));
+            //         }
+            //     }
+            // };
 
             // 处理所有计划
             Array.from(state.plansMap.values())
                 .filter(shouldShowPlan)
                 .map(plan => {
                     // 计算包围盒
-                    calculateBoundingBox(plan);
+                    // calculateBoundingBox(plan);
+
+                    // 获取绝对坐标
+                    const absPos = getAbsolutePosition(plan);
+
                     // 转换为Card对象
                     return {
                         id: plan.id,
                         name: plan.name,
-                        x: plan.x! * CARD_WIDTH,
-                        y: plan.y! * CARD_HEIGHT,
+                        x: absPos.x * CARD_WIDTH,
+                        y: absPos.y * CARD_HEIGHT,
                         width: plan.width! * CARD_WIDTH,
                         height: plan.height! * CARD_HEIGHT,
                         color: plan.isDone ? '#ddd' : '#fff',
-                        left: { x: plan.x! * CARD_WIDTH, y: (plan.y! + plan.height! / 2) * CARD_HEIGHT },
-                        right: { x: (plan.x! + plan.width!) * CARD_WIDTH, y: (plan.y! + plan.height! / 2) * CARD_HEIGHT },
+                        left: { 
+                            x: absPos.x * CARD_WIDTH, 
+                            y: (absPos.y + plan.height! / 2) * CARD_HEIGHT 
+                        },
+                        right: { 
+                            x: (absPos.x + plan.width!) * CARD_WIDTH, 
+                            y: (absPos.y + plan.height! / 2) * CARD_HEIGHT 
+                        },
                         children: plan.childrenIds,
                         isExpanded: plan.isExpanded,
                     }
@@ -219,8 +251,11 @@ export const usePlanStore = defineStore('plan', {
         },
         tempPathWithCtls(): Path | undefined {
             if (!this.tempPath) return undefined;
-            const from = this.tempPath?.from ?? this.cardsMap.get(this.tempPath?.fromId!)!.right;
-            const to = this.tempPath?.to ?? this.cardsMap.get(this.tempPath?.toId!)!.left;
+            const from = this.tempPath?.from ?? this.cardsMap.get(this.tempPath?.fromId!)?.right;
+            const to = this.tempPath?.to ?? this.cardsMap.get(this.tempPath?.toId!)?.left;
+            
+            if (!from || !to) return undefined;
+            
             return {
                 id: this.tempPath?.id!,
                 from,
@@ -250,9 +285,9 @@ export const usePlanStore = defineStore('plan', {
                         (child!.nexts ?? []).map(next => {
                             const n1 = this.cardsMap.get(child!.id);
                             const n2 = this.cardsMap.get(next);
-
                             // 只有当两个节点都可见时才创建连线
                             if (n1 && n2) {
+                                // 使用卡片的实际位置（已经是绝对坐标）
                                 const path: Path = {
                                     id: `${child!.id}-${next}`,
                                     from: n1.right,
@@ -286,7 +321,6 @@ export const usePlanStore = defineStore('plan', {
                 return paths;
             };
 
-            // 从项目根节点开始获取所有可见的关系
             return getVisibleRelations(this.projectId!);
         },
         todoBacklogs(): Plan[] {
@@ -457,26 +491,5 @@ export const usePlanStore = defineStore('plan', {
                     }
                 });
         },
-        /**
-         * 添加子计划
-         * @param id 
-         */
-        addChildPlan(id: string) {
-            const plan = this.plansMap.get(id)!;
-            const newPlanId = v4();
-            const newPlan = {
-                id: newPlanId,
-                name: '未命名',
-                x: plan.x!,
-                y: plan.y!,
-                width: 1,
-                height: 1,
-                index: generateIndex(),
-                isDone: false,
-                createdAt: Date.now(),
-                parentId: plan.id,
-            }
-            this.addPlan(newPlan);
-        }
     },
 })

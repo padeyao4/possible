@@ -55,23 +55,6 @@ export class DragCard extends BaseBehavior {
     this.mousePosition.y = e.y;
   }
 
-  private getAllDescendants(nodeId: string): string[] {
-    const descendants: string[] = [];
-    const queue = [nodeId];
-    
-    while (queue.length > 0) {
-      const currentId = queue.shift()!;
-      const currentNode = this.planStore.getPlan(currentId);
-      
-      if (currentNode?.childrenIds?.length) {
-        descendants.push(...currentNode.childrenIds);
-        queue.push(...currentNode.childrenIds);
-      }
-    }
-    
-    return descendants;
-  }
-
   onmousemove(e: MouseEvent) {
     if (!this.down) return;
     const dx = e.x - this.mousePosition.x;
@@ -84,16 +67,15 @@ export class DragCard extends BaseBehavior {
     node!.x = this.oldNode.x! + deltaX;
     node!.y = this.oldNode.y! + deltaY;
 
-    const descendants = this.getAllDescendants(this.oldNode.id!);
-    descendants.forEach(id => {
-      const descendant = this.planStore.getPlan(id)!;
-      const originalPos = this.oldNode.childrenIds?.includes(id) 
-        ? { x: descendant.x!, y: descendant.y! }
-        : { x: descendant.x! - this.oldNode.x!, y: descendant.y! - this.oldNode.y! };
-      
-      descendant.x = originalPos.x + deltaX;
-      descendant.y = originalPos.y + deltaY;
-    });
+    // 如果有父节点,检查是否超出父节点边界
+    if (node!.parentId) {
+      const parent = this.planStore.getPlan(node!.parentId);
+      if (parent && parent.width && parent.height) {
+        // 限制在父节点范围内
+        node!.x = Math.max(0, Math.min(node!.x!, parent.width - node!.width!));
+        node!.y = Math.max(0, Math.min(node!.y!, parent.height - node!.height!));
+      }
+    }
 
     this.mouseStyle.lock('move');
   }
@@ -105,13 +87,6 @@ export class DragCard extends BaseBehavior {
       
       node!.x = Math.round(node!.x!);
       node!.y = Math.max(Math.round(node!.y!), 0);
-
-      const descendants = this.getAllDescendants(this.oldNode.id!);
-      descendants.forEach(id => {
-        const descendant = this.planStore.getPlan(id)!;
-        descendant.x = Math.round(descendant.x!);
-        descendant.y = Math.max(Math.round(descendant.y!), 0);
-      });
 
       this.mouseStyle.unlock();
     }

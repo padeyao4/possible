@@ -65,14 +65,14 @@ const resizePoints: ResizePoint[] = [
       :width="card.width" 
       :height="card.height" 
       :stroke-width="card.isExpanded ? 1 : 1"
-      :stroke="card.isExpanded ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.6)'"
+      :stroke="card.isExpanded ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.6)'"
       :stroke-dasharray="card.isExpanded ? '4,4' : 'none'"
       :rx="card.isExpanded ? 0 : 8"
-      :fill="card.color" 
+      :fill="card.isExpanded ? '#ffffff60' : card.color" 
     />
 
     <!-- 卡片内容 -->
-    <foreignObject :width="card.width" :height="card.height">
+    <foreignObject :width="card.width" :height="card.height" v-if="!card.isExpanded">
       <div class="text">
         <p>{{ card.name }}</p>
       </div>
