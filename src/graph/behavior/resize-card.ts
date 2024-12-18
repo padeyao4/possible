@@ -141,12 +141,56 @@ export class ResizeCard extends BaseBehavior {
   private resizeNode(dx: number, dy: number, node: Plan) {
     const { width, height, position } = this.calculateResizePosition(dx, dy);
     const childrenPositions = this.getChildrenRelativePositions(node, node.x!, node.y!);
-
     const resizeHandlers = this.createResizeHandlers(node, width, height, position);
     const handler = resizeHandlers[this.state.direction as keyof typeof resizeHandlers];
 
     if (handler) {
       handler();
+
+      // 计算子节点的边界框
+      const bounds = node.childrenIds?.reduce((acc, childId) => {
+        const child = this.planStore.getPlan(childId)!;
+        const pos = childrenPositions.get(childId)!;
+        return {
+          minX: Math.min(acc.minX, pos.x),
+          minY: Math.min(acc.minY, pos.y), 
+          maxX: Math.max(acc.maxX, pos.x + child.width!),
+          maxY: Math.max(acc.maxY, pos.y + child.height!)
+        };
+      }, {
+        minX: Infinity,
+        minY: Infinity,
+        maxX: -Infinity,
+        maxY: -Infinity
+      });
+
+      // 调整节点位置和大小以包含所有子节点
+      if (bounds) {
+        // 处理 x 坐标和宽度
+        if (node.x! !== this.state.orginNode.x!) {
+          node.x = Math.min(bounds.minX, node.x!);
+          if (node.x! === bounds.minX) {
+            node.width = this.state.orginNode.width! - (node.x! - this.state.orginNode.x!);
+          }
+        }
+
+        // 处理 y 坐标和高度
+        if (node.y! !== this.state.orginNode.y!) {
+          node.y = Math.min(bounds.minY, node.y!);
+          if (node.y! === bounds.minY) {
+            node.height = this.state.orginNode.height! - (node.y! - this.state.orginNode.y!);
+          }
+        }
+
+        // 确保节点大小足够容纳所有子节点
+        if (node.width! !== this.state.orginNode.width!) {
+          node.width = Math.max(bounds.maxX - node.x!, node.width!);
+        }
+        if (node.height! !== this.state.orginNode.height!) {
+          node.height = Math.max(bounds.maxY - node.y!, node.height!);
+        }
+      }
+
       this.updateChildrenPositions(node, childrenPositions);
       this.emitResize();
     }

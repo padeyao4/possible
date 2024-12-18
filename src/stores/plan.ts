@@ -36,6 +36,8 @@ export interface Plan {
     // 偏移量
     offsetX?: number;
     offsetY?: number;
+    // 添加一个计算绝对位置的方法
+    getAbsolutePosition?: () => { x: number; y: number };
 }
 
 // 卡片尺寸常量
@@ -133,7 +135,6 @@ export const usePlanStore = defineStore('plan', {
                 let absoluteY = plan.y!;
                 let current = plan;
 
-                // 向上累加所有父节点的坐标
                 while (current.parentId) {
                     const parent = state.plansMap.get(current.parentId);
                     if (!parent) break;
@@ -192,13 +193,13 @@ export const usePlanStore = defineStore('plan', {
                         width: plan.width! * CARD_WIDTH,
                         height: plan.height! * CARD_HEIGHT,
                         color: plan.isDone ? '#ddd' : '#fff',
-                        left: { 
-                            x: absPos.x * CARD_WIDTH, 
-                            y: (absPos.y + plan.height! / 2) * CARD_HEIGHT 
+                        left: {
+                            x: absPos.x * CARD_WIDTH,
+                            y: (absPos.y + plan.height! / 2) * CARD_HEIGHT
                         },
-                        right: { 
-                            x: (absPos.x + plan.width!) * CARD_WIDTH, 
-                            y: (absPos.y + plan.height! / 2) * CARD_HEIGHT 
+                        right: {
+                            x: (absPos.x + plan.width!) * CARD_WIDTH,
+                            y: (absPos.y + plan.height! / 2) * CARD_HEIGHT
                         },
                         children: plan.childrenIds,
                         isExpanded: plan.isExpanded,
@@ -253,9 +254,9 @@ export const usePlanStore = defineStore('plan', {
             if (!this.tempPath) return undefined;
             const from = this.tempPath?.from ?? this.cardsMap.get(this.tempPath?.fromId!)?.right;
             const to = this.tempPath?.to ?? this.cardsMap.get(this.tempPath?.toId!)?.left;
-            
+
             if (!from || !to) return undefined;
-            
+
             return {
                 id: this.tempPath?.id!,
                 from,
@@ -349,7 +350,17 @@ export const usePlanStore = defineStore('plan', {
         },
         donePlans(): Plan[] {
             return this.todayPlans.filter(plan => plan.isDone);
-        }
+        },
+        getAbsolutePosition: (state) => (id: string) => {
+            const plan = state.plansMap.get(id)!;
+            const absPos = { x: plan.x!, y: plan.y! };
+            const parent = state.plansMap.get(plan.parentId!);
+            if (parent) {
+                absPos.x += parent.x!;
+                absPos.y += parent.y!;
+            }
+            return absPos;
+        },
     },
     actions: {
         addPlan(plan: Plan, isProject?: boolean, isBacklog?: boolean) {
@@ -431,7 +442,7 @@ export const usePlanStore = defineStore('plan', {
             const newPlanId = v4();
             const newPlan = {
                 id: newPlanId,
-                name: '未命名',
+                name: '未���名',
                 x: plan.x!,
                 y: plan.y!,
                 width: 1,
