@@ -11,7 +11,7 @@ import { CARD_CONSTRAINTS, type Plan } from '@/stores';
 interface ResizeState {
   down: boolean;
   mousePoint: { x: number; y: number };
-  oldNode: Plan;
+  orginNode: Plan;
   direction: string;
 }
 
@@ -25,7 +25,7 @@ export class ResizeCard extends BaseBehavior {
   private state: ResizeState = {
     down: false,
     mousePoint: { x: 0, y: 0 },
-    oldNode: {} as Plan,
+    orginNode: {} as Plan,
     direction: ''
   };
 
@@ -50,34 +50,34 @@ export class ResizeCard extends BaseBehavior {
 
   private onmousedown(e: MouseEvent, el: Element) {
     if (this.state.down || e.button !== 0 || !el.hasAttribute(GRAPH_NODE_RESIZE_REGION)) return;
-    
+
     this.state.down = true;
     this.state.direction = el.getAttribute(GRAPH_NODE_RESIZE_REGION)!;
     this.state.mousePoint = { x: e.x, y: e.y };
-    
+
     const node = this.planStore.getPlan(el.getAttribute(GRAPH_ITEM_ID)!);
-    Object.assign(this.state.oldNode, node);
-    
+    Object.assign(this.state.orginNode, node);
+
     const style = el.getAttribute(MOUSE_STYLE) ?? 'default';
     this.mouseStyle.lock(style);
   }
 
   private onmousemove(e: MouseEvent) {
     if (!this.state.down) return;
-    
+
     const dx = e.x - this.state.mousePoint.x;
     const dy = e.y - this.state.mousePoint.y;
-    const node = this.planStore.getPlan(this.state.oldNode.id!)!;
-    
+    const node = this.planStore.getPlan(this.state.orginNode.id!)!;
+
     this.resizeNode(dx, dy, node);
   }
 
   private onmouseup() {
     if (!this.state.down) return;
-    
-    const node = this.planStore.getPlan(this.state.oldNode.id!)!;
+
+    const node = this.planStore.getPlan(this.state.orginNode.id!)!;
     this.roundNodePositions(node);
-    
+
     this.state.down = false;
     this.mouseStyle.unlock();
   }
@@ -101,23 +101,23 @@ export class ResizeCard extends BaseBehavior {
 
     return {
       width: {
-        right: Math.max(1, this.state.oldNode.width! + deltaWidth),
-        left: Math.max(1, this.state.oldNode.width! - deltaWidth)
+        right: Math.max(1, this.state.orginNode.width! + deltaWidth),
+        left: Math.max(1, this.state.orginNode.width! - deltaWidth)
       },
       height: {
-        bottom: Math.max(1, this.state.oldNode.height! + deltaHeight),
-        top: Math.max(1, this.state.oldNode.height! - deltaHeight)
+        bottom: Math.max(1, this.state.orginNode.height! + deltaHeight),
+        top: Math.max(1, this.state.orginNode.height! - deltaHeight)
       },
       position: {
-        x: this.state.oldNode.x! + (this.state.direction.includes('l') ? this.state.oldNode.width! - Math.max(1, this.state.oldNode.width! - deltaWidth) : 0),
-        y: this.state.oldNode.y! + (this.state.direction.includes('t') ? this.state.oldNode.height! - Math.max(1, this.state.oldNode.height! - deltaHeight) : 0)
+        x: this.state.orginNode.x! + (this.state.direction.includes('l') ? this.state.orginNode.width! - Math.max(1, this.state.orginNode.width! - deltaWidth) : 0),
+        y: this.state.orginNode.y! + (this.state.direction.includes('t') ? this.state.orginNode.height! - Math.max(1, this.state.orginNode.height! - deltaHeight) : 0)
       }
     };
   }
 
   private getChildrenRelativePositions(node: Plan, originalX: number, originalY: number) {
     const positions = new Map<string, { x: number, y: number }>();
-    
+
     node.childrenIds?.forEach(childId => {
       const child = this.planStore.getPlan(childId)!;
       positions.set(childId, {
@@ -125,7 +125,7 @@ export class ResizeCard extends BaseBehavior {
         y: child.y! + originalY
       });
     });
-    
+
     return positions;
   }
 
@@ -141,29 +141,29 @@ export class ResizeCard extends BaseBehavior {
   private resizeNode(dx: number, dy: number, node: Plan) {
     const { width, height, position } = this.calculateResizePosition(dx, dy);
     const childrenPositions = this.getChildrenRelativePositions(node, node.x!, node.y!);
-    
+
     const resizeHandlers = this.createResizeHandlers(node, width, height, position);
     const handler = resizeHandlers[this.state.direction as keyof typeof resizeHandlers];
-    
+
     if (handler) {
       handler();
       this.updateChildrenPositions(node, childrenPositions);
-      this.emitResize(node);
+      this.emitResize();
     }
   }
 
   private createResizeHandlers(node: Plan, width: ResizePosition['width'], height: ResizePosition['height'], position: ResizePosition['position']) {
     const checkParentBounds = (bounds: { x?: number, y?: number, width?: number, height?: number }) => {
       if (!node.parentId) return true;
-      
+
       const parent = this.planStore.getPlan(node.parentId);
       if (!parent?.width || !parent?.height) return true;
-      
+
       const x = bounds.x ?? node.x!;
       const y = bounds.y ?? node.y!;
       const w = bounds.width ?? node.width!;
       const h = bounds.height ?? node.height!;
-      
+
       return x >= 0 && y >= 0 && x + w <= parent.width && y + h <= parent.height;
     };
 
@@ -181,7 +181,7 @@ export class ResizeCard extends BaseBehavior {
 
   private applyResize(node: Plan, changes: { width?: number; height?: number; x?: number; y?: number }, checkBounds: (bounds: any) => boolean) {
     if (!checkBounds(changes)) return;
-    
+
     Object.entries(changes).forEach(([key, value]) => {
       if (value !== undefined) {
         (node as any)[key] = value;
@@ -189,7 +189,7 @@ export class ResizeCard extends BaseBehavior {
     });
   }
 
-  private emitResize(node: Plan) {
+  private emitResize() {
     // 可以添加调整大小完成后的回调
     // 比如更新连接线、触发保存等
   }
