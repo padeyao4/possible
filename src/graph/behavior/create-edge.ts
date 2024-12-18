@@ -83,7 +83,11 @@ export class CreateEdge extends BaseBehavior {
       }
 
       if (this.planStore.tempPath?.fromId !== this.planStore.tempPath?.toId) {
-        this.planStore.addRelation(this.planStore.tempPath!.fromId!, this.planStore.tempPath!.toId!);
+        const from = this.planStore.getPlan(this.planStore.tempPath!.fromId!)!
+        const to = this.planStore.getPlan(this.planStore.tempPath!.toId!)!
+        if (from.parentId === to.parentId) {
+          this.planStore.addRelation(this.planStore.tempPath!.fromId!, this.planStore.tempPath!.toId!);
+        }
       }
     }
     this.planStore.tempPath = null;
