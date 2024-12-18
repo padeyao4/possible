@@ -64,20 +64,41 @@ const menuActions = {
     },
     addChild: () => {
       const parent = planStore.getPlan(menuModel.itemId)!;
-      const bound = svg.getBoundingClientRect();
-      const project = planStore.project;
-      planStore.addPlan({
-        id: v4(),
-        name: '未命名',
-        x: Math.floor((menuModel.position.x - bound.left - project!.offsetX!) / CARD_WIDTH) - parent.x!,
-        y: Math.floor((menuModel.position.y - bound.top - project!.offsetY!) / CARD_HEIGHT) - parent.y!,
-        width: 1,
-        height: 1,
-        index: generateIndex(),
-        isDone: false,
-        createdAt: Date.now(),
-        parentId: menuModel.itemId,
-      })
+      const addChildPlan = (parentId: string, position: { x: number, y: number }) => {
+        // 递归获取父节点的坐标累加值
+        const getParentOffset = (parentId: string): { x: number, y: number } => {
+          const parent = planStore.getPlan(parentId);
+          if (!parent) return { x: 0, y: 0 };
+
+          const offset = { x: parent.x!, y: parent.y! };
+
+          if (parent.parentId) {
+            const parentOffset = getParentOffset(parent.parentId);
+            offset.x += parentOffset.x;
+            offset.y += parentOffset.y;
+          }
+          return offset;
+        };
+
+        const parentOffset = getParentOffset(parentId);
+        const bound = svg.getBoundingClientRect();
+        const project = planStore.project;
+
+        planStore.addPlan({
+          id: v4(),
+          name: '未命名',
+          x: Math.floor((position.x - bound.left - project!.offsetX!) / CARD_WIDTH) - parentOffset.x,
+          y: Math.floor((position.y - bound.top - project!.offsetY!) / CARD_HEIGHT) - parentOffset.y,
+          width: 1,
+          height: 1,
+          index: generateIndex(),
+          isDone: false,
+          createdAt: Date.now(),
+          parentId: parentId,
+        });
+      };
+
+      addChildPlan(parent.id, menuModel.position);
       hideMenu();
     },
     delete: () => {
