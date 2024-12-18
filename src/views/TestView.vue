@@ -19,6 +19,7 @@ function createTestProject() {
     index: generateIndex(),
     offsetX: 0,
     offsetY: 0,
+    isExpanded: true,
   }, true);
   const nodeId = v4();
   planStore.addPlan({

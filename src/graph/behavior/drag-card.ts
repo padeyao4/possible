@@ -55,14 +55,46 @@ export class DragCard extends BaseBehavior {
     this.mousePosition.y = e.y;
   }
 
+  private getAllDescendants(nodeId: string): string[] {
+    const descendants: string[] = [];
+    const queue = [nodeId];
+    
+    while (queue.length > 0) {
+      const currentId = queue.shift()!;
+      const currentNode = this.planStore.getPlan(currentId);
+      
+      if (currentNode?.childrenIds?.length) {
+        descendants.push(...currentNode.childrenIds);
+        queue.push(...currentNode.childrenIds);
+      }
+    }
+    
+    return descendants;
+  }
+
   onmousemove(e: MouseEvent) {
     if (!this.down) return;
     const dx = e.x - this.mousePosition.x;
     const dy = e.y - this.mousePosition.y;
-    const node = this.planStore.getPlan(this.oldNode.id!);
+    
+    const deltaX = dx / CARD_WIDTH;
+    const deltaY = dy / CARD_HEIGHT;
 
-    node!.x = this.oldNode.x! + dx / CARD_WIDTH;
-    node!.y = this.oldNode.y! + dy / CARD_HEIGHT;
+    const node = this.planStore.getPlan(this.oldNode.id!);
+    node!.x = this.oldNode.x! + deltaX;
+    node!.y = this.oldNode.y! + deltaY;
+
+    const descendants = this.getAllDescendants(this.oldNode.id!);
+    descendants.forEach(id => {
+      const descendant = this.planStore.getPlan(id)!;
+      const originalPos = this.oldNode.childrenIds?.includes(id) 
+        ? { x: descendant.x!, y: descendant.y! }
+        : { x: descendant.x! - this.oldNode.x!, y: descendant.y! - this.oldNode.y! };
+      
+      descendant.x = originalPos.x + deltaX;
+      descendant.y = originalPos.y + deltaY;
+    });
+
     this.mouseStyle.lock('move');
   }
 
@@ -70,25 +102,17 @@ export class DragCard extends BaseBehavior {
     if (this.down) {
       this.down = false;
       const node = this.planStore.getPlan(this.oldNode.id!);
+      
       node!.x = Math.round(node!.x!);
       node!.y = Math.max(Math.round(node!.y!), 0);
-      // 获取所有其他计划的位置信息
-      const otherPlans = Array.from(this.planStore.plansMap.values())
-        .filter(p => p.id !== node!.id && p.parentId === this.project.id);
-      
-      // 检查是否与其他计划相交
-      const hasIntersection = otherPlans.some(other => {
-        return node!.x! < other.x! + other.width! &&
-               node!.x! + node!.width! > other.x! &&
-               node!.y! < other.y! + other.height! &&
-               node!.y! + node!.height! > other.y!;
+
+      const descendants = this.getAllDescendants(this.oldNode.id!);
+      descendants.forEach(id => {
+        const descendant = this.planStore.getPlan(id)!;
+        descendant.x = Math.round(descendant.x!);
+        descendant.y = Math.max(Math.round(descendant.y!), 0);
       });
 
-      // 如果相交则还原到原位置
-      if (hasIntersection) {
-        node!.x = this.oldNode.x;
-        node!.y = this.oldNode.y;
-      }
       this.mouseStyle.unlock();
     }
   }

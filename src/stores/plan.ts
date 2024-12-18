@@ -51,6 +51,7 @@ export const CARD_CONSTRAINTS = {
 // 调整现有的 CARD_WIDTH 和 CARD_HEIGHT 常量
 export const CARD_WIDTH = CARD_CONSTRAINTS.GRID_WIDTH;
 export const CARD_HEIGHT = CARD_CONSTRAINTS.GRID_HEIGHT;
+const OFFSET_LEN = 20
 
 export interface Card {
     id: string;
@@ -62,7 +63,7 @@ export interface Card {
     color: string; // 根据状态设置颜色
     left: { x: number, y: number }; // 左侧锚点
     right: { x: number, y: number }; // 右侧锚点
-    isExpanded?: boolean; // 是否展开
+    isExpanded?: boolean; // 是否展开,会影响子节点是否显示
     children?: string[]; // 子节点
 }
 
@@ -99,13 +100,41 @@ export const usePlanStore = defineStore('plan', {
         },
         cardsMap: (state) => {
             const cardsMap = new Map<string, Card>();
-            const OFFSET_LEN = 20
-            Array.from(state.plansMap.values())
-                .filter(plan => plan.parentId === state.projectId)
-                .map(plan => {
-                    // 如果有子节点，计算包围盒
-                    if (plan.childrenIds?.length) {
-                        const children = plan.childrenIds.map(id => state.plansMap.get(id)!);
+            const projectId = state.projectId!;
+
+            // 获取节点的所有祖先节点ID
+            const getAncestors = (planId: string): string[] => {
+                const ancestors: string[] = [];
+                let current = state.plansMap.get(planId);
+                while (current?.parentId) {
+                    ancestors.push(current.parentId);
+                    current = state.plansMap.get(current.parentId);
+                }
+                return ancestors;
+            };
+
+            // 判断节点是否应该显示
+            const shouldShowPlan = (plan: Plan): boolean => {
+                // 直接子节点或者祖先节点包含projectId
+                if (plan.parentId === projectId || getAncestors(plan.id).includes(projectId)) {
+                    // 如果有父节点，检查父节点是否展开
+                    if (plan.parentId) {
+                        const parent = state.plansMap.get(plan.parentId);
+                        return parent?.isExpanded ?? false;
+                    }
+                    return true;
+                }
+                return false;
+            };
+
+            // 计算包围盒
+            const calculateBoundingBox = (plan: Plan) => {
+                if (plan.childrenIds?.length) {  // 移除 && plan.isExpanded 条件
+                    const children = plan.childrenIds
+                        .map(id => state.plansMap.get(id)!)
+                        .filter(child => shouldShowPlan(child) || !plan.isExpanded);  // 未展开时也要考虑所有子节点
+
+                    if (children.length > 0) {
                         // 获取所有子节点中最小的x和y
                         const minX = Math.min(...children.map(child => child.x!));
                         const minY = Math.min(...children.map(child => child.y!));
@@ -114,12 +143,21 @@ export const usePlanStore = defineStore('plan', {
                         // 获取最下方子节点的y+height作为包围盒下边界
                         const maxY = Math.max(...children.map(child => child.y! + child.height!));
 
-                        // 更新plan的位置和大小
-                        plan.x = minX;
-                        plan.y = minY;
-                        plan.width = maxX - minX;
-                        plan.height = maxY - minY;
+                        plan.x = Math.min(minX, Math.ceil(plan.x!));
+                        plan.y = Math.min(minY, Math.ceil(plan.y!));
+                        plan.width = Math.max(plan.width!, Math.ceil(maxX - plan.x!));
+                        plan.height = Math.max(plan.height!, Math.ceil(maxY - plan.y!));
                     }
+                }
+            };
+
+            // 处理所有计划
+            Array.from(state.plansMap.values())
+                .filter(shouldShowPlan)
+                .map(plan => {
+                    // 计算包围盒
+                    calculateBoundingBox(plan);
+                    // 转换为Card对象
                     return {
                         id: plan.id,
                         name: plan.name,
@@ -135,6 +173,7 @@ export const usePlanStore = defineStore('plan', {
                     }
                 })
                 .map(card => {
+                    // 应用偏移
                     if (card.isExpanded) {
                         return {
                             ...card,
@@ -172,6 +211,7 @@ export const usePlanStore = defineStore('plan', {
                 .forEach(card => {
                     cardsMap.set(card.id, card);
                 });
+
             return cardsMap;
         },
         cards(): Card[] {
@@ -195,29 +235,59 @@ export const usePlanStore = defineStore('plan', {
             };
         },
         paths(): Path[] {
-            return (this.plansMap.get(this.projectId!)?.childrenIds ?? [])
-                .map(id => this.plansMap.get(id))
-                .filter(child => !!child)
-                .flatMap(child =>
-                    (child.nexts ?? []).map(next => {
-                        const n1 = this.cardsMap.get(child.id)!
-                        const n2 = this.cardsMap.get(next)!
-                        return {
-                            id: `${child.id}-${next}`,
-                            from: n1.right,
-                            to: n2.left,
-                            ctls: [{
-                                x: n1.right.x + (n2.left.x - n1.right.x) / 2,
-                                y: n1.right.y
-                            }, {
-                                x: n2.left.x - (n2.left.x - n1.right.x) / 2,
-                                y: n2.left.y
-                            }],
-                            fromId: child.id,
-                            toId: next
-                        }
-                    })
-                ).filter(path => !!path);
+            // 递归获取所有可见的节点及其关系
+            const getVisibleRelations = (parentId: string): Path[] => {
+                const parent = this.plansMap.get(parentId);
+                if (!parent) return [];
+
+                const paths: Path[] = [];
+
+                // 获取当前层级的关系
+                const currentLevelPaths = (parent.childrenIds ?? [])
+                    .map(id => this.plansMap.get(id))
+                    .filter(child => !!child)
+                    .flatMap(child =>
+                        (child!.nexts ?? []).map(next => {
+                            const n1 = this.cardsMap.get(child!.id);
+                            const n2 = this.cardsMap.get(next);
+
+                            // 只有当两个节点都可见时才创建连线
+                            if (n1 && n2) {
+                                const path: Path = {
+                                    id: `${child!.id}-${next}`,
+                                    from: n1.right,
+                                    to: n2.left,
+                                    ctls: [{
+                                        x: n1.right.x + (n2.left.x - n1.right.x) / 2,
+                                        y: n1.right.y
+                                    }, {
+                                        x: n2.left.x - (n2.left.x - n1.right.x) / 2,
+                                        y: n2.left.y
+                                    }],
+                                    fromId: child!.id,
+                                    toId: next
+                                };
+                                return path;
+                            }
+                            return null;
+                        })
+                    ).filter((path): path is Path => !!path);
+
+                paths.push(...currentLevelPaths);
+
+                // 递归处理展开的子节点
+                parent.childrenIds?.forEach(childId => {
+                    const child = this.plansMap.get(childId);
+                    if (child?.isExpanded) {
+                        paths.push(...getVisibleRelations(childId));
+                    }
+                });
+
+                return paths;
+            };
+
+            // 从项目根节点开始获取所有可见的关系
+            return getVisibleRelations(this.projectId!);
         },
         todoBacklogs(): Plan[] {
             return this.backlogs.filter(plan => !plan.isDone);
