@@ -101,117 +101,131 @@ export const usePlanStore = defineStore('plan', {
             return state.backlogsList.map(id => state.plansMap.get(id)!).sort((a, b) => a.index! - b.index!);
         },
         getAbsolutePosition: (state) => (plan: Plan) => {
-            let absoluteX = plan.x ?? 0;
-            let absoluteY = plan.y ?? 0;
-            let current = plan;
-            while (current.parentId) {
+            const getPosition = (current: Plan): { x: number, y: number } => {
+                if (!current.parentId) {
+                    return {
+                        x: current.x ?? 0,
+                        y: current.y ?? 0
+                    };
+                }
+
                 const parent = state.plansMap.get(current.parentId);
-                if (!parent) break;
-                absoluteX += parent.x ?? 0;
-                absoluteY += parent.y ?? 0;
-                current = parent;
-            }
-            return { x: absoluteX, y: absoluteY };
+                if (!parent) {
+                    return {
+                        x: current.x ?? 0,
+                        y: current.y ?? 0
+                    };
+                }
+
+                const parentPos = getPosition(parent);
+                return {
+                    x: (current.x ?? 0) + parentPos.x,
+                    y: (current.y ?? 0) + parentPos.y
+                };
+            };
+
+            return getPosition(plan);
         },
         // 判断节点是否应该显示
         shouldShowPlan: (state) => (plan: Plan, projectId: string) => {
-            let parent = state.plansMap.get(plan.parentId!);
-            while (parent && parent.isExpanded) {
-                if (parent.id === projectId) {
-                    return true;
-                }
-                parent = state.plansMap.get(parent.parentId!);
-            }
-            return false;
+            const checkParent = (parentId: string | undefined): boolean => {
+                if (!parentId) return false;
+
+                const parent = state.plansMap.get(parentId);
+                if (!parent) return false;
+
+                if (parent.id === projectId) return true;
+
+                return parent.isExpanded && checkParent(parent.parentId) || false;
+            };
+            return checkParent(plan.parentId) || false;
         },
         visibleCardsWithPositions(): Map<string, Card> {
-            const cardsMap = new Map<string, Card>();
-            // 处理所有计划
-            Array.from(this.plansMap.values())
-                .filter((plan) => this.shouldShowPlan(plan, this.projectId!))
-                .map(plan => {
-                    // 获取绝对坐标
-                    const absPos = this.getAbsolutePosition(plan);
-                    // 转换为Card对象
-                    return {
-                        id: plan.id,
-                        name: plan.name,
-                        x: absPos.x * CARD_WIDTH,
-                        y: absPos.y * CARD_HEIGHT,
-                        width: plan.width! * CARD_WIDTH,
-                        height: plan.height! * CARD_HEIGHT,
-                        color: plan.isDone ? '#ddd' : '#fff',
-                        left: {
-                            x: absPos.x * CARD_WIDTH,
-                            y: (absPos.y + plan.height! / 2) * CARD_HEIGHT
-                        },
-                        right: {
-                            x: (absPos.x + plan.width!) * CARD_WIDTH,
-                            y: (absPos.y + plan.height! / 2) * CARD_HEIGHT
-                        },
-                        children: plan.childrenIds,
-                        isExpanded: plan.isExpanded,
+            // 创建卡片转换函数
+            const createCard = (plan: Plan) => {
+                const absPos = this.getAbsolutePosition(plan);
+                const baseX = absPos.x * CARD_WIDTH;
+                const baseY = absPos.y * CARD_HEIGHT;
+                const baseWidth = plan.width! * CARD_WIDTH;
+                const baseHeight = plan.height! * CARD_HEIGHT;
+
+                return {
+                    id: plan.id,
+                    name: plan.name,
+                    x: baseX,
+                    y: baseY,
+                    width: baseWidth,
+                    height: baseHeight,
+                    color: plan.isDone ? '#ddd' : '#fff',
+                    left: {
+                        x: baseX,
+                        y: baseY + (baseHeight / 2)
+                    },
+                    right: {
+                        x: baseX + baseWidth,
+                        y: baseY + (baseHeight / 2)
+                    },
+                    children: plan.childrenIds,
+                    isExpanded: plan.isExpanded,
+                };
+            };
+
+            // 应用偏移量
+            const applyOffset = (card: Card) => {
+                const offset = card.isExpanded ? OFFSET_LEN / 4 : OFFSET_LEN / 2;
+                const totalOffset = card.isExpanded ? OFFSET_LEN / 2 : OFFSET_LEN;
+
+                const newX = card.x + offset;
+                const newWidth = card.width - totalOffset;
+
+                return {
+                    ...card,
+                    x: newX,
+                    y: card.y + offset,
+                    width: newWidth,
+                    height: card.height - totalOffset,
+                    left: {
+                        ...card.left,
+                        x: newX
+                    },
+                    right: {
+                        ...card.right,
+                        x: newX + newWidth
                     }
-                })
-                .map(card => {
-                    // 应用偏移
-                    if (card.isExpanded) {
-                        return {
-                            ...card,
-                            x: card.x + OFFSET_LEN / 4,
-                            y: card.y + OFFSET_LEN / 4,
-                            width: card.width - OFFSET_LEN / 2,
-                            height: card.height - OFFSET_LEN / 2,
-                            left: {
-                                ...card.left,
-                                x: card.x + OFFSET_LEN / 4
-                            },
-                            right: {
-                                ...card.right,
-                                x: card.x + card.width - OFFSET_LEN / 4
-                            }
-                        };
-                    } else {
-                        return {
-                            ...card,
-                            x: card.x + OFFSET_LEN / 2,
-                            y: card.y + OFFSET_LEN / 2,
-                            width: card.width - OFFSET_LEN,
-                            height: card.height - OFFSET_LEN,
-                            left: {
-                                ...card.left,
-                                x: card.x + OFFSET_LEN / 2
-                            },
-                            right: {
-                                ...card.right,
-                                x: card.x + card.width! - OFFSET_LEN / 2
-                            }
-                        };
-                    }
-                })
-                .forEach(card => {
-                    cardsMap.set(card.id, card);
-                });
-            return cardsMap;
+                };
+            };
+            // 处理所有可见计划
+            return new Map(
+                Array.from(this.plansMap.values())
+                    .filter(plan => this.shouldShowPlan(plan, this.projectId!))
+                    .map(createCard)
+                    .map(applyOffset)
+                    .map(card => [card.id, card])
+            );
         },
         tempPathWithCtls(): Path | undefined {
+            // 如果没有临时路径则返回undefined
             if (!this.tempPath) return undefined;
-            const from = this.tempPath?.from ?? this.visibleCardsWithPositions.get(this.tempPath?.fromId!)?.right;
-            const to = this.tempPath?.to ?? this.visibleCardsWithPositions.get(this.tempPath?.toId!)?.left;
+
+            // 获取起点和终点坐标
+            const { fromId, toId, from: tempFrom, to: tempTo, id } = this.tempPath;
+            const from = tempFrom ?? this.visibleCardsWithPositions.get(fromId!)?.right;
+            const to = tempTo ?? this.visibleCardsWithPositions.get(toId!)?.left;
 
             if (!from || !to) return undefined;
 
+            // 计算控制点的x轴距离
+            const xDistance = to.x - from.x;
+            const halfDistance = xDistance / 2;
+
             return {
-                id: this.tempPath?.id!,
+                id,
                 from,
                 to,
-                ctls: [{
-                    x: from.x + ((to.x - from.x) / 2),
-                    y: from.y
-                }, {
-                    x: to.x - ((to.x - from.x) / 2),
-                    y: to.y
-                }]
+                ctls: [
+                    { x: from.x + halfDistance, y: from.y },
+                    { x: to.x - halfDistance, y: to.y }
+                ]
             };
         },
         paths(): Path[] {
@@ -299,6 +313,103 @@ export const usePlanStore = defineStore('plan', {
             const plan = state.plansMap.get(fromId)!;
             return (plan.nexts ?? []).includes(toId) || (plan.prevs ?? []).includes(toId);
         },
+        isBoxContainsDescendants: (state) => (plan: Plan) => {
+            // 如果没有子节点或者未展开,直接返回true
+            if (!plan.childrenIds?.length) {
+                return true;
+            }
+
+            const box = {
+                left: plan.x!,
+                right: plan.x! + plan.width!,
+                top: plan.y!,
+                bottom: plan.y! + plan.height!
+            };
+
+            // 递归检查所有子孙节点
+            const checkDescendants = (id: string): boolean => {
+                const child = state.plansMap.get(id)!;
+
+                // 检查当前节点是否在盒子范围内
+                if (child.x! < box.left ||
+                    child.x! + child.width! > box.right ||
+                    child.y! < box.top ||
+                    child.y! + child.height! > box.bottom) {
+                    return false;
+                }
+
+                // 如果有展开的子节点,递归检查
+                if (child.childrenIds?.length) {
+                    return child.childrenIds.every(checkDescendants);
+                }
+                return true;
+            };
+
+            return plan.childrenIds.every(checkDescendants);
+        },
+        isOverlapping: () => (plan1: Plan, plan2: Plan) => {
+            // 如果不是同一个父节点，返回false
+            if (plan1.parentId !== plan2.parentId) {
+                return false;
+            }
+
+            // 获取两个plan的边界
+            const box1 = {
+                left: plan1.x!,
+                right: plan1.x! + plan1.width!,
+                top: plan1.y!,
+                bottom: plan1.y! + plan1.height!
+            };
+
+            const box2 = {
+                left: plan2.x!,
+                right: plan2.x! + plan2.width!,
+                top: plan2.y!,
+                bottom: plan2.y! + plan2.height!
+            };
+
+            // 检查是否重叠
+            return !(
+                box1.right <= box2.left ||  // box1在box2左边
+                box1.left >= box2.right ||  // box1在box2右边
+                box1.bottom <= box2.top ||  // box1在box2上边
+                box1.top >= box2.bottom     // box1在box2下边
+            );
+        },
+        // 获取plan及其子孙节点的包围盒范围
+        getBoundingBox: (state) => (plan: Plan) => {
+            // 初始化包围盒为当前节点的范围
+            const box = {
+                left: plan.x!,
+                right: plan.x! + plan.width!,
+                top: plan.y!,
+                bottom: plan.y! + plan.height!
+            };
+
+            // 递归检查所有子孙节点
+            const checkDescendants = (id: string, parentX: number, parentY: number) => {
+                const child = state.plansMap.get(id)!;
+                if (!child) return;
+
+                // 计算子节点的绝对坐标
+                const absoluteX = parentX + child.x!;
+                const absoluteY = parentY + child.y!;
+
+                // 更新包围盒范围
+                box.left = Math.min(box.left, absoluteX);
+                box.right = Math.max(box.right, absoluteX + child.width!);
+                box.top = Math.min(box.top, absoluteY);
+                box.bottom = Math.max(box.bottom, absoluteY + child.height!);
+
+                // 递归检查子节点，传递当前节点的绝对坐标
+                child.childrenIds?.forEach(childId => checkDescendants(childId, absoluteX, absoluteY));
+            };
+
+            // 检查所有子节点，传递父节点的坐标
+            plan.childrenIds?.forEach(id => checkDescendants(id, plan.x!, plan.y!));
+
+            return box;
+        },
     },
     actions: {
         addPlan(plan: Plan, isProject?: boolean, isBacklog?: boolean) {
@@ -347,24 +458,49 @@ export const usePlanStore = defineStore('plan', {
             }
         },
         removePlan(id: string) {
+            // 从项目列表中移除
             this.projectsList = this.projectsList.filter(item => item !== id);
-            this.plansMap.forEach(plan => {
-                plan.prevs = plan.prevs?.filter(item => item !== id);
-                plan.nexts = plan.nexts?.filter(item => item !== id);
-                plan.childrenIds = plan.childrenIds?.filter(item => item !== id);
+
+            const plan = this.plansMap.get(id)!;
+
+            // 删除父节点中的children记录
+            if (plan.parentId) {
+                const parent = this.plansMap.get(plan.parentId)!;
+                parent.childrenIds = parent.childrenIds?.filter(item => item !== id);
+            }
+
+            // 删除所有相关联的prevs和nexts
+            plan.prevs?.forEach(prevId => {
+                const prevPlan = this.plansMap.get(prevId)!;
+                prevPlan.nexts = prevPlan.nexts?.filter(item => item !== id);
             });
-            this.plansMap.get(id)!.childrenIds?.forEach(childId => {
+
+            plan.nexts?.forEach(nextId => {
+                const nextPlan = this.plansMap.get(nextId)!;
+                nextPlan.prevs = nextPlan.prevs?.filter(item => item !== id);
+            });
+
+            // 递归删除所有子孙节点
+            plan.childrenIds?.forEach(childId => {
                 this.removePlan(childId);
             });
+
+            // 最后删除自身
             this.plansMap.delete(id);
         },
         addRelation(from: string, to: string) {
-            (this.plansMap.get(from)!).nexts = [...new Set([...((this.plansMap.get(from)!).nexts || []), to])];
-            (this.plansMap.get(to)!).prevs = [...new Set([...((this.plansMap.get(to)!).prevs || []), from])];
+            const fromPlan = this.plansMap.get(from)!;
+            const toPlan = this.plansMap.get(to)!;
+
+            fromPlan.nexts = [...new Set([...(fromPlan.nexts || []), to])];
+            toPlan.prevs = [...new Set([...(toPlan.prevs || []), from])];
         },
         removeRelation(from: string, to: string) {
-            (this.plansMap.get(from)!).nexts = (this.plansMap.get(from)!).nexts?.filter(item => item !== to);
-            (this.plansMap.get(to)!).prevs = (this.plansMap.get(to)!).prevs?.filter(item => item !== from);
+            const fromPlan = this.plansMap.get(from)!;
+            const toPlan = this.plansMap.get(to)!;
+
+            fromPlan.nexts = fromPlan.nexts?.filter(item => item !== to);
+            toPlan.prevs = toPlan.prevs?.filter(item => item !== from);
         },
         setProjectId(id: string) {
             this.projectId = id;
@@ -444,26 +580,46 @@ export const usePlanStore = defineStore('plan', {
             const idx = days(layoutStore.timestamp);
             const backlogsSet = new Set(this.backlogsList);
             const visibled = new Set<string>();
-            const queue = [] as string[];
-            Array.from(this.plansMap.values())
-                .filter(plan => !plan.isDone)
-                .filter(plan => !backlogsSet.has(plan.id!))
-                .filter(plan => plan.x! + plan.width! - 1 < idx)
-                .forEach(plan => {
-                    if (visibled.has(plan.id!)) return;
-                    visibled.add(plan.id!);
-                    const dt = idx - (plan.x! + plan.width! - 1);
-                    plan.width = plan.width! + dt;
-                    queue.push(...(plan.nexts || []).filter(id => !visibled.has(id)));
-                    while (queue.length > 0) {
-                        const id = queue.shift()!;
-                        if (visibled.has(id)) continue;
-                        visibled.add(id);
-                        const next = this.plansMap.get(id)!;
-                        next.x = next.x! + dt;
-                        queue.push(...(next.nexts || []).filter(id => !visibled.has(id)));
+            const projectsSet = new Set(this.projectsList);
+
+
+            // 更新计划及其后续计划的位置
+            const updatePlanPosition = (plan: Plan) => {
+                if (visibled.has(plan.id!)) return;
+
+                visibled.add(plan.id!);
+                const dt = idx - (this.getAbsolutePosition(plan).x + plan.width! - 1);
+                plan.width = plan.width! + dt;
+
+                // 使用递归代替队列,更新所有后续计划
+                const updateNextPlans = (planId: string) => {
+                    if (visibled.has(planId)) return;
+
+                    visibled.add(planId);
+                    const next = this.plansMap.get(planId)!;
+                    next.x = next.x! + dt;
+
+                    next.nexts?.forEach(nextId => {
+                        if (!visibled.has(nextId)) {
+                            updateNextPlans(nextId);
+                        }
+                    });
+                };
+
+                plan.nexts?.forEach(nextId => {
+                    if (!visibled.has(nextId)) {
+                        updateNextPlans(nextId);
                     }
                 });
+            };
+
+            // 筛选并更新需要处理的计划
+            Array.from(this.plansMap.values())
+                .filter(plan => !plan.isDone)
+                .filter(plan => projectsSet.has(plan.parentId!))
+                .filter(plan => this.getAbsolutePosition(plan).x + plan.width! - 1 < idx)
+                .sort((a, b) => a.x! - b.x!)
+                .forEach(updatePlanPosition);
         },
 
         async fetchPlans() {

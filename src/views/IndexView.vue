@@ -14,6 +14,7 @@ import NavBacklogItem from '@/components/NavBacklogItem.vue';
 import NavTodayItem from '@/components/NavTodayItem.vue';
 import { useAccountStore, useLayoutStore, usePlanStore, type Plan } from '@/stores';
 import { RouterView } from 'vue-router';
+import { useDebounceFn } from '@vueuse/core';
 const layoutStore = useLayoutStore();
 
 const planStore = usePlanStore();
@@ -22,12 +23,10 @@ const accountStore = useAccountStore();
 accountStore.fetchAccount();
 planStore.fetchPlans();
 
-planStore.$subscribe(() => {
-  const debounceTimer = setTimeout(() => {
-    planStore.savePlans();
-  }, 3000);
-  return () => clearTimeout(debounceTimer);
-});
+const debounceSavePlans = useDebounceFn(() => {
+  planStore.savePlans();
+}, 3000);
+planStore.$subscribe(debounceSavePlans);
 
 
 function onUpdate(p1: Plan, p2: Plan) {
