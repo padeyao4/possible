@@ -14,8 +14,8 @@ import {
   WheelCanvas
 } from '@/graph';
 import { cross, usePlanStore, type Plan } from '@/stores';
-import { toReactive } from '@vueuse/core';
-import { computed, onMounted, ref, watchEffect, type Ref } from 'vue';
+import { toReactive, useResizeObserver } from '@vueuse/core';
+import { computed, onMounted, ref, watch, type Ref } from 'vue';
 
 const props = defineProps<{
   height: number;
@@ -36,9 +36,9 @@ const bounds = ref({
   height: 0
 });
 
-// 使用ResizeObserver监听svg元素大小变化
-const observer = new ResizeObserver((entries) => {
-  for (const entry of entries) {
+useResizeObserver(svg, (entries) => {
+  const entry = entries[0];
+  if (entry) {
     const rect = entry.contentRect;
     bounds.value = {
       x: -(project.offsetX ?? 0),
@@ -49,27 +49,16 @@ const observer = new ResizeObserver((entries) => {
   }
 });
 
-watchEffect(() => {
-  if (svg.value) {
-    // 初始化bounds
-    const rect = svg.value.getBoundingClientRect();
+watch(
+  () => [project.offsetX, project.offsetY],
+  () => {
     bounds.value = {
+      ...bounds.value,
       x: -(project.offsetX ?? 0),
-      y: -(project.offsetY ?? 0),
-      width: rect.width,
-      height: rect.height
+      y: -(project.offsetY ?? 0)
     };
-    // 开始监听大小变化
-    observer.observe(svg.value);
   }
-  
-  // 清理函数
-  return () => {
-    if (svg.value) {
-      observer.unobserve(svg.value);
-    }
-  };
-});
+);
 
 onMounted(() => {
   const register = new Register(svg as Ref<Element>, project);
@@ -93,8 +82,8 @@ const backgroundStyle = computed(() => {
   };
 });
 
-const cards = computed(() => planStore.cards.filter((card) => cross(bounds.value, card)));
-const paths = computed(() => planStore.paths.concat(planStore.tempPathWithCtls??[]));
+const cards = computed(() => Array.from(planStore.visibleCardsWithPositions.values()).filter((card) => cross(bounds.value, card)));
+const paths = computed(() => planStore.paths.concat(planStore.tempPathWithCtls ?? []));
 </script>
 
 <template>

@@ -10,21 +10,23 @@ const route = useRoute()
 const accountStore = useAccountStore()
 const termsDialogRef = ref()
 
-watchEffect(()=>{
-  if(route.query.token){
-    accountStore.setToken(route.query.token as string)
-    setTimeout(()=>{
-      router.push({name:'today'})
+watchEffect(() => {
+  if (route.query.token || accountStore.token) {
+    const token = route.query.token || accountStore.token;
+    accountStore.setToken(token as string)
+    accountStore.fetchUser();
+    setTimeout(() => {
+      router.push({ name: 'today' })
     })
   }
-})
+});
 
 const apiUrl = import.meta.env.VITE_API_URL
 
 // 修改背景色计算逻辑
 const backgroundClass = computed(() => {
   const hour = new Date().getHours()
-  
+
   // 清晨 (5-8点): 柔和的蓝紫色渐变
   if (hour >= 5 && hour < 8) {
     return 'from-blue-300/90 to-purple-300/90'
@@ -61,22 +63,16 @@ const showTerms = () => {
               <h2 class="text-3xl font-bold text-gray-800">欢迎回来</h2>
               <p class="text-base text-gray-600">登录以继续你的目标之旅</p>
             </div>
-            
-            <a
-              :href="`${apiUrl}/oauth2/authorization/github`"
-              class="login-button group"
-            >
+
+            <a :href="`${apiUrl}/oauth2/authorization/github`" class="login-button group">
               <span class="icon-[mdi--github] h-6 w-6 transition-transform group-hover:scale-110"></span>
               <span class="text-lg">使用 GitHub 账号登录</span>
             </a>
-            
+
             <div class="mt-8 text-center">
               <p class="text-sm text-gray-500">
                 登录即表示您同意我们的
-                <button 
-                  @click="showTerms"
-                  class="text-blue-600 transition-colors hover:text-blue-800 hover:underline"
-                >
+                <button @click="showTerms" class="text-blue-600 transition-colors hover:text-blue-800 hover:underline">
                   服务条款和隐私政策
                 </button>
               </p>

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { days, generateIndex, useLayoutStore } from '.';
 import { v4 } from 'uuid';
+import { DataControllerApi } from '@/openapi';
 
 export interface Plan {
     id: string;
@@ -36,8 +37,7 @@ export interface Plan {
     // 偏移量
     offsetX?: number;
     offsetY?: number;
-    // 添加一个计算绝对位置的方法
-    getAbsolutePosition?: () => { x: number; y: number };
+    [key: string]: any;
 }
 
 // 卡片尺寸常量
@@ -100,90 +100,38 @@ export const usePlanStore = defineStore('plan', {
         backlogs: (state) => {
             return state.backlogsList.map(id => state.plansMap.get(id)!).sort((a, b) => a.index! - b.index!);
         },
-        cardsMap: (state) => {
-            const cardsMap = new Map<string, Card>();
-            const projectId = state.projectId!;
-
-            // 获取节点的所有祖先节点ID
-            const getAncestors = (planId: string): string[] => {
-                const ancestors: string[] = [];
-                let current = state.plansMap.get(planId);
-                while (current?.parentId) {
-                    ancestors.push(current.parentId);
-                    current = state.plansMap.get(current.parentId);
-                }
-                return ancestors;
-            };
-
-            // 判断节点是否应该显示
-            const shouldShowPlan = (plan: Plan): boolean => {
-                // 直接子节点或者祖先节点包含projectId
-                if (plan.parentId === projectId || getAncestors(plan.id).includes(projectId)) {
-                    // 如果有父节点，检查父节点是否展开
-                    if (plan.parentId) {
-                        const parent = state.plansMap.get(plan.parentId);
-                        return parent?.isExpanded ?? false;
-                    }
+        getAbsolutePosition: (state) => (plan: Plan) => {
+            let absoluteX = plan.x ?? 0;
+            let absoluteY = plan.y ?? 0;
+            let current = plan;
+            while (current.parentId) {
+                const parent = state.plansMap.get(current.parentId);
+                if (!parent) break;
+                absoluteX += parent.x ?? 0;
+                absoluteY += parent.y ?? 0;
+                current = parent;
+            }
+            return { x: absoluteX, y: absoluteY };
+        },
+        // 判断节点是否应该显示
+        shouldShowPlan: (state) => (plan: Plan, projectId: string) => {
+            let parent = state.plansMap.get(plan.parentId!);
+            while (parent && parent.isExpanded) {
+                if (parent.id === projectId) {
                     return true;
                 }
-                return false;
-            };
-
-            // 获取节点的绝对坐标
-            const getAbsolutePosition = (plan: Plan): { x: number, y: number } => {
-                let absoluteX = plan.x!;
-                let absoluteY = plan.y!;
-                let current = plan;
-
-                while (current.parentId) {
-                    const parent = state.plansMap.get(current.parentId);
-                    if (!parent) break;
-                    absoluteX += parent.x!;
-                    absoluteY += parent.y!;
-                    current = parent;
-                }
-
-                return { x: absoluteX, y: absoluteY };
-            };
-
-            // // 计算包围盒
-            // const calculateBoundingBox = (plan: Plan) => {
-            //     if (plan.childrenIds?.length) {
-            //         const children = plan.childrenIds
-            //             .map(id => state.plansMap.get(id)!)
-            //             .filter(child => shouldShowPlan(child) || !plan.isExpanded);
-
-            //         if (children.length > 0) {
-            //             // 获取子节点的绝对坐标
-            //             const childrenAbsPos = children.map(child => ({
-            //                 ...getAbsolutePosition(child),
-            //                 width: child.width!,
-            //                 height: child.height!
-            //             }));
-
-            //             // 计算包围盒
-            //             const minX = Math.min(...childrenAbsPos.map(pos => pos.x));
-            //             const minY = Math.min(...childrenAbsPos.map(pos => pos.y));
-            //             const maxX = Math.max(...childrenAbsPos.map(pos => pos.x + pos.width));
-            //             const maxY = Math.max(...childrenAbsPos.map(pos => pos.y + pos.height));
-
-            //             // 更新父节点的尺寸和位置
-            //             plan.width = Math.max(plan.width!, Math.ceil(maxX - minX));
-            //             plan.height = Math.max(plan.height!, Math.ceil(maxY - minY));
-            //         }
-            //     }
-            // };
-
+                parent = state.plansMap.get(parent.parentId!);
+            }
+            return false;
+        },
+        visibleCardsWithPositions(): Map<string, Card> {
+            const cardsMap = new Map<string, Card>();
             // 处理所有计划
-            Array.from(state.plansMap.values())
-                .filter(shouldShowPlan)
+            Array.from(this.plansMap.values())
+                .filter((plan) => this.shouldShowPlan(plan, this.projectId!))
                 .map(plan => {
-                    // 计算包围盒
-                    // calculateBoundingBox(plan);
-
                     // 获取绝对坐标
-                    const absPos = getAbsolutePosition(plan);
-
+                    const absPos = this.getAbsolutePosition(plan);
                     // 转换为Card对象
                     return {
                         id: plan.id,
@@ -244,16 +192,12 @@ export const usePlanStore = defineStore('plan', {
                 .forEach(card => {
                     cardsMap.set(card.id, card);
                 });
-
             return cardsMap;
-        },
-        cards(): Card[] {
-            return Array.from(this.cardsMap.values());
         },
         tempPathWithCtls(): Path | undefined {
             if (!this.tempPath) return undefined;
-            const from = this.tempPath?.from ?? this.cardsMap.get(this.tempPath?.fromId!)?.right;
-            const to = this.tempPath?.to ?? this.cardsMap.get(this.tempPath?.toId!)?.left;
+            const from = this.tempPath?.from ?? this.visibleCardsWithPositions.get(this.tempPath?.fromId!)?.right;
+            const to = this.tempPath?.to ?? this.visibleCardsWithPositions.get(this.tempPath?.toId!)?.left;
 
             if (!from || !to) return undefined;
 
@@ -284,11 +228,11 @@ export const usePlanStore = defineStore('plan', {
                     .filter(child => !!child)
                     .flatMap(child =>
                         (child!.nexts ?? []).map(next => {
-                            const n1 = this.cardsMap.get(child!.id);
-                            const n2 = this.cardsMap.get(next);
+                            const n1 = this.visibleCardsWithPositions.get(child!.id);
+                            const n2 = this.visibleCardsWithPositions.get(next);
                             // 只有当两个节点都可见时才创建连线
                             if (n1 && n2) {
-                                // 使用卡片的实际位置（已经是绝对坐标）
+                                // 使用卡片的实际位置（��经是绝对坐标）
                                 const path: Path = {
                                     id: `${child!.id}-${next}`,
                                     from: n1.right,
@@ -350,16 +294,6 @@ export const usePlanStore = defineStore('plan', {
         },
         donePlans(): Plan[] {
             return this.todayPlans.filter(plan => plan.isDone);
-        },
-        getAbsolutePosition: (state) => (id: string) => {
-            const plan = state.plansMap.get(id)!;
-            const absPos = { x: plan.x!, y: plan.y! };
-            const parent = state.plansMap.get(plan.parentId!);
-            if (parent) {
-                absPos.x += parent.x!;
-                absPos.y += parent.y!;
-            }
-            return absPos;
         },
         hasRelation: (state) => (fromId: string, toId: string) => {
             const plan = state.plansMap.get(fromId)!;
@@ -513,5 +447,30 @@ export const usePlanStore = defineStore('plan', {
                     }
                 });
         },
+
+        async fetchPlans() {
+            const resp = await new DataControllerApi().getPlans();
+            const data = resp.data.payload;
+            data?.plans?.forEach(plan => {
+                this.plansMap.set(plan.id!, plan as Plan);
+            });
+            data?.projectIds?.forEach(id => {
+                this.projectsList.push(id);
+            });
+            data?.backlogIds?.forEach(id => {
+                this.backlogsList.push(id);
+            });
+        },
+
+        async savePlans() {
+            const resp = await new DataControllerApi().savePlans({
+                plans: Array.from(this.plansMap.values()),
+                projectIds: this.projectsList,
+                backlogIds: this.backlogsList,
+            });
+            if (resp.data.code === 0) {
+                this.fetchPlans();
+            }
+        }
     },
 })

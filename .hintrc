@@ -6,6 +6,12 @@
       {
         "ignore": ["overscroll-behavior"]
       }
-    ]
-  }
+    ],
+    "typescript-config/consistent-casing": "off"
+  },
+  "ignoredUrls": [{
+    "domain": ".*",
+    "hints": ["*"],
+    "pattern": "^(dist|build|node_modules|src/temp)/"
+  }]
 }

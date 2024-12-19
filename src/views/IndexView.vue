@@ -12,45 +12,29 @@ import MenuResizer from '@/components/common/MenuResizer.vue';
 import MenuToggleButton from '@/components/common/MenuToggleButton.vue';
 import NavBacklogItem from '@/components/NavBacklogItem.vue';
 import NavTodayItem from '@/components/NavTodayItem.vue';
-import { useLayoutStore, usePlanStore, type Plan } from '@/stores';
+import { useAccountStore, useLayoutStore, usePlanStore, type Plan } from '@/stores';
 import { RouterView } from 'vue-router';
 const layoutStore = useLayoutStore();
 
-// backlogStore.fetch();
-// const debounceBacklogsFn = useDebounceFn((_mutation, state) => {
-//   if (!state.loading) {
-//     backlogStore.upload();
-//   }
-// }, 1000);
-// backlogStore.$subscribe(debounceBacklogsFn);
+const planStore = usePlanStore();
+const accountStore = useAccountStore();
 
-// dataStore.fetch();
-// const debounceDataFn = useDebounceFn((_mutation, state) => {
-//   if (!state.loading) {
-//     dataStore.upload();
-//   }
-// }, 1000);
-// dataStore.$subscribe(debounceDataFn);
+accountStore.fetchAccount();
+planStore.fetchPlans();
 
-// const { pause } = useIntervalFn(() => {
-//   const now = new Date();
-//   if (now.getHours() === 0 && now.getMinutes() === 0) {
-//     dataStore.updateNodes();
-//   }
-//   dataStore.timestamp = now.getTime();
-// }, 60 * 1000); // 每分钟检查一次
+planStore.$subscribe(() => {
+  const debounceTimer = setTimeout(() => {
+    planStore.savePlans();
+  }, 3000);
+  return () => clearTimeout(debounceTimer);
+});
 
-// onUnmounted(() => {
-//   pause(); // 组件卸载时清除定时器
-// });
 
 function onUpdate(p1: Plan, p2: Plan) {
   [p1.index, p2.index] = [p2.index, p1.index];
 }
 
 const isDev = import.meta.env.MODE !== 'production';
-
-const planStore = usePlanStore();
 
 </script>
 

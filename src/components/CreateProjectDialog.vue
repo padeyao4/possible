@@ -29,6 +29,7 @@ function handleCreateProject() {
     index: generateIndex(),
     offsetX: -days(Date.now()) * CARD_WIDTH,
     offsetY: 0,
+    expanded: true,
   }, true
   );
 
