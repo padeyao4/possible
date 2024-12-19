@@ -47,7 +47,7 @@ function handleUpdate(b1: Plan, b2: Plan) {
     <e-counter-button :count="planStore.doneBacklogs.length" v-model="viewModel.doneBacklogsVisible" />
     <magic-draggable v-if="viewModel.doneBacklogsVisible" :update="handleUpdate" :list="planStore.doneBacklogs">
       <template #default="{ item }">
-        <backlog-item :item="item" @update-status="(status) => item.isDone = !status"
+        <backlog-item :item="item" @update-status="(status) => item.isDone = status"
           @select="(id) => id && (viewModel.selectId = id)" />
       </template>
     </magic-draggable>

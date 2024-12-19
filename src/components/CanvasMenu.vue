@@ -31,18 +31,12 @@ const menuModel = reactive({
   itemId: ''
 });
 
-watchEffect(() => {
-  console.log(menuModel);
-});
-
 // 菜单动作定义
 const menuActions = {
   node: {
     edit: () => {
-      emitter.emit('open-canvas-card-editor-by-menu', {
-        x: menuModel.position.x,
-        y: menuModel.position.y,
-        nodeId: menuModel.itemId
+      emitter.emit('open-editor', {
+        id: menuModel.itemId
       });
       hideMenu();
     },

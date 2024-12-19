@@ -14,15 +14,7 @@ type CustomEvents = {
     y: number;
     itemId?: string;
   };
-  'open-canvas-card-editor': {
-    nodeId: string;
-  };
   'edite-project-name': Plan;
-  'open-canvas-card-editor-by-menu': {
-    x: number;
-    y: number;
-    nodeId: string;
-  };
   'open-editor': {
     id: string;
   };

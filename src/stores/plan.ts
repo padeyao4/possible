@@ -361,6 +361,10 @@ export const usePlanStore = defineStore('plan', {
             }
             return absPos;
         },
+        hasRelation: (state) => (fromId: string, toId: string) => {
+            const plan = state.plansMap.get(fromId)!;
+            return (plan.nexts ?? []).includes(toId) || (plan.prevs ?? []).includes(toId);
+        },
     },
     actions: {
         addPlan(plan: Plan, isProject?: boolean, isBacklog?: boolean) {
@@ -377,6 +381,13 @@ export const usePlanStore = defineStore('plan', {
             });
 
             if (isProject) {
+                Object.assign(plan, {
+                    isExpanded: true,
+                    childrenIds: [],
+                    offsetX: plan.offsetX ?? 0,
+                    offsetY: plan.offsetY ?? 0,
+                });
+
                 this.projectsList.push(plan.id);
             }
             if (isBacklog) {
@@ -442,7 +453,7 @@ export const usePlanStore = defineStore('plan', {
             const newPlanId = v4();
             const newPlan = {
                 id: newPlanId,
-                name: '未���名',
+                name: 'untitled',
                 x: plan.x!,
                 y: plan.y!,
                 width: 1,
