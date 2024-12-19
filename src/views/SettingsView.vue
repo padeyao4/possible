@@ -2,15 +2,8 @@
 import AboutComponent from '@/components/settings/AboutComponent.vue'
 import AccountInfo from '@/components/settings/AccountInfo.vue'
 import UserDataInfo from '@/components/settings/UserDataInfo.vue'
-import { useAccountStore } from '@/stores'
 import { Back } from '@element-plus/icons-vue'
-import { onBeforeMount } from 'vue'
 
-const accountStore = useAccountStore()
-
-onBeforeMount(()=>{
-  accountStore.fetchUser()
-})
 
 </script>
 <template>

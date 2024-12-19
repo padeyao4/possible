@@ -410,6 +410,43 @@ export const usePlanStore = defineStore('plan', {
 
             return box;
         },
+        getChildrenBox: (state) => (plan: Plan) => {
+            // 初始化包围盒为无限大
+            const box = {
+                left: Infinity,
+                right: -Infinity,
+                top: Infinity,
+                bottom: -Infinity
+            };
+
+            // 如果没有子节点 返回plan本身范围
+            if (!plan.childrenIds?.length) {
+                return {
+                    left: plan.x!,
+                    right: plan.x! + plan.width!,
+                    top: plan.y!,
+                    bottom: plan.y! + plan.height!
+                };
+            }
+
+            // 遍历所有子节点
+            plan.childrenIds.forEach(id => {
+                const child = state.plansMap.get(id)!;
+                if (!child) return;
+
+                // 计算子节点的绝对坐标
+                const absoluteX = plan.x! + child.x!;
+                const absoluteY = plan.y! + child.y!;
+
+                // 更新包围盒范围
+                box.left = Math.min(box.left, absoluteX);
+                box.right = Math.max(box.right, absoluteX + child.width!);
+                box.top = Math.min(box.top, absoluteY);
+                box.bottom = Math.max(box.bottom, absoluteY + child.height!);
+            });
+
+            return box;
+        }
     },
     actions: {
         addPlan(plan: Plan, isProject?: boolean, isBacklog?: boolean) {
@@ -488,6 +525,32 @@ export const usePlanStore = defineStore('plan', {
             // 最后删除自身
             this.plansMap.delete(id);
         },
+        /**
+         * 设置计划完成状态
+         * @param id 计划id
+         * @returns 是否设置成功
+         */
+        setDone(id: string): boolean {
+            const plan = this.plansMap.get(id)!;
+            
+            // 检查前置任务是否都已完成
+            if (plan.prevs?.some(prevId => !this.plansMap.get(prevId)!.isDone)) {
+                return false;
+            }
+
+            // 检查子任务是否都已完成
+            if (plan.childrenIds?.some(childId => !this.plansMap.get(childId)!.isDone)) {
+                return false;
+            }
+
+            plan.isDone = true;
+            return true;
+        },
+        /**
+         * 添加计划依赖关系
+         * @param from 起点计划id
+         * @param to 终点计划id
+         */
         addRelation(from: string, to: string) {
             const fromPlan = this.plansMap.get(from)!;
             const toPlan = this.plansMap.get(to)!;
@@ -577,41 +640,45 @@ export const usePlanStore = defineStore('plan', {
          */
         updatePlans() {
             const layoutStore = useLayoutStore();
-            const idx = days(layoutStore.timestamp);
-            const backlogsSet = new Set(this.backlogsList);
+            const idx = days(layoutStore.timestamp) + 1;
             const visibled = new Set<string>();
             const projectsSet = new Set(this.projectsList);
 
+            // 更新计划及其子计划的位置
+            // @param plan 要更新的计划
+            // @param offset 位置偏移量,用于处理子计划的相对位置
+            const updatePosition = (plan: Plan, offset: number = 0) => {
+                // 计算当前计划的最右边界
+                let maxRight = plan.x! + plan.width! + offset;
 
-            // 更新计划及其后续计划的位置
-            const updatePlanPosition = (plan: Plan) => {
-                if (visibled.has(plan.id!)) return;
+                // 递归更新所有未完成的子计划
+                plan.childrenIds?.forEach(childId => {
+                    const child = this.plansMap.get(childId)!;
+                    if (!child.isDone)
+                        updatePosition(child, plan.x! + offset);
+                });
 
+                // 获取所有子计划的包围盒
+                const box = this.getChildrenBox(plan);
+                // 更新最右边界,取当前计划、子计划包围盒和时间戳的最大值
+                maxRight = Math.max(maxRight, box.right, idx);
+                // 根据最右边界更新计划宽度
+                plan.width = maxRight - plan.x! - offset;
+                // 标记该计划已处理
                 visibled.add(plan.id!);
-                const dt = idx - (this.getAbsolutePosition(plan).x + plan.width! - 1);
-                plan.width = plan.width! + dt;
 
-                // 使用递归代替队列,更新所有后续计划
-                const updateNextPlans = (planId: string) => {
-                    if (visibled.has(planId)) return;
-
-                    visibled.add(planId);
-                    const next = this.plansMap.get(planId)!;
-                    next.x = next.x! + dt;
-
-                    next.nexts?.forEach(nextId => {
-                        if (!visibled.has(nextId)) {
-                            updateNextPlans(nextId);
-                        }
-                    });
-                };
-
+                // 更新所有后续依赖计划的位置
                 plan.nexts?.forEach(nextId => {
-                    if (!visibled.has(nextId)) {
-                        updateNextPlans(nextId);
+                    const next = this.plansMap.get(nextId)!;
+                    // 如果后续计划位置在当前计划右边界之前,需要右移
+                    if (next.x! + offset < maxRight) {
+                        const dt = maxRight - next.x! - offset;
+                        next.x! += dt;
+                        // 递归更新后续计划
+                        updatePosition(next, plan.x! + offset);
                     }
                 });
-            };
+            }
 
             // 筛选并更新需要处理的计划
             Array.from(this.plansMap.values())
@@ -619,7 +686,7 @@ export const usePlanStore = defineStore('plan', {
                 .filter(plan => projectsSet.has(plan.parentId!))
                 .filter(plan => this.getAbsolutePosition(plan).x + plan.width! - 1 < idx)
                 .sort((a, b) => a.x! - b.x!)
-                .forEach(updatePlanPosition);
+                .forEach(updatePosition);
         },
 
         async fetchPlans() {

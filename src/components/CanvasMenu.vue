@@ -41,7 +41,7 @@ const menuActions = {
       hideMenu();
     },
     markDone: () => {
-      planStore.getPlan(menuModel.itemId)!.isDone = true;
+      planStore.setDone(menuModel.itemId);
       hideMenu();
     },
     markTodo: () => {

@@ -8,7 +8,7 @@ import { ErrorCode } from './utils';
 const planStore = usePlanStore();
 const accountStore = useAccountStore();
 
-if (!accountStore.token) {
+if (!accountStore.user) {
   accountStore.fetchAccount()
 }
 
@@ -34,7 +34,7 @@ axios.interceptors.response.use(
 // 页面每次跳转前记录跳转后的项目id
 router.beforeEach(async (to, from, next) => {
   // 没有token时跳转到登录页面
-  if (!accountStore.token && to.name !== 'login') {
+  if ((!accountStore.token) && to.name !== 'login') {
     return next({ name: 'login' });
   }
 
