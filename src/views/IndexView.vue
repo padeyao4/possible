@@ -1,26 +1,23 @@
 <script lang="ts" setup>
+import MagicDraggable from '@/components/common/MagicDraggable.vue';
+import MenuResizer from '@/components/common/MenuResizer.vue';
+import MenuToggleButton from '@/components/common/MenuToggleButton.vue';
 import CreateProjectButton from '@/components/CreateProjectButton.vue';
 import CreateProjectDialog from '@/components/CreateProjectDialog.vue';
 import DeleteProjectDialog from '@/components/DeleteProjectDialog.vue';
 import DetailEditor from '@/components/DetailEditor.vue';
 import MenuItem from '@/components/MenuItem.vue';
+import NavBacklogItem from '@/components/NavBacklogItem.vue';
 import NavTestItem from '@/components/NavTestItem.vue';
+import NavTodayItem from '@/components/NavTodayItem.vue';
 import RenameProjectDialog from '@/components/RenameProjectDialog.vue';
 import SettingsButton from '@/components/SettingsButton.vue';
-import MagicDraggable from '@/components/common/MagicDraggable.vue';
-import MenuResizer from '@/components/common/MenuResizer.vue';
-import MenuToggleButton from '@/components/common/MenuToggleButton.vue';
-import NavBacklogItem from '@/components/NavBacklogItem.vue';
-import NavTodayItem from '@/components/NavTodayItem.vue';
-import { useAccountStore, useLayoutStore, usePlanStore, type Plan } from '@/stores';
-import { RouterView } from 'vue-router';
+import { useLayoutStore, usePlanStore, type Plan } from '@/stores';
 import { useDebounceFn } from '@vueuse/core';
+import { RouterView } from 'vue-router';
 const layoutStore = useLayoutStore();
 
 const planStore = usePlanStore();
-const accountStore = useAccountStore();
-
-accountStore.fetchAccount();
 planStore.fetchPlans();
 
 const debounceSavePlans = useDebounceFn(() => {

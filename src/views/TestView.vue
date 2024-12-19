@@ -3,8 +3,9 @@ import BasePageLayout from '@/components/layout/BasePageLayout.vue';
 import { usePlanStore, type Plan } from '@/stores';
 import { generateIndex } from '@/stores/layout';
 import { faker } from '@faker-js/faker';
+import { ElNotification } from 'element-plus';
 import { v4 } from 'uuid';
-import { computed, ref } from 'vue';
+import { computed, h, ref } from 'vue';
 
 const planStore = usePlanStore();
 const multipleSelection = ref<any[]>([]);
@@ -45,7 +46,7 @@ function createTestProject() {
     y: 0,
     isExpand: true,
   };
-  planStore.addPlan(project,true);
+  planStore.addPlan(project, true);
   // 创建10-20个随机plan
   const planCount = faker.number.int({ min: 10, max: 20 });
   const plans = [] as Plan[];
@@ -145,22 +146,27 @@ function createTestProject() {
   const plansToConnect = faker.helpers.shuffle(plans).slice(0, connectionsCount);
 
   plansToConnect.forEach(plan => {
-    const availablePlans = plans.filter(p => 
-      p.id !== plan.id && 
-      !p.parentId && 
+    const availablePlans = plans.filter(p =>
+      p.id !== plan.id &&
+      !p.parentId &&
       !planStore.hasRelation(plan.id, p.id)
     );
-    
+
     if (availablePlans.length > 0) {
       const targetPlan = faker.helpers.arrayElement(availablePlans);
       planStore.addRelation(plan.id, targetPlan.id);
     }
   });
 }
+
+function testNotify() {
+}
+
 </script>
 
 <template>
   <base-page-layout title="项目管理">
+    <el-button type="success" @click="testNotify">测试通知</el-button>
     <el-dialog v-model="dialogVisible" title="批量删除" width="30%" center :close-on-click-modal="false">
       <span>确定要删除选中的 {{ multipleSelection.length }} 个项目吗？此操作不可恢复。</span>
       <template #footer>
@@ -187,8 +193,8 @@ function createTestProject() {
       color: '#606266',
       fontWeight: 500
     }" :cell-style="{
-        color: '#606266'
-      }" @selection-change="handleSelectionChange" border>
+      color: '#606266'
+    }" @selection-change="handleSelectionChange" border>
       <el-table-column type="selection" width="55" />
       <el-table-column prop="name" label="项目名称">
         <template #default="scope">

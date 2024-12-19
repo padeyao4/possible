@@ -8,7 +8,7 @@ const accountStore = useAccountStore()
   <SettingsItem>
     <template #title>你的账号</template>
     <template #description>
-      当前登录账号为: <i>{{accountStore?.user?.username??"未登录"}}</i>
+      当前登录账号为: <i>{{accountStore.username??"未登录"}}</i>
     </template>
     <template #option>
       <el-button

@@ -11,10 +11,9 @@ const accountStore = useAccountStore()
 const termsDialogRef = ref()
 
 watchEffect(() => {
-  if (route.query.token || accountStore.token) {
-    const token = route.query.token || accountStore.token;
-    accountStore.setToken(token as string)
-    accountStore.fetchUser();
+  if (route.query.token) {
+    const token = route.query.token as string
+    accountStore.setToken(token)
     setTimeout(() => {
       router.push({ name: 'today' })
     })

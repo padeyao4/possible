@@ -1,16 +1,12 @@
 <script lang="ts" setup>
 import axios from 'axios';
+import { watchEffect } from 'vue';
 import { RouterView } from 'vue-router';
 import router from './router';
 import { useAccountStore, usePlanStore } from './stores';
-import { watchEffect } from 'vue';
 import { ErrorCode } from './utils';
 const planStore = usePlanStore();
 const accountStore = useAccountStore();
-
-if (!accountStore.user) {
-  accountStore.fetchAccount()
-}
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL ?? '/';
 

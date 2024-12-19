@@ -2,6 +2,8 @@ import { defineStore } from 'pinia';
 import { days, generateIndex, useLayoutStore } from '.';
 import { v4 } from 'uuid';
 import { DataControllerApi } from '@/openapi';
+import { ElNotification } from 'element-plus'
+import router from '@/router';
 
 export interface Plan {
     id: string;
@@ -246,7 +248,7 @@ export const usePlanStore = defineStore('plan', {
                             const n2 = this.visibleCardsWithPositions.get(next);
                             // 只有当两个节点都可见时才创建连线
                             if (n1 && n2) {
-                                // 使用卡片的实际位置（��经是绝对坐标）
+                                // 使用卡片的实际位置（经是绝对坐标）
                                 const path: Path = {
                                     id: `${child!.id}-${next}`,
                                     from: n1.right,
@@ -517,7 +519,7 @@ export const usePlanStore = defineStore('plan', {
                 nextPlan.prevs = nextPlan.prevs?.filter(item => item !== id);
             });
 
-            // 递归删除所有子孙节点
+            // 递归删除所有子孙��点
             plan.childrenIds?.forEach(childId => {
                 this.removePlan(childId);
             });
@@ -532,7 +534,7 @@ export const usePlanStore = defineStore('plan', {
          */
         setDone(id: string): boolean {
             const plan = this.plansMap.get(id)!;
-            
+
             // 检查前置任务是否都已完成
             if (plan.prevs?.some(prevId => !this.plansMap.get(prevId)!.isDone)) {
                 return false;
@@ -690,21 +692,32 @@ export const usePlanStore = defineStore('plan', {
         },
 
         async fetchPlans() {
-            const resp = await new DataControllerApi().getPlans();
-            const data = resp.data.payload;
-            data?.plans?.forEach(plan => {
-                this.plansMap.set(plan.id!, plan as Plan);
-            });
-            data?.projectIds?.forEach(id => {
-                if (!this.projectsList.includes(id)) {
-                    this.projectsList.push(id);
-                }
-            });
-            data?.backlogIds?.forEach(id => {
-                if (!this.backlogsList.includes(id)) {
-                    this.backlogsList.push(id);
-                }
-            });
+            try {
+                const resp = await new DataControllerApi().getPlans();
+                const data = resp.data.payload;
+                data?.plans?.forEach(plan => {
+                    this.plansMap.set(plan.id!, plan as Plan);
+                });
+                data?.projectIds?.forEach(id => {
+                    if (!this.projectsList.includes(id)) {
+                        this.projectsList.push(id);
+                    }
+                });
+                data?.backlogIds?.forEach(id => {
+                    if (!this.backlogsList.includes(id)) {
+                        this.backlogsList.push(id);
+                    }
+                });
+            } catch (error) {
+                // ElNotification.error({
+                //     title: '登录错误',
+                //     message: '您的登录已过期，请重新登录。',
+                //     duration: 5000,
+                //     onClose: () => {
+                //         router.push({ name: 'login' });
+                //     }
+                // });
+            }
         },
 
         async savePlans() {
