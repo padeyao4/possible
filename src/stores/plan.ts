@@ -184,7 +184,7 @@ export const usePlanStore = defineStore('plan', {
                             },
                             right: {
                                 ...card.right,
-                                x: card.x + card.width - OFFSET_LEN / 2
+                                x: card.x + card.width! - OFFSET_LEN / 2
                             }
                         };
                     }
@@ -302,6 +302,30 @@ export const usePlanStore = defineStore('plan', {
     },
     actions: {
         addPlan(plan: Plan, isProject?: boolean, isBacklog?: boolean) {
+            Object.assign(plan, {
+                x: plan.x ?? 0,
+                y: plan.y ?? 0,
+                id: plan.id ?? v4(),
+                name: plan.name ?? '未命名',
+                createdAt: plan.createdAt ?? Date.now(),
+                updatedAt: plan.updatedAt ?? Date.now(),
+                parentId: plan.parentId ?? null,
+                childrenIds: plan.childrenIds ?? [],
+                nexts: plan.nexts ?? [],
+                prevs: plan.prevs ?? [],
+                index: plan.index ?? generateIndex(),
+                offsetX: plan.offsetX ?? 0,
+                offsetY: plan.offsetY ?? 0,
+                isRepeat: plan.isRepeat ?? false,
+                repeatType: plan.repeatType ?? 'none',
+                repeatInterval: plan.repeatInterval ?? null,
+                startAt: plan.startAt ?? null,
+                endAt: plan.endAt ?? null,
+                description: plan.description ?? null,
+                isDone: plan.isDone ?? false,
+                isExpanded: plan.isExpanded ?? false,
+            } as Plan);
+
             this.plansMap.set(plan.id, plan);
 
             if (plan.parentId) {
@@ -315,13 +339,7 @@ export const usePlanStore = defineStore('plan', {
             });
 
             if (isProject) {
-                Object.assign(plan, {
-                    isExpanded: true,
-                    childrenIds: [],
-                    offsetX: plan.offsetX ?? 0,
-                    offsetY: plan.offsetY ?? 0,
-                });
-
+                plan.isExpanded = true;
                 this.projectsList.push(plan.id);
             }
             if (isBacklog) {
@@ -455,10 +473,14 @@ export const usePlanStore = defineStore('plan', {
                 this.plansMap.set(plan.id!, plan as Plan);
             });
             data?.projectIds?.forEach(id => {
-                this.projectsList.push(id);
+                if (!this.projectsList.includes(id)) {
+                    this.projectsList.push(id);
+                }
             });
             data?.backlogIds?.forEach(id => {
-                this.backlogsList.push(id);
+                if (!this.backlogsList.includes(id)) {
+                    this.backlogsList.push(id);
+                }
             });
         },
 
