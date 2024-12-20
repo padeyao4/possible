@@ -1,15 +1,13 @@
-import { defineStore } from 'pinia';
-import { days, generateIndex, useLayoutStore } from '.';
-import { v4 } from 'uuid';
 import { DataControllerApi } from '@/openapi';
-import { ElNotification } from 'element-plus'
-import router from '@/router';
+import { defineStore } from 'pinia';
+import { v4 } from 'uuid';
+import { days, generateIndex, useLayoutStore } from '.';
 
 export interface Plan {
     id: string;
-    name: string;
+    name?: string;
     description?: string;
-    createdAt: number;
+    createdAt?: number;
     updatedAt?: number;
     startAt?: number;
     endAt?: number;
@@ -40,6 +38,29 @@ export interface Plan {
     offsetX?: number;
     offsetY?: number;
     [key: string]: any;
+}
+
+function getDefaultPlan(): Plan {
+    return {
+        id: v4(),
+        name: '',
+        x: 0,
+        y: 0,
+        index: generateIndex(),
+        isDone: false,
+        isExpanded: true,
+        offsetX: 0,
+        offsetY: 0,
+        description: '',
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        startAt: Date.now(),
+        endAt: Date.now(),
+        childrenIds: [],
+        nexts: [],
+        prevs: [],
+        isRepeat: false,
+    }
 }
 
 // 卡片尺寸常量
@@ -153,7 +174,7 @@ export const usePlanStore = defineStore('plan', {
 
                 return {
                     id: plan.id,
-                    name: plan.name,
+                    name: plan.name ?? '',
                     x: baseX,
                     y: baseY,
                     width: baseWidth,
@@ -182,6 +203,7 @@ export const usePlanStore = defineStore('plan', {
 
                 return {
                     ...card,
+                    name: card.name ?? '',
                     x: newX,
                     y: card.y + offset,
                     width: newWidth,
@@ -692,32 +714,22 @@ export const usePlanStore = defineStore('plan', {
         },
 
         async fetchPlans() {
-            try {
-                const resp = await new DataControllerApi().getPlans();
-                const data = resp.data.payload;
-                data?.plans?.forEach(plan => {
-                    this.plansMap.set(plan.id!, plan as Plan);
-                });
-                data?.projectIds?.forEach(id => {
-                    if (!this.projectsList.includes(id)) {
-                        this.projectsList.push(id);
-                    }
-                });
-                data?.backlogIds?.forEach(id => {
-                    if (!this.backlogsList.includes(id)) {
-                        this.backlogsList.push(id);
-                    }
-                });
-            } catch (error) {
-                // ElNotification.error({
-                //     title: '登录错误',
-                //     message: '您的登录已过期，请重新登录。',
-                //     duration: 5000,
-                //     onClose: () => {
-                //         router.push({ name: 'login' });
-                //     }
-                // });
-            }
+            const resp = await new DataControllerApi().getPlans();
+            const data = resp.data.payload;
+            data?.plans?.forEach(plan => {
+                const defaultPlan = getDefaultPlan();
+                this.plansMap.set(plan.id!, { ...defaultPlan, ...plan } as Plan);
+            });
+            data?.projectIds?.forEach(id => {
+                if (!this.projectsList.includes(id)) {
+                    this.projectsList.push(id);
+                }
+            });
+            data?.backlogIds?.forEach(id => {
+                if (!this.backlogsList.includes(id)) {
+                    this.backlogsList.push(id);
+                }
+            });
         },
 
         async savePlans() {

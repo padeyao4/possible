@@ -8,3 +8,52 @@ export const ErrorCode = {
     ERR_SERVER: '服务器出错'
   };
   
+// 新增接口定义
+export interface AxiosErrorConfig {
+    transitional: {
+        silentJSONParsing: boolean;
+        forcedJSONParsing: boolean;
+        clarifyTimeoutError: boolean;
+    };
+    adapter: string[];
+    transformRequest: null[];
+    transformResponse: null[];
+    timeout: number;
+    xsrfCookieName: string;
+    xsrfHeaderName: string;
+    maxContentLength: number;
+    maxBodyLength: number;
+    env: Record<string, unknown>;
+    headers: {
+        Accept: string;
+        Authorization: string;
+    };
+    baseURL: string;
+    method: string;
+    url: string;
+}
+
+export interface AxiosErrorResponse {
+    data: {
+        message: string;
+        code: number;
+        payload: null;
+    };
+    status: number;
+    statusText: string;
+    headers: Record<string, string>;
+    config: AxiosErrorConfig;
+    request: Record<string, unknown>;
+}
+
+export interface AxiosErrorDetail {
+    message: string;
+    name: string;
+    code: string;
+    config: AxiosErrorConfig;
+    request: Record<string, unknown>;
+    response: AxiosErrorResponse;
+    status: number;
+}
+  
+

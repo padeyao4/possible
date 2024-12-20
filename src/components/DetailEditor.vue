@@ -76,47 +76,53 @@ const formatDate = (timestamp: number) => {
           <!-- 描述输入 -->
           <div class="space-y-2">
             <div class="text-sm text-gray-500">描述</div>
-            <el-input v-model="plan.description" type="textarea" :rows="4" placeholder="请输入描述" />
+            <el-input v-model="plan.description" type="textarea" :autosize="{ minRows: 3, maxRows: 7 }"
+              placeholder="请输入描述" resize="vertical" />
           </div>
 
-          <!-- 时间信息 -->
-          <div class="space-y-2">
-            <div class="text-sm text-gray-500">创建时间</div>
-            <div class="text-sm">{{ formatDate(plan.createdAt) }}</div>
-          </div>
+          <!-- 折叠框 -->
+          <el-collapse>
+            <el-collapse-item title="更多信息" name="1">
+              <!-- 时间信息 -->
+              <div class="space-y-2">
+                <div class="text-sm text-gray-500">创建时间</div>
+                <div class="text-sm">{{ formatDate(plan.createdAt ?? 0) }}</div>
+              </div>
 
-          <div v-if="plan.updatedAt" class="space-y-2">
-            <div class="text-sm text-gray-500">更新时间</div>
-            <div class="text-sm">{{ formatDate(plan.updatedAt) }}</div>
-          </div>
+              <div v-if="plan.updatedAt" class="space-y-2">
+                <div class="text-sm text-gray-500">更新时间</div>
+                <div class="text-sm">{{ formatDate(plan.updatedAt) }}</div>
+              </div>
 
-          <!-- 状态信息 -->
-          <div class="space-y-2">
-            <div class="text-sm text-gray-500">状态</div>
-            <el-switch v-model="plan.isDone" active-text="已完成" inactive-text="进行中" />
-          </div>
+              <!-- 状态信息 -->
+              <div class="space-y-2">
+                <div class="text-sm text-gray-500">状态</div>
+                <el-switch v-model="plan.isDone" active-text="已完成" inactive-text="进行中" />
+              </div>
 
-          <!-- 位置信息 -->
-          <div class="space-y-2">
-            <div class="text-sm text-gray-500">位置</div>
-            <div class="grid grid-cols-2 gap-4">
-              <el-input-number v-model="plan.x" :min="-999" :precision="0" :step="1" :controls="false" size="small"
-                placeholder="X坐标" />
-              <el-input-number v-model="plan.y" :min="0" :precision="0" :step="1" :controls="false" size="small"
-                placeholder="Y坐标" />
-            </div>
-          </div>
+              <!-- 位置信息 -->
+              <div class="space-y-2">
+                <div class="text-sm text-gray-500">位置</div>
+                <div class="grid grid-cols-2 gap-4">
+                  <el-input-number v-model="plan.x" :min="-999" :precision="0" :step="1" :controls="false" size="small"
+                    placeholder="X坐标" />
+                  <el-input-number v-model="plan.y" :min="0" :precision="0" :step="1" :controls="false" size="small"
+                    placeholder="Y坐标" />
+                </div>
+              </div>
 
-          <!-- 尺寸信息 -->
-          <div class="space-y-2">
-            <div class="text-sm text-gray-500">尺寸</div>
-            <div class="grid grid-cols-2 gap-4">
-              <el-input-number v-model="plan.width" :min="1" :precision="0" :step="1" :controls="false" size="small"
-                placeholder="宽度" />
-              <el-input-number v-model="plan.height" :min="1" :precision="0" :step="1" :controls="false" size="small"
-                placeholder="高度" />
-            </div>
-          </div>
+              <!-- 尺寸信息 -->
+              <div class="space-y-2">
+                <div class="text-sm text-gray-500">尺寸</div>
+                <div class="grid grid-cols-2 gap-4">
+                  <el-input-number v-model="plan.width" :min="1" :precision="0" :step="1" :controls="false" size="small"
+                    placeholder="宽度" />
+                  <el-input-number v-model="plan.height" :min="1" :precision="0" :step="1" :controls="false"
+                    size="small" placeholder="高度" />
+                </div>
+              </div>
+            </el-collapse-item>
+          </el-collapse>
         </div>
       </template>
       <template v-else>

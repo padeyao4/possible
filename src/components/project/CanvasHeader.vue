@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CARD_WIDTH, days, ONE_DAY_MS, useLayoutStore, type Plan } from '@/stores';
-import { computed } from 'vue';
+import { computed, watchEffect } from 'vue';
 
 const { project, width } = defineProps<{
   project: Plan;
@@ -8,18 +8,21 @@ const { project, width } = defineProps<{
   width: number;
 }>();
 
+watchEffect(() => {
+  console.log('project', project);
+});
+
 const layoutStore = useLayoutStore();
 
-
 const numbers = computed(() => {
-  const ox = -Math.ceil(project.offsetX! / CARD_WIDTH);
+  const ox = -Math.ceil((project.offsetX ?? 0) / CARD_WIDTH);
   return Array.from(
     { length: Math.ceil(width / CARD_WIDTH) + 1 },
     (_, i) => i + (ox < 0 ? ox + 1 : ox) - 2
   );
 });
 
-const translateX = computed(() => project.offsetX! % CARD_WIDTH - CARD_WIDTH);
+const translateX = computed(() => (project.offsetX ?? 0) % CARD_WIDTH - CARD_WIDTH);
 
 /**
  * 显示一个日期是周几

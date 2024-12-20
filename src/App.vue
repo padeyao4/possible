@@ -5,6 +5,7 @@ import { RouterView } from 'vue-router';
 import router from './router';
 import { useAccountStore, usePlanStore } from './stores';
 import { ErrorCode } from './utils';
+import { ElMessageBox, ElNotification } from 'element-plus';
 const planStore = usePlanStore();
 const accountStore = useAccountStore();
 
@@ -20,9 +21,41 @@ watchEffect(() => {
 axios.interceptors.response.use(
   (resp) => resp,
   (error) => {
+    const errorMessage = error?.response?.data?.message ?? ErrorCode[error.code] ?? '未知错误';
+    
+    // 处理特定的错误状态码
+    if (error.response) {
+      switch (error.response.status) {
+        case 401:
+          ElMessageBox.alert('您的登录状态已失效，请重新登录', '登录状态', {
+            confirmButtonText: '确定',
+            showClose: false,
+            callback: () => {
+              accountStore.logout();
+            },
+            type: 'error'
+          });
+          break;
+        case 403:
+          ElNotification.error({
+            title: '权限错误',
+            message: errorMessage,
+            duration: 3000
+          });
+          break;
+        case 500:
+          ElNotification.error({
+            title: '服务器错误',
+            message: errorMessage,
+            duration: 3000
+          });
+          break;
+      }
+    }
+
     return Promise.reject({
       ...error,
-      message: error?.response?.data?.message ?? ErrorCode[error.code]
+      message: errorMessage
     });
   }
 );

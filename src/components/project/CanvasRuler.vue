@@ -17,7 +17,7 @@ watchEffect(() => {
 
 
 const rulerInfo = computed(() => {
-  return { translateY: (project.offsetY! % CARD_HEIGHT) - CARD_HEIGHT + 'px', y: Math.floor(Math.abs(project.offsetY!) / CARD_HEIGHT) - 2 }
+  return { translateY: ((project.offsetY ?? 0) % CARD_HEIGHT) - CARD_HEIGHT + 'px', y: Math.floor(Math.abs((project.offsetY ?? 0)) / CARD_HEIGHT) - 2 }
 });
 </script>
 

@@ -31,6 +31,8 @@ declare module 'vue' {
     DetailEditor: typeof import('./src/components/DetailEditor.vue')['default']
     DraggableIcon: typeof import('./src/components/icon/DraggableIcon.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElCollapse: typeof import('element-plus/es')['ElCollapse']
+    ElCollapseItem: typeof import('element-plus/es')['ElCollapseItem']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElEmpty: typeof import('element-plus/es')['ElEmpty']

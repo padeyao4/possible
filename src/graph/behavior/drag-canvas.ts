@@ -38,8 +38,8 @@ export class DragCanvas extends BaseBehavior {
     this.isDown = true;
     this.position.x = e.x;
     this.position.y = e.y;
-    this.offset.x = this.project.offsetX!;
-    this.offset.y = this.project.offsetY!;
+    this.offset.x = this.project.offsetX??0;
+    this.offset.y = this.project.offsetY??0;
     this.mouseStyle.lock('grabbing');
   }
 

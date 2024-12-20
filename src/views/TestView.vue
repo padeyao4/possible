@@ -3,7 +3,7 @@ import BasePageLayout from '@/components/layout/BasePageLayout.vue';
 import { usePlanStore, type Plan } from '@/stores';
 import { generateIndex } from '@/stores/layout';
 import { faker } from '@faker-js/faker';
-import { ElNotification } from 'element-plus';
+import { ElMessage, ElMessageBox, ElNotification } from 'element-plus';
 import { v4 } from 'uuid';
 import { computed, h, ref } from 'vue';
 
@@ -160,7 +160,13 @@ function createTestProject() {
 }
 
 function testNotify() {
+  ElNotification.error({
+    title: '错误',
+    message: '获取计划失败，请重试。',
+    duration: 5000,
+  })
 }
+
 
 </script>
 

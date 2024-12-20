@@ -5,7 +5,7 @@ import { iconsPlugin } from '@egoist/tailwindcss-icons';
 export default {
   content: ['./index.html', './src/**/*.{vue,js,ts}'],
   theme: {
-    extend: {}
+    extend: {},
   },
   plugins: [iconsPlugin(), addDynamicIconSelectors()],
 } satisfies Config;
