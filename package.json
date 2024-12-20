@@ -48,7 +48,7 @@
     "jsdom": "^24.1.3",
     "loglevel": "^1.9.2",
     "mitt": "^3.0.1",
-    "npm-run-all": "^6.2.6",
+    "npm-run-all2": "^7.0.0",
     "pinia": "^2.2.8",
     "postcss": "^8.4.49",
     "prettier": "^3.4.1",

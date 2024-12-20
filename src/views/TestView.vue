@@ -3,9 +3,9 @@ import BasePageLayout from '@/components/layout/BasePageLayout.vue';
 import { usePlanStore, type Plan } from '@/stores';
 import { generateIndex } from '@/stores/layout';
 import { faker } from '@faker-js/faker';
-import { ElMessage, ElMessageBox, ElNotification } from 'element-plus';
+import { ElNotification } from 'element-plus';
 import { v4 } from 'uuid';
-import { computed, h, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const planStore = usePlanStore();
 const multipleSelection = ref<any[]>([]);
