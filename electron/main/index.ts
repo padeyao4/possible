@@ -119,7 +119,7 @@ app
       {
         label: '退出',
         click: () => {
-          win?.webContents.send('electron:exit');
+          app.exit(0);
         }
       }
     ]);

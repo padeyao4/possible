@@ -13,9 +13,9 @@ const layoutStore = useLayoutStore();
 <template>
     <div class="flex h-screen flex-col" :style="{ backgroundColor: backgroundColor ?? '#82bbb5' }">
         <!-- 页面标题区域 -->
-        <div class="drag-region mt-2 mb-5 px-5">
-            <menu-toggle-button v-if="!layoutStore.menuVisible" />
-            <div v-else class="flex h-6 w-6 items-center justify-center rounded-md"></div>
+        <div class="drag-region mt-2 mb-5 px-5 drag-region">
+            <menu-toggle-button v-if="!layoutStore.menuVisible" class="no-drag-region" />
+            <div v-else class="flex h-6 w-6 items-center justify-center rounded-md no-drag-region"></div>
             <div class="flex w-full shrink-0 items-end  text-xl text-gray-600 h-15">
                 {{ title }}
             </div>

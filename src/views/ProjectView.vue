@@ -74,9 +74,9 @@ function handleCalendarIconClick() {
 <template>
   <div class="flex h-screen flex-col border-l border-r overflow-hidden">
     <header
-      class="drag-region flex h-[60px] mt-2 px-5 shrink-0 flex-col items-start justify-end pb-3 text-xl text-gray-500">
-      <menu-toggle-button v-if="!layoutStore.menuVisible" />
-      <div v-else class="w-6 h-6"></div>
+      class="flex h-[60px] mt-2 px-5 shrink-0 flex-col items-start justify-end pb-3 text-xl text-gray-500 drag-region">
+      <menu-toggle-button v-if="!layoutStore.menuVisible" class="no-drag-region" />
+      <div v-else class="w-6 h-6 no-drag-region"></div>
       <div class="truncate">
         {{ project?.name }}
       </div>

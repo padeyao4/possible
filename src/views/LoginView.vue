@@ -1,10 +1,12 @@
 <script setup lang="ts">
+
 import { watchEffect, computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAccountStore } from '@/stores'
 import router from '@/router'
 import GithubCorner from '@/components/other/GithubCorner.vue'
 import TermsDialog from '@/components/TermsDialog.vue'
+import { isElectron } from '@/utils';
 
 const route = useRoute()
 const accountStore = useAccountStore()
@@ -38,7 +40,7 @@ const backgroundClass = computed(() => {
   if (hour >= 12 && hour < 17) {
     return 'from-cyan-400/90 to-teal-300/90'
   }
-  // 傍晚 (17-20点): 温��的紫色渐变
+  // 傍晚 (17-20点): 温暖的紫色渐变
   if (hour >= 17 && hour < 20) {
     return 'from-purple-400/90 to-pink-300/90'
   }
@@ -49,14 +51,15 @@ const backgroundClass = computed(() => {
 const showTerms = () => {
   termsDialogRef.value?.showDialog()
 }
+
 </script>
 
 <template>
-  <div :class="`min-h-screen bg-gradient-to-br ${backgroundClass} bg-gray-50`">
-    <GithubCorner />
+  <div :class="`min-h-screen bg-gradient-to-br ${backgroundClass} bg-gray-50 drag-region`">
+    <GithubCorner v-if="!isElectron" />
     <div class="flex min-h-screen items-center justify-center">
       <div class="w-full max-w-md px-4">
-        <div class="flex justify-center">
+        <div class="flex justify-center no-drag-region">
           <div class="w-full max-w-md rounded-2xl bg-white/95 p-10 shadow-xl backdrop-blur-sm">
             <div class="mb-10 space-y-3 text-center">
               <h2 class="text-3xl font-bold text-gray-800">欢迎回来</h2>

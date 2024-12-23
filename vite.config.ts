@@ -10,14 +10,14 @@ import pkg from './package.json';
 import electron from 'vite-plugin-electron';
 import renderer from 'vite-plugin-electron-renderer';
 
-export default defineConfig(({ command, mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
-  const isElectron = mode === 'production' || mode === 'development';
-  
+export default defineConfig((config:{ command: string, mode: string }) => {
+  const env = loadEnv(config.mode, process.cwd(), '');
+  const isElectron = process.env.VITE_APP_TYPE === 'electron';
   return {
     define: {
       'import.meta.env.VITE_APP_VERSION': JSON.stringify(pkg.version),
-      'import.meta.env.VITE_APP_AUTHOR': JSON.stringify(pkg.author)
+      'import.meta.env.VITE_APP_AUTHOR': JSON.stringify(pkg.author),
+      'import.meta.env.VITE_APP_TYPE': JSON.stringify(process.env.VITE_APP_TYPE)
     },
     css: {
       postcss: {

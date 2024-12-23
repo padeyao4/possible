@@ -61,18 +61,16 @@ function setupMidnightUpdate() {
 // 启动定时更新
 setupMidnightUpdate();
 
-
-
 </script>
 
 <template>
   <div :style="layoutStore.gridTemplateColumns" class="grid h-screen w-screen">
     <div v-if="layoutStore.menuVisible" class="flex h-screen w-full flex-col">
-      <header class="mt-2 flex h-fit flex-col border-b border-b-gray-200 pb-1">
-        <menu-toggle-button class="mx-2 ml-auto" />
-        <nav-today-item />
-        <nav-backlog-item />
-        <nav-test-item v-if="isDev" />
+      <header class="mt-2 flex h-fit flex-col border-b border-b-gray-200 pb-1 drag-region">
+        <menu-toggle-button class="mx-2 ml-auto no-drag-region" />
+        <nav-today-item class="no-drag-region" />
+        <nav-backlog-item class="no-drag-region" />
+        <nav-test-item v-if="isDev" class="no-drag-region" />
       </header>
       <el-scrollbar class="flex-grow px-2.5 py-1.5">
         <magic-draggable :update="onUpdate" :list="planStore.projects">

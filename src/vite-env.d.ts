@@ -14,6 +14,7 @@ declare global {
       off: (channel: string, func: (...args: any[]) => void) => import('electron').IpcRenderer;
       invoke: (channel: string, ...args: any[]) => Promise<any>;
     };
+    __ELECTRON_CONTEXT__?: boolean;
   }
 }
 

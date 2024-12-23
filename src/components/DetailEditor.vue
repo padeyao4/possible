@@ -5,6 +5,7 @@ import { emitter } from '@/utils';
 import { Delete } from '@element-plus/icons-vue';
 import { useEventListener } from '@vueuse/core';
 import { computed, reactive } from 'vue';
+import { isElectron } from '@/utils';
 
 const planStore = usePlanStore();
 const layoutStore = useLayoutStore();
@@ -63,6 +64,11 @@ const formatDate = (timestamp: number) => {
   <div v-if="layoutStore.editorVisible" class="flex h-screen flex-col">
     <header class="drag-region mb-3 flex w-full shrink-0 items-end justify-between" style="height: 36px">
       <close-icon-button class="no-drag-region ml-2.5 rounded-md border border-gray-300" @click="handleCloseButton" />
+      <div
+        class="h-full rounded-bl-lg border border-b border-l border-gray-200"
+        style="width: 139px"
+        v-if="isElectron"
+      ></div>
     </header>
     <el-scrollbar class="grow">
       <template v-if="plan">

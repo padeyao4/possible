@@ -44,3 +44,12 @@ body {
   overscroll-behavior: none;
 }
 
+/* 定义可以拖拽的区域 */
+.drag-region {
+  -webkit-app-region: drag;
+}
+
+/* 定义不能拖拽的区域 */
+.no-drag-region {
+  -webkit-app-region: no-drag;
+}
