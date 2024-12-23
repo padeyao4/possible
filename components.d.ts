@@ -69,6 +69,7 @@ declare module 'vue' {
     TestTubeIcon: typeof import('./src/components/icon/TestTubeIcon.vue')['default']
     TheCanvas: typeof import('./src/components/project/TheCanvas.vue')['default']
     TodayItem: typeof import('./src/components/TodayItem.vue')['default']
+    UpdateIcon: typeof import('./src/components/icon/UpdateIcon.vue')['default']
     UserDataInfo: typeof import('./src/components/settings/UserDataInfo.vue')['default']
   }
 }

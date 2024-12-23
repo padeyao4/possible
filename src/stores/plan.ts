@@ -681,7 +681,6 @@ export const usePlanStore = defineStore('plan', {
                     if (!child.isDone)
                         updatePosition(child, plan.x! + offset);
                 });
-
                 // 获取所有子计划的包围盒
                 const box = this.getChildrenBox(plan);
                 // 更新最右边界,取当前计划、子计划包围盒和时间戳的最大值
@@ -706,11 +705,11 @@ export const usePlanStore = defineStore('plan', {
 
             // 筛选并更新需要处理的计划
             Array.from(this.plansMap.values())
-                .filter(plan => !plan.isDone)
                 .filter(plan => projectsSet.has(plan.parentId!))
+                .filter(plan => !plan.isDone)
                 .filter(plan => this.getAbsolutePosition(plan).x + plan.width! - 1 < idx)
                 .sort((a, b) => a.x! - b.x!)
-                .forEach(updatePosition);
+                .forEach((plan) => updatePosition(plan));
         },
 
         async fetchPlans() {

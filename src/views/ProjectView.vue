@@ -88,10 +88,10 @@ function handleCalendarIconClick() {
       <the-canvas :height="mainHeight" :width="mainWidth" :project="project!" />
     </main>
     <footer class="h-[48px] shrink-0 border-t border-gray-200 bg-transparent bg-white">
-      <el-tooltip content="返回主页" placement="top">
+      <el-tooltip content="项目初始位置" placement="top">
         <ProjectHomeButton class="icon-button" />
       </el-tooltip>
-      <el-tooltip content="项目位置" placement="top">
+      <el-tooltip content="今天" placement="top">
         <ProjectLocationButton class="icon-button" />
       </el-tooltip>
       <el-tooltip content="日历" placement="top" v-if="showCalendarIconButton">
@@ -99,14 +99,11 @@ function handleCalendarIconClick() {
       </el-tooltip>
       <el-date-picker v-else v-model="date" type="date" ref="datePicker" @blur="showCalendarIconButton = true"
         @change="handleDateChange" @keydown.enter="handleCalendar" />
-      <IconButton title="更新计划" v-if="isDev" @click="() => { planStore.updatePlans(); }" class="icon-button">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-          stroke="rgba(0,0,0,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-          <polyline points="17 8 12 3 7 8" />
-          <line x1="12" y1="3" x2="12" y2="15" />
-        </svg>
-      </IconButton>
+
+      <el-tooltip content="更新计划" placement="top">
+        <update-icon class="icon-button" @click="() => { planStore.updatePlans(); }" />
+      </el-tooltip>
+
       <IconButton title="时间线" v-if="isDev" @click="layoutStore.timestamp += ONE_DAY_MS" class="icon-button">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
           stroke="rgba(0,0,0,0.8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -142,6 +139,7 @@ footer {
   padding: 4px;
   border-radius: 8px;
   opacity: 0.7;
+  outline: none;
 
   &:hover {
     background-color: #b8823050;
