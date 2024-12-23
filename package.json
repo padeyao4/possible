@@ -4,11 +4,14 @@
   "private": true,
   "type": "module",
   "author": "guo jian <guojian_k@qq.com>",
+  "main": "dist-electron/main/index.js",
   "description": "...",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "electron:dev": "vite --mode development && electron .",
+    "electron:build": "vite build --mode production && electron-builder",
     "test:unit": "vitest",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
@@ -16,6 +19,27 @@
     "predeploy": "npm run build",
     "deploy": "npm run gh-pages -d dist -b page",
     "openapi": "npx openapi-generator-cli generate -i http://127.0.0.1:8080/v3/api-docs -g typescript-axios -o src/openapi/ --additional-properties=supportsES6=true,npmName=api-client,npmVersion=1.0.0"
+  },
+  "build": {
+    "appId": "io.github.padeyao4.possible",
+    "productName": "Possible",
+    "directories": {
+      "output": "release"
+    },
+    "mac": {
+      "category": "io.github.padeyao4.possible"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    }
   },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.8.1",
@@ -37,10 +61,13 @@
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.5.1",
     "@vueuse/core": "^10.11.1",
+    "@vueuse/electron": "^10.11.1",
     "@vueuse/router": "^10.11.1",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.8",
     "default-passive-events": "^2.0.0",
+    "electron": "^32.0.0",
+    "electron-builder": "^24.13.3",
     "element-plus": "^2.9.0",
     "eslint": "^8.57.1",
     "eslint-plugin-vue": "^9.32.0",
@@ -61,6 +88,8 @@
     "unplugin-vue-components": "^0.27.5",
     "uuid": "^9.0.1",
     "vite": "^5.4.11",
+    "vite-plugin-electron": "^0.28.8",
+    "vite-plugin-electron-renderer": "^0.14.6",
     "vitest": "^1.6.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",

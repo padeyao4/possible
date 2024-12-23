@@ -1,6 +1,6 @@
 name: 部署到个人服务器
 
-# 触发条件：在 push 到 master 分支后
+# 触发条件：在 push 到 main 分支后
 on:
   push:
     branches:
