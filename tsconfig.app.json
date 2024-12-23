@@ -6,7 +6,6 @@
     "src/**/*.vue",
     "src/components/**/*",
     "src/views/**/*",
-    "src/views/**/*.vue",
     "src/router/**/*",
     "src/router/**/*.vue",
     "src/utils/**/*",

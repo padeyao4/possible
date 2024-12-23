@@ -2,7 +2,6 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import TodayView from '@/views/TodayView.vue';
 import ProjectView from '@/views/ProjectView.vue';
 import BacklogView from '@/views/BacklogView.vue';
-import ManageView from '@/views/ManageView.vue';
 import SettingsView from '@/views/SettingsView.vue';
 import IndexView from '@/views/IndexView.vue';
 import LoginView from '@/views/LoginView.vue';
@@ -24,12 +23,6 @@ const router = createRouter({
           name: 'backlog',
           component: BacklogView
         },
-        {
-          path: 'manage',
-          name: 'manage',
-          component: ManageView
-        },
-
         {
           path: 'project',
           name: 'project',

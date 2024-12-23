@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import { CARD_WIDTH, days, ONE_DAY_MS, useLayoutStore, type Plan } from '@/stores';
-import { computed, watchEffect } from 'vue';
+import { computed } from 'vue';
 
 const { project, width } = defineProps<{
   project: Plan;
   height: number;
   width: number;
 }>();
-
-watchEffect(() => {
-  console.log('project', project);
-});
 
 const layoutStore = useLayoutStore();
 

@@ -42,7 +42,7 @@ export interface Plan {
 
 function getDefaultPlan(): Plan {
     return {
-        id: v4(),
+        id: '',
         name: '',
         x: 0,
         y: 0,
