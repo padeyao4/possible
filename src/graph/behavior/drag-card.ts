@@ -85,12 +85,12 @@ export class DragCard extends BaseBehavior {
       this.down = false;
       const node = this.planStore.getPlan(this.oldNode.id!);
 
-      // 检查是否与其他节点重叠
-      const checkOverlap = (node1: any, node2: any) => {
-        return node1.x! < node2.x! + node2.width! &&
-          node1.x! + node1.width! > node2.x! &&
-          node1.y! < node2.y! + node2.height! &&
-          node1.y! + node1.height! > node2.y!;
+      // 检查是否与其他节点重叠，考虑padding值
+      const checkOverlap = (node1: any, node2: any, padding: number = 0.2) => {
+        return node1.x! + padding < node2.x! + node2.width! - padding &&
+          node1.x! + node1.width! - padding > node2.x! + padding &&
+          node1.y! + padding < node2.y! + node2.height! - padding &&
+          node1.y! + node1.height! - padding > node2.y! + padding;
       };
 
       // 获取同一父节点下的其他节点
