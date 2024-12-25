@@ -103,6 +103,13 @@ export class DragCard extends BaseBehavior {
       return;
     }
 
+    // 检查后置节点约束
+    const isValidNextPosition = this.validateNextNodesPosition(node);
+    if (!isValidNextPosition) {
+      this.restoreOriginalPosition(node);
+      return;
+    }
+
     // 检查兄弟节点重叠
     const hasOverlap = this.checkSiblingNodeOverlap(node);
     if (hasOverlap) {
@@ -121,6 +128,16 @@ export class DragCard extends BaseBehavior {
     const prevNodes = node.prevs.map((prevId: string) => this.planStore.getPlan(prevId));
     return prevNodes.every(prevNode =>
       prevNode && node.x! + padding >= prevNode.x! + prevNode.width! - padding
+    );
+  }
+
+  // 验证后置节点位置约束
+  private validateNextNodesPosition(node: any, padding: number = 0.2): boolean {
+    if (!node.nexts || node.nexts.length === 0) return true;
+
+    const nextNodes = node.nexts.map((nextId: string) => this.planStore.getPlan(nextId));
+    return nextNodes.every(nextNode =>
+      nextNode && nextNode.x! + padding >= node.x! + node.width! - padding
     );
   }
 
