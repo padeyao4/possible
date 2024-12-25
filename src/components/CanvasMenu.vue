@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { CARD_HEIGHT, CARD_WIDTH, generateIndex, usePlanStore } from '@/stores';
 import { emitter } from '@/utils';
-import { ArrowDown, ArrowRight, Check, Close, Delete, Edit, ArrowUp, Plus } from '@element-plus/icons-vue';
+import { ArrowDown, ArrowRight, Check, Close, Delete, Edit, ArrowUp, Plus, Folder } from '@element-plus/icons-vue';
 import { v4 } from 'uuid';
 import { computed, nextTick, reactive, ref, watchEffect, type Component } from 'vue';
 
@@ -14,6 +14,8 @@ interface MenuItem {
   icon?: Component;
   action?: () => void;
   visible?: boolean;
+  subMenu?: MenuItem[];
+  disabled?: boolean | (() => boolean);
 }
 
 type MenuGroup = MenuItem[][];
@@ -143,14 +145,51 @@ const menuConfig: MenuConfig = {
   node: [
     [{ name: '编辑', icon: Edit, action: menuActions.node.edit }],
     [
-      { name: '标记完成', icon: Check, action: menuActions.node.markDone },
-      { name: '标记待办', icon: Close, action: menuActions.node.markTodo },
-      { name: '追加计划', icon: ArrowRight, action: menuActions.node.append },
-      { name: '插入计划', icon: ArrowDown, action: menuActions.node.insert },
-      { name: '添加子计划', icon: ArrowRight, action: menuActions.node.addChild },
-      { name: '展开', icon: ArrowDown, action: menuActions.node.expand },
-      { name: '折叠', icon: ArrowUp, action: menuActions.node.collapse },
-      { name: '测试', visible: import.meta.env.DEV, icon: Edit }
+      {
+        name: '状态',
+        icon: Check,
+        subMenu: [
+          {
+            name: '标记完成',
+            icon: Check,
+            action: menuActions.node.markDone,
+            disabled: () => planStore.getPlan(menuModel.itemId)?.isDone
+          },
+          {
+            name: '标记待办',
+            icon: Close,
+            action: menuActions.node.markTodo,
+            disabled: () => !planStore.getPlan(menuModel.itemId)?.isDone
+          }
+        ]
+      },
+      {
+        name: '添加',
+        icon: Plus,
+        subMenu: [
+          { name: '追加计划', icon: ArrowRight, action: menuActions.node.append },
+          { name: '插入计划', icon: ArrowDown, action: menuActions.node.insert },
+          { name: '添加子计划', icon: Folder, action: menuActions.node.addChild }
+        ]
+      },
+      {
+        name: '展开/折叠',
+        icon: ArrowDown,
+        subMenu: [
+          {
+            name: '展开',
+            icon: ArrowDown,
+            action: menuActions.node.expand,
+            disabled: () => planStore.getPlan(menuModel.itemId)?.isExpanded!
+          },
+          {
+            name: '折叠',
+            icon: ArrowUp,
+            action: menuActions.node.collapse,
+            disabled: () => !(planStore.getPlan(menuModel.itemId)?.isExpanded)
+          }
+        ]
+      }
     ],
     [{ name: '删除', icon: Delete, action: menuActions.node.delete }]
   ],
@@ -201,20 +240,98 @@ emitter.on('open-canvas-menu', (param) => {
     }
   });
 });
+
+// 新增子菜单相关状态
+const currentSubMenu = ref<MenuItem[] | null>(null);
+const currentSubMenuPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
+const currentSubMenuDirection = ref<'right' | 'left'>('right');
+
+// 处理菜单项悬停事件
+function handleMenuItemHover(item: MenuItem, event: MouseEvent) {
+  if (item.subMenu) {
+    currentSubMenu.value = item.subMenu;
+
+    // 计算子菜单位置
+    const targetElement = event.currentTarget as HTMLElement;
+    const menuContainer = menuRef.value;
+
+    if (targetElement && menuContainer) {
+      const targetRect = targetElement.getBoundingClientRect();
+      const menuRect = menuContainer.getBoundingClientRect();
+
+      // 默认在右侧
+      let subMenuLeft = menuRect.right;
+      let subMenuDirection: 'right' | 'left' = 'right';
+
+      // 检查是否超出屏幕右侧
+      if (subMenuLeft + 200 > window.innerWidth) {
+        // 切换到左侧
+        subMenuLeft = menuRect.left - 200;
+        subMenuDirection = 'left';
+      }
+
+      currentSubMenuPosition.value = {
+        top: targetRect.top - menuRect.top,
+        left: subMenuLeft - menuRect.left
+      };
+      currentSubMenuDirection.value = subMenuDirection;
+    }
+  } else {
+    currentSubMenu.value = null;
+  }
+}
+
+// 处理菜单项点击事件
+function handleMenuItemClick(item: MenuItem) {
+  if (typeof item.disabled === 'function' && item.disabled()) return;
+
+  if (item.action) {
+    item.action();
+    hideMenu();
+  }
+}
+
+// 检查菜单项是否禁用
+function isItemDisabled(item: MenuItem): boolean {
+  if (typeof item.disabled === 'function') {
+    return item.disabled();
+  }
+  return !!item.disabled;
+}
 </script>
 
 <template>
   <div v-if="menuModel.visible" ref="menuRef" :style="{ top: menuModel.top + 'px', left: menuModel.left + 'px' }"
     class="menu-container" tabindex="0" @blur="hideMenu" @contextmenu.prevent>
-    <div v-for="(group, groupIndex) in menuList" :key="groupIndex" class="menu-group">
-      <template v-for="(item, itemIndex) in group" :key="itemIndex">
-        <div v-if="item.visible !== false" class="menu-item" @click="item.action">
-          <el-icon v-if="item.icon">
-            <component :is="item.icon" />
-          </el-icon>
-          <span>{{ item.name }}</span>
-        </div>
-      </template>
+    <div class="menu-content">
+      <div v-for="(group, groupIndex) in menuList" :key="groupIndex" class="menu-group">
+        <template v-for="(item, itemIndex) in group" :key="itemIndex">
+          <div v-if="item.visible !== false" class="menu-item" :class="{ 'menu-item-disabled': isItemDisabled(item) }"
+            @click="handleMenuItemClick(item)" @mouseenter="handleMenuItemHover(item, $event)">
+            <el-icon v-if="item.icon">
+              <component :is="item.icon" />
+            </el-icon>
+            <span>{{ item.name }}</span>
+            <el-icon v-if="item.subMenu" class="submenu-indicator">
+              <ArrowRight />
+            </el-icon>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- 子菜单 -->
+    <div v-if="currentSubMenu" class="submenu" :class="{ 'submenu-left': currentSubMenuDirection === 'left' }" :style="{
+      top: `${currentSubMenuPosition.top}px`,
+      left: `${currentSubMenuPosition.left}px`
+    }">
+      <div v-for="(subItem, index) in currentSubMenu" :key="index" class="menu-item"
+        :class="{ 'menu-item-disabled': isItemDisabled(subItem) }" @click="handleMenuItemClick(subItem)">
+        <el-icon v-if="subItem.icon">
+          <component :is="subItem.icon" />
+        </el-icon>
+        <span>{{ subItem.name }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -281,5 +398,26 @@ emitter.on('open-canvas-menu', (param) => {
     opacity: 1;
     transform: scale(1);
   }
+}
+
+/* 添加子菜单样式 */
+.submenu {
+  position: absolute;
+  width: 200px;
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 5;
+}
+
+.submenu-left {
+  left: auto;
+  right: 100%;
+}
+
+.submenu-indicator {
+  margin-left: auto;
+  opacity: 0.5;
 }
 </style>
