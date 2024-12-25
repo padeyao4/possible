@@ -217,6 +217,12 @@ watchEffect(() => {
 
 // 监听菜单打开事件
 emitter.on('open-canvas-menu', (param) => {
+  // 重置子菜单状态为 null，即关闭
+  currentSubMenu.value = null;
+  currentSubMenuPosition.value = { top: 0, left: 0 };
+  currentSubMenuDirection.value = 'right';
+
+  // 其他菜单打开逻辑
   menuModel.visible = true;
   menuModel.top = param.y;
   menuModel.left = param.x;
