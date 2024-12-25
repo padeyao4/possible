@@ -153,7 +153,7 @@ const menuConfig: MenuConfig = {
             name: '标记完成',
             icon: Check,
             action: menuActions.node.markDone,
-            disabled: () => planStore.getPlan(menuModel.itemId)?.isDone
+            disabled: () => planStore.getPlan(menuModel.itemId)?.isDone!
           },
           {
             name: '标记待办',
