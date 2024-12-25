@@ -3,10 +3,13 @@ import { CARD_HEIGHT, CARD_WIDTH, generateIndex, usePlanStore } from '@/stores';
 import { emitter } from '@/utils';
 import { ArrowDown, ArrowRight, Check, Close, Delete, Edit, ArrowUp, Plus, Folder } from '@element-plus/icons-vue';
 import { v4 } from 'uuid';
-import { computed, nextTick, reactive, ref, watchEffect, type Component } from 'vue';
+import { computed, nextTick, reactive, ref, watchEffect, type Component, onMounted, onUnmounted, markRaw } from 'vue';
 
 const { svg } = defineProps<{ svg: SVGSVGElement }>();
 const planStore = usePlanStore();
+
+// 子菜单宽度常量
+const SUBMENU_WIDTH = 200;
 
 // 菜单项类型定义
 interface MenuItem {
@@ -143,21 +146,25 @@ const menuActions = {
 // 菜单配置
 const menuConfig: MenuConfig = {
   node: [
-    [{ name: '编辑', icon: Edit, action: menuActions.node.edit }],
+    [{ 
+      name: '编辑', 
+      icon: markRaw(Edit), 
+      action: menuActions.node.edit 
+    }],
     [
       {
         name: '状态',
-        icon: Check,
+        icon: markRaw(Check),
         subMenu: [
           {
             name: '标记完成',
-            icon: Check,
+            icon: markRaw(Check),
             action: menuActions.node.markDone,
             disabled: () => planStore.getPlan(menuModel.itemId)?.isDone!
           },
           {
             name: '标记待办',
-            icon: Close,
+            icon: markRaw(Close),
             action: menuActions.node.markTodo,
             disabled: () => !planStore.getPlan(menuModel.itemId)?.isDone
           }
@@ -165,39 +172,63 @@ const menuConfig: MenuConfig = {
       },
       {
         name: '添加',
-        icon: Plus,
+        icon: markRaw(Plus),
         subMenu: [
-          { name: '追加计划', icon: ArrowRight, action: menuActions.node.append },
-          { name: '插入计划', icon: ArrowDown, action: menuActions.node.insert },
-          { name: '添加子计划', icon: Folder, action: menuActions.node.addChild }
+          { 
+            name: '追加计划', 
+            icon: markRaw(ArrowRight),
+            action: menuActions.node.append 
+          },
+          { 
+            name: '插入计划', 
+            icon: markRaw(ArrowDown),
+            action: menuActions.node.insert 
+          },
+          { 
+            name: '添加子计划', 
+            icon: markRaw(Folder),
+            action: menuActions.node.addChild 
+          }
         ]
       },
       {
         name: '展开/折叠',
-        icon: ArrowDown,
+        icon: markRaw(ArrowDown),
         subMenu: [
           {
             name: '展开',
-            icon: ArrowDown,
+            icon: markRaw(ArrowDown),
             action: menuActions.node.expand,
             disabled: () => planStore.getPlan(menuModel.itemId)?.isExpanded!
           },
           {
             name: '折叠',
-            icon: ArrowUp,
+            icon: markRaw(ArrowUp),
             action: menuActions.node.collapse,
             disabled: () => !(planStore.getPlan(menuModel.itemId)?.isExpanded)
           }
         ]
       }
     ],
-    [{ name: '删除', icon: Delete, action: menuActions.node.delete }]
+    [{ 
+      name: '删除', 
+      icon: markRaw(Delete),
+      action: menuActions.node.delete 
+    }]
   ],
   edge: [
-    [{ name: '删除', icon: Delete, action: menuActions.edge.delete }]
+    [{ 
+      name: '删除', 
+      icon: markRaw(Delete),
+      action: menuActions.edge.delete 
+    }]
   ],
   canvas: [
-    [{ name: '创建节点', icon: Plus, action: menuActions.canvas.create }]
+    [{ 
+      name: '创建节点', 
+      icon: markRaw(Plus),
+      action: menuActions.canvas.create 
+    }]
   ]
 };
 
@@ -252,6 +283,42 @@ const currentSubMenu = ref<MenuItem[] | null>(null);
 const currentSubMenuPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
 const currentSubMenuDirection = ref<'right' | 'left'>('right');
 
+// 添加 SVG 大小变化监听
+const resizeObserver = ref<ResizeObserver | null>(null);
+
+onMounted(() => {
+  // 创建 ResizeObserver 监听 SVG 大小变化
+  resizeObserver.value = new ResizeObserver(() => {
+    // 如果子菜单已经打开，重新计算位置
+    if (currentSubMenu.value && menuRef.value) {
+      const menuContainer = menuRef.value;
+      const targetElement = menuContainer.querySelector('.menu-item:hover');
+      
+      if (targetElement) {
+        const event = new MouseEvent('mouseenter', {
+          view: window,
+          bubbles: true,
+          cancelable: true
+        });
+        targetElement.dispatchEvent(event);
+      }
+    }
+  });
+
+  // 开始监听 SVG
+  if (svg) {
+    resizeObserver.value.observe(svg);
+  }
+});
+
+onUnmounted(() => {
+  // 清理 ResizeObserver
+  if (resizeObserver.value && svg) {
+    resizeObserver.value.unobserve(svg);
+    resizeObserver.value = null;
+  }
+});
+
 // 处理菜单项悬停事件
 function handleMenuItemHover(item: MenuItem, event: MouseEvent) {
   if (item.subMenu) {
@@ -264,13 +331,14 @@ function handleMenuItemHover(item: MenuItem, event: MouseEvent) {
     if (targetElement && menuContainer) {
       const targetRect = targetElement.getBoundingClientRect();
       const menuRect = menuContainer.getBoundingClientRect();
+      const svgRect = svg.getBoundingClientRect(); // 获取最新的 SVG 大小
 
       // 默认在右侧
       let subMenuLeft = menuRect.right;
       let subMenuDirection: 'right' | 'left' = 'right';
 
       // 检查是否超出屏幕右侧
-      if (subMenuLeft + 200 > window.innerWidth) {
+      if (subMenuLeft + 200 > svgRect.right) {
         // 切换到左侧
         subMenuLeft = menuRect.left - 200;
         subMenuDirection = 'left';
@@ -315,11 +383,11 @@ function isItemDisabled(item: MenuItem): boolean {
           <div v-if="item.visible !== false" class="menu-item" :class="{ 'menu-item-disabled': isItemDisabled(item) }"
             @click="handleMenuItemClick(item)" @mouseenter="handleMenuItemHover(item, $event)">
             <el-icon v-if="item.icon">
-              <component :is="item.icon" />
+              <component :is="markRaw(item.icon)" />
             </el-icon>
             <span>{{ item.name }}</span>
             <el-icon v-if="item.subMenu" class="submenu-indicator">
-              <ArrowRight />
+              <component :is="markRaw(ArrowRight)" />
             </el-icon>
           </div>
         </template>
@@ -334,7 +402,7 @@ function isItemDisabled(item: MenuItem): boolean {
       <div v-for="(subItem, index) in currentSubMenu" :key="index" class="menu-item"
         :class="{ 'menu-item-disabled': isItemDisabled(subItem) }" @click="handleMenuItemClick(subItem)">
         <el-icon v-if="subItem.icon">
-          <component :is="subItem.icon" />
+          <component :is="markRaw(subItem.icon)" />
         </el-icon>
         <span>{{ subItem.name }}</span>
       </div>
