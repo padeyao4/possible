@@ -8,9 +8,6 @@ import { computed, nextTick, reactive, ref, watchEffect, type Component, onMount
 const { svg } = defineProps<{ svg: SVGSVGElement }>();
 const planStore = usePlanStore();
 
-// 子菜单宽度常量
-const SUBMENU_WIDTH = 200;
-
 // 菜单项类型定义
 interface MenuItem {
   name: string;
@@ -100,6 +97,10 @@ const menuActions = {
       addChildPlan(parent.id, menuModel.position);
       hideMenu();
     },
+    detach: () => {
+      planStore.detachPlan(menuModel.itemId);
+      hideMenu();
+    },
     delete: () => {
       planStore.removePlan(menuModel.itemId);
       hideMenu();
@@ -146,24 +147,24 @@ const menuActions = {
 // 菜单配置
 const menuConfig: MenuConfig = {
   node: [
-    [{ 
-      name: '编辑', 
-      icon: markRaw(Edit), 
-      action: menuActions.node.edit 
+    [{
+      name: '编辑详情',
+      icon: markRaw(Edit),
+      action: menuActions.node.edit
     }],
     [
       {
-        name: '状态',
+        name: '任务状态',
         icon: markRaw(Check),
         subMenu: [
           {
-            name: '标记完成',
+            name: '完成',
             icon: markRaw(Check),
             action: menuActions.node.markDone,
             disabled: () => planStore.getPlan(menuModel.itemId)?.isDone!
           },
           {
-            name: '标记待办',
+            name: '重新开始',
             icon: markRaw(Close),
             action: menuActions.node.markTodo,
             disabled: () => !planStore.getPlan(menuModel.itemId)?.isDone
@@ -171,38 +172,38 @@ const menuConfig: MenuConfig = {
         ]
       },
       {
-        name: '添加',
+        name: '计划管理',
         icon: markRaw(Plus),
         subMenu: [
-          { 
-            name: '追加计划', 
+          {
+            name: '后续计划',
             icon: markRaw(ArrowRight),
-            action: menuActions.node.append 
+            action: menuActions.node.append
           },
-          { 
-            name: '插入计划', 
+          {
+            name: '插入计划',
             icon: markRaw(ArrowDown),
-            action: menuActions.node.insert 
+            action: menuActions.node.insert
           },
-          { 
-            name: '添加子计划', 
+          {
+            name: '子计划',
             icon: markRaw(Folder),
-            action: menuActions.node.addChild 
+            action: menuActions.node.addChild
           }
         ]
       },
       {
-        name: '展开/折叠',
+        name: '视图控制',
         icon: markRaw(ArrowDown),
         subMenu: [
           {
-            name: '展开',
+            name: '展开详情',
             icon: markRaw(ArrowDown),
             action: menuActions.node.expand,
             disabled: () => planStore.getPlan(menuModel.itemId)?.isExpanded!
           },
           {
-            name: '折叠',
+            name: '收起详情',
             icon: markRaw(ArrowUp),
             action: menuActions.node.collapse,
             disabled: () => !(planStore.getPlan(menuModel.itemId)?.isExpanded)
@@ -210,24 +211,29 @@ const menuConfig: MenuConfig = {
         ]
       }
     ],
-    [{ 
-      name: '删除', 
+    [{
+      name: '解除关联',
+      icon: markRaw(Close),
+      action: menuActions.node.detach
+    },
+    {
+      name: '删除计划',
       icon: markRaw(Delete),
-      action: menuActions.node.delete 
+      action: menuActions.node.delete
     }]
   ],
   edge: [
-    [{ 
-      name: '删除', 
+    [{
+      name: '移除连接',
       icon: markRaw(Delete),
-      action: menuActions.edge.delete 
+      action: menuActions.edge.delete
     }]
   ],
   canvas: [
-    [{ 
-      name: '创建节点', 
+    [{
+      name: '新建计划',
       icon: markRaw(Plus),
-      action: menuActions.canvas.create 
+      action: menuActions.canvas.create
     }]
   ]
 };
@@ -293,7 +299,7 @@ onMounted(() => {
     if (currentSubMenu.value && menuRef.value) {
       const menuContainer = menuRef.value;
       const targetElement = menuContainer.querySelector('.menu-item:hover');
-      
+
       if (targetElement) {
         const event = new MouseEvent('mouseenter', {
           view: window,

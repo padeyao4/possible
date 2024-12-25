@@ -659,6 +659,15 @@ export const usePlanStore = defineStore('plan', {
                 this.removeRelation(id, next);
             });
         },
+        detachPlan(id: string) {
+            const plan = this.plansMap.get(id)!;
+            plan.prevs?.forEach(prev => {
+                plan.nexts?.forEach(next => {
+                    this.addRelation(prev, next);
+                });
+            });
+            this.removeAllRelations(plan.id!);
+        },
         /**
          * 根据时间戳更新计划位置
          */
