@@ -16,6 +16,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 设置 Node.js 环境，使用版本 20，并启用 npm 缓存以加快依赖安装速度
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:

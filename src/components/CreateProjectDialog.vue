@@ -3,17 +3,28 @@ import router from '@/router';
 import { CARD_WIDTH, days, generateIndex, usePlanStore } from '@/stores';
 import { emitter } from '@/utils';
 import { v4 } from 'uuid';
-import { reactive } from 'vue';
+import { reactive, ref, nextTick } from 'vue';
 
 const viewModel = reactive({
   visible: false,
   name: ''
 });
 
+// 创建输入框引用
+const inputRef = ref<any>(null);
+
 const planStore = usePlanStore();
 
 emitter.on('open-create-project-dialog', () => {
   viewModel.visible = true;
+  
+  // 使用 nextTick 确保对话框已经渲染
+  nextTick(() => {
+    // 聚焦输入框
+    setTimeout(() => {
+      inputRef.value?.focus();
+    }, 100);
+  });
 });
 
 function handleCreateProject() {
@@ -46,8 +57,21 @@ function reset() {
 </script>
 
 <template>
-  <el-dialog v-model="viewModel.visible" title="创建项目" width="300" align-center style="border-radius: 6px !important">
-    <el-input v-model="viewModel.name" placeholder="请输入项目名称" />
+  <el-dialog 
+    v-model="viewModel.visible" 
+    title="创建项目" 
+    width="300" 
+    align-center 
+    style="border-radius: 6px !important"
+  >
+    <el-input 
+      ref="inputRef" 
+      v-model="viewModel.name" 
+      placeholder="请输入项目名称" 
+      @focus="inputRef.focus()"
+      @blur="inputRef.blur()"
+      @keyup.enter="handleCreateProject"
+    />
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="reset">取消</el-button>
