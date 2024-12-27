@@ -443,7 +443,7 @@ export const usePlanStore = defineStore('plan', {
                 bottom: -Infinity
             };
 
-            // 如果没有子节点 返回plan本身范围
+            // 如果没有子节点 返回plan本身范���
             if (!plan.childrenIds?.length) {
                 return {
                     left: plan.x!,
@@ -541,7 +541,7 @@ export const usePlanStore = defineStore('plan', {
                 nextPlan.prevs = nextPlan.prevs?.filter(item => item !== id);
             });
 
-            // 递归删除所有子孙��点
+            // 递归删除所有子孙节点
             plan.childrenIds?.forEach(childId => {
                 this.removePlan(childId);
             });
@@ -610,33 +610,11 @@ export const usePlanStore = defineStore('plan', {
                 isDone: false,
                 createdAt: Date.now(),
                 parentId: plan.parentId,
-            }
+            };
+
             this.addPlan(newPlan);
-            // 检查并调整后续计划的位置，避免重叠
-            plan.nexts?.forEach(nextId => {
-                const nextPlan = this.plansMap.get(nextId)!;
-                
-                // 如果后续计划与当前计划的右侧太接近
-                if (nextPlan.x! <= plan.x! + plan.width! + 0.5) {
-                    // 将后续计划向右移动
-                    nextPlan.x = plan.x! + plan.width! + 1;
-                    
-                    // 递归检查后续计划的后续计划是否会与当前移动的计划重叠
-                    const adjustPlanPosition = (currentPlan: Plan) => {
-                        currentPlan.nexts?.forEach(subNextId => {
-                            const subNextPlan = this.plansMap.get(subNextId)!;
-                            if (subNextPlan.x! <= currentPlan.x! + currentPlan.width! + 0.5) {
-                                subNextPlan.x = currentPlan.x! + currentPlan.width! + 1;
-                                // 递归调用，继续检查后续计划的后续计划
-                                adjustPlanPosition(subNextPlan);
-                            }
-                        });
-                    };
-                    
-                    // 开始调整后续计划的位置
-                    adjustPlanPosition(nextPlan);
-                }
-            });
+            this.adjustPlanPositions(plan);
+
             plan.nexts?.forEach(next => {
                 this.addRelation(newPlanId, next);
                 this.removeRelation(id, next);
@@ -653,7 +631,7 @@ export const usePlanStore = defineStore('plan', {
             const newPlanId = v4();
             const newPlan = {
                 id: newPlanId,
-                name: 'untitled',
+                name: '未命名',
                 x: plan.x!,
                 y: plan.y!,
                 width: 1,
@@ -662,14 +640,17 @@ export const usePlanStore = defineStore('plan', {
                 isDone: false,
                 createdAt: Date.now(),
                 parentId: plan.parentId,
-            }
+            };
+
             this.addPlan(newPlan);
+            plan.x = plan.x! + 1;
+            this.adjustPlanPositions(plan);
+
             plan.prevs?.forEach(prev => {
                 this.addRelation(prev, newPlanId);
                 this.removeRelation(prev, id);
             });
             this.addRelation(newPlanId, id);
-            plan.x = plan.x! + 1;
         },
         /**
          * 移除计划所有依赖关系
@@ -774,6 +755,30 @@ export const usePlanStore = defineStore('plan', {
             if (resp.data.code === 0) {
                 this.fetchPlans();
             }
+        },
+        /**
+         * 调整计划位置
+         * 将计划及其所有后续计划向右移动，直到不与任何前置计划重叠
+         * @param startPlan 起始计划
+         */
+        adjustPlanPositions(startPlan: Plan) {
+            const adjustPosition = (currentPlan: Plan) => {
+                currentPlan.nexts?.forEach(nextId => {
+                    const nextPlan = this.plansMap.get(nextId)!;
+                    if (nextPlan.x! <= currentPlan.x! + currentPlan.width!) {
+                        nextPlan.x! += 1;
+                        adjustPosition(nextPlan);
+                    }
+                });
+            };
+
+            startPlan.nexts?.forEach(nextId => {
+                const nextPlan = this.plansMap.get(nextId)!;
+                if (nextPlan.x! <= startPlan.x! + startPlan.width!) {
+                    nextPlan.x! += 1;
+                    adjustPosition(nextPlan);
+                }
+            });
         }
     },
 })
