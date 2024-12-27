@@ -3,9 +3,16 @@ import AboutComponent from '@/components/settings/AboutComponent.vue'
 import AccountInfo from '@/components/settings/AccountInfo.vue'
 import UserDataInfo from '@/components/settings/UserDataInfo.vue'
 import { Back } from '@element-plus/icons-vue'
+import { useRouter, type RouteLocationRaw } from 'vue-router'
 
+const router = useRouter()
 
+function handleBack() {
+  // 获取上一个路由或默认返回首页
+  router.push((router.options.history.state.back || { name: 'index' }) as RouteLocationRaw)
+}
 </script>
+
 <template>
   <div class="flex flex-col items-center">
     <header
@@ -13,7 +20,7 @@ import { Back } from '@element-plus/icons-vue'
     >
       <div
         class="no-drag-region m-4 flex h-10 w-10 items-center justify-center hover:bg-blue-50"
-        @click="$router.back()"
+        @click="handleBack"
       >
         <el-icon class="h-10 w-10" :size="30"><Back /></el-icon>
       </div>

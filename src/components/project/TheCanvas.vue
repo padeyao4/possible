@@ -13,19 +13,18 @@ import {
   ResizeCard,
   WheelCanvas
 } from '@/graph';
-import { cross, usePlanStore, type Plan } from '@/stores';
-import { toReactive, useResizeObserver } from '@vueuse/core';
+import { cross, usePlanStore, } from '@/stores';
+import { useResizeObserver } from '@vueuse/core';
 import { computed, onMounted, ref, watch, type Ref } from 'vue';
 
-const props = defineProps<{
+defineProps<{
   height: number;
   width: number;
-  project: Plan;
 }>();
 
 const planStore = usePlanStore();
 
-const { project } = toReactive(props);
+const project = planStore.project!;
 
 
 const svg = ref<SVGSVGElement>();

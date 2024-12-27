@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { CARD_WIDTH, days, ONE_DAY_MS, useLayoutStore, type Plan } from '@/stores';
+import { CARD_WIDTH, days, ONE_DAY_MS, useLayoutStore, usePlanStore } from '@/stores';
 import { computed } from 'vue';
 
-const { project, width } = defineProps<{
-  project: Plan;
+const {  width } = defineProps<{
   height: number;
   width: number;
 }>();
 
-const layoutStore = useLayoutStore();
+const planStore = usePlanStore();
 
+const project = planStore.project!;
+
+const layoutStore = useLayoutStore();
+  
 const numbers = computed(() => {
   const ox = -Math.ceil((project.offsetX ?? 0) / CARD_WIDTH);
   return Array.from(

@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { CARD_HEIGHT, type Plan } from '@/stores';
+import { CARD_HEIGHT, usePlanStore } from '@/stores';
 import { computed, ref, watchEffect } from 'vue';
 
-const { height, project } = defineProps<{
+const { height } = defineProps<{
   height: number;
   width: number;
-  project: Plan;
 }>();
 
+const planStore = usePlanStore();
+
+const project = planStore.project!;
+    
 const rulers = ref<number[]>([]);
 
 watchEffect(() => {
