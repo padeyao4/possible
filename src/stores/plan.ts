@@ -612,6 +612,31 @@ export const usePlanStore = defineStore('plan', {
                 parentId: plan.parentId,
             }
             this.addPlan(newPlan);
+            // 检查并调整后续计划的位置，避免重叠
+            plan.nexts?.forEach(nextId => {
+                const nextPlan = this.plansMap.get(nextId)!;
+                
+                // 如果后续计划与当前计划的右侧太接近
+                if (nextPlan.x! <= plan.x! + plan.width! + 0.5) {
+                    // 将后续计划向右移动
+                    nextPlan.x = plan.x! + plan.width! + 1;
+                    
+                    // 递归检查后续计划的后续计划是否会与当前移动的计划重叠
+                    const adjustPlanPosition = (currentPlan: Plan) => {
+                        currentPlan.nexts?.forEach(subNextId => {
+                            const subNextPlan = this.plansMap.get(subNextId)!;
+                            if (subNextPlan.x! <= currentPlan.x! + currentPlan.width! + 0.5) {
+                                subNextPlan.x = currentPlan.x! + currentPlan.width! + 1;
+                                // 递归调用，继续检查后续计划的后续计划
+                                adjustPlanPosition(subNextPlan);
+                            }
+                        });
+                    };
+                    
+                    // 开始调整后续计划的位置
+                    adjustPlanPosition(nextPlan);
+                }
+            });
             plan.nexts?.forEach(next => {
                 this.addRelation(newPlanId, next);
                 this.removeRelation(id, next);
