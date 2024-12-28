@@ -1,24 +1,31 @@
 import { fileURLToPath, URL } from 'node:url';
 
-import { defineConfig } from 'vite';
-import AutoImport from 'unplugin-auto-import/vite';
-import Components from 'unplugin-vue-components/vite';
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
 import vue from '@vitejs/plugin-vue';
+import autoprefixer from 'autoprefixer';
 import fs from 'node:fs';
+import tailwindcss from 'tailwindcss';
+import AutoImport from 'unplugin-auto-import/vite';
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
+import Components from 'unplugin-vue-components/vite';
+import { defineConfig } from 'vite';
 import electron from 'vite-plugin-electron/simple';
 import pkg from './package.json';
-import autoprefixer from 'autoprefixer';
-import tailwindcss from 'tailwindcss';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
   fs.rmSync('dist-electron', { recursive: true, force: true });
 
+  const isElectron = process.env.VITE_APP_TYPE === 'electron';
   const isServe = command === 'serve';
   const isBuild = command === 'build';
   const sourcemap = isServe || !!process.env.VSCODE_DEBUG;
+
   return {
+    define: {
+      'import.meta.env.VITE_APP_VERSION': JSON.stringify(pkg.version),
+      'import.meta.env.VITE_APP_AUTHOR': JSON.stringify(pkg.author),
+      'import.meta.env.VITE_APP_TYPE': JSON.stringify(process.env.VITE_APP_TYPE)
+    },
     css: {
       postcss: {
         plugins: [tailwindcss(), autoprefixer()]
@@ -32,9 +39,10 @@ export default defineConfig(({ command }) => {
       Components({
         resolvers: [ElementPlusResolver()]
       }),
-      electron({
-        main: {
-          // Shortcut of `build.lib.entry`
+      ...(isElectron ? [
+        electron({
+          main: {
+            // Shortcut of `build.lib.entry`
           entry: 'electron/main/index.ts',
           onstart({ startup }) {
             if (process.env.VSCODE_DEBUG) {
@@ -72,12 +80,13 @@ export default defineConfig(({ command }) => {
               }
             }
           }
-        },
-        // Ployfill the Electron and Node.js API for Renderer process.
-        // If you want use Node.js in Renderer process, the `nodeIntegration` needs to be enabled in the Main process.
-        // See 👉 https://github.com/electron-vite/vite-plugin-electron-renderer
-        renderer: {}
-      })
+          },
+          // Ployfill the Electron and Node.js API for Renderer process.
+          // If you want use Node.js in Renderer process, the `nodeIntegration` needs to be enabled in the Main process.
+          // See 👉 https://github.com/electron-vite/vite-plugin-electron-renderer
+          renderer: {}
+        })]
+    : [])
     ],
     resolve: {
       alias: {

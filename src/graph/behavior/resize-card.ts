@@ -77,9 +77,31 @@ export class ResizeCard extends BaseBehavior {
 
     const node = this.planStore.getPlan(this.state.orginNode.id!)!;
     this.roundNodePositions(node);
+    // 检查节点是否与其他节点重叠
+    const isOverlapping = this.checkNodeOverlap(node);
+    if (isOverlapping) {
+      // 如果重叠，恢复原始节点状态
+      const dx = node.x! - this.state.orginNode.x!;
+      const dy = node.y! - this.state.orginNode.y!;
+      Object.assign(node, this.state.orginNode);
+      // 恢复子节点的相对坐标
+      node.childrenIds?.forEach(childId => {
+        const child = this.planStore.getPlan(childId)!;
+        child.x! += dx;
+        child.y! += dy;
+      });
+    }
 
     this.state.down = false;
     this.mouseStyle.unlock();
+  }
+
+  private checkNodeOverlap(node: Plan) {
+    const otherNodes = Array.from(this.planStore.plansMap.values()).filter(n => n.id !== node.id && n.parentId === node.parentId);
+    return otherNodes.some(other => {
+      return node.x! < other.x! + other.width! && node.x! + node.width! > other.x! &&
+        node.y! < other.y! + other.height! && node.y! + node.height! > other.y!;
+    });
   }
 
   private roundNodePositions(node: Plan) {
@@ -153,7 +175,7 @@ export class ResizeCard extends BaseBehavior {
         const pos = childrenPositions.get(childId)!;
         return {
           minX: Math.min(acc.minX, pos.x),
-          minY: Math.min(acc.minY, pos.y), 
+          minY: Math.min(acc.minY, pos.y),
           maxX: Math.max(acc.maxX, pos.x + child.width!),
           maxY: Math.max(acc.maxY, pos.y + child.height!)
         };
