@@ -317,15 +317,21 @@ export const usePlanStore = defineStore('plan', {
             const layoutStore = useLayoutStore();
             const idx = days(layoutStore.timestamp);
 
-            // 提取通用的过滤条件
-            const isInTimeRange = (plan: Plan) => idx >= plan.x! && idx < plan.x! + plan.width!;
+            const isInTimeRange = (plan: Plan, baseX: number = 0) => 
+                idx >= baseX + plan.x! && idx < baseX + plan.x! + plan.width!;
+
             const isNotBacklog = (plan: Plan) => !set.has(plan.id);
 
-            return Array.from(this.plansMap.values()).filter((plan): plan is Plan => (
-                !!plan &&
-                isNotBacklog(plan) &&
-                isInTimeRange(plan)
-            )).sort((a, b) => a.index! - b.index!);
+            return Array.from(this.plansMap.values())
+                .filter(plan => plan && isNotBacklog(plan) && isInTimeRange(plan))
+                .flatMap(plan => {
+                    const validChildren = plan.childrenIds
+                        ?.map(id => this.plansMap.get(id)!)
+                        .filter(child => isInTimeRange(child, plan.x!)) || [];
+
+                    return [plan, ...validChildren];
+                })
+                .sort((a, b) => a.index! - b.index!);
         },
         todoPlans(): Plan[] {
             return this.todayPlans.filter(plan => !plan.isDone);
