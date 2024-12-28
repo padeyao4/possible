@@ -20,7 +20,8 @@ export const MOUSE_STYLE = 'data-mouse-style';
 
 const eventTypes = [
   'mouseover',
-  'mouseout',
+  'mouseleave',
+  'mouseenter',
   'mousedown',
   'mouseup',
   'mousemove',
@@ -32,14 +33,15 @@ const eventTypes = [
 
 export type EventType =
   | 'mouseover'
-  | 'mouseout'
   | 'mousedown'
   | 'mouseup'
   | 'mousemove'
   | 'click'
   | 'dblclick'
   | 'contextmenu'
-  | 'wheel';
+  | 'wheel'
+  | 'mouseleave'
+  | 'mouseenter';
 
 /**
  * ''表示全局

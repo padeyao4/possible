@@ -9,6 +9,9 @@ export class DefaultBehavior extends BaseBehavior {
       case 'mouseover':
         this.onMouseOver(evt);
         break;
+      case 'mouseleave':
+        this.onMouseLeave(evt);
+        break
     }
   }
 
@@ -24,7 +27,13 @@ export class DefaultBehavior extends BaseBehavior {
     this.mouseStyle.setWithUnlock(style ?? 'default');
   }
 
+  onMouseLeave(evt: GraphEventType) {
+    const el = evt.element;
+    const style = el.getAttribute(MOUSE_STYLE);
+    this.mouseStyle.setWithUnlock(style ?? 'default');
+  }
+
   getEvents(): Set<CanvasEvent> {
-    return new Set([':mouseup', ':mouseover']);
+    return new Set([':mouseup', ':mouseover', 'canvas:mouseleave']);
   }
 }
