@@ -61,7 +61,7 @@ async function createWindow() {
       height: 35
     },
     webPreferences: {
-      preload
+      preload: preload
     }
   });
 

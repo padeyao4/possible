@@ -20,27 +20,6 @@
     "deploy": "npm run gh-pages -d dist -b page",
     "openapi": "npx openapi-generator-cli generate -i http://127.0.0.1:8080/v3/api-docs -g typescript-axios -o src/openapi/ --additional-properties=supportsES6=true,npmName=api-client,npmVersion=1.0.0"
   },
-  "build": {
-    "appId": "io.github.padeyao4.possible",
-    "productName": "Possible",
-    "directories": {
-      "output": "release"
-    },
-    "mac": {
-      "category": "io.github.padeyao4.possible"
-    },
-    "win": {
-      "target": [
-        "nsis"
-      ]
-    },
-    "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ]
-    }
-  },
   "devDependencies": {
     "@egoist/tailwindcss-icons": "^1.8.1",
     "@element-plus/icons-vue": "^2.3.1",
@@ -97,6 +76,5 @@
     "vue-tsc": "^1.8.27"
   },
   "dependencies": {
-    "possible": "file:"
   }
 }
