@@ -46,6 +46,10 @@ const menuActions = {
       planStore.setDone(menuModel.itemId);
       hideMenu();
     },
+    markAllDone: () => {
+      planStore.setAllDone(menuModel.itemId);
+      hideMenu();
+    },
     markTodo: () => {
       planStore.getPlan(menuModel.itemId)!.isDone = false;
       hideMenu();
@@ -168,6 +172,12 @@ const menuConfig: MenuConfig = {
             icon: markRaw(Close),
             action: menuActions.node.markTodo,
             disabled: () => !planStore.getPlan(menuModel.itemId)?.isDone
+          },
+          {
+            name: '完成所有子任务',
+            icon: markRaw(Check),
+            action: menuActions.node.markAllDone,
+            disabled: () => planStore.getPlan(menuModel.itemId)?.isDone!
           }
         ]
       },

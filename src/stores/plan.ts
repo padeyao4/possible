@@ -577,6 +577,39 @@ export const usePlanStore = defineStore('plan', {
             return true;
         },
         /**
+         * 设置计划完成状态
+         * @param id 计划id
+         * @returns 是否设置成功
+         */
+        setAllDone(id: string): boolean { 
+            // 递归完成子任务和所有prevs的任务
+            const setAllDoneRecursively = (planId: string) => {
+                const currentPlan = this.plansMap.get(planId)!;
+                
+                // 先完成所有子任务
+                currentPlan.childrenIds?.forEach(childId => {
+                    setAllDoneRecursively(childId);
+                });
+
+                // 再完成所有前置任务
+                currentPlan.prevs?.forEach(prevId => {
+                    const prevPlan = this.plansMap.get(prevId)!;
+                    if (!prevPlan.isDone) {
+                        setAllDoneRecursively(prevId);
+                    }
+                });
+
+                // 最后标记当前任务为已完成
+                currentPlan.isDone = true;
+            };
+            
+            const plan = this.plansMap.get(id)!;
+            if (!plan.isDone) {
+                setAllDoneRecursively(id);
+            }
+            return true;
+        }, 
+        /**
          * 添加计划依赖关系
          * @param from 起点计划id
          * @param to 终点计划id
