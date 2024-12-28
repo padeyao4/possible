@@ -1,4 +1,6 @@
 import { app, BrowserWindow, globalShortcut, ipcMain, Menu, shell, Tray } from 'electron';
+import Store from 'electron-store';
+import schedule from 'node-schedule';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -7,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const store = new Store() as any;
 
 // The built directory structure
 //
@@ -46,14 +49,35 @@ const indexHtml = path.join(RENDERER_DIST, 'index.html');
 // 隐藏菜单栏
 Menu.setApplicationMenu(null);
 
+/**
+ * 获取配置文件中默认信息
+ */
+function getDefaultAppInfo() {
+  const defaultLayout = {
+    appWidth: 800,
+    appHeight: 600,
+    isMaximized: false
+  };
+  const account = store.get('current') ?? {};
+  if (account?.isAuth) {
+    const username = account?.user?.username ?? 'local';
+    return store.get(`${username}.layout`) ?? defaultLayout;
+  } else {
+    return defaultLayout;
+  }
+}
+
 async function createWindow() {
+  // 读取store配置文件
+  const appLayout = getDefaultAppInfo();
+  console.log('app layout', appLayout);
 
   win = new BrowserWindow({
     title: 'Main window',
-    icon: path.join(process.env.VITE_PUBLIC!, 'icon.png'),
+    icon: path.join(process.env.VITE_PUBLIC, 'icon.png'),
     titleBarStyle: 'hidden',
-    width: 800,
-    height: 600,
+    width: appLayout.appWidth,
+    height: appLayout.appHeight,
     minWidth: 800,
     minHeight: 450,
     titleBarOverlay: {
@@ -61,7 +85,13 @@ async function createWindow() {
       height: 35
     },
     webPreferences: {
-      preload: preload
+      preload
+      // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
+      // nodeIntegration: true,
+
+      // Consider using contextBridge.exposeInMainWorld
+      // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
+      // contextIsolation: false,
     }
   });
 
@@ -87,52 +117,60 @@ async function createWindow() {
   // win.webContents.on('will-navigate', (event, url) => { }) #344
 }
 
-let tray: Tray | null = null;
+let tray = null;
 
 app
   .whenReady()
   .then(() => {
     globalShortcut.register('Ctrl+Shift+I', () => {
-      win?.webContents.openDevTools();
+      win.webContents.openDevTools();
     });
   })
   .then(createWindow)
   .then(() => {
-    win?.on('close', (e) => {
+    win.on('close', (e) => {
       e.preventDefault();
       win?.hide();
       win?.webContents.send('electron:close');
     });
   })
   .then(() => {
-    const icon = path.join(process.env.VITE_PUBLIC!, '32x32.png');
+    const icon = path.join(process.env.VITE_PUBLIC, '32x32.png');
     tray = new Tray(icon);
     const contextMenu = Menu.buildFromTemplate([
       {
         label: '打开',
         click: () => {
-          if (win?.isMinimized()) win?.restore();
-          if (!win?.isVisible()) win?.show();
-          win?.focus();
+          if (win.isMinimized()) win.restore();
+          if (!win.isVisible()) win.show();
+          win.focus();
         }
       },
       {
         label: '退出',
         click: () => {
+          // 关闭所有窗口并退出应用
+          BrowserWindow.getAllWindows().forEach(window => window.close());
           app.exit(0);
         }
       }
     ]);
     tray.setContextMenu(contextMenu);
     tray.on('click', () => {
-      if (win?.isMinimized()) win?.restore();
-      if (!win?.isVisible()) win?.show();
-      win?.focus();
+      if (win.isMinimized()) win.restore();
+      if (!win.isVisible()) win.show();
+      win.focus();
     });
   })
+  .then(() => {
+    schedule.scheduleJob('0 0 0 * * *', () => {
+      // 每天凌晨执行
+      win.webContents.send('electron:schedule');
+    });
+  });
 
 app.on('window-all-closed', () => {
-  win?.webContents.send('electron:exit');
+  win.webContents.send('electron:exit');
   // win = null;
   // if (process.platform !== 'darwin') {
   //   app.exit(0)
@@ -155,7 +193,7 @@ app.on('activate', () => {
     createWindow().then();
   }
   // 激活窗口时触发electron:schedule信号
-  win?.webContents.send('electron:schedule');
+  win.webContents.send('electron:schedule');
 });
 
 // New window example arg: new windows url

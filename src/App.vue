@@ -78,6 +78,8 @@ router.beforeEach(async (to, from, next) => {
   next();
 });
 
+window.postMessage({ payload: 'removeLoading' }, '*');
+
 </script>
 
 <template>
