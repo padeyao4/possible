@@ -27,7 +27,6 @@ jobs:
       - name: Build Project
         run: |
           npm install
-          npm ci
           npm run web:build
 
       - name: Deploy to Server
