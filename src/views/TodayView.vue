@@ -13,16 +13,13 @@ const planStore = usePlanStore();
 
 /**
  * 表头显示的时间格式
- * @param dateType
+ * @param dateType 日期类型，可以是Date对象或日期字符串
  */
-function showWeekAndLocalDate(dateType: DateType) {
-  const date = typeof dateType === 'object' ? dateType : new Date(dateType);
-  const adjustedDate = new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
+const showWeekAndLocalDate = (dateType: DateType) => {
+  const date = new Date(dateType);
   const days = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-  const dayIndex = adjustedDate.getDay();
-  const localDate = adjustedDate.toLocaleDateString();
-  return `${localDate} ${days[dayIndex]}`;
-}
+  return `${date.toLocaleDateString()} ${days[date.getDay()]}`;
+};
 
 const dateTime = computed(() => showWeekAndLocalDate(layoutStore.timestamp));
 

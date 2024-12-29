@@ -78,6 +78,9 @@ router.beforeEach(async (to, from, next) => {
   next();
 });
 
+// 向所有窗口发送消息，通知移除加载状态
+// payload: 'removeLoading' 表示要执行的操作是移除加载状态
+// '*' 表示消息可以发送给任何来源的窗口
 window.postMessage({ payload: 'removeLoading' }, '*');
 
 </script>
