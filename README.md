@@ -18,7 +18,7 @@
 
 ## 地址
 
-[https://liangpi.site](https://liangpi.site)
+[https://liangpi.site](https://possible.liangpi.site)
 
 ## 软件截图
 
