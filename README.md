@@ -1,16 +1,20 @@
-# possible
+# 云帆
 
-A new Flutter project.
+这是一个 Flutter 项目，用于展示项目列表和项目详情。
 
-## Getting Started
+## 功能
 
-This project is a starting point for a Flutter application.
+-   展示项目列表
+-   点击项目列表项可以跳转到不同的项目页面
+-   支持 PC 端和手机端布局
 
-A few resources to get you started if this is your first Flutter project:
+## 项目页面
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+-   **项目一：** 点击“项目1”可以跳转到项目一的页面。
+-   **项目二：** 点击“项目2”可以跳转到项目二的页面。
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 如何运行
+
+1.  确保你已经安装了 Flutter SDK。
+2.  在终端中，导航到项目根目录。
+3.  运行 `flutter run` 命令。
