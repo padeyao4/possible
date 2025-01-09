@@ -29,8 +29,15 @@ class _ResizableWidgetState extends State<ResizableWidget> {
   bool _resizingLeft = false;
   bool _resizingTop = false;
 
+  // 新增角落调整标志
+  bool _resizingTopLeft = false;
+  bool _resizingTopRight = false;
+  bool _resizingBottomLeft = false;
+  bool _resizingBottomRight = false;
+
   void _updateSize(DragUpdateDetails details) {
     setState(() {
+      // 边缘调整
       if (_resizingRight) {
         widget.node.dragRight(details.delta.dx.toInt());
       }
@@ -44,9 +51,60 @@ class _ResizableWidgetState extends State<ResizableWidget> {
         widget.node.dragTop(details.delta.dy.toInt());
       }
 
+      // 角落调整
+      if (_resizingTopLeft) {
+        widget.node.dragLeft(details.delta.dx.toInt());
+        widget.node.dragTop(details.delta.dy.toInt());
+      }
+      if (_resizingTopRight) {
+        widget.node.dragRight(details.delta.dx.toInt());
+        widget.node.dragTop(details.delta.dy.toInt());
+      }
+      if (_resizingBottomLeft) {
+        widget.node.dragLeft(details.delta.dx.toInt());
+        widget.node.dragBottom(details.delta.dy.toInt());
+      }
+      if (_resizingBottomRight) {
+        widget.node.dragRight(details.delta.dx.toInt());
+        widget.node.dragBottom(details.delta.dy.toInt());
+      }
+
       // 调用回调函数通知父组件大小变化
       widget.onResize(widget.node);
     });
+  }
+
+  // 角落调整手柄的通用构建方法
+  Widget _buildCornerHandle({
+    required AlignmentGeometry alignment,
+    required void Function() onPanStart,
+    required void Function() onPanEnd,
+  }) {
+    return Positioned.fill(
+      child: Align(
+        alignment: alignment,
+        child: GestureDetector(
+          onPanStart: (_) => onPanStart(),
+          onPanUpdate: _updateSize,
+          onPanEnd: (_) => onPanEnd(),
+          child: Container(
+            width: _handleSize,
+            height: _handleSize,
+            color: Colors.transparent,
+            child: Center(
+              child: Container(
+                width: 4,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.5),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -154,6 +212,28 @@ class _ResizableWidgetState extends State<ResizableWidget> {
                 ),
               ),
             ),
+          ),
+
+          // 四个角落调整手柄
+          _buildCornerHandle(
+            alignment: Alignment.topLeft,
+            onPanStart: () => _resizingTopLeft = true,
+            onPanEnd: () => _resizingTopLeft = false,
+          ),
+          _buildCornerHandle(
+            alignment: Alignment.topRight,
+            onPanStart: () => _resizingTopRight = true,
+            onPanEnd: () => _resizingTopRight = false,
+          ),
+          _buildCornerHandle(
+            alignment: Alignment.bottomLeft,
+            onPanStart: () => _resizingBottomLeft = true,
+            onPanEnd: () => _resizingBottomLeft = false,
+          ),
+          _buildCornerHandle(
+            alignment: Alignment.bottomRight,
+            onPanStart: () => _resizingBottomRight = true,
+            onPanEnd: () => _resizingBottomRight = false,
           ),
         ],
       ),
