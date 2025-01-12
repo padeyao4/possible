@@ -16,10 +16,10 @@ class ResizableWidget extends StatefulWidget {
   });
 
   @override
-  _ResizableWidgetState createState() => _ResizableWidgetState();
+  ResizableWidgetState createState() => ResizableWidgetState();
 }
 
-class _ResizableWidgetState extends State<ResizableWidget> {
+class ResizableWidgetState extends State<ResizableWidget> {
   // 调整大小的触控区域大小
   static const double _handleSize = 10.0;
 
@@ -245,10 +245,10 @@ class Canvas extends StatefulWidget {
   const Canvas({super.key});
 
   @override
-  _CanvasState createState() => _CanvasState();
+  CanvasState createState() => CanvasState();
 }
 
-class _CanvasState extends State<Canvas> {
+class CanvasState extends State<Canvas> {
   late Node randomNode;
   Color _nodeColor = Colors.blue;
 
