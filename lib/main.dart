@@ -22,22 +22,27 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Provider Example')),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      body: Row(
         children: [
-          const Text('Hello, World!'),
-          const Text('Hello, World222!'),
-          ElevatedButton(
-              onPressed: () {
-                print('test');
-              },
-              child: const Text('test'))
+          SafeArea(
+              child: NavigationRail(
+            extended: true,
+            destinations: const [
+              NavigationRailDestination(
+                  icon: Icon(Icons.home), label: Text('Home')),
+              NavigationRailDestination(
+                  icon: Icon(Icons.settings), label: Text('Settings'))
+            ],
+            selectedIndex: 0,
+          )),
+          Expanded(
+              child: Scaffold(
+            appBar: AppBar(title: const Text('Hello World')),
+            body: const Center(
+              child: Text('Hello World'),
+            ),
+          ))
         ],
-      ),
-      drawer: const Drawer(
-        child: Text('test'),
       ),
     );
   }
