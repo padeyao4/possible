@@ -1,25 +1,7 @@
 import 'package:flutter/material.dart';
-import 'screen/canvas.dart';
-
-// 任务数据模型
-class TaskItem {
-  final String id;
-  final String title;
-  final String category;
-  bool isCompleted;
-  final DateTime createdAt;
-
-  TaskItem({
-    required this.id,
-    required this.title,
-    required this.category,
-    this.isCompleted = false,
-    DateTime? createdAt,
-  }) : createdAt = createdAt ?? DateTime.now();
-}
+import 'package:provider/provider.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -28,18 +10,37 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '云帆',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.blue,
+    return ChangeNotifierProvider(
+        create: (context) => MyAppState(),
+        child: const MaterialApp(home: MyHomePage()));
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Provider Example')),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text('Hello, World!'),
+          const Text('Hello, World222!'),
+          ElevatedButton(
+              onPressed: () {
+                print('test');
+              },
+              child: const Text('test'))
+        ],
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('云帆'),
-        ),
-        body: const Canvas(),
+      drawer: const Drawer(
+        child: Text('test'),
       ),
     );
   }
 }
+
+class MyAppState extends ChangeNotifier {}
