@@ -18,24 +18,17 @@ class _MyHomePageState extends State<MyHomePage> {
         SizedBox(
           width: 240,
           child: Column(children: [
-            InkWell(
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.black12,
-                  borderRadius: BorderRadius.all(Radius.circular(8))
-                ),
-                width: 230,
-                height: 40,
-                child: const Text('hello'),
-              ),
-              onTap: () {
-                setState(() {
-                  selectedIndex = 0;
-                  print("selected: $selectedIndex");
-                });
+            NavHeaderItem(
+              title: "home",
+              icon: Icons.home,
+              func: () {
+                print("home");
               },
             ),
-            const Text('Backlog')
+            const NavHeaderItem(
+              title: "settings",
+              icon: Icons.settings,
+            ),
           ]),
         ),
         Expanded(
@@ -52,5 +45,26 @@ class _MyHomePageState extends State<MyHomePage> {
         )),
       ],
     ));
+  }
+}
+
+class NavHeaderItem extends StatelessWidget {
+  final GestureTapCallback? func;
+  final String title;
+  final IconData icon;
+
+  const NavHeaderItem(
+      {super.key, this.func, required this.title, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+        onTap: func,
+        child: Row(
+          children: [
+            Icon(icon),
+            Text(title),
+          ],
+        ));
   }
 }
