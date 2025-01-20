@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:possible/page/home.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -12,39 +13,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (context) => MyAppState(),
-        child: const MaterialApp(home: MyHomePage()));
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          SafeArea(
-              child: NavigationRail(
-            extended: true,
-            destinations: const [
-              NavigationRailDestination(
-                  icon: Icon(Icons.home), label: Text('Home')),
-              NavigationRailDestination(
-                  icon: Icon(Icons.settings), label: Text('Settings'))
-            ],
-            selectedIndex: 0,
-          )),
-          Expanded(
-              child: Scaffold(
-            appBar: AppBar(title: const Text('Hello World')),
-            body: const Center(
-              child: Text('Hello World'),
-            ),
-          ))
-        ],
-      ),
-    );
+        child: MaterialApp(
+            home: const MyHomePage(), theme: ThemeData(useMaterial3: true)));
   }
 }
 
