@@ -13,8 +13,42 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (context) => MyAppState(),
-        child: MaterialApp(
-            home: const MyHomePage(), theme: ThemeData(useMaterial3: true)));
+        child: const MaterialApp(home: HomePage()));
+  }
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, constraints) {
+      if (constraints.maxWidth > 800) {
+        return Scaffold(
+          body: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  color: Colors.blue,
+                ),
+              ),
+              Expanded(
+                child: Scaffold(
+                  body: const Text('home'),
+                  appBar: AppBar(title: const Text('home')),
+                ),
+              ),
+            ],
+          ),
+        );
+      } else {
+        return Scaffold(
+          body: const Text('home'),
+          appBar: AppBar(title: const Text('home')),
+          drawer: const Drawer(),
+        );
+      }
+    });
   }
 }
 
