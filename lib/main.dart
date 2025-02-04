@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:possible/page/home.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -45,10 +44,71 @@ class HomePage extends StatelessWidget {
         return Scaffold(
           body: const Text('home'),
           appBar: AppBar(title: const Text('home')),
-          drawer: const Drawer(),
+          drawer: const Drawer(
+            child: Column(
+              children: [
+                ListTile(
+                  title: Text('我的一天'),
+                ),
+                ListTile(
+                  title: Text('备忘录'),
+                ),
+                Divider(),
+                Expanded(
+                    child: Column(
+                  children: [
+                    ListTile(
+                      title: Text('我的一天'),
+                    ),
+                    ListTile(
+                      title: Text('备忘录'),
+                    ),
+                  ],
+                )),
+                Divider(),
+                ListTile(
+                  title: Text('我的一天'),
+                ),
+              ],
+            ),
+          ),
         );
       }
     });
+  }
+}
+
+class Navigator extends StatelessWidget {
+  const Navigator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      children: [
+        ListTile(
+          title: Text('我的一天'),
+        ),
+        ListTile(
+          title: Text('备忘录'),
+        ),
+        Divider(),
+        Expanded(
+            child: Column(
+          children: [
+            ListTile(
+              title: Text('我的一天'),
+            ),
+            ListTile(
+              title: Text('备忘录'),
+            ),
+          ],
+        )),
+        Divider(),
+        ListTile(
+          title: Text('我的一天'),
+        ),
+      ],
+    );
   }
 }
 
