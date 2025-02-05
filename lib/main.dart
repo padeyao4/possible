@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:developer';
 
 void main() {
   runApp(const MyApp());
@@ -26,16 +27,13 @@ class HomePage extends StatelessWidget {
         return Scaffold(
           body: Row(
             children: [
-              const Navigator(),
+              const NavigatorWidget(),
               Expanded(
                 child: Container(
                   decoration: const BoxDecoration(
                     border: Border(left: BorderSide(color: Colors.black)),
                   ),
-                  child: Scaffold(
-                    body: const Text('home'),
-                    appBar: AppBar(title: const Text('home')),
-                  ),
+                  child: const HomeWidget()
                 ),
               ),
             ],
@@ -45,43 +43,78 @@ class HomePage extends StatelessWidget {
         return Scaffold(
           body: const Text('home'),
           appBar: AppBar(title: const Text('home')),
-          drawer: const Drawer(child: Navigator()),
+          drawer: const Drawer(child: NavigatorWidget()),
         );
       }
     });
   }
 }
 
-class Navigator extends StatelessWidget {
-  const Navigator({super.key});
+class HomeWidget extends StatelessWidget {
+  const HomeWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
+    return Scaffold(
+      body: const Text('home'),
+      appBar: AppBar(title: const Text('home')),
+    );
+  }
+}
+class BackLogWidget extends StatelessWidget {
+  const BackLogWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: const Text('备忘录'),
+      appBar: AppBar(title: const Text('备忘录')),
+    );
+  }
+}
+
+class NavigatorWidget extends StatelessWidget {
+  const NavigatorWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
       width: 240,
       child: Column(
         children: [
-          ListTile(
-            title: Text('我的一天'),
+          GestureDetector(
+            onTap: () {
+              // todo
+              log('this is a log');
+            },
+            child: const ListTile(
+              title: Text('我的一天'),
+            ),
           ),
-          ListTile(
-            title: Text('备忘录'),
+          GestureDetector(
+            onTap: () {
+              // todo
+              log('this is a log');
+            },
+            child: const ListTile(
+              title: Text('备忘录'),
+            ),
           ),
-          Divider(),
-          Expanded(
+          const Divider(),
+          const Expanded(
               child: Column(
             children: [
               ListTile(
-                title: Text('我的一天'),
+                title: Text('项目1'),
               ),
               ListTile(
-                title: Text('备忘录'),
+                title: Text('项目2'),
               ),
             ],
           )),
-          Divider(),
-          ListTile(
-            title: Text('我的一天'),
+          const Divider(),
+          const ListTile(
+            title: Text('创建项目'),
           ),
         ],
       ),
