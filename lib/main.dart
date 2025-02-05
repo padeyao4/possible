@@ -26,15 +26,16 @@ class HomePage extends StatelessWidget {
         return Scaffold(
           body: Row(
             children: [
+              const Navigator(),
               Expanded(
                 child: Container(
-                  color: Colors.blue,
-                ),
-              ),
-              Expanded(
-                child: Scaffold(
-                  body: const Text('home'),
-                  appBar: AppBar(title: const Text('home')),
+                  decoration: const BoxDecoration(
+                    border: Border(left: BorderSide(color: Colors.black)),
+                  ),
+                  child: Scaffold(
+                    body: const Text('home'),
+                    appBar: AppBar(title: const Text('home')),
+                  ),
                 ),
               ),
             ],
@@ -44,34 +45,7 @@ class HomePage extends StatelessWidget {
         return Scaffold(
           body: const Text('home'),
           appBar: AppBar(title: const Text('home')),
-          drawer: const Drawer(
-            child: Column(
-              children: [
-                ListTile(
-                  title: Text('我的一天'),
-                ),
-                ListTile(
-                  title: Text('备忘录'),
-                ),
-                Divider(),
-                Expanded(
-                    child: Column(
-                  children: [
-                    ListTile(
-                      title: Text('我的一天'),
-                    ),
-                    ListTile(
-                      title: Text('备忘录'),
-                    ),
-                  ],
-                )),
-                Divider(),
-                ListTile(
-                  title: Text('我的一天'),
-                ),
-              ],
-            ),
-          ),
+          drawer: const Drawer(child: Navigator()),
         );
       }
     });
@@ -83,31 +57,34 @@ class Navigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        ListTile(
-          title: Text('我的一天'),
-        ),
-        ListTile(
-          title: Text('备忘录'),
-        ),
-        Divider(),
-        Expanded(
-            child: Column(
-          children: [
-            ListTile(
-              title: Text('我的一天'),
-            ),
-            ListTile(
-              title: Text('备忘录'),
-            ),
-          ],
-        )),
-        Divider(),
-        ListTile(
-          title: Text('我的一天'),
-        ),
-      ],
+    return const SizedBox(
+      width: 240,
+      child: Column(
+        children: [
+          ListTile(
+            title: Text('我的一天'),
+          ),
+          ListTile(
+            title: Text('备忘录'),
+          ),
+          Divider(),
+          Expanded(
+              child: Column(
+            children: [
+              ListTile(
+                title: Text('我的一天'),
+              ),
+              ListTile(
+                title: Text('备忘录'),
+              ),
+            ],
+          )),
+          Divider(),
+          ListTile(
+            title: Text('我的一天'),
+          ),
+        ],
+      ),
     );
   }
 }
