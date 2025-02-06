@@ -78,7 +78,6 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text('Home'),
               leading: const Icon(Icons.home),
               onTap: () {
-                print("home");
                 Navigator.pop(context);
               },
             ),
