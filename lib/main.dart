@@ -13,15 +13,31 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (context) => MyState(),
-        child: const MaterialApp(home: HomePage()));
+        child: const MaterialApp(home: MainPage()));
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class MainPage extends StatelessWidget {
+  const MainPage({super.key});
+
+  getTitle(Page page, BuildContext context) {
+    switch (page) {
+      case Page.home:
+        return '我的一天';
+      case Page.backLog:
+        return '备忘录';
+      case Page.test:
+        return '测试';
+      case Page.project:
+        return context.watch<MyState>().current?.name ?? 'empty';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    var page = context.watch<MyState>().page;
+    var title = getTitle(page,context);
+
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 800) {
         return Scaffold(
@@ -33,9 +49,7 @@ class HomePage extends StatelessWidget {
                     decoration: const BoxDecoration(
                       border: Border(left: BorderSide(color: Colors.black)),
                     ),
-                    child: const ContentWidget(
-                      title: 'home',
-                    )),
+                    child: const ContentWidget()),
               ),
             ],
           ),
@@ -43,10 +57,9 @@ class HomePage extends StatelessWidget {
       } else {
         return Scaffold(
           body: const ContentWidget(
-            title: 'home',
             showTitle: false,
           ),
-          appBar: AppBar(title: const Text('home')),
+          appBar: AppBar(title: Text(title)),
           drawer: const Drawer(child: NavigatorWidget()),
         );
       }
@@ -55,23 +68,40 @@ class HomePage extends StatelessWidget {
 }
 
 class ContentWidget extends StatelessWidget {
-  final String title;
   final bool showTitle;
 
-  const ContentWidget({super.key, required this.title, this.showTitle = true});
+  const ContentWidget({super.key, this.showTitle = true});
 
   getWidget(Page page) {
     switch (page) {
       case Page.home:
-        return const HomeWidget();
+        return const HomePage();
       case Page.backLog:
         return const BackLogWidget();
+      case Page.test:
+        return const TestPage();
+      case Page.project:
+        return const ProjectPage();
+    }
+  }
+
+  getTitle(Page page, BuildContext context) {
+    switch (page) {
+      case Page.home:
+        return '我的一天';
+      case Page.backLog:
+        return '备忘录';
+      case Page.test:
+        return '测试';
+      case Page.project:
+        return context.watch<MyState>().current?.name ?? 'empty';
     }
   }
 
   @override
   Widget build(BuildContext context) {
     var page = context.watch<MyState>().page;
+    var title = getTitle(page,context);
 
     if (showTitle) {
       return Scaffold(
@@ -86,8 +116,8 @@ class ContentWidget extends StatelessWidget {
   }
 }
 
-class HomeWidget extends StatelessWidget {
-  const HomeWidget({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -108,15 +138,49 @@ class BackLogWidget extends StatelessWidget {
   }
 }
 
+class TestPage extends StatelessWidget {
+  const TestPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ListView(
+        children: [
+          TextButton(
+              onPressed: () {
+                context.read<MyState>().cleanProjects();
+              },
+              child: const Text('清空项目'))
+        ],
+      ),
+    );
+  }
+}
+
+class ProjectPage extends StatelessWidget {
+  const ProjectPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var node = context.watch<MyState>().current;
+    if (node != null) {
+      return Scaffold(body: Text(node.name));
+    } else {
+      return const Scaffold(body: Text('empty'));
+    }
+  }
+}
+
 class NavigatorWidget extends StatelessWidget {
   const NavigatorWidget({super.key});
 
-  List<Widget> getList(List<Node> projects) {
+  List<Widget> getList(List<Node> projects, MyState state) {
     List<Widget> ans = [];
     for (var i = 0; i < projects.length; i++) {
       ans.add(GestureDetector(
         onTap: () {
-          // todo
+          state.setCurrent(projects[i]);
+          state.changePage(Page.project);
         },
         child: ListTile(
           title: Text(projects[i].name),
@@ -130,6 +194,7 @@ class NavigatorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var projects = context.watch<MyState>().projects;
+    var readonlyState = context.read<MyState>();
 
     return SizedBox(
       width: 240,
@@ -151,17 +216,27 @@ class NavigatorWidget extends StatelessWidget {
               title: Text('备忘录'),
             ),
           ),
+          GestureDetector(
+            onTap: () {
+              context.read<MyState>().changePage(Page.test);
+            },
+            child: const ListTile(
+              title: Text('测试'),
+            ),
+          ),
           const Divider(),
           Expanded(
-              child: Column(
-            children: getList(projects),
+              child: ListView(
+            children: getList(projects, readonlyState),
           )),
           const Divider(),
           GestureDetector(
             onTap: () {
               // todo test
-              context.read<MyState>().addProject(
-                  Node(id: '1', name: 'project1', index: projects.length + 1));
+              context.read<MyState>().addProject(Node(
+                  id: projects.length.toString(),
+                  name: 'project-${projects.length}',
+                  index: DateTime.now().microsecond));
             },
             child: const ListTile(
               title: Text('创建项目'),
@@ -176,6 +251,8 @@ class NavigatorWidget extends StatelessWidget {
 enum Page {
   home,
   backLog,
+  project,
+  test,
 }
 
 class Node {
@@ -190,6 +267,7 @@ class MyState extends ChangeNotifier {
   Page page = Page.home;
   List<Node> projects = [];
   List<Node> backlogs = [];
+  Node? current;
 
   void changePage(Page page) {
     this.page = page;
@@ -203,6 +281,16 @@ class MyState extends ChangeNotifier {
 
   void removeProject(Node node) {
     projects.remove(node);
+    notifyListeners();
+  }
+
+  void cleanProjects() {
+    projects.clear();
+    notifyListeners();
+  }
+
+  void setCurrent(Node node) {
+    current = node;
     notifyListeners();
   }
 }
