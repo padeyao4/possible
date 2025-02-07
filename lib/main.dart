@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:developer';
 
 void main() {
   runApp(const MyApp());
@@ -56,9 +55,7 @@ class MainPage extends StatelessWidget {
         );
       } else {
         return Scaffold(
-          body: const ContentWidget(
-            showTitle: false,
-          ),
+          body: const ContentWidget(showTitle: false),
           appBar: AppBar(title: Text(title)),
           drawer: const Drawer(child: NavigatorWidget()),
         );
@@ -90,16 +87,10 @@ class ContentWidget extends StatelessWidget {
     var page = context.watch<MyState>().page;
     var title = getTitle(page, context);
 
-    if (showTitle) {
-      return Scaffold(
-        body: getWidget(page),
-        appBar: AppBar(title: Text(title)),
-      );
-    } else {
-      return Scaffold(
-        body: getWidget(page),
-      );
-    }
+    return Scaffold(
+      body: getWidget(page),
+      appBar: showTitle ? AppBar(title: Text(title)) : null,
+    );
   }
 }
 
@@ -109,7 +100,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Text('home'),
+      body: Center(child: Text('home')),
     );
   }
 }
@@ -120,7 +111,7 @@ class BackLogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Text('备忘录'),
+      body: Center(child: Text('备忘录')),
     );
   }
 }
@@ -150,11 +141,50 @@ class ProjectPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var node = context.watch<MyState>().current;
-    if (node != null) {
-      return Scaffold(body: Text(node.name));
-    } else {
-      return const Scaffold(body: Text('empty'));
-    }
+    return Scaffold(
+      body: node != null
+          ? const GraphWidget()
+          : const Center(child: Text('empty')),
+    );
+  }
+}
+
+class GraphWidget extends StatefulWidget {
+  const GraphWidget({super.key});
+
+  @override
+  _GraphWidgetState createState() => _GraphWidgetState();
+}
+
+class _GraphWidgetState extends State<GraphWidget> {
+  Offset position = Offset(100, 100);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          Positioned(
+            left: position.dx,
+            top: position.dy,
+            child: GestureDetector(
+              onPanUpdate: (details) {
+                setState(() {
+                  position = Offset(position.dx + details.delta.dx,
+                      position.dy + details.delta.dy);
+                });
+              },
+              child: Container(
+                width: 100,
+                height: 100,
+                color: Colors.blue,
+                child: const Center(child: Text('拖拽我')),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
