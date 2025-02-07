@@ -17,26 +17,26 @@ class MyApp extends StatelessWidget {
   }
 }
 
+String getTitle(Page page, BuildContext context) {
+  switch (page) {
+    case Page.home:
+      return '我的一天';
+    case Page.backLog:
+      return '备忘录';
+    case Page.test:
+      return '测试';
+    case Page.project:
+      return context.watch<MyState>().current?.name ?? 'empty';
+  }
+}
+
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
-
-  getTitle(Page page, BuildContext context) {
-    switch (page) {
-      case Page.home:
-        return '我的一天';
-      case Page.backLog:
-        return '备忘录';
-      case Page.test:
-        return '测试';
-      case Page.project:
-        return context.watch<MyState>().current?.name ?? 'empty';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     var page = context.watch<MyState>().page;
-    var title = getTitle(page,context);
+    var title = getTitle(page, context);
 
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 800) {
@@ -72,7 +72,7 @@ class ContentWidget extends StatelessWidget {
 
   const ContentWidget({super.key, this.showTitle = true});
 
-  getWidget(Page page) {
+  Widget getWidget(Page page) {
     switch (page) {
       case Page.home:
         return const HomePage();
@@ -85,23 +85,10 @@ class ContentWidget extends StatelessWidget {
     }
   }
 
-  getTitle(Page page, BuildContext context) {
-    switch (page) {
-      case Page.home:
-        return '我的一天';
-      case Page.backLog:
-        return '备忘录';
-      case Page.test:
-        return '测试';
-      case Page.project:
-        return context.watch<MyState>().current?.name ?? 'empty';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     var page = context.watch<MyState>().page;
-    var title = getTitle(page,context);
+    var title = getTitle(page, context);
 
     if (showTitle) {
       return Scaffold(
@@ -175,26 +162,22 @@ class NavigatorWidget extends StatelessWidget {
   const NavigatorWidget({super.key});
 
   List<Widget> getList(List<Node> projects, MyState state) {
-    List<Widget> ans = [];
-    for (var i = 0; i < projects.length; i++) {
-      ans.add(GestureDetector(
+    return projects.map((project) {
+      return GestureDetector(
         onTap: () {
-          state.setCurrent(projects[i]);
+          state.setCurrent(project);
           state.changePage(Page.project);
         },
         child: ListTile(
-          title: Text(projects[i].name),
+          title: Text(project.name),
         ),
-      ));
-    }
-
-    return ans;
+      );
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     var projects = context.watch<MyState>().projects;
-    var readonlyState = context.read<MyState>();
 
     return SizedBox(
       width: 240,
@@ -227,12 +210,11 @@ class NavigatorWidget extends StatelessWidget {
           const Divider(),
           Expanded(
               child: ListView(
-            children: getList(projects, readonlyState),
+            children: getList(projects, context.read<MyState>()),
           )),
           const Divider(),
           GestureDetector(
             onTap: () {
-              // todo test
               context.read<MyState>().addProject(Node(
                   id: projects.length.toString(),
                   name: 'project-${projects.length}',
