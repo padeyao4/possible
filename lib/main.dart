@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:possible/component/nav.dart';
+import 'package:possible/model/content.dart';
+import 'package:possible/model/node.dart';
+import 'package:possible/page/backlog.dart';
+import 'package:possible/page/home.dart';
+import 'package:possible/page/project.dart';
+import 'package:possible/page/test.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -16,15 +23,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-String getTitle(Page page, BuildContext context) {
+String getTitle(MyPage page, BuildContext context) {
   switch (page) {
-    case Page.home:
+    case MyPage.home:
       return '我的一天';
-    case Page.backLog:
+    case MyPage.backLog:
       return '备忘录';
-    case Page.test:
+    case MyPage.test:
       return '测试';
-    case Page.project:
+    case MyPage.project:
       return context.watch<MyState>().current?.name ?? 'empty';
   }
 }
@@ -69,15 +76,15 @@ class ContentWidget extends StatelessWidget {
 
   const ContentWidget({super.key, this.showTitle = true});
 
-  Widget getWidget(Page page) {
+  Widget getWidget(MyPage page) {
     switch (page) {
-      case Page.home:
+      case MyPage.home:
         return const HomePage();
-      case Page.backLog:
-        return const BackLogWidget();
-      case Page.test:
+      case MyPage.backLog:
+        return const BackLogPage();
+      case MyPage.test:
         return const TestPage();
-      case Page.project:
+      case MyPage.project:
         return const ProjectPage();
     }
   }
@@ -90,61 +97,6 @@ class ContentWidget extends StatelessWidget {
     return Scaffold(
       body: getWidget(page),
       appBar: showTitle ? AppBar(title: Text(title)) : null,
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('home')),
-    );
-  }
-}
-
-class BackLogWidget extends StatelessWidget {
-  const BackLogWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('备忘录')),
-    );
-  }
-}
-
-class TestPage extends StatelessWidget {
-  const TestPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-        children: [
-          TextButton(
-              onPressed: () {
-                context.read<MyState>().cleanProjects();
-              },
-              child: const Text('清空项目'))
-        ],
-      ),
-    );
-  }
-}
-
-class ProjectPage extends StatelessWidget {
-  const ProjectPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    var node = context.watch<MyState>().current;
-    return Scaffold(
-      body: node != null
-          ? const GraphWidget()
-          : const Center(child: Text('empty')),
     );
   }
 }
@@ -188,100 +140,13 @@ class _GraphWidgetState extends State<GraphWidget> {
   }
 }
 
-class NavigatorWidget extends StatelessWidget {
-  const NavigatorWidget({super.key});
-
-  List<Widget> getList(List<Node> projects, MyState state) {
-    return projects.map((project) {
-      return GestureDetector(
-        onTap: () {
-          state.setCurrent(project);
-          state.changePage(Page.project);
-        },
-        child: ListTile(
-          title: Text(project.name),
-        ),
-      );
-    }).toList();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var projects = context.watch<MyState>().projects;
-
-    return SizedBox(
-      width: 240,
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: () {
-              context.read<MyState>().changePage(Page.home);
-            },
-            child: const ListTile(
-              title: Text('我的一天'),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              context.read<MyState>().changePage(Page.backLog);
-            },
-            child: const ListTile(
-              title: Text('备忘录'),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              context.read<MyState>().changePage(Page.test);
-            },
-            child: const ListTile(
-              title: Text('测试'),
-            ),
-          ),
-          const Divider(),
-          Expanded(
-              child: ListView(
-            children: getList(projects, context.read<MyState>()),
-          )),
-          const Divider(),
-          GestureDetector(
-            onTap: () {
-              context.read<MyState>().addProject(Node(
-                  id: projects.length.toString(),
-                  name: 'project-${projects.length}',
-                  index: DateTime.now().microsecond));
-            },
-            child: const ListTile(
-              title: Text('创建项目'),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-enum Page {
-  home,
-  backLog,
-  project,
-  test,
-}
-
-class Node {
-  String id;
-  String name;
-  int index;
-
-  Node({required this.id, required this.name, required this.index});
-}
-
 class MyState extends ChangeNotifier {
-  Page page = Page.home;
+  MyPage page = MyPage.home;
   List<Node> projects = [];
   List<Node> backlogs = [];
   Node? current;
 
-  void changePage(Page page) {
+  void changePage(MyPage page) {
     this.page = page;
     notifyListeners();
   }
