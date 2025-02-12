@@ -25,11 +25,11 @@ class MyApp extends StatelessWidget {
           colorSchemeSeed: Colors.blue,
           brightness: Brightness.light,
         ),
-        darkTheme: ThemeData(
-          useMaterial3: true,
-          colorSchemeSeed: Colors.blue,
-          brightness: Brightness.dark,
-        ),
+        // darkTheme: ThemeData(
+        //   useMaterial3: true,
+        //   colorSchemeSeed: Colors.blue,
+        //   brightness: Brightness.dark,
+        // ),
         home: const MainPage(),
       ),
     );
@@ -86,6 +86,9 @@ class MainPage extends StatelessWidget {
           ),
           drawer: const Drawer(
             elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero,
+            ),
             child: NavigatorWidget(),
           ),
         );

@@ -34,6 +34,7 @@ class NavigatorWidget extends StatelessWidget {
               context.read<MyState>().changePage(MyPage.home);
             },
             child: const ListTile(
+              leading: Icon(Icons.home),
               title: Text('我的一天'),
             ),
           ),
@@ -42,6 +43,7 @@ class NavigatorWidget extends StatelessWidget {
               context.read<MyState>().changePage(MyPage.backLog);
             },
             child: const ListTile(
+              leading: Icon(Icons.note),
               title: Text('备忘录'),
             ),
           ),
@@ -50,6 +52,7 @@ class NavigatorWidget extends StatelessWidget {
               context.read<MyState>().changePage(MyPage.test);
             },
             child: const ListTile(
+              leading: Icon(Icons.check_circle),
               title: Text('测试'),
             ),
           ),
@@ -67,8 +70,22 @@ class NavigatorWidget extends StatelessWidget {
                   index: DateTime.now().microsecond,
                   position: Point(x: 0, y: 0)));
             },
-            child: const ListTile(
-              title: Text('创建项目'),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Row(
+                  children: [
+                    Icon(Icons.add),
+                    Text('添加项目'),
+                  ],
+                ),
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  onPressed: () {
+                    // Add your settings action here
+                  },
+                ),
+              ],
             ),
           )
         ],
