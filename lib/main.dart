@@ -18,8 +18,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => MyState(),
-        child: const MaterialApp(home: MainPage()));
+      create: (context) => MyState(),
+      child: MaterialApp(
+        theme: ThemeData(
+          useMaterial3: true,
+          colorSchemeSeed: Colors.blue,
+          brightness: Brightness.light,
+        ),
+        darkTheme: ThemeData(
+          useMaterial3: true,
+          colorSchemeSeed: Colors.blue,
+          brightness: Brightness.dark,
+        ),
+        home: const MainPage(),
+      ),
+    );
   }
 }
 
@@ -46,16 +59,19 @@ class MainPage extends StatelessWidget {
 
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 800) {
-        return Scaffold(
+        return const Scaffold(
           body: Row(
             children: [
-              const NavigatorWidget(),
+              Card(
+                margin: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero,
+                ),
+                elevation: 4,
+                child: NavigatorWidget(),
+              ),
               Expanded(
-                child: Container(
-                    decoration: const BoxDecoration(
-                      border: Border(left: BorderSide(color: Colors.black)),
-                    ),
-                    child: const ContentWidget()),
+                child: ContentWidget(),
               ),
             ],
           ),
@@ -63,8 +79,15 @@ class MainPage extends StatelessWidget {
       } else {
         return Scaffold(
           body: const ContentWidget(showTitle: false),
-          appBar: AppBar(title: Text(title)),
-          drawer: const Drawer(child: NavigatorWidget()),
+          appBar: AppBar(
+            title: Text(title),
+            centerTitle: true,
+            elevation: 2,
+          ),
+          drawer: const Drawer(
+            elevation: 4,
+            child: NavigatorWidget(),
+          ),
         );
       }
     });
@@ -95,47 +118,20 @@ class ContentWidget extends StatelessWidget {
     var title = getTitle(page, context);
 
     return Scaffold(
-      body: getWidget(page),
-      appBar: showTitle ? AppBar(title: Text(title)) : null,
-    );
-  }
-}
-
-class GraphWidget extends StatefulWidget {
-  const GraphWidget({super.key});
-
-  @override
-  _GraphWidgetState createState() => _GraphWidgetState();
-}
-
-class _GraphWidgetState extends State<GraphWidget> {
-  Offset position = Offset(100, 100);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Positioned(
-            left: position.dx,
-            top: position.dy,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  position = Offset(position.dx + details.delta.dx,
-                      position.dy + details.delta.dy);
-                });
-              },
-              child: Container(
-                width: 100,
-                height: 100,
-                color: Colors.blue,
-                child: const Center(child: Text('拖拽我')),
-              ),
-            ),
-          ),
-        ],
+      body: Container(
+        margin: const EdgeInsets.all(16),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: getWidget(page),
+        ),
       ),
+      appBar: showTitle
+          ? AppBar(
+              title: Text(title),
+              centerTitle: true,
+              elevation: 2,
+            )
+          : null,
     );
   }
 }
