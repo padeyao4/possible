@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:possible/component/nav.dart';
 import 'package:possible/model/content.dart';
-import 'package:possible/model/node.dart';
 import 'package:possible/page/backlog.dart';
 import 'package:possible/page/home.dart';
 import 'package:possible/page/project.dart';
 import 'package:possible/page/test.dart';
+import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -137,37 +137,5 @@ class _GraphWidgetState extends State<GraphWidget> {
         ],
       ),
     );
-  }
-}
-
-class MyState extends ChangeNotifier {
-  MyPage page = MyPage.home;
-  List<Node> projects = [];
-  List<Node> backlogs = [];
-  Node? current;
-
-  void changePage(MyPage page) {
-    this.page = page;
-    notifyListeners();
-  }
-
-  void addProject(Node node) {
-    projects.add(node);
-    notifyListeners();
-  }
-
-  void removeProject(Node node) {
-    projects.remove(node);
-    notifyListeners();
-  }
-
-  void cleanProjects() {
-    projects.clear();
-    notifyListeners();
-  }
-
-  void setCurrent(Node node) {
-    current = node;
-    notifyListeners();
   }
 }

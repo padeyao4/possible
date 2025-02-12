@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:possible/main.dart';
 import 'package:possible/model/content.dart';
 import 'package:possible/model/node.dart';
+import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
 
 class NavigatorWidget extends StatelessWidget {
