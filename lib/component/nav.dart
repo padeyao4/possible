@@ -41,7 +41,35 @@ class NavBottom extends StatelessWidget {
       leading: const Icon(Icons.add),
       title: const Text('新建项目'),
       onTap: () {
-        // todo 弹出对话框,输入标题
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('新建项目'),
+            content: TextField(
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: '项目名称',
+                hintText: '请输入项目名称',
+              ),
+              onSubmitted: (value) {
+                if (value.isNotEmpty) {
+                  context.read<MyState>().addProject(Node(
+                      id: value,
+                      name: value,
+                      index: DateTime.now().millisecondsSinceEpoch,
+                      position: Point(x: 0, y: 0)));
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('取消'),
+              ),
+            ],
+          ),
+        );
       },
     );
   }
@@ -55,8 +83,14 @@ class NavBodyList extends StatelessWidget {
     return Expanded(
         child: ListView.builder(
             itemBuilder: (context, index) {
+              var project = context.watch<MyState>().projects[index];
               return ListTile(
-                title: Text(context.watch<MyState>().projects[index].name),
+                title: Text(project.name),
+                onTap: () => {
+                  context.read<MyState>().setCurrent(project),
+                  context.read<MyState>().changePage(MyPage.project),
+                  Scaffold.of(context).closeDrawer()
+                },
               );
             },
             itemCount: context.watch<MyState>().projects.length));
@@ -72,12 +106,14 @@ class NavHeaderList extends StatelessWidget {
         padding: EdgeInsets.zero,
         child: ListView(
           padding: EdgeInsets.zero,
+          shrinkWrap: true,
           children: [
             ListTile(
               leading: const Icon(Icons.home),
               title: const Text('我的一天'),
               onTap: () {
                 context.read<MyState>().changePage(MyPage.home);
+                Scaffold.of(context).closeDrawer();
               },
             ),
             ListTile(
@@ -85,6 +121,7 @@ class NavHeaderList extends StatelessWidget {
               title: const Text('备忘录'),
               onTap: () {
                 context.read<MyState>().changePage(MyPage.backLog);
+                Scaffold.of(context).closeDrawer();
               },
             ),
             ListTile(
@@ -92,6 +129,7 @@ class NavHeaderList extends StatelessWidget {
               title: const Text('测试'),
               onTap: () {
                 context.read<MyState>().changePage(MyPage.test);
+                Scaffold.of(context).closeDrawer();
               },
             ),
           ],
