@@ -4,18 +4,6 @@ import 'package:possible/model/node.dart';
 import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
 
-List<Widget> getList(List<Node> projects, MyState state) {
-  return projects.map((project) {
-    return ListTile(
-      title: Text(project.name),
-      onTap: () {
-        state.setCurrent(project);
-        state.changePage(MyPage.project);
-      },
-    );
-  }).toList();
-}
-
 class NavigatorWidget extends StatelessWidget {
   const NavigatorWidget({super.key});
 
@@ -57,7 +45,7 @@ class NavBottom extends StatelessWidget {
                       id: value,
                       name: value,
                       index: DateTime.now().millisecondsSinceEpoch,
-                      position: Point(x: 0, y: 0)));
+                      position: Point(x: 0, y: 0))); // 使用 Offset 替代 Point
                   Navigator.pop(context);
                 }
               },
@@ -80,20 +68,30 @@ class NavBodyList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var projects = context.watch<MyState>().projects;
     return Expanded(
-        child: ListView.builder(
-            itemBuilder: (context, index) {
-              var project = context.watch<MyState>().projects[index];
-              return ListTile(
-                title: Text(project.name),
-                onTap: () => {
-                  context.read<MyState>().setCurrent(project),
-                  context.read<MyState>().changePage(MyPage.project),
-                  Scaffold.of(context).closeDrawer()
-                },
-              );
+      child: ReorderableListView.builder(
+        itemBuilder: (context, index) {
+          var project = projects[index];
+          return ListTile(
+            key: ValueKey(project.id),
+            title: Text(project.name),
+            onTap: () {
+              context.read<MyState>().setProjectPage(project);
+              Scaffold.of(context).closeDrawer();
             },
-            itemCount: context.watch<MyState>().projects.length));
+          );
+        },
+        itemCount: projects.length,
+        onReorder: (oldIndex, newIndex) {
+          if (newIndex > oldIndex) {
+            newIndex -= 1;
+          }
+          final Node item = projects.removeAt(oldIndex);
+          projects.insert(newIndex, item);
+        },
+      ),
+    );
   }
 }
 

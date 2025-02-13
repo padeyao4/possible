@@ -8,6 +8,12 @@ class MyState extends ChangeNotifier {
   List<Node> backlogs = [];
   Node? current;
 
+  void setProjectPage(Node node) {
+    current = node;
+    page = MyPage.project;
+    notifyListeners();
+  }
+
   void changePage(MyPage page) {
     this.page = page;
     notifyListeners();
