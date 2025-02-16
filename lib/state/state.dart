@@ -14,6 +14,11 @@ class MyState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void addBacklog(Node node) {
+    backlogs.add(node);
+    notifyListeners();
+  }
+
   void changePage(MyPage page) {
     this.page = page;
     notifyListeners();

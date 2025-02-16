@@ -19,5 +19,5 @@ class Point {
   double x;
   double y;
 
-  Point({required this.x, required this.y});
+  Point(this.x, this.y);
 }

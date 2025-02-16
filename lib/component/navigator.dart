@@ -45,7 +45,7 @@ class NavBottom extends StatelessWidget {
                       id: value,
                       name: value,
                       index: DateTime.now().millisecondsSinceEpoch,
-                      position: Point(x: 0, y: 0))); // 使用 Offset 替代 Point
+                      position: Point(0, 0))); // 使用 Offset 替代 Point
                   Navigator.pop(context);
                 }
               },

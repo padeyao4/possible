@@ -26,11 +26,6 @@ class MyApp extends StatelessWidget {
           colorSchemeSeed: Colors.blue,
           brightness: Brightness.light,
         ),
-        // darkTheme: ThemeData(
-        //   useMaterial3: true,
-        //   colorSchemeSeed: Colors.blue,
-        //   brightness: Brightness.dark,
-        // ),
         home: const MainPage(),
       ),
     );
@@ -124,10 +119,7 @@ class ContentWidget extends StatelessWidget {
     return Scaffold(
       body: Container(
         margin: const EdgeInsets.all(16),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: getWidget(page),
-        ),
+        child: getWidget(page),
       ),
       appBar: showTitle
           ? AppBar(
