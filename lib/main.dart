@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possible/component/nav.dart';
+import 'package:possible/component/navigator.dart';
 import 'package:possible/model/content.dart';
 import 'package:possible/page/backlog.dart';
 import 'package:possible/page/home.dart';
