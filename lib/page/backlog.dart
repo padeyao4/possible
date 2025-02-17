@@ -141,6 +141,20 @@ class BacklogItems extends StatelessWidget {
       visible: show,
       child: ReorderableListView.builder(
         shrinkWrap: true, // 为了解决无限高度问题
+        proxyDecorator: (child, index, animation) {
+          return AnimatedBuilder(
+            animation: animation,
+            builder: (context, child) {
+              return Material(
+                elevation: 4.0,
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(8.0),
+                child: child,
+              );
+            },
+            child: child,
+          );
+        },
         onReorder: (oldIndex, newIndex) {
           if (newIndex > oldIndex) {
             newIndex -= 1;
