@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:possible/model/content.dart';
 import 'package:possible/model/node.dart';
 import 'package:possible/state/state.dart';
@@ -236,6 +237,12 @@ class _NavBodyListState extends State<NavBodyList> {
   }
 }
 
+const String solarSun =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M12 2v1m0 18v1m10-10h-1M3 12H2m17.07-7.07l-.392.393M5.322 18.678l-.393.393m14.141-.001l-.392-.393M5.322 5.322l-.393-.393M6.341 10A6 6 0 1 0 10 6.341"/></svg>';
+
+const String menuList =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M2.25 6A.75.75 0 0 1 3 5.25h18a.75.75 0 0 1 0 1.5H3A.75.75 0 0 1 2.25 6m0 4A.75.75 0 0 1 3 9.25h18a.75.75 0 0 1 0 1.5H3a.75.75 0 0 1-.75-.75m18.211 2.909a.75.75 0 0 1 .13 1.052l-3.9 5a.75.75 0 0 1-1.165.021l-2.1-2.5a.75.75 0 1 1 1.148-.964l1.504 1.79l3.33-4.27a.75.75 0 0 1 1.053-.13M2.25 14a.75.75 0 0 1 .75-.75h7a.75.75 0 0 1 0 1.5H3a.75.75 0 0 1-.75-.75m0 4a.75.75 0 0 1 .75-.75h7a.75.75 0 0 1 0 1.5H3a.75.75 0 0 1-.75-.75" clip-rule="evenodd"/></svg>';
+
 class NavHeaderList extends StatelessWidget {
   const NavHeaderList({super.key});
 
@@ -250,7 +257,7 @@ class NavHeaderList extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
-            leading: const Icon(Icons.home),
+            leading: Iconify(solarSun),
             title: const Text('我的一天'),
             onTap: () {
               context.read<MyState>().changePage(MyPage.home);
@@ -262,7 +269,7 @@ class NavHeaderList extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
-            leading: const Icon(Icons.note),
+            leading: Iconify(menuList),
             title: const Text('备忘录'),
             onTap: () {
               context.read<MyState>().changePage(MyPage.backLog);
@@ -274,7 +281,7 @@ class NavHeaderList extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
-            leading: const Icon(Icons.check_circle),
+            leading: const Icon(Icons.star),
             title: const Text('测试'),
             onTap: () {
               context.read<MyState>().changePage(MyPage.test);
