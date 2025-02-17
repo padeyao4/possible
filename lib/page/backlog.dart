@@ -3,8 +3,21 @@ import 'package:possible/model/node.dart';
 import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
 
-class BackLogPage extends StatelessWidget {
+class BackLogPage extends StatefulWidget {
   const BackLogPage({super.key});
+
+  @override
+  State<BackLogPage> createState() => _BackLogPageState();
+}
+
+class _BackLogPageState extends State<BackLogPage> {
+  var isExpend = false;
+
+  void changeValue() {
+    setState(() {
+      isExpend = !isExpend;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +28,10 @@ class BackLogPage extends StatelessWidget {
         children: [
           Expanded(
             child: ListView(
-              children: const [
-                BacklogItems(),
-                BacklogCountButton(),
-                BacklogItems(completed: true),
+              children: [
+                const BacklogItems(),
+                BacklogCountButton(isExpend, changeValue),
+                BacklogItems(completed: true, show: isExpend),
               ],
             ),
           ),
@@ -60,7 +73,10 @@ class BottomInput extends StatelessWidget {
 }
 
 class BacklogCountButton extends StatelessWidget {
-  const BacklogCountButton({super.key});
+  final bool isExpend;
+  final Function changeValue;
+
+  const BacklogCountButton(this.isExpend, this.changeValue, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +88,14 @@ class BacklogCountButton extends StatelessWidget {
     return Visibility(
       visible: backlogs.isNotEmpty,
       child: OutlinedButton(
-        onPressed: () {},
+        onPressed: () {
+          changeValue();
+        },
         child: Row(
           children: [
-            const Icon(Icons.arrow_drop_down),
+            isExpend
+                ? const Icon(Icons.arrow_drop_down)
+                : const Icon(Icons.arrow_drop_up),
             Text('Backlog (${backlogs.length})'),
           ],
         ),
