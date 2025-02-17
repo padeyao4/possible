@@ -14,6 +14,7 @@ class TestPage extends StatelessWidget {
           TextButton(
               onPressed: () {
                 context.read<MyState>().cleanProjects();
+                context.read<MyState>().cleanBacklogs();
               },
               child: const Text('清空项目')),
           TextButton(

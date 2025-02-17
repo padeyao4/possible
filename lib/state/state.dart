@@ -44,6 +44,11 @@ class MyState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void cleanBacklogs() {
+    backlogs.clear();
+    notifyListeners();
+  }
+
   void setCurrent(Node node) {
     current = node;
     notifyListeners();
