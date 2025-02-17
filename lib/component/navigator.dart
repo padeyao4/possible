@@ -13,6 +13,10 @@ class NavigatorWidget extends StatelessWidget {
       width: 240,
       child: Column(children: [
         NavHeaderList(),
+        Divider(
+          height: 1,
+          thickness: 1,
+        ),
         NavBodyList(),
         NavBottom(),
       ]),
@@ -63,33 +67,61 @@ class NavBottom extends StatelessWidget {
   }
 }
 
-class NavBodyList extends StatelessWidget {
+class NavBodyList extends StatefulWidget {
   const NavBodyList({super.key});
+
+  @override
+  State<NavBodyList> createState() => _NavBodyListState();
+}
+
+class _NavBodyListState extends State<NavBodyList> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     var projects = context.watch<MyState>().projects;
     return Expanded(
-      child: ReorderableListView.builder(
-        itemBuilder: (context, index) {
-          var project = projects[index];
-          return ListTile(
-            key: ValueKey(project.id),
-            title: Text(project.name),
-            onTap: () {
-              context.read<MyState>().setProjectPage(project);
-              Scaffold.of(context).closeDrawer();
+      child: Scrollbar(
+        thickness: 3,
+        child: ScrollConfiguration(
+          behavior: ScrollBehavior().copyWith(scrollbars: false),
+          child: ReorderableListView.builder(
+            itemBuilder: (context, index) {
+              var project = projects[index];
+              return Padding(
+                key: ValueKey(project.id),
+                padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                child: ListTile(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  key: ValueKey(project.id),
+                  title: Text(
+                    project.name,
+                  ),
+                  onTap: () {
+                    context.read<MyState>().setProjectPage(project);
+                    Scaffold.of(context).closeDrawer();
+                  },
+                ),
+              );
             },
-          );
-        },
-        itemCount: projects.length,
-        onReorder: (oldIndex, newIndex) {
-          if (newIndex > oldIndex) {
-            newIndex -= 1;
-          }
-          final Node item = projects.removeAt(oldIndex);
-          projects.insert(newIndex, item);
-        },
+            itemCount: projects.length,
+            onReorder: (oldIndex, newIndex) {
+              if (newIndex > oldIndex) {
+                newIndex -= 1;
+              }
+              final Node item = projects.removeAt(oldIndex);
+              projects.insert(newIndex, item);
+            },
+          ),
+        ),
       ),
     );
   }
@@ -100,37 +132,48 @@ class NavHeaderList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DrawerHeader(
-        padding: EdgeInsets.zero,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('我的一天'),
-              onTap: () {
-                context.read<MyState>().changePage(MyPage.home);
-                Scaffold.of(context).closeDrawer();
-              },
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
             ),
-            ListTile(
-              leading: const Icon(Icons.note),
-              title: const Text('备忘录'),
-              onTap: () {
-                context.read<MyState>().changePage(MyPage.backLog);
-                Scaffold.of(context).closeDrawer();
-              },
+            leading: const Icon(Icons.home),
+            title: const Text('我的一天'),
+            onTap: () {
+              context.read<MyState>().changePage(MyPage.home);
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          SizedBox(height: 4),
+          ListTile(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
             ),
-            ListTile(
-              leading: const Icon(Icons.check_circle),
-              title: const Text('测试'),
-              onTap: () {
-                context.read<MyState>().changePage(MyPage.test);
-                Scaffold.of(context).closeDrawer();
-              },
+            leading: const Icon(Icons.note),
+            title: const Text('备忘录'),
+            onTap: () {
+              context.read<MyState>().changePage(MyPage.backLog);
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          SizedBox(height: 4),
+          ListTile(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
             ),
-          ],
-        ));
+            leading: const Icon(Icons.check_circle),
+            title: const Text('测试'),
+            onTap: () {
+              context.read<MyState>().changePage(MyPage.test);
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

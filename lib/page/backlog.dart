@@ -12,6 +12,19 @@ class BackLogPage extends StatefulWidget {
 
 class BackLogPageState extends State<BackLogPage> {
   var isExpend = false;
+  final ScrollController _controller = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {});
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   void changeValue() {
     setState(() {
@@ -24,13 +37,22 @@ class BackLogPageState extends State<BackLogPage> {
     return Column(
       children: [
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8),
-            children: [
-              const BacklogItems(),
-              BacklogCountButton(isExpend, changeValue),
-              BacklogItems(completed: true, show: isExpend),
-            ],
+          child: Scrollbar(
+            controller: _controller,
+            thickness: 3,
+            child: ScrollConfiguration(
+              behavior: const ScrollBehavior().copyWith(overscroll: false),
+              child: ListView(
+                controller: _controller,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8),
+                children: [
+                  const BacklogItems(),
+                  BacklogCountButton(isExpend, changeValue),
+                  BacklogItems(completed: true, show: isExpend),
+                ],
+              ),
+            ),
           ),
         ),
         const BottomInput(),
