@@ -95,6 +95,7 @@ class BacklogCountButton extends StatelessWidget {
           children: [
             OutlinedButton(
               style: OutlinedButton.styleFrom(
+                elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
