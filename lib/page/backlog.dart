@@ -55,7 +55,7 @@ class BottomInput extends StatelessWidget {
         autofocus: true,
         decoration: InputDecoration(
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0),
+            borderRadius: BorderRadius.circular(8.0),
           ),
           labelText: '添加待办事项',
           filled: true,
@@ -140,7 +140,7 @@ class BacklogItems extends StatelessWidget {
     return Visibility(
       visible: show,
       child: ReorderableListView.builder(
-        shrinkWrap: true,
+        shrinkWrap: true, // 为了解决无限高度问题
         onReorder: (oldIndex, newIndex) {
           if (newIndex > oldIndex) {
             newIndex -= 1;
@@ -153,33 +153,42 @@ class BacklogItems extends StatelessWidget {
           return Card(
             key: ValueKey(backlogs[index]),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
+              borderRadius: BorderRadius.circular(8.0),
             ),
             elevation: 2,
             margin: const EdgeInsets.symmetric(vertical: 4.0),
-            child: ListTile(
-              leading: IconButton(
-                icon: Icon(
-                  backlogs[index].completed ? Icons.check_circle : Icons.circle,
-                  color: backlogs[index].completed ? Colors.green : Colors.grey,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: ListTile(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
-                onPressed: () {
-                  context
-                      .read<MyState>()
-                      .updateBacklogComplated(backlogs[index]);
+                leading: IconButton(
+                  icon: Icon(
+                    backlogs[index].completed
+                        ? Icons.check_circle
+                        : Icons.circle,
+                    color:
+                        backlogs[index].completed ? Colors.green : Colors.grey,
+                  ),
+                  onPressed: () {
+                    context
+                        .read<MyState>()
+                        .updateBacklogComplated(backlogs[index]);
+                  },
+                ),
+                title: Text(
+                  backlogs[index].name,
+                  style: TextStyle(
+                    decoration: backlogs[index].completed
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none,
+                  ),
+                ),
+                onTap: () {
+                  print('Item $index');
                 },
               ),
-              title: Text(
-                backlogs[index].name,
-                style: TextStyle(
-                  decoration: backlogs[index].completed
-                      ? TextDecoration.lineThrough
-                      : TextDecoration.none,
-                ),
-              ),
-              onTap: () {
-                print('Item $index');
-              },
             ),
           );
         },
