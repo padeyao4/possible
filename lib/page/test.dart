@@ -19,11 +19,13 @@ class TestPage extends StatelessWidget {
           TextButton(
               onPressed: () {
                 for (var i = 0; i < 10; i++) {
-                  context.read<MyState>().addBacklog(Node(
+                  var node = Node(
                       id: 'project$i',
                       name: 'project$i',
                       index: DateTime.now().millisecondsSinceEpoch,
-                      position: Point(0, 0)));
+                      position: Point(0, 0));
+                  node.completed = i % 2 == 0;
+                  context.read<MyState>().addBacklog(node);
                 }
               },
               child: const Text("创建备忘录数据")),

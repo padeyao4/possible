@@ -7,6 +7,7 @@ class Node {
   List<Node> children = [];
   List<Node> pres = [];
   List<Node> nexts = [];
+  bool completed = false;
 
   Node(
       {required this.id,

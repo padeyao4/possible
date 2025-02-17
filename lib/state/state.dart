@@ -14,6 +14,11 @@ class MyState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateBacklogComplated(Node node) {
+    node.completed = !node.completed;
+    notifyListeners();
+  }
+
   void addBacklog(Node node) {
     backlogs.add(node);
     notifyListeners();
