@@ -31,42 +31,77 @@ class NavigatorWidget extends StatelessWidget {
 class NavBottom extends StatelessWidget {
   const NavBottom({super.key});
 
+  void showCreateDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('新建项目'),
+        content: TextField(
+          autofocus: true,
+          decoration: const InputDecoration(
+            labelText: '项目名称',
+            hintText: '请输入项目名称',
+          ),
+          onSubmitted: (value) {
+            if (value.isNotEmpty) {
+              context.read<MyState>().addProject(Node(
+                  id: value,
+                  name: value,
+                  index: DateTime.now().millisecondsSinceEpoch,
+                  position: Point(0, 0)));
+              Navigator.pop(context);
+            }
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('取消'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: const Icon(Icons.add),
-      title: const Text('新建项目'),
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('新建项目'),
-            content: TextField(
-              autofocus: true,
-              decoration: const InputDecoration(
-                labelText: '项目名称',
-                hintText: '请输入项目名称',
+    return SizedBox(
+      height: 48,
+      child: Row(
+        children: [
+          Expanded(
+            child: InkWell(
+              onTap: () => showCreateDialog(context),
+              child: Container(
+                height: 48,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: const [
+                    Icon(Icons.add),
+                    SizedBox(width: 8),
+                    Text(
+                      '新建项目',
+                    ),
+                  ],
+                ),
               ),
-              onSubmitted: (value) {
-                if (value.isNotEmpty) {
-                  context.read<MyState>().addProject(Node(
-                      id: value,
-                      name: value,
-                      index: DateTime.now().millisecondsSinceEpoch,
-                      position: Point(0, 0)));
-                  Navigator.pop(context);
-                }
-              },
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('取消'),
-              ),
-            ],
           ),
-        );
-      },
+          const VerticalDivider(
+            width: 1,
+            thickness: 0.5,
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.settings),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
