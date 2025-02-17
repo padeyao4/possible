@@ -7,10 +7,10 @@ class BackLogPage extends StatefulWidget {
   const BackLogPage({super.key});
 
   @override
-  State<BackLogPage> createState() => _BackLogPageState();
+  State<BackLogPage> createState() => BackLogPageState();
 }
 
-class _BackLogPageState extends State<BackLogPage> {
+class BackLogPageState extends State<BackLogPage> {
   var isExpend = false;
 
   void changeValue() {
@@ -51,9 +51,10 @@ class BottomInput extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
+        autofocus: true,
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
-          labelText: 'Add a new backlog item',
+          labelText: '添加待办事项',
         ),
         controller: textController,
         onSubmitted: (value) {
@@ -87,18 +88,29 @@ class BacklogCountButton extends StatelessWidget {
         .toList();
     return Visibility(
       visible: backlogs.isNotEmpty,
-      child: OutlinedButton(
-        onPressed: () {
-          changeValue();
-        },
-        child: Row(
-          children: [
-            isExpend
-                ? const Icon(Icons.arrow_drop_down)
-                : const Icon(Icons.arrow_drop_up),
-            Text('Backlog (${backlogs.length})'),
-          ],
-        ),
+      child: Row(
+        children: [
+          OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            onPressed: () {
+              changeValue();
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                isExpend
+                    ? const Icon(Icons.arrow_drop_down)
+                    : const Icon(Icons.arrow_right),
+                Text('已完成 ${backlogs.length}'),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
