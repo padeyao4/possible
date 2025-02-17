@@ -93,33 +93,38 @@ class BacklogCountButton extends StatelessWidget {
         .toList();
     return Visibility(
       visible: backlogs.isNotEmpty,
-      child: Row(
-        children: [
-          OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              side: const BorderSide(color: Colors.teal),
-            ),
-            onPressed: () {
-              changeValue();
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                isExpend
-                    ? const Icon(Icons.arrow_drop_down, color: Colors.teal)
-                    : const Icon(Icons.arrow_right, color: Colors.teal),
-                Text(
-                  '已完成 ${backlogs.length}',
-                  style: const TextStyle(color: Colors.teal),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Row(
+          children: [
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
-              ],
-            ),
-          )
-        ],
+                side: const BorderSide(color: Colors.grey),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0, vertical: 12.0),
+              ),
+              onPressed: () {
+                changeValue();
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  isExpend
+                      ? const Icon(Icons.arrow_drop_down, color: Colors.teal)
+                      : const Icon(Icons.arrow_right, color: Colors.teal),
+                  Text(
+                    '已完成 ${backlogs.length}',
+                    style: const TextStyle(color: Colors.teal),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -142,18 +147,7 @@ class BacklogItems extends StatelessWidget {
       child: ReorderableListView.builder(
         shrinkWrap: true, // 为了解决无限高度问题
         proxyDecorator: (child, index, animation) {
-          return AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              return Material(
-                elevation: 4.0,
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(8.0),
-                child: child,
-              );
-            },
-            child: child,
-          );
+          return child;
         },
         onReorder: (oldIndex, newIndex) {
           if (newIndex > oldIndex) {
@@ -164,15 +158,16 @@ class BacklogItems extends StatelessWidget {
         },
         itemCount: backlogs.length,
         itemBuilder: (context, index) {
-          return Card(
+          return Material(
             key: ValueKey(backlogs[index]),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            elevation: 2,
-            margin: const EdgeInsets.symmetric(vertical: 4.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
+            color: Colors.transparent,
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 2.0),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50, // 添加背景色
+                border: Border.all(color: Colors.grey.shade300),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
               child: ListTile(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
