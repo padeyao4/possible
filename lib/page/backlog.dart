@@ -22,23 +22,24 @@ class BackLogPageState extends State<BackLogPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              children: [
-                const BacklogItems(),
-                BacklogCountButton(isExpend, changeValue),
-                BacklogItems(completed: true, show: isExpend),
-              ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  const BacklogItems(),
+                  BacklogCountButton(isExpend, changeValue),
+                  BacklogItems(completed: true, show: isExpend),
+                ],
+              ),
             ),
-          ),
-          const BottomInput(),
-        ],
+            const BottomInput(),
+          ],
+        ),
       ),
-    ));
+    );
   }
 }
 
@@ -52,9 +53,13 @@ class BottomInput extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
         autofocus: true,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
           labelText: '添加待办事项',
+          filled: true,
+          fillColor: Colors.grey[200],
         ),
         controller: textController,
         onSubmitted: (value) {
@@ -95,6 +100,7 @@ class BacklogCountButton extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
               ),
+              side: const BorderSide(color: Colors.teal),
             ),
             onPressed: () {
               changeValue();
@@ -104,9 +110,12 @@ class BacklogCountButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 isExpend
-                    ? const Icon(Icons.arrow_drop_down)
-                    : const Icon(Icons.arrow_right),
-                Text('已完成 ${backlogs.length}'),
+                    ? const Icon(Icons.arrow_drop_down, color: Colors.teal)
+                    : const Icon(Icons.arrow_right, color: Colors.teal),
+                Text(
+                  '已完成 ${backlogs.length}',
+                  style: const TextStyle(color: Colors.teal),
+                ),
               ],
             ),
           )
@@ -141,23 +150,37 @@ class BacklogItems extends StatelessWidget {
         },
         itemCount: backlogs.length,
         itemBuilder: (context, index) {
-          return ListTile(
+          return Card(
             key: ValueKey(backlogs[index]),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0),
             ),
-            leading: IconButton(
-              icon: Icon(
-                backlogs[index].completed ? Icons.check_circle : Icons.circle,
+            elevation: 2,
+            margin: const EdgeInsets.symmetric(vertical: 4.0),
+            child: ListTile(
+              leading: IconButton(
+                icon: Icon(
+                  backlogs[index].completed ? Icons.check_circle : Icons.circle,
+                  color: backlogs[index].completed ? Colors.green : Colors.grey,
+                ),
+                onPressed: () {
+                  context
+                      .read<MyState>()
+                      .updateBacklogComplated(backlogs[index]);
+                },
               ),
-              onPressed: () {
-                context.read<MyState>().updateBacklogComplated(backlogs[index]);
+              title: Text(
+                backlogs[index].name,
+                style: TextStyle(
+                  decoration: backlogs[index].completed
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none,
+                ),
+              ),
+              onTap: () {
+                print('Item $index');
               },
             ),
-            title: Text(backlogs[index].name),
-            onTap: () {
-              print('Item $index');
-            },
           );
         },
       ),
