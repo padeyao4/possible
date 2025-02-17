@@ -21,24 +21,20 @@ class BackLogPageState extends State<BackLogPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                children: [
-                  const BacklogItems(),
-                  BacklogCountButton(isExpend, changeValue),
-                  BacklogItems(completed: true, show: isExpend),
-                ],
-              ),
-            ),
-            const BottomInput(),
-          ],
+    return Column(
+      children: [
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8),
+            children: [
+              const BacklogItems(),
+              BacklogCountButton(isExpend, changeValue),
+              BacklogItems(completed: true, show: isExpend),
+            ],
+          ),
         ),
-      ),
+        const BottomInput(),
+      ],
     );
   }
 }
@@ -50,7 +46,7 @@ class BottomInput extends StatelessWidget {
   Widget build(BuildContext context) {
     var textController = TextEditingController();
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
       child: TextField(
         autofocus: true,
         decoration: InputDecoration(

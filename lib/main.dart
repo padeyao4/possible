@@ -118,7 +118,7 @@ class ContentWidget extends StatelessWidget {
 
     return Scaffold(
       body: Container(
-        margin: const EdgeInsets.all(16),
+        margin: const EdgeInsets.all(0),
         child: getWidget(page),
       ),
       appBar: showTitle
