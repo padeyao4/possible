@@ -67,6 +67,10 @@ class MainPage extends StatelessWidget {
                 elevation: 4,
                 child: NavigatorWidget(),
               ),
+              Divider(
+                indent: 1,
+                thickness: 1,
+              ),
               Expanded(
                 child: ContentWidget(),
               ),

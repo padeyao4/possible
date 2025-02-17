@@ -15,9 +15,13 @@ class NavigatorWidget extends StatelessWidget {
         NavHeaderList(),
         Divider(
           height: 1,
-          thickness: 1,
+          thickness: 0.5,
         ),
         NavBodyList(),
+        Divider(
+          height: 1,
+          thickness: 0.5,
+        ),
         NavBottom(),
       ]),
     );
@@ -99,7 +103,42 @@ class _NavBodyListState extends State<NavBodyList> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               proxyDecorator: (child, index, animation) {
-                return child;
+                return Padding(
+                  padding: EdgeInsets.fromLTRB(8, 4, 8, 0),
+                  child: Material(
+                    key: ValueKey(projects[index].id),
+                    color: Color.from(
+                        alpha: 0.05, red: 239, green: 245, blue: 246),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: BorderSide(
+                        color: Colors.grey.shade300,
+                        width: 1,
+                      ),
+                    ),
+                    child: ListTile(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      title: Padding(
+                        padding: const EdgeInsets.only(
+                            right: 8.0), // Adjusted padding
+                        child: Text(
+                          projects[index].name,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      trailing: ReorderableDragStartListener(
+                        index: index,
+                        child: Icon(
+                          Icons.drag_indicator,
+                          size: 20,
+                          color: Colors.grey.shade400,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
               },
               buildDefaultDragHandles: false,
               itemBuilder: (context, index) {
@@ -109,7 +148,7 @@ class _NavBodyListState extends State<NavBodyList> {
                   padding: EdgeInsets.fromLTRB(8, 4, 8, 0),
                   child: Material(
                     key: ValueKey(project.id),
-                    color: Colors.white,
+                    color: Colors.transparent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -126,19 +165,13 @@ class _NavBodyListState extends State<NavBodyList> {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // 自定义拖拽图标
-                          ReorderableDragStartListener(
-                            index: index,
-                            child: Icon(
-                              Icons.drag_indicator,
-                              size: 20,
-                              color: Colors.grey.shade400,
-                            ),
-                          ),
-                        ],
+                      trailing: ReorderableDragStartListener(
+                        index: index,
+                        child: Icon(
+                          Icons.drag_indicator,
+                          size: 20,
+                          color: Colors.grey.shade400,
+                        ),
                       ),
                       onTap: () {
                         context.read<MyState>().setProjectPage(project);
