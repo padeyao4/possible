@@ -45,7 +45,7 @@ class BackLogPageState extends State<BackLogPage> {
               child: ListView(
                 controller: _controller,
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 32.0, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
                 children: [
                   const BacklogItems(),
                   BacklogCountButton(isExpend, changeValue),
@@ -68,7 +68,7 @@ class BottomInput extends StatelessWidget {
   Widget build(BuildContext context) {
     var textController = TextEditingController();
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
+      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
       child: TextField(
         autofocus: true,
         decoration: InputDecoration(
@@ -123,7 +123,7 @@ class BacklogCountButton extends StatelessWidget {
                 ),
                 side: const BorderSide(color: Colors.grey),
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0, vertical: 12.0),
+                    horizontal: 12.0, vertical: 12.0),
               ),
               onPressed: () {
                 changeValue();

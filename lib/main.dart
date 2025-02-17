@@ -81,7 +81,6 @@ class MainPage extends StatelessWidget {
           body: const ContentWidget(showTitle: false),
           appBar: AppBar(
             title: Text(title),
-            centerTitle: true,
             elevation: 2,
           ),
           drawer: const Drawer(
@@ -128,8 +127,7 @@ class ContentWidget extends StatelessWidget {
       appBar: showTitle
           ? AppBar(
               title: Text(title),
-              centerTitle: true,
-              elevation: 2,
+              elevation: 1,
             )
           : null,
     );
