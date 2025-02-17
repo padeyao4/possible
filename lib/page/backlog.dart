@@ -183,12 +183,16 @@ class BacklogItems extends StatelessWidget {
                         .updateBacklogComplated(backlogs[index]);
                   },
                 ),
-                title: Text(
-                  backlogs[index].name,
-                  style: TextStyle(
-                    decoration: backlogs[index].completed
-                        ? TextDecoration.lineThrough
-                        : TextDecoration.none,
+                title: Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: Text(
+                    backlogs[index].name,
+                    style: TextStyle(
+                      decoration: backlogs[index].completed
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 onTap: () {
