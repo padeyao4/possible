@@ -55,11 +55,11 @@ class MainPage extends StatelessWidget {
 
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 800) {
-        return const Scaffold(
+        return Scaffold(
           backgroundColor: Colors.white,
           body: Row(
             children: [
-              Card(
+              const Card(
                 margin: EdgeInsets.zero,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.zero,
@@ -68,12 +68,10 @@ class MainPage extends StatelessWidget {
                 child: NavigatorWidget(),
               ),
               Divider(
+                color: Colors.grey[300],
                 indent: 1,
-                thickness: 1,
               ),
-              Expanded(
-                child: ContentWidget(),
-              ),
+              Expanded(child: ContentWidget()),
             ],
           ),
         );

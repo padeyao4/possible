@@ -18,6 +18,7 @@ class NavigatorWidget extends StatelessWidget {
           thickness: 0.5,
         ),
         NavBodyList(),
+        SizedBox(height: 4),
         Divider(
           height: 1,
           thickness: 0.5,
@@ -35,6 +36,9 @@ class NavBottom extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
         title: const Text('新建项目'),
         content: TextField(
           autofocus: true,
