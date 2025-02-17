@@ -87,43 +87,80 @@ class _NavBodyListState extends State<NavBodyList> {
   Widget build(BuildContext context) {
     var projects = context.watch<MyState>().projects;
     return Expanded(
-      child: Scrollbar(
-        thickness: 3,
-        child: ScrollConfiguration(
-          behavior: ScrollBehavior().copyWith(scrollbars: false),
-          child: ReorderableListView.builder(
-            itemBuilder: (context, index) {
-              var project = projects[index];
-              return Padding(
-                key: ValueKey(project.id),
-                padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-                child: ListTile(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+        child: Scrollbar(
+      controller: _scrollController,
+      thickness: 3,
+      child: ScrollConfiguration(
+        behavior: ScrollBehavior().copyWith(scrollbars: false),
+        child: ListView(
+          controller: _scrollController,
+          children: [
+            ReorderableListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              proxyDecorator: (child, index, animation) {
+                return child;
+              },
+              buildDefaultDragHandles: false,
+              itemBuilder: (context, index) {
+                var project = projects[index];
+                return Padding(
                   key: ValueKey(project.id),
-                  title: Text(
-                    project.name,
+                  padding: EdgeInsets.fromLTRB(8, 4, 8, 0),
+                  child: Material(
+                    key: ValueKey(project.id),
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: ListTile(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      key: ValueKey(project.id),
+                      title: Padding(
+                        padding: const EdgeInsets.only(
+                            right: 8.0), // Adjusted padding
+                        child: Text(
+                          projects[index].name,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // 自定义拖拽图标
+                          ReorderableDragStartListener(
+                            index: index,
+                            child: Icon(
+                              Icons.drag_indicator,
+                              size: 20,
+                              color: Colors.grey.shade400,
+                            ),
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        context.read<MyState>().setProjectPage(project);
+                        Scaffold.of(context).closeDrawer();
+                      },
+                    ),
                   ),
-                  onTap: () {
-                    context.read<MyState>().setProjectPage(project);
-                    Scaffold.of(context).closeDrawer();
-                  },
-                ),
-              );
-            },
-            itemCount: projects.length,
-            onReorder: (oldIndex, newIndex) {
-              if (newIndex > oldIndex) {
-                newIndex -= 1;
-              }
-              final Node item = projects.removeAt(oldIndex);
-              projects.insert(newIndex, item);
-            },
-          ),
+                );
+              },
+              itemCount: projects.length,
+              onReorder: (oldIndex, newIndex) {
+                if (newIndex > oldIndex) {
+                  newIndex -= 1;
+                }
+                final Node item = projects.removeAt(oldIndex);
+                projects.insert(newIndex, item);
+              },
+            )
+          ],
         ),
       ),
-    );
+    ));
   }
 }
 

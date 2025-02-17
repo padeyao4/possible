@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
-          colorSchemeSeed: Colors.blue,
+          colorSchemeSeed: Colors.white,
           brightness: Brightness.light,
         ),
         home: const MainPage(),
@@ -56,6 +56,7 @@ class MainPage extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 800) {
         return const Scaffold(
+          backgroundColor: Colors.white,
           body: Row(
             children: [
               Card(
@@ -74,6 +75,7 @@ class MainPage extends StatelessWidget {
         );
       } else {
         return Scaffold(
+          backgroundColor: Colors.white,
           body: const ContentWidget(showTitle: false),
           appBar: AppBar(
             title: Text(title),
