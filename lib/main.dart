@@ -23,10 +23,14 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          useMaterial3: true,
-          colorSchemeSeed: Colors.white,
-          brightness: Brightness.light,
-        ),
+            useMaterial3: true,
+            colorSchemeSeed: Colors.white,
+            brightness: Brightness.light,
+            cardColor: Colors.white,
+            canvasColor: Colors.white,
+            dividerColor: Colors.grey.shade300,
+            drawerTheme: DrawerThemeData(backgroundColor: Colors.white),
+            scaffoldBackgroundColor: Colors.white),
         home: const MainPage(),
       ),
     );
@@ -59,7 +63,6 @@ class MainPage extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 800) {
         return Scaffold(
-          backgroundColor: Colors.white,
           body: Row(
             children: [
               const Card(
@@ -71,7 +74,6 @@ class MainPage extends StatelessWidget {
                 child: NavigatorWidget(),
               ),
               Divider(
-                color: Colors.grey[300],
                 indent: 1,
               ),
               Expanded(child: ContentWidget()),
@@ -80,7 +82,6 @@ class MainPage extends StatelessWidget {
         );
       } else {
         return Scaffold(
-          backgroundColor: Colors.white,
           body: const ContentWidget(showTitle: false),
           appBar: AppBar(
             title: Text(title),

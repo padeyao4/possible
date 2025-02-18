@@ -55,14 +55,7 @@ class GraphWidget extends StatelessWidget {
                 },
                 child: CustomPaint(
                     painter: GridPainter(position: project.position),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.black,
-                          width: 1,
-                        ),
-                      ),
-                    )),
+                    child: Container()),
               )),
             ],
           ),
