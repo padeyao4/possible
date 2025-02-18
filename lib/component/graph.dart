@@ -25,8 +25,9 @@ class GraphWidgetState extends State<GraphWidget> {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Colors.amber,
+                  color: Colors.transparent,
                 ),
+                child: Icon(Icons.lock),
               ),
               Expanded(
                   child: Container(
@@ -34,6 +35,7 @@ class GraphWidgetState extends State<GraphWidget> {
                 decoration: BoxDecoration(
                   color: Colors.blue,
                 ),
+                child: Row(),
               ))
             ],
           ),
