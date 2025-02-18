@@ -218,7 +218,7 @@ class BacklogItems extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  print('Item $index');
+                  debugPrint('Tapped on: ${backlogs[index].name}');
                 },
               ),
             ),
