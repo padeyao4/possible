@@ -53,4 +53,8 @@ class MyState extends ChangeNotifier {
     current = node;
     notifyListeners();
   }
+
+  void notify() {
+    notifyListeners();
+  }
 }

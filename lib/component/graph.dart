@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:possible/model/node.dart';
+import 'package:possible/state/state.dart';
+import 'package:provider/provider.dart';
 
 class GraphWidget extends StatelessWidget {
   final Node project;
@@ -53,7 +55,8 @@ class GraphWidget extends StatelessWidget {
                 Expanded(
                     child: GestureDetector(
                   onPanUpdate: (details) {
-                    // todo
+                    project.position += details.delta;
+                    context.read<MyState>().notify();
                   },
                   child: CustomPaint(
                       painter: GridPainter(position: project.position),
