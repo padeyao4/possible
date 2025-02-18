@@ -50,10 +50,10 @@ class NavBottom extends StatelessWidget {
           onSubmitted: (value) {
             if (value.isNotEmpty) {
               context.read<MyState>().addProject(Node(
-                  id: value,
-                  name: value,
-                  index: DateTime.now().millisecondsSinceEpoch,
-                  position: Point(0, 0)));
+                    id: value,
+                    name: value,
+                    index: DateTime.now().millisecondsSinceEpoch,
+                  ));
               Navigator.pop(context);
             }
           },

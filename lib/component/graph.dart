@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:possible/model/node.dart';
 
-class GraphWidget extends StatefulWidget {
-  const GraphWidget({super.key});
+class GraphWidget extends StatelessWidget {
+  final Node project;
 
-  @override
-  GraphWidgetState createState() => GraphWidgetState();
-}
-
-class GraphWidgetState extends State<GraphWidget> {
-  Offset position = const Offset(0, 0);
+  const GraphWidget({
+    super.key,
+    required this.project,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +36,7 @@ class GraphWidgetState extends State<GraphWidget> {
                 decoration: BoxDecoration(
                   color: Colors.blue,
                 ),
-                child: GraphHeader(position: position),
+                child: GraphHeader(position: project.position),
               ))
             ],
           ),
@@ -49,17 +48,15 @@ class GraphWidgetState extends State<GraphWidget> {
                   decoration: BoxDecoration(
                     color: Colors.brown,
                   ),
-                  child: GraphRuler(position: position),
+                  child: GraphRuler(position: project.position),
                 ),
                 Expanded(
                     child: GestureDetector(
                   onPanUpdate: (details) {
-                    setState(() {
-                      position += details.delta;
-                    });
+                    // todo
                   },
                   child: CustomPaint(
-                      painter: GridPainter(position: position),
+                      painter: GridPainter(position: project.position),
                       child: Container(
                         decoration: BoxDecoration(
                           border: Border.all(

@@ -83,10 +83,10 @@ class BottomInput extends StatelessWidget {
         onSubmitted: (value) {
           if (value.isNotEmpty) {
             var node = Node(
-                id: value,
-                name: value,
-                index: DateTime.now().millisecondsSinceEpoch,
-                position: Point(0, 0));
+              id: value,
+              name: value,
+              index: DateTime.now().millisecondsSinceEpoch,
+            );
             context.read<MyState>().addBacklog(node);
             textController.clear();
           }

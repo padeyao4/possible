@@ -11,7 +11,7 @@ class ProjectPage extends StatelessWidget {
     var node = context.watch<MyState>().current;
     return Scaffold(
       body: node != null
-          ? const GraphWidget()
+          ? GraphWidget(project: node)
           : const Center(child: Text('empty')),
     );
   }
