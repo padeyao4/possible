@@ -288,6 +288,18 @@ class NavHeaderList extends StatelessWidget {
               Scaffold.of(context).closeDrawer();
             },
           ),
+          SizedBox(height: 4),
+          ListTile(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            leading: const Icon(Icons.surfing),
+            title: const Text('例子'),
+            onTap: () {
+              context.read<MyState>().changePage(MyPage.demo);
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
         ],
       ),
     );

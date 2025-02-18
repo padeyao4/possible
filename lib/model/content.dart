@@ -1,6 +1,1 @@
-enum MyPage {
-  home,
-  backLog,
-  project,
-  test,
-}
+enum MyPage { home, backLog, project, test, demo }

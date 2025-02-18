@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:possible/component/navigator.dart';
 import 'package:possible/model/content.dart';
 import 'package:possible/page/backlog.dart';
+import 'package:possible/page/demo.dart';
 import 'package:possible/page/home.dart';
 import 'package:possible/page/project.dart';
 import 'package:possible/page/test.dart';
@@ -42,6 +43,8 @@ String getTitle(MyPage page, BuildContext context) {
       return '测试';
     case MyPage.project:
       return context.watch<MyState>().current?.name ?? 'empty';
+    case MyPage.demo:
+      return '例子';
   }
 }
 
@@ -111,6 +114,8 @@ class ContentWidget extends StatelessWidget {
         return const TestPage();
       case MyPage.project:
         return const ProjectPage();
+      case MyPage.demo:
+        return const Demo();
     }
   }
 

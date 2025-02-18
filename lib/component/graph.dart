@@ -8,6 +8,8 @@ class GraphWidget extends StatefulWidget {
 }
 
 class GraphWidgetState extends State<GraphWidget> {
+  Offset position = const Offset(0, 0);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -49,11 +51,23 @@ class GraphWidgetState extends State<GraphWidget> {
                   ),
                 ),
                 Expanded(
-                    child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.cyan,
-                  ),
-                ))
+                    child: GestureDetector(
+                  onPanUpdate: (details) {
+                    setState(() {
+                      position += details.delta;
+                    });
+                  },
+                  child: CustomPaint(
+                      painter: GridPainter(position: position),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 1,
+                          ),
+                        ),
+                      )),
+                )),
               ],
             ),
           ),
@@ -69,47 +83,37 @@ class GraphWidgetState extends State<GraphWidget> {
   }
 }
 
-class Demo extends StatelessWidget {
-  const Demo({super.key});
+class GridPainter extends CustomPainter {
+  Offset position;
+
+  GridPainter({required this.position});
 
   @override
-  Widget build(BuildContext context) {
-    Offset position = const Offset(100, 100);
-    return Scaffold(
-      body: Stack(
-        children: [
-          Positioned(
-            left: position.dx,
-            top: position.dy,
-            child: GestureDetector(
-              onPanUpdate: (details) {},
-              child: Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withAlpha(64),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: Text(
-                    '拖拽我',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.black.withAlpha(64)
+      ..style = PaintingStyle.stroke
+      ..isAntiAlias = false
+      ..strokeWidth = 1.0;
+
+    const double xStep = 120.0;
+    const double yStep = 80;
+
+    for (double x = 0; x < size.width; x += xStep) {
+      canvas.drawLine(
+          Offset((x + position.dx % xStep).roundToDouble(), 0),
+          Offset((x + position.dx % xStep).roundToDouble(), size.height),
+          paint);
+    }
+
+    for (double y = 0; y < size.height; y += yStep) {
+      canvas.drawLine(Offset(0, (y + position.dy % yStep).roundToDouble()),
+          Offset(size.width, (y + position.dy % yStep).roundToDouble()), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }
