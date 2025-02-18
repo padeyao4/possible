@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:possible/model/content.dart';
 import 'package:possible/model/node.dart';
 import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
@@ -13,73 +15,77 @@ class GraphWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.black,
-          width: 1,
+    return Column(
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+              ),
+              child: Icon(Icons.lock),
+            ),
+            Expanded(
+                child: Container(
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: GraphHeader(position: project.position),
+            ))
+          ],
         ),
-      ),
-      child: Column(
-        children: [
-          Row(
+        Expanded(
+          child: Row(
             children: [
               Container(
                 width: 40,
-                height: 40,
                 decoration: BoxDecoration(
-                  color: Colors.transparent,
+                  color: Colors.brown,
                 ),
-                child: Icon(Icons.lock),
+                child: GraphRuler(position: project.position),
               ),
               Expanded(
-                  child: Container(
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: GraphHeader(position: project.position),
-              ))
+                  child: GestureDetector(
+                onPanUpdate: (details) {
+                  project.position += details.delta;
+                  context.read<MyState>().notify();
+                },
+                child: CustomPaint(
+                    painter: GridPainter(position: project.position),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 1,
+                        ),
+                      ),
+                    )),
+              )),
             ],
           ),
-          Expanded(
-            child: Row(
-              children: [
-                Container(
-                  width: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.brown,
-                  ),
-                  child: GraphRuler(position: project.position),
-                ),
-                Expanded(
-                    child: GestureDetector(
-                  onPanUpdate: (details) {
-                    project.position += details.delta;
+        ),
+        Container(
+          height: 48,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(top: BorderSide(color: Colors.grey.shade300))),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                  style: ButtonStyle(),
+                  onPressed: () {
+                    project.position = Offset.zero;
                     context.read<MyState>().notify();
                   },
-                  child: CustomPaint(
-                      painter: GridPainter(position: project.position),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 1,
-                          ),
-                        ),
-                      )),
-                )),
-              ],
-            ),
+                  icon: Iconify(MyIcons.home))
+            ],
           ),
-          Container(
-            height: 48,
-            decoration: BoxDecoration(
-              color: Colors.deepPurple,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
