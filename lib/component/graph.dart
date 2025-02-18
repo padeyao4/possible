@@ -8,10 +8,71 @@ class GraphWidget extends StatefulWidget {
 }
 
 class GraphWidgetState extends State<GraphWidget> {
-  Offset position = const Offset(100, 100);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.black,
+          width: 1,
+        ),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.amber,
+                ),
+              ),
+              Expanded(
+                  child: Container(
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                ),
+              ))
+            ],
+          ),
+          Expanded(
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.brown,
+                  ),
+                ),
+                Expanded(
+                    child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.cyan,
+                  ),
+                ))
+              ],
+            ),
+          ),
+          Container(
+            height: 48,
+            decoration: BoxDecoration(
+              color: Colors.deepPurple,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Demo extends StatelessWidget {
+  const Demo({super.key});
 
   @override
   Widget build(BuildContext context) {
+    Offset position = const Offset(100, 100);
     return Scaffold(
       body: Stack(
         children: [
@@ -19,14 +80,7 @@ class GraphWidgetState extends State<GraphWidget> {
             left: position.dx,
             top: position.dy,
             child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  position = Offset(
-                    position.dx + details.delta.dx,
-                    position.dy + details.delta.dy,
-                  );
-                });
-              },
+              onPanUpdate: (details) {},
               child: Container(
                 width: 100,
                 height: 100,
