@@ -99,7 +99,9 @@ class GraphHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final itemCount = (constraints.maxWidth / 120).ceil() + 2;
-      var delta = (position.dx / 120).toInt();
+      var realValue = position.dx / 120;
+      var delta = realValue.toInt();
+      delta = (realValue < 0 ? delta - 1 : delta);
       return Stack(
         children: [
           Positioned(
@@ -138,7 +140,9 @@ class GraphRuler extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final itemCount = (constraints.maxHeight / 80).ceil() + 2;
-      var delta = (position.dy / 80).toInt();
+      var realValue = position.dy / 80;
+      var delta = realValue.toInt();
+      delta = (realValue < 0 ? delta - 1 : delta);
       return Stack(
         children: [
           Positioned(
