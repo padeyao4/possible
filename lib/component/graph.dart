@@ -37,7 +37,7 @@ class GraphWidgetState extends State<GraphWidget> {
                 decoration: BoxDecoration(
                   color: Colors.blue,
                 ),
-                child: Row(),
+                child: GraphHeader(position: position),
               ))
             ],
           ),
@@ -49,6 +49,7 @@ class GraphWidgetState extends State<GraphWidget> {
                   decoration: BoxDecoration(
                     color: Colors.brown,
                   ),
+                  child: GraphRuler(position: position),
                 ),
                 Expanded(
                     child: GestureDetector(
@@ -80,6 +81,73 @@ class GraphWidgetState extends State<GraphWidget> {
         ],
       ),
     );
+  }
+}
+
+class GraphHeader extends StatelessWidget {
+  final Offset position;
+
+  const GraphHeader({super.key, required this.position});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, constraints) {
+      final itemCount = (constraints.maxWidth / 120).ceil() + 1;
+      return Stack(
+        children: [
+          Positioned(
+            left: (position.dx % 120).roundToDouble(),
+            child: Row(
+              children: List.generate(
+                itemCount,
+                (index) => Container(
+                  width: 120,
+                  height: 40,
+                  alignment: Alignment.center,
+                  child: Text(
+                    index.toString(),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      );
+    });
+  }
+}
+
+class GraphRuler extends StatelessWidget {
+  final Offset position;
+  const GraphRuler({super.key, required this.position});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(builder: (context, constraints) {
+      final itemCount = (constraints.maxHeight / 80).ceil() + 1;
+      return Stack(
+        children: [
+          Positioned(
+            top: (position.dy % 80).roundToDouble(),
+            child: Column(
+              children: List.generate(
+                itemCount,
+                (index) => Container(
+                  width: 40,
+                  height: 80,
+                  alignment: Alignment.center,
+                  child: Text(
+                    index.toString(),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      );
+    });
   }
 }
 
