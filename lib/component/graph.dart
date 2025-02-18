@@ -92,23 +92,29 @@ class GraphHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      final itemCount = (constraints.maxWidth / 120).ceil() + 1;
+      final itemCount = (constraints.maxWidth / 120).ceil() + 2;
+      var delta = (position.dx / 120).toInt();
       return Stack(
         children: [
           Positioned(
-            left: (position.dx % 120).roundToDouble(),
+            left: (position.dx % 120).roundToDouble() - 120,
             child: Row(
               children: List.generate(
                 itemCount,
-                (index) => Container(
-                  width: 120,
-                  height: 40,
-                  alignment: Alignment.center,
-                  child: Text(
-                    index.toString(),
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ),
+                (index) {
+                  return Container(
+                    decoration: BoxDecoration(
+                        border:
+                            Border(right: BorderSide(color: Colors.black12))),
+                    width: 120,
+                    height: 40,
+                    alignment: Alignment.center,
+                    child: Text(
+                      (index - delta).toString(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  );
+                },
               ),
             ),
           )
@@ -125,11 +131,12 @@ class GraphRuler extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      final itemCount = (constraints.maxHeight / 80).ceil() + 1;
+      final itemCount = (constraints.maxHeight / 80).ceil() + 2;
+      var delta = (position.dy / 80).toInt();
       return Stack(
         children: [
           Positioned(
-            top: (position.dy % 80).roundToDouble(),
+            top: (position.dy % 80).roundToDouble() - 80,
             child: Column(
               children: List.generate(
                 itemCount,
@@ -138,7 +145,7 @@ class GraphRuler extends StatelessWidget {
                   height: 80,
                   alignment: Alignment.center,
                   child: Text(
-                    index.toString(),
+                    (index - delta).toString(),
                     style: const TextStyle(color: Colors.white),
                   ),
                 ),
