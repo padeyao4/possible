@@ -40,3 +40,4 @@ app.*.map.json
 # Android Studio will place build artifacts here
 /node_modules
 .vscode
+android/app/.cxx/Debug
