@@ -175,8 +175,10 @@ class BacklogItems extends StatelessWidget {
         itemCount: backlogs.length,
         itemBuilder: (context, index) {
           return Material(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
             key: ValueKey(backlogs[index]),
-            color: Colors.transparent,
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 2.0),
               decoration: BoxDecoration(
@@ -190,8 +192,8 @@ class BacklogItems extends StatelessWidget {
                 leading: IconButton(
                   icon: Icon(
                     backlogs[index].completed
-                        ? Icons.check_circle
-                        : Icons.circle,
+                        ? Icons.check_circle_outline
+                        : Icons.circle_outlined,
                   ),
                   onPressed: () {
                     context
