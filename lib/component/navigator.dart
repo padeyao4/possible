@@ -128,14 +128,14 @@ class BodyListState extends State<NavBodyList> {
   Widget build(BuildContext context) {
     var projects = context.watch<MyState>().projects;
     return Expanded(
-        child: Scrollbar(
-      controller: _scrollController,
-      thickness: 3,
-      child: ScrollConfiguration(
+      child: Scrollbar(
+        controller: _scrollController,
+        thickness: 3,
+        child: ScrollConfiguration(
           behavior: ScrollBehavior().copyWith(scrollbars: false),
           child: ReorderableListView.builder(
             shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+            scrollController: _scrollController,
             proxyDecorator: (child, index, animation) {
               return Padding(
                 padding: EdgeInsets.fromLTRB(8, 4, 8, 0),
@@ -202,34 +202,8 @@ class BodyListState extends State<NavBodyList> {
               final Node item = projects.removeAt(oldIndex);
               projects.insert(newIndex, item);
             },
-          )),
-    ));
-  }
-}
-
-class ProjectItem extends StatelessWidget {
-  const ProjectItem({
-    super.key,
-    required this.projects,
-    required this.index,
-  });
-
-  final List<Node> projects;
-  final int index;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(8, 4, 8, 0),
-      child: ListTile(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          ),
         ),
-        title: Text(projects[index].name),
-        onTap: () {
-          context.read<MyState>().setProjectPage(projects[index]);
-          Scaffold.of(context).closeDrawer();
-        },
       ),
     );
   }
