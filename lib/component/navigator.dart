@@ -16,12 +16,13 @@ class NavigatorWidget extends StatelessWidget {
         Divider(
           height: 1,
           thickness: 0.5,
+          color: Theme.of(context).dividerColor,
         ),
         NavBodyList(),
-        SizedBox(height: 4),
         Divider(
           height: 1,
           thickness: 0.5,
+          color: Theme.of(context).dividerColor,
         ),
         NavBottom(),
       ]),

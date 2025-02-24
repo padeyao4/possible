@@ -23,37 +23,33 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-            useMaterial3: true,
-            colorSchemeSeed: Colors.white,
-            brightness: Brightness.light,
-            cardColor: Colors.white,
-            canvasColor: Colors.white,
-            dividerColor: Colors.grey.shade300,
-            drawerTheme: DrawerThemeData(backgroundColor: Colors.white),
-            scaffoldBackgroundColor: Colors.white),
-        home: const MainPage(),
+          useMaterial3: true,
+          colorScheme: ColorScheme.light(),
+          dividerColor: Colors.grey.shade300,
+        ),
+        home: const LayoutWidget(),
       ),
     );
   }
 }
 
-String getTitle(MyPage page, BuildContext context) {
-  switch (page) {
-    case MyPage.home:
-      return '我的一天';
-    case MyPage.backLog:
-      return '备忘录';
-    case MyPage.test:
-      return '测试';
-    case MyPage.project:
-      return context.watch<MyState>().current?.name ?? 'empty';
-    case MyPage.demo:
-      return '例子';
-  }
-}
+class LayoutWidget extends StatelessWidget {
+  const LayoutWidget({super.key});
 
-class MainPage extends StatelessWidget {
-  const MainPage({super.key});
+  String getTitle(MyPage page, BuildContext context) {
+    switch (page) {
+      case MyPage.home:
+        return '我的一天';
+      case MyPage.backLog:
+        return '备忘录';
+      case MyPage.test:
+        return '测试';
+      case MyPage.project:
+        return context.watch<MyState>().current?.name ?? 'empty';
+      case MyPage.demo:
+        return '例子';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,56 +57,70 @@ class MainPage extends StatelessWidget {
     var title = getTitle(page, context);
 
     return LayoutBuilder(builder: (context, constraints) {
-      if (constraints.maxWidth > 800) {
-        return Scaffold(
-          body: Row(
-            children: [
-              const Card(
-                margin: EdgeInsets.zero,
+      var isPhone = constraints.maxWidth < 800;
+
+      return Scaffold(
+        body: isPhone
+            ? Scaffold(
+                drawer: const Drawer(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero,
+                  ),
+                  child: NavigatorWidget(),
+                ),
+                body: Scaffold(
+                  body: ContentWidget(),
+                ),
+              )
+            : Row(
+                children: [
+                  const Card(
+                    margin: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    elevation: 0,
+                    child: SizedBox(width: 240, child: NavigatorWidget()),
+                  ),
+                  VerticalDivider(
+                    width: 1,
+                    thickness: 0.5,
+                    color: Theme.of(context).dividerColor,
+                  ),
+                  Expanded(
+                      child: Scaffold(
+                    body: ContentWidget(),
+                    appBar: AppBar(
+                      title: Text(title),
+                      elevation: 0,
+                    ),
+                  )),
+                ],
+              ),
+        appBar: isPhone
+            ? AppBar(
+                title: Center(child: Text(title)),
+                elevation: 0,
+              )
+            : null,
+        drawer: isPhone
+            ? const Drawer(
+                elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.zero,
                 ),
-                elevation: 4,
-                child: SizedBox(width: 240, child: NavigatorWidget()),
-              ),
-              Divider(
-                indent: 1,
-              ),
-              Expanded(child: ContentWidget()),
-            ],
-          ),
-        );
-      } else {
-        // 侧边栏抽屉,在手机上显示
-        return Scaffold(
-          body: const ContentWidget(showTitle: false),
-          appBar: AppBar(
-            title: Center(child: Text(title)),
-
-            /// The elevation of the widget.
-            ///
-            /// This property controls the size of the shadow below the widget.
-            /// A higher value will result in a more pronounced shadow.
-            elevation: 0,
-          ),
-          drawer: const Drawer(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.zero,
-            ),
-            child: NavigatorWidget(),
-          ),
-          drawerEnableOpenDragGesture: true,
-        );
-      }
+                child: NavigatorWidget(),
+              )
+            : null,
+        drawerEnableOpenDragGesture: isPhone,
+      );
     });
   }
 }
 
 class ContentWidget extends StatelessWidget {
-  final bool showTitle;
-
-  const ContentWidget({super.key, this.showTitle = true});
+  const ContentWidget({super.key});
 
   Widget getWidget(MyPage page) {
     switch (page) {
@@ -130,19 +140,6 @@ class ContentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var page = context.watch<MyState>().page;
-    var title = getTitle(page, context);
-
-    return Scaffold(
-      body: Container(
-        margin: const EdgeInsets.all(0),
-        child: getWidget(page),
-      ),
-      appBar: showTitle
-          ? AppBar(
-              title: Text(title),
-              elevation: 1,
-            )
-          : null,
-    );
+    return getWidget(page);
   }
 }
