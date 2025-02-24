@@ -132,37 +132,77 @@ class BodyListState extends State<NavBodyList> {
       controller: _scrollController,
       thickness: 3,
       child: ScrollConfiguration(
-        behavior: ScrollBehavior().copyWith(scrollbars: false),
-        child: ListView.builder(
-          itemCount: projects.length,
-          itemBuilder: (context, index) {
-            return LongPressDraggable(
-                key: ValueKey(projects[index].id),
-                feedback: Material(
-                  child: Text("data"),
+          behavior: ScrollBehavior().copyWith(scrollbars: false),
+          child: ReorderableListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            proxyDecorator: (child, index, animation) {
+              return Padding(
+                padding: EdgeInsets.fromLTRB(8, 4, 8, 0),
+                child: Material(
+                  key: ValueKey(projects[index].id),
+                  color:
+                      Color.from(alpha: 0.05, red: 239, green: 245, blue: 246),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: BorderSide(
+                      color: Colors.grey.shade300,
+                      width: 1,
+                    ),
+                  ),
+                  child: ListTile(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      title: Padding(
+                        padding: const EdgeInsets.only(
+                            right: 8.0), // Adjusted padding
+                        child: Text(
+                          projects[index].name,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )),
                 ),
-                onDragStarted: () {
-                  debugPrint("onDragStarted");
-                },
-                onDragEnd: (details) {
-                  debugPrint("onDragEnd");
-                },
-                child: DragTarget<int>(
-                  builder: (context, incoming, rejected) {
-                    return ProjectItem(
-                      key: ValueKey(projects[index].id),
-                      projects: projects,
-                      index: index,
-                    );
-                  },
-                  onAcceptWithDetails: (details) {
-                    debugPrint("onAcceptWithDetails: $details");
-                  },
-                ));
-          },
-          controller: _scrollController,
-        ),
-      ),
+              );
+            },
+            buildDefaultDragHandles: false,
+            itemBuilder: (context, index) {
+              var project = projects[index];
+              return Padding(
+                key: ValueKey(project.id),
+                padding: EdgeInsets.fromLTRB(8, 4, 8, 0),
+                child: ReorderableDragStartListener(
+                  index: index,
+                  child: ListTile(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    key: ValueKey(project.id),
+                    title: Padding(
+                      padding:
+                          const EdgeInsets.only(right: 8.0), // Adjusted padding
+                      child: Text(
+                        projects[index].name,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    onTap: () {
+                      context.read<MyState>().setProjectPage(project);
+                      Scaffold.of(context).closeDrawer();
+                    },
+                  ),
+                ),
+              );
+            },
+            itemCount: projects.length,
+            onReorder: (oldIndex, newIndex) {
+              if (newIndex > oldIndex) {
+                newIndex -= 1;
+              }
+              final Node item = projects.removeAt(oldIndex);
+              projects.insert(newIndex, item);
+            },
+          )),
     ));
   }
 }
@@ -257,94 +297,3 @@ class NavHeaderList extends StatelessWidget {
     );
   }
 }
-
-// children: [
-//   ReorderableListView.builder(
-//     shrinkWrap: true,
-//
-//     physics: const NeverScrollableScrollPhysics(),
-//     proxyDecorator: (child, index, animation) {
-//       return Padding(
-//         padding: EdgeInsets.fromLTRB(8, 4, 8, 0),
-//         child: Material(
-//           key: ValueKey(projects[index].id),
-//           color: Color.from(
-//               alpha: 0.05, red: 239, green: 245, blue: 246),
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(8),
-//             side: BorderSide(
-//               color: Colors.grey.shade300,
-//               width: 1,
-//             ),
-//           ),
-//           child: ListTile(
-//             shape: RoundedRectangleBorder(
-//               borderRadius: BorderRadius.circular(8),
-//             ),
-//             title: Padding(
-//               padding: const EdgeInsets.only(
-//                   right: 8.0), // Adjusted padding
-//               child: Text(
-//                 projects[index].name,
-//                 overflow: TextOverflow.ellipsis,
-//               ),
-//             ),
-//             trailing: ReorderableDragStartListener(
-//               index: index,
-//               child: Icon(
-//                 Icons.drag_indicator,
-//               ),
-//             ),
-//           ),
-//         ),
-//       );
-//     },
-//     buildDefaultDragHandles: false,
-//     itemBuilder: (context, index) {
-//       var project = projects[index];
-//       return Padding(
-//         key: ValueKey(project.id),
-//         padding: EdgeInsets.fromLTRB(8, 4, 8, 0),
-//         child: Material(
-//           key: ValueKey(project.id),
-//           color: Colors.transparent,
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(8),
-//           ),
-//           child: ListTile(
-//             shape: RoundedRectangleBorder(
-//               borderRadius: BorderRadius.circular(8),
-//             ),
-//             key: ValueKey(project.id),
-//             title: Padding(
-//               padding: const EdgeInsets.only(
-//                   right: 8.0), // Adjusted padding
-//               child: Text(
-//                 projects[index].name,
-//                 overflow: TextOverflow.ellipsis,
-//               ),
-//             ),
-//             trailing: ReorderableDragStartListener(
-//               index: index,
-//               child: Icon(
-//                 Icons.drag_indicator,
-//               ),
-//             ),
-//             onTap: () {
-//               context.read<MyState>().setProjectPage(project);
-//               Scaffold.of(context).closeDrawer();
-//             },
-//           ),
-//         ),
-//       );
-//     },
-//     itemCount: projects.length,
-//     onReorder: (oldIndex, newIndex) {
-//       if (newIndex > oldIndex) {
-//         newIndex -= 1;
-//       }
-//       final Node item = projects.removeAt(oldIndex);
-//       projects.insert(newIndex, item);
-//     },
-//   )
-// ],
