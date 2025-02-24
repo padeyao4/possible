@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:iconify_flutter/iconify_flutter.dart';
-import 'package:possible/model/content.dart';
+import 'package:possible/model/assets.dart';
 import 'package:possible/model/node.dart';
 import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
+
+import 'icons.dart';
 
 class NavigatorWidget extends StatelessWidget {
   const NavigatorWidget({super.key});

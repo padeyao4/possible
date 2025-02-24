@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:possible/model/content.dart';
+import 'package:possible/model/assets.dart';
 import 'package:possible/model/node.dart';
 
 class MyState extends ChangeNotifier {

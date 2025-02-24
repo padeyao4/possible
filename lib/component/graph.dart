@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:iconify_flutter/iconify_flutter.dart';
-import 'package:possible/model/content.dart';
+import 'package:possible/component/icons.dart';
+import 'package:possible/model/assets.dart';
 import 'package:possible/model/node.dart';
 import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
@@ -60,21 +60,20 @@ class GraphWidget extends StatelessWidget {
             ],
           ),
         ),
-        Container(
+        SizedBox(
           height: 48,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border(top: BorderSide(color: Colors.grey.shade300))),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                  style: ButtonStyle(),
-                  onPressed: () {
-                    project.position = Offset.zero;
-                    context.read<MyState>().notify();
-                  },
-                  icon: Iconify(MyIcons.home))
+                style: ButtonStyle(),
+                onPressed: () {
+                  project.position = Offset.zero;
+                  context.read<MyState>().notify();
+                },
+                // todo 解决icon是黑色问题
+                icon: Iconify(MyIcons.home),
+              )
             ],
           ),
         ),

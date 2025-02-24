@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:possible/component/navigator.dart';
-import 'package:possible/model/content.dart';
+import 'package:possible/model/assets.dart';
 import 'package:possible/page/backlog.dart';
 import 'package:possible/page/demo.dart';
 import 'package:possible/page/home.dart';
@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.light(),
           dividerColor: Colors.grey.shade300,
         ),
+        darkTheme: ThemeData.dark(),
         home: const LayoutWidget(),
       ),
     );
