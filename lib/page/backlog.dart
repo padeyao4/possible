@@ -77,7 +77,6 @@ class BottomInput extends StatelessWidget {
           ),
           labelText: '添加待办事项',
           filled: true,
-          fillColor: Colors.grey[200],
         ),
         controller: textController,
         onSubmitted: (value) {
@@ -121,7 +120,6 @@ class BacklogCountButton extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                side: const BorderSide(color: Colors.grey),
                 padding: const EdgeInsets.symmetric(
                     horizontal: 12.0, vertical: 12.0),
               ),
@@ -133,11 +131,10 @@ class BacklogCountButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   isExpend
-                      ? const Icon(Icons.arrow_drop_down, color: Colors.teal)
-                      : const Icon(Icons.arrow_right, color: Colors.teal),
+                      ? const Icon(Icons.arrow_drop_down)
+                      : const Icon(Icons.arrow_right),
                   Text(
                     '已完成 ${backlogs.length}',
-                    style: const TextStyle(color: Colors.teal),
                   ),
                 ],
               ),
@@ -183,8 +180,7 @@ class BacklogItems extends StatelessWidget {
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 2.0),
               decoration: BoxDecoration(
-                color: Colors.grey.shade50, // 添加背景色
-                border: Border.all(color: Colors.grey.shade300),
+                border: Border.all(color: Theme.of(context).colorScheme.primaryContainer), // 添加背景色
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: ListTile(
@@ -196,8 +192,6 @@ class BacklogItems extends StatelessWidget {
                     backlogs[index].completed
                         ? Icons.check_circle
                         : Icons.circle,
-                    color:
-                        backlogs[index].completed ? Colors.green : Colors.grey,
                   ),
                   onPressed: () {
                     context
