@@ -3,7 +3,6 @@ import 'package:possible/model/assets.dart';
 import 'package:possible/model/node.dart';
 import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
-
 import 'icons.dart';
 
 class NavigatorWidget extends StatelessWidget {
@@ -111,14 +110,9 @@ class NavBottom extends StatelessWidget {
   }
 }
 
-class NavBodyList extends StatefulWidget {
+class NavBodyList extends StatelessWidget {
   const NavBodyList({super.key});
 
-  @override
-  State<NavBodyList> createState() => BodyListState();
-}
-
-class BodyListState extends State<NavBodyList> {
   @override
   Widget build(BuildContext context) {
     var projects = context.watch<MyState>().projects;
