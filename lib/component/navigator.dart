@@ -133,75 +133,51 @@ class BodyListState extends State<NavBodyList> {
         thickness: 3,
         child: ScrollConfiguration(
           behavior: ScrollBehavior().copyWith(scrollbars: false),
-          child: ReorderableListView.builder(
-            shrinkWrap: true,
-            scrollController: _scrollController,
-            proxyDecorator: (child, index, animation) {
-              return Padding(
-                padding: EdgeInsets.fromLTRB(8, 4, 8, 0),
-                child: Material(
-                  key: ValueKey(projects[index].id),
-                  color:
-                      Color.from(alpha: 0.05, red: 239, green: 245, blue: 246),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    side: BorderSide(
-                      color: Colors.grey.shade300,
-                      width: 1,
-                    ),
-                  ),
-                  child: ListTile(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      title: Padding(
-                        padding: const EdgeInsets.only(
-                            right: 8.0), // Adjusted padding
-                        child: Text(
-                          projects[index].name,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      )),
-                ),
-              );
-            },
-            buildDefaultDragHandles: false,
-            itemBuilder: (context, index) {
-              var project = projects[index];
-              return Padding(
-                key: ValueKey(project.id),
-                padding: EdgeInsets.fromLTRB(8, 4, 8, 0),
-                child: ReorderableDragStartListener(
-                  index: index,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: ReorderableListView.builder(
+              shrinkWrap: true,
+              scrollController: _scrollController,
+              proxyDecorator: (child, index, animation) {
+                return Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                          color:
+                              Theme.of(context).colorScheme.primaryContainer)),
+                  child: child,
+                );
+              },
+              itemBuilder: (context, index) {
+                var project = projects[index];
+                return Material(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  key: ValueKey(project.id),
                   child: ListTile(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                     key: ValueKey(project.id),
-                    title: Padding(
-                      padding:
-                          const EdgeInsets.only(right: 8.0), // Adjusted padding
-                      child: Text(
-                        projects[index].name,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                    title: Text(
+                      projects[index].name,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     onTap: () {
                       context.read<MyState>().setProjectPage(project);
                       Scaffold.of(context).closeDrawer();
                     },
                   ),
-                ),
-              );
-            },
-            itemCount: projects.length,
-            onReorder: (oldIndex, newIndex) {
-              if (newIndex > oldIndex) {
-                newIndex -= 1;
-              }
-              final Node item = projects.removeAt(oldIndex);
-              projects.insert(newIndex, item);
-            },
+                );
+              },
+              itemCount: projects.length,
+              onReorder: (oldIndex, newIndex) {
+                if (newIndex > oldIndex) {
+                  newIndex -= 1;
+                }
+                final Node item = projects.removeAt(oldIndex);
+                projects.insert(newIndex, item);
+              },
+            ),
           ),
         ),
       ),
