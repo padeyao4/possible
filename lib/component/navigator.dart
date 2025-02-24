@@ -128,62 +128,50 @@ class BodyListState extends State<NavBodyList> {
   Widget build(BuildContext context) {
     var projects = context.watch<MyState>().projects;
     return Expanded(
-      child: Scrollbar(
-        controller: _scrollController,
-        thickness: 3,
-        child: ScrollConfiguration(
-          behavior: ScrollBehavior().copyWith(scrollbars: false),
-          child: ListView(
-            controller: _scrollController,
-            padding: EdgeInsets.symmetric(horizontal: 8,vertical: 4),
-            children: [
-              ReorderableListView.builder(
-                shrinkWrap: true,
-                proxyDecorator: (child, index, animation) {
-                  return Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .primaryContainer)),
-                    child: child,
-                  );
-                },
-                itemBuilder: (context, index) {
-                  var project = projects[index];
-                  return Material(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    key: ValueKey(project.id),
-                    child: ListTile(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      key: ValueKey(project.id),
-                      title: Text(
-                        projects[index].name,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      onTap: () {
-                        context.read<MyState>().setProjectPage(project);
-                        Scaffold.of(context).closeDrawer();
-                      },
-                    ),
-                  );
-                },
-                itemCount: projects.length,
-                onReorder: (oldIndex, newIndex) {
-                  if (newIndex > oldIndex) {
-                    newIndex -= 1;
-                  }
-                  final Node item = projects.removeAt(oldIndex);
-                  projects.insert(newIndex, item);
-                },
-              )
-            ],
-          ),
-        ),
+      child: ReorderableListView.builder(
+        shrinkWrap: true,
+        padding: EdgeInsets.symmetric(horizontal: 8,vertical: 4),
+        proxyDecorator: (child, index, animation) {
+          return Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryContainer)),
+            child: child,
+          );
+        },
+        itemBuilder: (context, index) {
+          var project = projects[index];
+          return Material(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8)),
+            key: ValueKey(project.id),
+            child: ListTile(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              key: ValueKey(project.id),
+              title: Text(
+                projects[index].name,
+                overflow: TextOverflow.ellipsis,
+              ),
+              onTap: () {
+                context.read<MyState>().setProjectPage(project);
+                Scaffold.of(context).closeDrawer();
+              },
+            ),
+          );
+        },
+        itemCount: projects.length,
+        onReorder: (oldIndex, newIndex) {
+          if (newIndex > oldIndex) {
+            newIndex -= 1;
+          }
+          final Node item = projects.removeAt(oldIndex);
+          projects.insert(newIndex, item);
+        },
       ),
     );
   }
