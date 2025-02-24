@@ -117,21 +117,27 @@ class NavBodyList extends StatelessWidget {
   Widget build(BuildContext context) {
     var projects = context.watch<MyState>().projects;
     return Expanded(
-      child: ReorderableListView.builder(
+      child: ReorderableListView(
         shrinkWrap: true,
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+        padding: EdgeInsets.fromLTRB(10, 4, 10, 0),
         proxyDecorator: (child, index, animation) {
-          return child;
-        },
-        itemBuilder: (context, index) {
-          var project = projects[index];
           return Material(
-            key: ValueKey(project),
+            elevation: 2,
             color: Theme.of(context).colorScheme.surfaceContainerLow,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 2),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: child,
+          );
+        },
+        children: [
+          for (int index = 0; index < projects.length; index++) ...[
+            Material(
+              key: ValueKey(projects[index]),
+              color: Theme.of(context).colorScheme.surfaceContainerLow,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
               child: ListTile(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -141,14 +147,14 @@ class NavBodyList extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 onTap: () {
-                  context.read<MyState>().setProjectPage(project);
+                  context.read<MyState>().setProjectPage(projects[index]);
                   Scaffold.of(context).closeDrawer();
                 },
               ),
             ),
-          );
-        },
-        itemCount: projects.length,
+            SizedBox(key: ValueKey(index), height: 4),
+          ],
+        ],
         onReorder: (oldIndex, newIndex) {
           if (newIndex > oldIndex) {
             newIndex -= 1;
