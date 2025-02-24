@@ -159,8 +159,10 @@ class NavBodyList extends StatelessWidget {
           if (newIndex > oldIndex) {
             newIndex -= 1;
           }
-          final Node item = projects.removeAt(oldIndex);
-          projects.insert(newIndex, item);
+          final Node item = projects.removeAt((oldIndex / 2).ceil());
+          projects.insert(
+              newIndex < 0 ? newIndex : (newIndex / 2).floor(), item);
+          context.read<MyState>().notify();
         },
       ),
     );
