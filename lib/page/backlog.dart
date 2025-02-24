@@ -23,8 +23,7 @@ class BackLogPageState extends State<BackLogPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
         children: [
           const BacklogItems(),
           BacklogCountButton(isExpend, changeValue),
@@ -35,8 +34,6 @@ class BackLogPageState extends State<BackLogPage> {
     );
   }
 }
-
-// const BottomInput(),
 
 class BottomInput extends StatelessWidget {
   const BottomInput({super.key});
@@ -160,7 +157,10 @@ class BacklogItems extends StatelessWidget {
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 2.0),
               decoration: BoxDecoration(
-                border: Border.all(color: Theme.of(context).colorScheme.primaryContainer), // 添加背景色
+                border: Border.all(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primaryContainer), // 添加背景色
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: ListTile(
