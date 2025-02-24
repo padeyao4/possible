@@ -10,8 +10,7 @@ class NavigatorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
-      width: 240,
+    return SafeArea(
       child: Column(children: [
         NavHeaderList(),
         Divider(

@@ -71,7 +71,7 @@ class MainPage extends StatelessWidget {
                   borderRadius: BorderRadius.zero,
                 ),
                 elevation: 4,
-                child: NavigatorWidget(),
+                child: SizedBox(width: 240, child: NavigatorWidget()),
               ),
               Divider(
                 indent: 1,
@@ -81,6 +81,7 @@ class MainPage extends StatelessWidget {
           ),
         );
       } else {
+        // 侧边栏抽屉,在手机上显示
         return Scaffold(
           body: const ContentWidget(showTitle: false),
           appBar: AppBar(
@@ -94,6 +95,7 @@ class MainPage extends StatelessWidget {
             ),
             child: NavigatorWidget(),
           ),
+          drawerEnableOpenDragGesture: true,
         );
       }
     });
