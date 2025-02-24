@@ -71,7 +71,6 @@ class GraphWidget extends StatelessWidget {
                   project.position = Offset.zero;
                   context.read<MyState>().notify();
                 },
-                // todo 解决icon是黑色问题
                 icon: Iconify(MyIcons.home),
               )
             ],
