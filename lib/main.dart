@@ -85,8 +85,13 @@ class MainPage extends StatelessWidget {
         return Scaffold(
           body: const ContentWidget(showTitle: false),
           appBar: AppBar(
-            title: Text(title),
-            elevation: 2,
+            title: Center(child: Text(title)),
+
+            /// The elevation of the widget.
+            ///
+            /// This property controls the size of the shadow below the widget.
+            /// A higher value will result in a more pronounced shadow.
+            elevation: 0,
           ),
           drawer: const Drawer(
             elevation: 4,

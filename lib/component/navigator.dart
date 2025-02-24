@@ -93,10 +93,6 @@ class NavBottom extends StatelessWidget {
               ),
             ),
           ),
-          const VerticalDivider(
-            width: 1,
-            thickness: 0.5,
-          ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: IconButton(
