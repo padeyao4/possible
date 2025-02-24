@@ -23,10 +23,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.light(),
           dividerColor: Colors.grey.shade300,
         ),
-        // darkTheme: ThemeData.dark(),
+        darkTheme: ThemeData.dark(),
         home: const LayoutWidget(),
       ),
     );

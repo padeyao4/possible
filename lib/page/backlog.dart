@@ -21,24 +21,22 @@ class BackLogPageState extends State<BackLogPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: ListView(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-            children: [
-              const BacklogItems(),
-              BacklogCountButton(isExpend, changeValue),
-              BacklogItems(completed: true, show: isExpend),
-            ],
-          ),
-        ),
-        const BottomInput(),
-      ],
+    return Scaffold(
+      body: ListView(
+        padding:
+            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+        children: [
+          const BacklogItems(),
+          BacklogCountButton(isExpend, changeValue),
+          BacklogItems(completed: true, show: isExpend),
+        ],
+      ),
+      bottomNavigationBar: BottomInput(),
     );
   }
 }
+
+// const BottomInput(),
 
 class BottomInput extends StatelessWidget {
   const BottomInput({super.key});

@@ -9,10 +9,6 @@ class ProjectPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var node = context.watch<MyState>().current;
-    return Scaffold(
-      body: node != null
-          ? GraphWidget(project: node)
-          : const Center(child: Text('empty')),
-    );
+    return node == null ? Spacer() : GraphWidget(project: node);
   }
 }

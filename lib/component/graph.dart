@@ -15,68 +15,81 @@ class GraphWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-              ),
-              child: Icon(Icons.lock),
-            ),
-            Expanded(
-                child: Container(
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: GraphHeader(position: project.position),
-            ))
-          ],
-        ),
-        Expanded(
-          child: Row(
+    return Scaffold(
+      body: Column(
+        children: [
+          Divider(
+            height: 1,
+            thickness: 0.5,
+            color: Theme.of(context).dividerColor,
+          ),
+          Row(
             children: [
-              Container(
+              SizedBox(
                 width: 40,
-                decoration: BoxDecoration(
-                  color: Colors.brown,
-                ),
-                child: GraphRuler(position: project.position),
+                height: 40,
+                child: Icon(Icons.lock),
               ),
               Expanded(
-                  child: GestureDetector(
-                onPanUpdate: (details) {
-                  project.position += details.delta;
-                  context.read<MyState>().notify();
-                },
-                child: CustomPaint(
-                    painter: GridPainter(position: project.position),
-                    child: Container()),
-              )),
+                  child: Container(
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                ),
+                child: GraphHeader(position: project.position),
+              ))
             ],
           ),
-        ),
-        SizedBox(
-          height: 48,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                style: ButtonStyle(),
-                onPressed: () {
-                  project.position = Offset.zero;
-                  context.read<MyState>().notify();
-                },
-                icon: Iconify(MyIcons.home),
-              )
-            ],
+          Expanded(
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondaryContainer,
+                  ),
+                  child: GraphRuler(position: project.position),
+                ),
+                Expanded(
+                    child: GestureDetector(
+                  onPanUpdate: (details) {
+                    project.position += details.delta;
+                    context.read<MyState>().notify();
+                  },
+                  child: CustomPaint(
+                      painter: GridPainter(
+                          position: project.position, context: context),
+                      child: Container()),
+                )),
+              ],
+            ),
           ),
-        ),
-      ],
+          Divider(
+            height: 1,
+            thickness: 0.5,
+            color: Theme.of(context).dividerColor,
+          ),
+          Container(
+            color: Theme.of(context).colorScheme.surface,
+            child: SizedBox(
+              height: 48,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    style: ButtonStyle(),
+                    onPressed: () {
+                      project.position = Offset.zero;
+                      context.read<MyState>().notify();
+                    },
+                    icon: Iconify(MyIcons.home),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -110,7 +123,6 @@ class GraphHeader extends StatelessWidget {
                     alignment: Alignment.center,
                     child: Text(
                       (index - delta).toString(),
-                      style: const TextStyle(color: Colors.white),
                     ),
                   );
                 },
@@ -125,6 +137,7 @@ class GraphHeader extends StatelessWidget {
 
 class GraphRuler extends StatelessWidget {
   final Offset position;
+
   const GraphRuler({super.key, required this.position});
 
   @override
@@ -147,7 +160,6 @@ class GraphRuler extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Text(
                     (index - delta).toString(),
-                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ),
@@ -161,16 +173,17 @@ class GraphRuler extends StatelessWidget {
 
 class GridPainter extends CustomPainter {
   Offset position;
+  BuildContext context;
 
-  GridPainter({required this.position});
+  GridPainter({required this.position, required this.context});
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.black.withAlpha(64)
+      ..color = Theme.of(context).dividerColor.withAlpha(64)
       ..style = PaintingStyle.stroke
       ..isAntiAlias = false
-      ..strokeWidth = 1.0;
+      ..strokeWidth = 1;
 
     const double xStep = 120.0;
     const double yStep = 80;
