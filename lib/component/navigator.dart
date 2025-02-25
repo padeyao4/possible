@@ -3,6 +3,7 @@ import 'package:possible/model/assets.dart';
 import 'package:possible/model/node.dart';
 import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 import 'icons.dart';
 
 class NavigatorWidget extends StatelessWidget {
@@ -37,6 +38,7 @@ class NavBottom extends StatelessWidget {
   const NavBottom({super.key});
 
   void showCreateDialog(BuildContext context) {
+    var textController = TextEditingController();
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -45,6 +47,7 @@ class NavBottom extends StatelessWidget {
         ),
         title: const Text('新建项目'),
         content: TextField(
+          controller: textController,
           autofocus: true,
           decoration: const InputDecoration(
             labelText: '项目名称',
@@ -53,7 +56,7 @@ class NavBottom extends StatelessWidget {
           onSubmitted: (value) {
             if (value.isNotEmpty) {
               context.read<MyState>().addProject(Node(
-                    id: value,
+                    id: Uuid().v4(),
                     name: value,
                     index: DateTime.now().millisecondsSinceEpoch,
                   ));
@@ -62,6 +65,19 @@ class NavBottom extends StatelessWidget {
           },
         ),
         actions: [
+          TextButton(
+            onPressed: () {
+              if (textController.text.isNotEmpty) {
+                context.read<MyState>().addProject(Node(
+                      id: Uuid().v4(),
+                      name: textController.text,
+                      index: DateTime.now().millisecondsSinceEpoch,
+                    ));
+                Navigator.pop(context);
+              }
+            },
+            child: const Text('确定'),
+          ),
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('取消'),
