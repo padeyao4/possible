@@ -59,7 +59,27 @@ class GraphWidget extends StatelessWidget {
                   child: CustomPaint(
                       painter: GridPainter(
                           position: project.position, context: context),
-                      child: Container()),
+                      child: Container(
+                        // todo 显示卡片
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              left: project.position.dx+10,
+                              top: project.position.dy+10,
+                              child: Container(
+                                width: 100,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  borderRadius: BorderRadius.circular(8),
+                                )
+                              )
+                            )
+                          ]
+                        )
+                      )),
                 )),
               ],
             ),
