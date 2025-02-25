@@ -176,7 +176,7 @@ class BacklogItems extends StatelessWidget {
                   onPressed: () {
                     context
                         .read<MyState>()
-                        .updateBacklogComplated(backlogs[index]);
+                        .setBacklogCompleted(backlogs[index]);
                   },
                 ),
                 title: Padding(
