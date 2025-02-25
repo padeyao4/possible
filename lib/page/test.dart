@@ -5,7 +5,7 @@ import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
-Node createNode() {
+Node createNode(Offset position) {
   var faker = Faker();
   var node = Node(
     id: const Uuid().v4(),
@@ -13,10 +13,7 @@ Node createNode() {
     index: DateTime.now().millisecondsSinceEpoch,
   );
   node.completed = faker.randomGenerator.boolean();
-  node.position = Offset(
-      2,
-      2,
-  );
+  node.position = position;
   return node;
 }
 
@@ -71,7 +68,9 @@ class TestPage extends StatelessWidget {
                     index: DateTime.now().millisecondsSinceEpoch,
                   );
                   node.completed = faker.randomGenerator.boolean();
-                  node.addChild(createNode());
+                  node.addChild(createNode(Offset(1,2)));
+                  node.addChild(createNode(Offset(-1,3)));
+                  node.addChild(createNode(Offset(-10,9)));
                   context.read<MyState>().addProject(node);
                 }
               },

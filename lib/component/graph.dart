@@ -61,11 +61,22 @@ class GraphWidget extends StatelessWidget {
                           offset: project.offset, context: context),
                       child: Stack(
                         children: [
-                          Positioned(
-                            left: project.offset.dx,
-                            top: project.offset.dy,
-                            child: CustomCanvas(project: project,)
-                          )
+                          for (var child in project.children)
+                            Positioned(
+                              left: child.position.dx * 120 + project.offset.dx,
+                              top: child.position.dy * 80 + project.offset.dy,
+                              child: Container(
+                                width: 120,
+                                height: 80,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Center(child: Text(child.name))
+                              )
+                            )
                         ]
                       )),
                 )),
@@ -87,7 +98,7 @@ class GraphWidget extends StatelessWidget {
                   IconButton(
                     style: ButtonStyle(),
                     onPressed: () {
-                      project.position = Offset.zero;
+                      project.offset = Offset.zero;
                       context.read<MyState>().notify();
                     },
                     icon: Iconify(MyIcons.home),
@@ -98,72 +109,6 @@ class GraphWidget extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class CustomCanvas extends StatelessWidget {
-
-  final Node project;
-
-  const CustomCanvas({
-    super.key, required this.project,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    var cards = project.children.map((element) {
-      return Positioned(
-        key: ValueKey(element.id),
-        left: element.position.dx*120,
-        top: element.position.dy*80,
-        child: Container(
-          width: 100,
-          height: 60,
-          decoration: BoxDecoration(
-            color: Theme.of(context)
-                .colorScheme
-                .primaryContainer,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Center(child: Text(element.name)),
-        ),
-      );
-    }).toList();
-
-    return Container(
-      width: size.width,
-      height: size.height,
-      decoration: BoxDecoration(
-        color: Theme.of(context)
-            .colorScheme
-            .surface,
-        border: Border.all(color: Colors.black12)
-      ),
-      child: Stack(
-        children: cards
-      ),
-    );
-  }
-}
-
-class CanvasCard extends StatelessWidget {
-  const CanvasCard({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 120,
-      height: 80,
-      decoration: BoxDecoration(
-        color: Theme.of(context)
-            .colorScheme
-            .primaryContainer,
-        borderRadius: BorderRadius.circular(8),
-      )
     );
   }
 }
