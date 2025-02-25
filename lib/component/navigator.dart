@@ -4,6 +4,7 @@ import 'package:possible/model/node.dart';
 import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+
 import 'icons.dart';
 
 class NavigatorWidget extends StatelessWidget {
@@ -39,6 +40,18 @@ class NavBottom extends StatelessWidget {
 
   void showCreateDialog(BuildContext context) {
     var textController = TextEditingController();
+
+    void addProject(String projectName) {
+      if (projectName.isNotEmpty) {
+        context.read<MyState>().addProject(Node(
+              id: Uuid().v4(),
+              name: projectName,
+              index: DateTime.now().millisecondsSinceEpoch,
+            ));
+        Navigator.pop(context);
+      }
+    }
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -53,29 +66,11 @@ class NavBottom extends StatelessWidget {
             labelText: '项目名称',
             hintText: '请输入项目名称',
           ),
-          onSubmitted: (value) {
-            if (value.isNotEmpty) {
-              context.read<MyState>().addProject(Node(
-                    id: Uuid().v4(),
-                    name: value,
-                    index: DateTime.now().millisecondsSinceEpoch,
-                  ));
-              Navigator.pop(context);
-            }
-          },
+          onSubmitted: (value) => addProject(value),
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              if (textController.text.isNotEmpty) {
-                context.read<MyState>().addProject(Node(
-                      id: Uuid().v4(),
-                      name: textController.text,
-                      index: DateTime.now().millisecondsSinceEpoch,
-                    ));
-                Navigator.pop(context);
-              }
-            },
+            onPressed: () => addProject(textController.text),
             child: const Text('确定'),
           ),
           TextButton(
@@ -133,52 +128,45 @@ class NavBodyList extends StatelessWidget {
   Widget build(BuildContext context) {
     var projects = context.watch<MyState>().projects;
     return Expanded(
-      child: ReorderableListView(
+      child: ReorderableListView.builder(
         shrinkWrap: true,
         padding: EdgeInsets.fromLTRB(10, 4, 10, 0),
-        proxyDecorator: (child, index, animation) {
+        itemCount: projects.length,
+        proxyDecorator: (child, animation, direction) {
           return Material(
-            elevation: 2,
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: child);
+        },
+        // Add one for the spacer at the end
+        itemBuilder: (context, index) {
+          final project = projects[index];
+          return Material(
+            key: ValueKey(project.id),
             color: Theme.of(context).colorScheme.surfaceContainerLow,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
-            child: child,
-          );
-        },
-        children: [
-          for (int index = 0; index < projects.length; index++) ...[
-            Material(
-              key: ValueKey(projects[index]),
-              color: Theme.of(context).colorScheme.surfaceContainerLow,
+            child: ListTile(
+              key: ValueKey(project.id),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: ListTile(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                title: Text(
-                  projects[index].name,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                onTap: () {
-                  context.read<MyState>().setProjectPage(projects[index]);
-                  Scaffold.of(context).closeDrawer();
-                },
+              title: Text(
+                project.name,
+                overflow: TextOverflow.ellipsis,
               ),
+              onTap: () {
+                context.read<MyState>().setProjectPage(project);
+                Scaffold.of(context).closeDrawer();
+              },
             ),
-            SizedBox(key: ValueKey(index), height: 4),
-          ],
-        ],
-        onReorder: (oldIndex, newIndex) {
-          if (newIndex > oldIndex) {
-            newIndex -= 1;
-          }
-          final Node item = projects.removeAt((oldIndex / 2).ceil());
-          projects.insert(
-              newIndex < 0 ? newIndex : (newIndex / 2).floor(), item);
-          context.read<MyState>().notify();
+          );
+        },
+        onReorder: (int oldIndex, int newIndex) {
+          context.read<MyState>().swapProject(oldIndex, newIndex);
         },
       ),
     );

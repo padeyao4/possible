@@ -57,4 +57,10 @@ class MyState extends ChangeNotifier {
   void notify() {
     notifyListeners();
   }
+
+  void swapProject(int oldIndex, int newIndex) {
+    var project = projects.removeAt(oldIndex);
+    projects.insert(newIndex, project);
+    notifyListeners();
+  }
 }
