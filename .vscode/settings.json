@@ -1,0 +1,7 @@
+{
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "cmake.ignoreCMakeListsMissing": true,
+    "git.ignoreLimitWarning": true,
+    "C_Cpp.errorSquiggles": "disabled",
+    "java.compile.nullAnalysis.mode": "automatic"
+}
