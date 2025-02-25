@@ -5,6 +5,21 @@ import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
+Node createNode() {
+  var faker = Faker();
+  var node = Node(
+    id: const Uuid().v4(),
+    name: faker.animal.name(),
+    index: DateTime.now().millisecondsSinceEpoch,
+  );
+  node.completed = faker.randomGenerator.boolean();
+  node.position = Offset(
+      2,
+      2,
+  );
+  return node;
+}
+
 class TestPage extends StatelessWidget {
   const TestPage({super.key});
 
@@ -49,13 +64,14 @@ class TestPage extends StatelessWidget {
               onPressed: () {
                 var faker = Faker();
 
-                for (var i = 0; i < 10; i++) {
+                for (var i = 0; i < 20; i++) {
                   var node = Node(
                     id: const Uuid().v4(),
                     name: faker.food.dish(),
                     index: DateTime.now().millisecondsSinceEpoch,
                   );
-                  node.completed = i % 2 == 0;
+                  node.completed = faker.randomGenerator.boolean();
+                  node.addChild(createNode());
                   context.read<MyState>().addProject(node);
                 }
               },

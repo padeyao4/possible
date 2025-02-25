@@ -12,6 +12,12 @@ class _DemoState extends State<Demo> {
 
   @override
   Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
+    // 获取父组件的尺寸
+    var size = MediaQuery.of(context).size;
+    debugPrint('width: $width, height: $height');
+    debugPrint('size: $size');
     return Scaffold(
       body: GestureDetector(
         onPanUpdate: (details) {
@@ -20,17 +26,46 @@ class _DemoState extends State<Demo> {
           });
         },
         child: CustomPaint(
-          size: Size(double.infinity, double.infinity),
           painter: GridPainter(position: position),
           child: Container(
-            width: 600,
-            height: 600,
+            width: width,
+            height: height,
             decoration: BoxDecoration(
               border: Border.all(
                 color: Colors.black,
                 width: 1,
               ),
             ),
+            child: Stack(
+              alignment: Alignment.topLeft,
+              children: [
+                Positioned(
+                  left: position.dx,
+                  top: position.dy,
+                  child: SizedBox(
+                    width: 600,
+                    height: 600,
+                    child: Stack(
+                      alignment: Alignment.topLeft,
+                      children: [
+                        Positioned(
+                          left: 10,
+                          top: 10,
+                          child: Container(
+                            width: 100,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primaryContainer,
+                              borderRadius: BorderRadius.circular(8),
+                            )
+                          ),
+                        )
+                      ]
+                    ),
+                  )
+                )
+              ],
+            )
           ),
         ),
       ),

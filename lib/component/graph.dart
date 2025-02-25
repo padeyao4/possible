@@ -36,7 +36,7 @@ class GraphWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.secondaryContainer,
                 ),
-                child: GraphHeader(position: project.position),
+                child: GraphHeader(offset: project.offset),
               ))
             ],
           ),
@@ -48,41 +48,25 @@ class GraphWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.secondaryContainer,
                   ),
-                  child: GraphRuler(position: project.position),
+                  child: GraphRuler(offset: project.offset),
                 ),
                 Expanded(
                     child: GestureDetector(
                   onPanUpdate: (details) {
-                    project.position += details.delta;
+                    project.offset += details.delta;
                     context.read<MyState>().notify();
                   },
                   child: CustomPaint(
                       painter: GridPainter(
-                          position: project.position, context: context),
-                      child: Container(
-                        // todo 显示卡片
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              left: project.position.dx+10,
-                              top: project.position.dy+10,
-                              child: Stack(
-                                children: [ Positioned(
-                                  child: Container(
-                                    width: 100,
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primaryContainer,
-                                      borderRadius: BorderRadius.circular(8),
-                                    )
-                                  ),
-                                ),]
-                              )
-                            )
-                          ]
-                        )
+                          offset: project.offset, context: context),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            left: project.offset.dx,
+                            top: project.offset.dy,
+                            child: CustomCanvas(project: project,)
+                          )
+                        ]
                       )),
                 )),
               ],
@@ -118,22 +102,88 @@ class GraphWidget extends StatelessWidget {
   }
 }
 
-class GraphHeader extends StatelessWidget {
-  final Offset position;
+class CustomCanvas extends StatelessWidget {
 
-  const GraphHeader({super.key, required this.position});
+  final Node project;
+
+  const CustomCanvas({
+    super.key, required this.project,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    var cards = project.children.map((element) {
+      return Positioned(
+        key: ValueKey(element.id),
+        left: element.position.dx*120,
+        top: element.position.dy*80,
+        child: Container(
+          width: 100,
+          height: 60,
+          decoration: BoxDecoration(
+            color: Theme.of(context)
+                .colorScheme
+                .primaryContainer,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Center(child: Text(element.name)),
+        ),
+      );
+    }).toList();
+
+    return Container(
+      width: size.width,
+      height: size.height,
+      decoration: BoxDecoration(
+        color: Theme.of(context)
+            .colorScheme
+            .surface,
+        border: Border.all(color: Colors.black12)
+      ),
+      child: Stack(
+        children: cards
+      ),
+    );
+  }
+}
+
+class CanvasCard extends StatelessWidget {
+  const CanvasCard({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 120,
+      height: 80,
+      decoration: BoxDecoration(
+        color: Theme.of(context)
+            .colorScheme
+            .primaryContainer,
+        borderRadius: BorderRadius.circular(8),
+      )
+    );
+  }
+}
+
+class GraphHeader extends StatelessWidget {
+  final Offset offset;
+
+  const GraphHeader({super.key, required this.offset});
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final itemCount = (constraints.maxWidth / 120).ceil() + 2;
-      var realValue = position.dx / 120;
+      var realValue = offset.dx / 120;
       var delta = realValue.toInt();
       delta = (realValue < 0 ? delta - 1 : delta);
       return Stack(
         children: [
           Positioned(
-            left: (position.dx % 120).roundToDouble() - 120,
+            left: (offset.dx % 120).roundToDouble() - 120,
             child: Row(
               children: List.generate(
                 itemCount,
@@ -160,21 +210,21 @@ class GraphHeader extends StatelessWidget {
 }
 
 class GraphRuler extends StatelessWidget {
-  final Offset position;
+  final Offset offset;
 
-  const GraphRuler({super.key, required this.position});
+  const GraphRuler({super.key, required this.offset});
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final itemCount = (constraints.maxHeight / 80).ceil() + 2;
-      var realValue = position.dy / 80;
+      var realValue = offset.dy / 80;
       var delta = realValue.toInt();
       delta = (realValue < 0 ? delta - 1 : delta);
       return Stack(
         children: [
           Positioned(
-            top: (position.dy % 80).roundToDouble() - 80,
+            top: (offset.dy % 80).roundToDouble() - 80,
             child: Column(
               children: List.generate(
                 itemCount,
@@ -196,10 +246,10 @@ class GraphRuler extends StatelessWidget {
 }
 
 class GridPainter extends CustomPainter {
-  Offset position;
+  Offset offset;
   BuildContext context;
 
-  GridPainter({required this.position, required this.context});
+  GridPainter({required this.offset, required this.context});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -214,14 +264,14 @@ class GridPainter extends CustomPainter {
 
     for (double x = 0; x < size.width; x += xStep) {
       canvas.drawLine(
-          Offset((x + position.dx % xStep).roundToDouble(), 0),
-          Offset((x + position.dx % xStep).roundToDouble(), size.height),
+          Offset((x + offset.dx % xStep).roundToDouble(), 0),
+          Offset((x + offset.dx % xStep).roundToDouble(), size.height),
           paint);
     }
 
     for (double y = 0; y < size.height; y += yStep) {
-      canvas.drawLine(Offset(0, (y + position.dy % yStep).roundToDouble()),
-          Offset(size.width, (y + position.dy % yStep).roundToDouble()), paint);
+      canvas.drawLine(Offset(0, (y + offset.dy % yStep).roundToDouble()),
+          Offset(size.width, (y + offset.dy % yStep).roundToDouble()), paint);
     }
   }
 
