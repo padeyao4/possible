@@ -130,44 +130,73 @@ class NavBodyList extends StatelessWidget {
     return Expanded(
       child: ReorderableListView.builder(
         shrinkWrap: true,
-        padding: EdgeInsets.fromLTRB(10, 4, 10, 0),
+        padding: EdgeInsets.fromLTRB(10, 2, 10, 0),
         itemCount: projects.length,
         proxyDecorator: (child, animation, direction) {
-          return Material(
+          return Container(
+            margin: EdgeInsets.symmetric(vertical: 2),
+            child: Material(
               elevation: 2,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: child);
+              color: Theme.of(context).colorScheme.surfaceContainerLow,
+              child: child,
+            ),
+          );
         },
         // Add one for the spacer at the end
         itemBuilder: (context, index) {
           final project = projects[index];
-          return Material(
+          return ReorderItem(
+            project: project,
             key: ValueKey(project.id),
-            color: Theme.of(context).colorScheme.surfaceContainerLow,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: ListTile(
-              key: ValueKey(project.id),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              title: Text(
-                project.name,
-                overflow: TextOverflow.ellipsis,
-              ),
-              onTap: () {
-                context.read<MyState>().setProjectPage(project);
-                Scaffold.of(context).closeDrawer();
-              },
-            ),
           );
         },
         onReorder: (int oldIndex, int newIndex) {
           context.read<MyState>().swapProject(oldIndex, newIndex);
         },
+      ),
+    );
+  }
+}
+
+class ReorderItem extends StatelessWidget {
+  const ReorderItem({
+    super.key,
+    required this.project,
+    this.dragging = false,
+  });
+
+  final bool dragging;
+  final Node project;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: dragging? 0: 2),
+      key: ValueKey(project.id),
+      child: Material(
+        key: ValueKey(project.id),
+        elevation: dragging? 2: 0,
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: ListTile(
+          key: ValueKey(project.id),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          title: Text(
+            project.name,
+            overflow: TextOverflow.ellipsis,
+          ),
+          onTap: () {
+            context.read<MyState>().setProjectPage(project);
+            Scaffold.of(context).closeDrawer();
+          },
+        ),
       ),
     );
   }
