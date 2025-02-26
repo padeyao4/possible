@@ -61,16 +61,19 @@ class TestPage extends StatelessWidget {
               onPressed: () {
                 var faker = Faker();
 
-                for (var i = 0; i < 20; i++) {
+                for (var i = 0; i < 100; i++) {
                   var node = Node(
                     id: const Uuid().v4(),
                     name: faker.food.dish(),
                     index: DateTime.now().millisecondsSinceEpoch,
                   );
                   node.completed = faker.randomGenerator.boolean();
-                  node.addChild(createNode(Offset(1,2)));
-                  node.addChild(createNode(Offset(-1,3)));
-                  node.addChild(createNode(Offset(-10,9)));
+                  var randomGenerator = faker.randomGenerator; // 优化点：减少重复调用faker.randomGenerator
+                  for (var j = 0; j < 10; j++) {
+                    node.addChild(createNode(Offset(
+                        randomGenerator.integer(20, min: -20).toDouble(), // 优化点：使用randomGenerator减少重复调用
+                        randomGenerator.integer(20, min: -20).toDouble()))); // 优化点：使用randomGenerator减少重复调用
+                  }
                   context.read<MyState>().addProject(node);
                 }
               },

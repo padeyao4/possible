@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           dividerColor: Colors.grey.shade300,
         ),
-        // darkTheme: ThemeData.dark(),
+        darkTheme: ThemeData.dark(),
         home: const LayoutWidget(),
       ),
     );

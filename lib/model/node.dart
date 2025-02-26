@@ -4,7 +4,7 @@ class Node {
   String id;
   String name;
   int index;
-  Offset position = Offset.zero;// 位置坐标
+  Offset position = Offset.zero; // 位置坐标
   Offset offset = Offset.zero; // 显示窗口偏移
   Node? parent;
   List<Node> children = [];
