@@ -9,7 +9,7 @@ const double kGridWidth = 120.0;
 const double kGridHeight = 80.0;
 
 class GraphWidget extends StatelessWidget {
-  final Node project;
+  final Plan project;
 
   const GraphWidget({
     super.key,
@@ -65,21 +65,23 @@ class GraphWidget extends StatelessWidget {
                       child: Stack(children: [
                         for (var child in project.children)
                           Positioned(
-                              left: child.position.dx * kGridWidth + project.offset.dx,
-                              top: child.position.dy * kGridHeight + project.offset.dy,
+                              left: child.position.dx * kGridWidth +
+                                  project.offset.dx,
+                              top: child.position.dy * kGridHeight +
+                                  project.offset.dy,
                               child: GestureDetector(
                                   onTap: () {
                                     debugPrint('hello');
                                   },
                                   onPanUpdate: (details) {
-                                    // 更新 child.position 的값
+                                    // 更新 child.position
                                     child.position += Offset(
                                         details.delta.dx / kGridWidth,
                                         details.delta.dy / kGridHeight);
                                     context.read<MyState>().notify();
                                   },
                                   onPanEnd: (details) {
-                                    // 确保 position 的값是整数
+                                    // 确保 position 是整数
                                     child.position = Offset(
                                         child.position.dx.roundToDouble(),
                                         child.position.dy.roundToDouble());
@@ -222,13 +224,17 @@ class GridPainter extends CustomPainter {
       ..strokeWidth = 1;
 
     for (double x = 0; x < size.width; x += kGridWidth) {
-      canvas.drawLine(Offset((x + offset.dx % kGridWidth).roundToDouble(), 0),
-          Offset((x + offset.dx % kGridWidth).roundToDouble(), size.height), paint);
+      canvas.drawLine(
+          Offset((x + offset.dx % kGridWidth).roundToDouble(), 0),
+          Offset((x + offset.dx % kGridWidth).roundToDouble(), size.height),
+          paint);
     }
 
     for (double y = 0; y < size.height; y += kGridHeight) {
-      canvas.drawLine(Offset(0, (y + offset.dy % kGridHeight).roundToDouble()),
-          Offset(size.width, (y + offset.dy % kGridHeight).roundToDouble()), paint);
+      canvas.drawLine(
+          Offset(0, (y + offset.dy % kGridHeight).roundToDouble()),
+          Offset(size.width, (y + offset.dy % kGridHeight).roundToDouble()),
+          paint);
     }
   }
 
@@ -237,4 +243,3 @@ class GridPainter extends CustomPainter {
     return false;
   }
 }
-

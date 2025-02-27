@@ -1,25 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:get/state_manager.dart';
 import 'package:possible/model/assets.dart';
 import 'package:possible/model/node.dart';
 
+class DataController extends GetxController {
+  final projects = <Rx<Plan>>[].obs;
+  final backlogs = <Rx<Plan>>[].obs;
+
+  void cleanAll() {
+    projects.clear();
+    backlogs.clear();
+  }
+}
+
 class MyState extends ChangeNotifier {
   MyPage page = MyPage.today;
-  List<Node> projects = [];
-  List<Node> backlogs = [];
-  Node? current;
+  List<Plan> projects = [];
+  List<Plan> backlogs = [];
+  Plan? current;
 
-  void setProjectPage(Node node) {
+  void setProjectPage(Plan node) {
     current = node;
     page = MyPage.project;
     notifyListeners();
   }
 
-  void setBacklogCompleted(Node node) {
+  void setBacklogCompleted(Plan node) {
     node.completed = !node.completed;
     notifyListeners();
   }
 
-  void addBacklog(Node node) {
+  void addBacklog(Plan node) {
     backlogs.add(node);
     notifyListeners();
   }
@@ -29,12 +40,12 @@ class MyState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addProject(Node node) {
+  void addProject(Plan node) {
     projects.add(node);
     notifyListeners();
   }
 
-  void removeProject(Node node) {
+  void removeProject(Plan node) {
     projects.remove(node);
     notifyListeners();
   }
@@ -49,7 +60,7 @@ class MyState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setCurrent(Node node) {
+  void setCurrent(Plan node) {
     current = node;
     notifyListeners();
   }

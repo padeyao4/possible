@@ -19,7 +19,7 @@ class BackLogPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ExpendController());
+    final expendController = Get.put(ExpendController());
 
     return DefaultLayout(
       title: '备忘录',
@@ -31,7 +31,7 @@ class BackLogPage extends StatelessWidget {
             const BacklogCountButton(),
             Obx(() => BacklogItems(
                   completed: true,
-                  show: controller.isExpend.value,
+                  show: expendController.isExpend.value,
                 )),
           ],
         ),
@@ -61,7 +61,7 @@ class BottomInput extends StatelessWidget {
         controller: textController,
         onSubmitted: (value) {
           if (value.isNotEmpty) {
-            var node = model.Node(
+            var node = model.Plan(
               id: Uuid().v4(),
               name: value,
               index: DateTime.now().millisecondsSinceEpoch,
@@ -75,17 +75,16 @@ class BottomInput extends StatelessWidget {
   }
 }
 
-class BacklogCountButton extends StatelessWidget {
+class BacklogCountButton extends GetView<DataController> {
   const BacklogCountButton({super.key});
 
   @override
   Widget build(BuildContext context) {
     ExpendController controller = Get.find();
+    DataController dataController = Get.find();
 
-    var backlogs = context
-        .watch<MyState>()
-        .backlogs
-        .where((element) => element.completed)
+    var backlogs = dataController.backlogs
+        .where((element) => element.value.completed)
         .toList();
     return Visibility(
       visible: backlogs.isNotEmpty,
@@ -127,85 +126,86 @@ class BacklogCountButton extends StatelessWidget {
   }
 }
 
-class BacklogItems extends StatelessWidget {
+class BacklogItems extends GetView<DataController> {
   final bool completed; // 是否过滤没有完成的
   final bool show;
   const BacklogItems({super.key, this.completed = false, this.show = true});
 
   @override
   Widget build(BuildContext context) {
-    var backlogs = context
-        .watch<MyState>()
-        .backlogs
-        .where((element) => element.completed == completed)
-        .toList();
+    DataController controller = Get.find();
+
     return Visibility(
       visible: show,
-      child: ReorderableListView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true, // 为了解决无限高度问题
-        proxyDecorator: (child, index, animation) {
-          return child;
-        },
-        onReorder: (oldIndex, newIndex) {
-          if (newIndex > oldIndex) {
-            newIndex -= 1;
-          }
-          final item = backlogs.removeAt(oldIndex);
-          backlogs.insert(newIndex, item);
-        },
-        itemCount: backlogs.length,
-        itemBuilder: (context, index) {
-          return Material(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            key: ValueKey(backlogs[index]),
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 2.0),
-              decoration: BoxDecoration(
-                border: Border.all(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .primaryContainer), // 添加背景色
+      child: Obx(() {
+        var backlogs = controller.backlogs
+            .where((element) => element.value.completed == completed)
+            .toList();
+
+        return ReorderableListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          proxyDecorator: (child, index, animation) {
+            return child;
+          },
+          onReorder: (oldIndex, newIndex) {
+            if (newIndex > oldIndex) {
+              newIndex -= 1;
+            }
+            final item = backlogs.removeAt(oldIndex);
+            backlogs.insert(newIndex, item);
+          },
+          itemCount: backlogs.length,
+          itemBuilder: (context, index) {
+            return Material(
+              shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
               ),
-              child: ListTile(
-                shape: RoundedRectangleBorder(
+              key: ValueKey(backlogs[index]),
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 2.0),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primaryContainer), // 添加背景色
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                leading: IconButton(
-                  icon: Icon(
-                    backlogs[index].completed
-                        ? Icons.check_circle_outline
-                        : Icons.circle_outlined,
+                child: ListTile(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
-                  onPressed: () {
-                    context
-                        .read<MyState>()
-                        .setBacklogCompleted(backlogs[index]);
+                  leading: IconButton(
+                    icon: Obx(() => Icon(backlogs[index].value.completed
+                        ? Icons.check_circle_outline
+                        : Icons.circle_outlined)),
+                    onPressed: () {
+                      backlogs[index].update((value) {
+                        value!.completed = !value.completed;
+                      });
+                    },
+                  ),
+                  title: Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: Obx(() => Text(
+                          backlogs[index].value.name,
+                          style: TextStyle(
+                            decoration: backlogs[index].value.completed
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        )),
+                  ),
+                  onTap: () {
+                    debugPrint('Tapped on: ${backlogs[index].value.name}');
                   },
                 ),
-                title: Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Text(
-                    backlogs[index].name,
-                    style: TextStyle(
-                      decoration: backlogs[index].completed
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                onTap: () {
-                  debugPrint('Tapped on: ${backlogs[index].name}');
-                },
               ),
-            ),
-          );
-        },
-      ),
+            );
+          },
+        );
+      }),
     );
   }
 }

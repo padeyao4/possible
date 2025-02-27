@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:possible/page/today.dart';
@@ -9,15 +7,7 @@ import 'package:provider/provider.dart';
 void main() {
   // 设置本地时区
   WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isAndroid ||
-      Platform.isIOS ||
-      Platform.isMacOS ||
-      Platform.isWindows ||
-      Platform.isLinux) {
-    var timeZoneName = DateTime.now().timeZoneName;
-    debugPrint('当前时区: $timeZoneName');
-  }
-
+  debugPrint('当前时区: ${DateTime.now().timeZoneName}');
   runApp(const MyApp());
 }
 
@@ -44,6 +34,9 @@ class MyApp extends StatelessWidget {
         title: 'Possible',
         debugShowCheckedModeBanner: false,
         theme: context.isDarkMode ? darkTheme : lightTheme,
+        initialBinding: BindingsBuilder(() {
+          Get.put(DataController());
+        }),
         home: TodayPage(),
       ),
     );

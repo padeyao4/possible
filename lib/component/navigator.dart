@@ -48,7 +48,7 @@ class NavBottom extends StatelessWidget {
 
     void addProject(String projectName) {
       if (projectName.isNotEmpty) {
-        context.read<MyState>().addProject(model.Node(
+        context.read<MyState>().addProject(model.Plan(
               id: Uuid().v4(),
               name: projectName,
               index: DateTime.now().millisecondsSinceEpoch,
@@ -150,7 +150,6 @@ class NavBodyList extends StatelessWidget {
             ),
           );
         },
-        // Add one for the spacer at the end
         itemBuilder: (context, index) {
           final project = projects[index];
           return ReorderItem(
@@ -174,7 +173,7 @@ class ReorderItem extends StatelessWidget {
   });
 
   final bool dragging;
-  final model.Node project;
+  final model.Plan project;
 
   @override
   Widget build(BuildContext context) {

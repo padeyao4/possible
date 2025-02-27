@@ -1,14 +1,15 @@
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:possible/component/layout.dart';
 import 'package:possible/model/node.dart';
 import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
-Node createNode(Offset position) {
+Plan createNode(Offset position) {
   var faker = Faker();
-  var node = Node(
+  var node = Plan(
     id: const Uuid().v4(),
     name: faker.animal.name(),
     index: DateTime.now().millisecondsSinceEpoch,
@@ -23,6 +24,8 @@ class TestPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var controller = Get.find<DataController>();
+
     return DefaultLayout(
         title: '测试',
         child: Scaffold(
@@ -31,8 +34,9 @@ class TestPage extends StatelessWidget {
             children: [
               TextButton(
                   onPressed: () {
-                    context.read<MyState>().cleanProjects();
-                    context.read<MyState>().cleanBacklogs();
+                    // context.read<MyState>().cleanProjects();
+                    // context.read<MyState>().cleanBacklogs();
+                    controller.cleanAll();
                   },
                   style: TextButton.styleFrom(
                     side: const BorderSide(color: Colors.blue, width: 1),
@@ -46,13 +50,13 @@ class TestPage extends StatelessWidget {
                   onPressed: () {
                     var faker = Faker();
                     for (var i = 0; i < 10; i++) {
-                      var node = Node(
+                      var node = Plan(
                         id: Uuid().v4(),
                         name: faker.lorem.sentences(5).join(" "),
                         index: faker.date.dateTime().millisecondsSinceEpoch,
                       );
                       node.completed = faker.randomGenerator.boolean();
-                      context.read<MyState>().addBacklog(node);
+                      controller.backlogs.add(node.obs);
                     }
                   },
                   child: const Text("创建备忘录数据")),
@@ -65,7 +69,7 @@ class TestPage extends StatelessWidget {
                     var faker = Faker();
 
                     for (var i = 0; i < 100; i++) {
-                      var node = Node(
+                      var node = Plan(
                         id: const Uuid().v4(),
                         name: faker.food.dish(),
                         index: DateTime.now().millisecondsSinceEpoch,
