@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:possible/component/navigator.dart';
 import 'package:possible/model/assets.dart';
 import 'package:possible/page/backlog.dart';
@@ -18,13 +19,33 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var darkTheme = ThemeData.dark().copyWith(
+        colorScheme: ColorScheme.dark(
+          primary: Colors.blue,
+          secondary: Colors.blue,
+          surface: Colors.grey.shade900,
+          onPrimary: Colors.white,
+          onSecondary: Colors.white,
+          onSurface: Colors.white,
+        ),
+        dividerColor: Colors.grey.shade300);
+
+    var lightTheme = ThemeData.light().copyWith(
+        colorScheme: ColorScheme.light(
+          primary: Colors.blue,
+          secondary: Colors.blue,
+          surface: Colors.white,
+          onPrimary: Colors.black,
+          onSecondary: Colors.black,
+          onSurface: Colors.black,
+        ),
+        dividerColor: Colors.grey.shade300);
+
     return ChangeNotifierProvider(
       create: (context) => MyState(),
-      child: MaterialApp(
+      child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          dividerColor: Colors.grey.shade300,
-        ),
+        theme: context.isDarkMode ? darkTheme : lightTheme,
         darkTheme: ThemeData.dark(),
         home: const LayoutWidget(),
       ),
