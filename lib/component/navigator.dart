@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:possible/model/assets.dart';
-import 'package:possible/model/node.dart';
+import 'package:possible/model/node.dart' as model;
+import 'package:possible/page/backlog.dart';
+import 'package:possible/page/demo.dart';
+import 'package:possible/page/test.dart';
+import 'package:possible/page/today.dart';
 import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -43,7 +48,7 @@ class NavBottom extends StatelessWidget {
 
     void addProject(String projectName) {
       if (projectName.isNotEmpty) {
-        context.read<MyState>().addProject(Node(
+        context.read<MyState>().addProject(model.Node(
               id: Uuid().v4(),
               name: projectName,
               index: DateTime.now().millisecondsSinceEpoch,
@@ -169,7 +174,7 @@ class ReorderItem extends StatelessWidget {
   });
 
   final bool dragging;
-  final Node project;
+  final model.Node project;
 
   @override
   Widget build(BuildContext context) {
@@ -221,8 +226,8 @@ class NavHeaderList extends StatelessWidget {
               leading: Iconify(MyIcons.sun),
               title: const Text('我的一天'),
               onTap: () {
-                context.read<MyState>().changePage(MyPage.today);
-                Scaffold.of(context).closeDrawer();
+                Get.offAll(() => TodayPage(),
+                    transition: Transition.noTransition);
               },
             ),
             SizedBox(height: 4),
@@ -233,8 +238,8 @@ class NavHeaderList extends StatelessWidget {
               leading: Iconify(MyIcons.list),
               title: const Text('备忘录'),
               onTap: () {
-                context.read<MyState>().changePage(MyPage.backLog);
-                Scaffold.of(context).closeDrawer();
+                Get.offAll(() => BackLogPage(),
+                    transition: Transition.noTransition);
               },
             ),
             SizedBox(height: 4),
@@ -245,8 +250,8 @@ class NavHeaderList extends StatelessWidget {
               leading: const Icon(Icons.star),
               title: const Text('测试'),
               onTap: () {
-                context.read<MyState>().changePage(MyPage.test);
-                Scaffold.of(context).closeDrawer();
+                Get.offAll(() => TestPage(),
+                    transition: Transition.noTransition);
               },
             ),
             SizedBox(height: 4),
@@ -257,8 +262,8 @@ class NavHeaderList extends StatelessWidget {
               leading: const Icon(Icons.surfing),
               title: const Text('例子'),
               onTap: () {
-                context.read<MyState>().changePage(MyPage.demo);
-                Scaffold.of(context).closeDrawer();
+                Get.offAll(() => DemoPage(),
+                    transition: Transition.noTransition);
               },
             ),
           ],

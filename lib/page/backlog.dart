@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:possible/component/layout.dart';
 import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -20,19 +21,22 @@ class BackLogPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(ExpendController());
 
-    return Scaffold(
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-        children: [
-          const BacklogItems(),
-          const BacklogCountButton(),
-          Obx(() => BacklogItems(
-                completed: true,
-                show: controller.isExpend.value,
-              )),
-        ],
+    return DefaultLayout(
+      title: '备忘录',
+      child: Scaffold(
+        body: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+          children: [
+            const BacklogItems(),
+            const BacklogCountButton(),
+            Obx(() => BacklogItems(
+                  completed: true,
+                  show: controller.isExpend.value,
+                )),
+          ],
+        ),
+        bottomNavigationBar: BottomInput(),
       ),
-      bottomNavigationBar: BottomInput(),
     );
   }
 }
