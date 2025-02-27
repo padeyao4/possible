@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/state_manager.dart';
-import 'package:possible/model/node.dart';
+import 'package:get/get.dart';
 import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+import 'package:possible/model/node.dart' as model;
 
 class ExpendController extends GetxController {
   var isExpend = false.obs;
@@ -12,31 +13,23 @@ class ExpendController extends GetxController {
   }
 }
 
-class BackLogPage extends StatefulWidget {
+class BackLogPage extends StatelessWidget {
   const BackLogPage({super.key});
 
   @override
-  State<BackLogPage> createState() => BackLogPageState();
-}
-
-class BackLogPageState extends State<BackLogPage> {
-  var isExpend = false;
-
-  void changeValue() {
-    setState(() {
-      isExpend = !isExpend;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final controller = Get.put(ExpendController());
+
     return Scaffold(
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
         children: [
           const BacklogItems(),
-          BacklogCountButton(isExpend, changeValue),
-          BacklogItems(completed: true, show: isExpend),
+          const BacklogCountButton(),
+          Obx(() => BacklogItems(
+                completed: true,
+                show: controller.isExpend.value,
+              )),
         ],
       ),
       bottomNavigationBar: BottomInput(),
@@ -64,8 +57,8 @@ class BottomInput extends StatelessWidget {
         controller: textController,
         onSubmitted: (value) {
           if (value.isNotEmpty) {
-            var node = Node(
-              id: value,
+            var node = model.Node(
+              id: Uuid().v4(),
               name: value,
               index: DateTime.now().millisecondsSinceEpoch,
             );
@@ -79,13 +72,12 @@ class BottomInput extends StatelessWidget {
 }
 
 class BacklogCountButton extends StatelessWidget {
-  final bool isExpend;
-  final Function changeValue;
-
-  const BacklogCountButton(this.isExpend, this.changeValue, {super.key});
+  const BacklogCountButton({super.key});
 
   @override
   Widget build(BuildContext context) {
+    ExpendController controller = Get.find();
+
     var backlogs = context
         .watch<MyState>()
         .backlogs
@@ -107,15 +99,17 @@ class BacklogCountButton extends StatelessWidget {
                     horizontal: 12.0, vertical: 12.0),
               ),
               onPressed: () {
-                changeValue();
+                controller.changeValue();
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  isExpend
-                      ? const Icon(Icons.arrow_drop_down)
-                      : const Icon(Icons.arrow_right),
+                  Obx(() {
+                    return Icon(controller.isExpend.value
+                        ? Icons.arrow_drop_down
+                        : Icons.arrow_right);
+                  }),
                   Text(
                     '已完成 ${backlogs.length}',
                   ),
