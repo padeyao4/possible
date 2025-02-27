@@ -4,7 +4,7 @@ import 'package:possible/component/layout.dart';
 import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:possible/model/node.dart' as model;
+import 'package:possible/model/node.dart';
 
 class ExpendController extends GetxController {
   var isExpend = false.obs;
@@ -28,7 +28,7 @@ class BackLogPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
           children: [
             const BacklogItems(),
-            const BacklogCountButton(),
+            const CountButton(),
             Obx(() => BacklogItems(
                   completed: true,
                   show: expendController.isExpend.value,
@@ -41,12 +41,13 @@ class BackLogPage extends StatelessWidget {
   }
 }
 
-class BottomInput extends StatelessWidget {
+class BottomInput extends GetView<DataController> {
   const BottomInput({super.key});
 
   @override
   Widget build(BuildContext context) {
     var textController = TextEditingController();
+    DataController controller = Get.find();
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
       child: TextField(
@@ -61,12 +62,12 @@ class BottomInput extends StatelessWidget {
         controller: textController,
         onSubmitted: (value) {
           if (value.isNotEmpty) {
-            var node = model.Plan(
+            var node = Plan(
               id: Uuid().v4(),
               name: value,
               index: DateTime.now().millisecondsSinceEpoch,
             );
-            context.read<MyState>().addBacklog(node);
+            controller.backlogs.add(node.obs);
             textController.clear();
           }
         },
@@ -75,54 +76,56 @@ class BottomInput extends StatelessWidget {
   }
 }
 
-class BacklogCountButton extends GetView<DataController> {
-  const BacklogCountButton({super.key});
+class CountButton extends GetView<DataController> {
+  const CountButton({super.key});
 
   @override
   Widget build(BuildContext context) {
     ExpendController controller = Get.find();
     DataController dataController = Get.find();
 
-    var backlogs = dataController.backlogs
-        .where((element) => element.value.completed)
-        .toList();
-    return Visibility(
-      visible: backlogs.isNotEmpty,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0),
-        child: Row(
-          children: [
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 12.0, vertical: 12.0),
-              ),
-              onPressed: () {
-                controller.changeValue();
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Obx(() {
-                    return Icon(controller.isExpend.value
-                        ? Icons.arrow_drop_down
-                        : Icons.arrow_right);
-                  }),
-                  Text(
-                    '已完成 ${backlogs.length}',
+    return Obx(() {
+      var backlogs = dataController.backlogs
+          .where((element) => element.value.completed)
+          .toList();
+      return Visibility(
+        visible: backlogs.isNotEmpty,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            children: [
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
-                ],
-              ),
-            )
-          ],
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 12.0),
+                ),
+                onPressed: () {
+                  controller.changeValue();
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Obx(() {
+                      return Icon(controller.isExpend.value
+                          ? Icons.arrow_drop_down
+                          : Icons.arrow_right);
+                    }),
+                    Text(
+                      '已完成 ${backlogs.length}',
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 
