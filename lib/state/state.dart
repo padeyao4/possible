@@ -3,7 +3,7 @@ import 'package:possible/model/assets.dart';
 import 'package:possible/model/node.dart';
 
 class MyState extends ChangeNotifier {
-  MyPage page = MyPage.home;
+  MyPage page = MyPage.today;
   List<Node> projects = [];
   List<Node> backlogs = [];
   Node? current;
@@ -63,7 +63,7 @@ class MyState extends ChangeNotifier {
       newIndex = newIndex - 1;
     }
     var project = projects.removeAt(oldIndex);
-    projects.insert(newIndex , project);
+    projects.insert(newIndex, project);
     notifyListeners();
   }
 }

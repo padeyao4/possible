@@ -174,11 +174,11 @@ class ReorderItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: dragging? 0: 2),
+      margin: EdgeInsets.symmetric(vertical: dragging ? 0 : 2),
       key: ValueKey(project.id),
       child: Material(
         key: ValueKey(project.id),
-        elevation: dragging? 2: 0,
+        elevation: dragging ? 2 : 0,
         color: Theme.of(context).colorScheme.surfaceContainerLow,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
@@ -221,7 +221,7 @@ class NavHeaderList extends StatelessWidget {
               leading: Iconify(MyIcons.sun),
               title: const Text('我的一天'),
               onTap: () {
-                context.read<MyState>().changePage(MyPage.home);
+                context.read<MyState>().changePage(MyPage.today);
                 Scaffold.of(context).closeDrawer();
               },
             ),

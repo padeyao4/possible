@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:possible/component/navigator.dart';
@@ -11,6 +12,17 @@ import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  // 设置本地时区
+  WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isAndroid ||
+      Platform.isIOS ||
+      Platform.isMacOS ||
+      Platform.isWindows ||
+      Platform.isLinux) {
+    var timeZoneName = DateTime.now().timeZoneName;
+    debugPrint('当前时区: $timeZoneName');
+  }
+
   runApp(const MyApp());
 }
 
@@ -20,45 +32,29 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var darkTheme = ThemeData.dark().copyWith(
-        colorScheme: ColorScheme.dark(
-          primary: Colors.blue,
-          secondary: Colors.blue,
-          surface: Colors.grey.shade900,
-          onPrimary: Colors.white,
-          onSecondary: Colors.white,
-          onSurface: Colors.white,
-        ),
-        dividerColor: Colors.grey.shade300);
+        colorScheme: ColorScheme.dark(), dividerColor: Colors.grey.shade300);
 
     var lightTheme = ThemeData.light().copyWith(
-        colorScheme: ColorScheme.light(
-          primary: Colors.blue,
-          secondary: Colors.blue,
-          surface: Colors.white,
-          onPrimary: Colors.black,
-          onSecondary: Colors.black,
-          onSurface: Colors.black,
-        ),
-        dividerColor: Colors.grey.shade300);
+        colorScheme: ColorScheme.light(), dividerColor: Colors.grey.shade300);
 
     return ChangeNotifierProvider(
       create: (context) => MyState(),
       child: GetMaterialApp(
+        title: 'Possible',
         debugShowCheckedModeBanner: false,
         theme: context.isDarkMode ? darkTheme : lightTheme,
-        darkTheme: ThemeData.dark(),
-        home: const LayoutWidget(),
+        home: const HomeView(),
       ),
     );
   }
 }
 
-class LayoutWidget extends StatelessWidget {
-  const LayoutWidget({super.key});
+class HomeView extends StatelessWidget {
+  const HomeView({super.key});
 
   String getTitle(MyPage page, BuildContext context) {
     switch (page) {
-      case MyPage.home:
+      case MyPage.today:
         return '我的一天';
       case MyPage.backLog:
         return '备忘录';
@@ -144,7 +140,7 @@ class ContentWidget extends StatelessWidget {
 
   Widget getWidget(MyPage page) {
     switch (page) {
-      case MyPage.home:
+      case MyPage.today:
         return const HomePage();
       case MyPage.backLog:
         return const BackLogPage();

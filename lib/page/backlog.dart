@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/state_manager.dart';
 import 'package:possible/model/node.dart';
 import 'package:possible/state/state.dart';
 import 'package:provider/provider.dart';
+
+class ExpendController extends GetxController {
+  var isExpend = false.obs;
+
+  void changeValue() {
+    isExpend.value = !isExpend.value;
+  }
+}
 
 class BackLogPage extends StatefulWidget {
   const BackLogPage({super.key});
