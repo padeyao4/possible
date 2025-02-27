@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:possible/component/icons.dart';
-import 'package:possible/model/assets.dart';
-import 'package:possible/model/node.dart';
-import 'package:possible/state/state.dart';
-import 'package:provider/provider.dart';
+
+import '../model/assets.dart';
+import '../model/node.dart';
 
 const double kGridWidth = 120.0;
 const double kGridHeight = 80.0;
 
 class GraphWidget extends StatelessWidget {
-  final Plan project;
-
+  final Rx<Plan> project;
   const GraphWidget({
     super.key,
     required this.project,
@@ -39,7 +38,7 @@ class GraphWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.secondaryContainer,
                 ),
-                child: GraphHeader(offset: project.offset),
+                child: Obx(() => GraphHeader(offset: project.value.offset)),
               ))
             ],
           ),
@@ -51,54 +50,60 @@ class GraphWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.secondaryContainer,
                   ),
-                  child: GraphRuler(offset: project.offset),
+                  child: Obx(() => GraphRuler(offset: project.value.offset)),
                 ),
                 Expanded(
-                    child: GestureDetector(
-                  onPanUpdate: (details) {
-                    project.offset += details.delta;
-                    context.read<MyState>().notify();
-                  },
-                  child: CustomPaint(
-                      painter:
-                          GridPainter(offset: project.offset, context: context),
-                      child: Stack(children: [
-                        for (var child in project.children)
-                          Positioned(
-                              left: child.position.dx * kGridWidth +
-                                  project.offset.dx,
-                              top: child.position.dy * kGridHeight +
-                                  project.offset.dy,
-                              child: GestureDetector(
-                                  onTap: () {
-                                    debugPrint('hello');
-                                  },
-                                  onPanUpdate: (details) {
-                                    // 更新 child.position
-                                    child.position += Offset(
-                                        details.delta.dx / kGridWidth,
-                                        details.delta.dy / kGridHeight);
-                                    context.read<MyState>().notify();
-                                  },
-                                  onPanEnd: (details) {
-                                    // 确保 position 是整数
-                                    child.position = Offset(
-                                        child.position.dx.roundToDouble(),
-                                        child.position.dy.roundToDouble());
-                                    context.read<MyState>().notify();
-                                  },
-                                  child: Container(
-                                      width: kGridWidth,
-                                      height: kGridHeight,
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primaryContainer,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Center(child: Text(child.name))))),
-                      ])),
-                )),
+                    child: Obx(() => GestureDetector(
+                          onPanUpdate: (details) {
+                            project.value.offset += details.delta;
+                          },
+                          child: CustomPaint(
+                              painter: GridPainter(
+                                  offset: project.value.offset,
+                                  context: context),
+                              child: Obx(() => (Stack(children: [
+                                    for (var child in project.value.children)
+                                      Positioned(
+                                          left: child.position.dx * kGridWidth +
+                                              project.value.offset.dx,
+                                          top: child.position.dy * kGridHeight +
+                                              project.value.offset.dy,
+                                          child: GestureDetector(
+                                              onTap: () {
+                                                debugPrint('hello');
+                                              },
+                                              onPanUpdate: (details) {
+                                                // 更新 child.position
+                                                child.position += Offset(
+                                                    details.delta.dx /
+                                                        kGridWidth,
+                                                    details.delta.dy /
+                                                        kGridHeight);
+                                              },
+                                              onPanEnd: (details) {
+                                                // 确保 position 是整数
+                                                child.position = Offset(
+                                                    child.position.dx
+                                                        .roundToDouble(),
+                                                    child.position.dy
+                                                        .roundToDouble());
+                                              },
+                                              child: Container(
+                                                  width: kGridWidth,
+                                                  height: kGridHeight,
+                                                  decoration: BoxDecoration(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primaryContainer,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                  ),
+                                                  child: Center(
+                                                      child:
+                                                          Text(child.name))))),
+                                  ])))),
+                        ))),
               ],
             ),
           ),
@@ -117,8 +122,8 @@ class GraphWidget extends StatelessWidget {
                   IconButton(
                     style: ButtonStyle(),
                     onPressed: () {
-                      project.offset = Offset.zero;
-                      context.read<MyState>().notify();
+                      project.value.offset = Offset.zero;
+                      // context.read<MyState>().notify();
                     },
                     icon: Iconify(MyIcons.home),
                   )

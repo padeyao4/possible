@@ -86,7 +86,7 @@ class TestPage extends StatelessWidget {
                                 .integer(20, min: -20)
                                 .toDouble()))); // 优化点：使用randomGenerator减少重复调用
                       }
-                      context.read<MyState>().addProject(node);
+                      controller.projects.add(node.obs);
                     }
                   },
                   child: const Text("创建项目数据")),

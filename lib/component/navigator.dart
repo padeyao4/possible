@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:possible/model/assets.dart';
-import 'package:possible/model/node.dart' as model;
+import 'package:possible/model/node.dart';
 import 'package:possible/page/backlog.dart';
 import 'package:possible/page/demo.dart';
+import 'package:possible/page/project.dart';
 import 'package:possible/page/test.dart';
 import 'package:possible/page/today.dart';
 import 'package:possible/state/state.dart';
@@ -45,14 +46,16 @@ class NavBottom extends StatelessWidget {
 
   void showCreateDialog(BuildContext context) {
     var textController = TextEditingController();
+    DataController controller = Get.find();
 
     void addProject(String projectName) {
       if (projectName.isNotEmpty) {
-        context.read<MyState>().addProject(model.Plan(
-              id: Uuid().v4(),
-              name: projectName,
-              index: DateTime.now().millisecondsSinceEpoch,
-            ));
+        var plan = Plan(
+          id: Uuid().v4(),
+          name: projectName,
+          index: DateTime.now().millisecondsSinceEpoch,
+        );
+        controller.projects.add(plan.obs);
         Navigator.pop(context);
       }
     }
@@ -126,17 +129,18 @@ class NavBottom extends StatelessWidget {
   }
 }
 
-class NavBodyList extends StatelessWidget {
+class NavBodyList extends GetView<DataController> {
   const NavBodyList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var projects = context.watch<MyState>().projects;
+    DataController controller = Get.find();
     return Expanded(
-      child: ReorderableListView.builder(
+        child: Obx(
+      () => ReorderableListView.builder(
         shrinkWrap: true,
         padding: EdgeInsets.fromLTRB(10, 2, 10, 0),
-        itemCount: projects.length,
+        itemCount: controller.projects.length,
         proxyDecorator: (child, animation, direction) {
           return Container(
             margin: EdgeInsets.symmetric(vertical: 2),
@@ -151,17 +155,21 @@ class NavBodyList extends StatelessWidget {
           );
         },
         itemBuilder: (context, index) {
-          final project = projects[index];
-          return ReorderItem(
-            project: project,
-            key: ValueKey(project.id),
-          );
+          final project = controller.projects[index];
+          return Obx(
+              key: ValueKey(project.value.id),
+              () => ReorderItem(
+                    project: project.value,
+                    key: ValueKey(project.value.id),
+                  ));
         },
         onReorder: (int oldIndex, int newIndex) {
-          context.read<MyState>().swapProject(oldIndex, newIndex);
+          var project = controller.projects.removeAt(oldIndex);
+          controller.projects
+              .insert(oldIndex <= newIndex ? newIndex - 1 : newIndex, project);
         },
       ),
-    );
+    ));
   }
 }
 
@@ -173,7 +181,7 @@ class ReorderItem extends StatelessWidget {
   });
 
   final bool dragging;
-  final model.Plan project;
+  final Plan project;
 
   @override
   Widget build(BuildContext context) {
@@ -197,8 +205,10 @@ class ReorderItem extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           onTap: () {
-            context.read<MyState>().setProjectPage(project);
-            Scaffold.of(context).closeDrawer();
+            // todo 传递参数
+            Get.offAll(() => ProjectPage(),
+                arguments: {'id': project.id},
+                transition: Transition.noTransition);
           },
         ),
       ),
