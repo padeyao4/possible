@@ -23,4 +23,9 @@ class Plan {
     node.value.parent = this;
     children.add(node);
   }
+
+  void addNext(Rx<Plan> obs) {
+    nexts.add(obs);
+    obs.value.pres.add(this.obs);
+  }
 }

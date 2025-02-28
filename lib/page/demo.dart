@@ -1,104 +1,153 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:possible/component/layout.dart';
+import 'package:possible/model/node.dart';
 
-class DemoPage extends StatefulWidget {
-  const DemoPage({super.key});
+final double xStep = 120.0;
+final double yStep = 80;
 
-  @override
-  State<DemoPage> createState() => _DemoPageState();
+class DemoController extends GetxController {
+  Rx<Plan> project = Plan(id: '1', name: '项目', index: 0).obs;
+
+  DemoController() {
+    var node1 = Plan(id: '2', name: '节点1', index: 1);
+    node1.position = Offset(1, 1);
+    var node2 = Plan(id: '3', name: '节点2', index: 2);
+
+    node1.addNext(node2.obs);
+
+    node2.position = Offset(3, 4);
+    project.addChild(node1.obs);
+    project.addChild(node2.obs);
+  }
 }
 
-class _DemoPageState extends State<DemoPage> {
-  Offset position = const Offset(100, 100);
+extension on Rx<Plan> {
+  void addChild(Rx<Plan> obs) {
+    value.addChild(obs);
+  }
+}
+
+class DemoPage extends StatelessWidget {
+  DemoPage({super.key});
+
+  final controller = Get.put(DemoController());
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    var height = MediaQuery.of(context).size.height;
-    // 获取父组件的尺寸
-    var size = MediaQuery.of(context).size;
-    debugPrint('width: $width, height: $height');
-    debugPrint('size: $size');
     return DefaultLayout(
       title: '例子',
       child: Scaffold(
         body: GestureDetector(
           onPanUpdate: (details) {
-            setState(() {
-              position += details.delta;
+            controller.project.update((value) {
+              value?.offset += details.delta;
             });
           },
-          child: CustomPaint(
-            painter: GridPainter(position: position),
-            child: Container(
-                width: width,
-                height: height,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
-                    width: 1,
-                  ),
-                ),
-                child: Stack(
-                  alignment: Alignment.topLeft,
-                  children: [
-                    Positioned(
-                        left: position.dx,
-                        top: position.dy,
-                        child: SizedBox(
-                          width: 600,
-                          height: 600,
-                          child: Stack(alignment: Alignment.topLeft, children: [
-                            Positioned(
-                              left: 10,
-                              top: 10,
-                              child: Container(
-                                  width: 100,
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                    borderRadius: BorderRadius.circular(8),
-                                  )),
-                            )
-                          ]),
-                        ))
-                  ],
-                )),
-          ),
+          child: Obx(() => CustomPaint(
+                painter: GridBackground(),
+                child: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 1,
+                      ),
+                    ),
+                    child: Stack(
+                      children: [
+                        ...controller.project.value.children
+                            .map((child) => DemoCard(plan: child)),
+                      ],
+                    )),
+              )),
         ),
       ),
     );
   }
 }
 
-class GridPainter extends CustomPainter {
-  Offset position;
+class DemoCard extends StatelessWidget {
+  final Rx<Plan> plan;
 
-  GridPainter({required this.position});
+  const DemoCard({
+    super.key,
+    required this.plan,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      var value = plan.value;
+      var parent = plan.value.parent;
+      return Positioned(
+          left: value.position.dx * xStep + (parent?.offset.dx ?? 0),
+          top: value.position.dy * yStep + (parent?.offset.dy ?? 0),
+          child: GestureDetector(
+            onPanUpdate: (details) => plan.update((value) {
+              value?.position = Offset(
+                value.position.dx + details.delta.dx / xStep,
+                value.position.dy + details.delta.dy / yStep,
+              );
+            }),
+            child: Container(
+                width: xStep,
+                height: yStep,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(value.name)),
+          ));
+    });
+  }
+}
+
+class GridBackground extends CustomPainter {
+  DemoController controller = Get.find<DemoController>();
 
   @override
   void paint(Canvas canvas, Size size) {
+    Offset offset = controller.project.value.offset;
+
     final paint = Paint()
       ..color = Colors.black.withAlpha(64)
       ..style = PaintingStyle.stroke
       ..isAntiAlias = false
       ..strokeWidth = 1.0;
 
-    const double xStep = 120.0;
-    const double yStep = 80;
-
     for (double x = 0; x < size.width; x += xStep) {
-      canvas.drawLine(
-          Offset((x + position.dx % xStep).roundToDouble(), 0),
-          Offset((x + position.dx % xStep).roundToDouble(), size.height),
-          paint);
+      canvas.drawLine(Offset((x + offset.dx % xStep).roundToDouble(), 0),
+          Offset((x + offset.dx % xStep).roundToDouble(), size.height), paint);
     }
 
     for (double y = 0; y < size.height; y += yStep) {
-      canvas.drawLine(Offset(0, (y + position.dy % yStep).roundToDouble()),
-          Offset(size.width, (y + position.dy % yStep).roundToDouble()), paint);
+      canvas.drawLine(Offset(0, (y + offset.dy % yStep).roundToDouble()),
+          Offset(size.width, (y + offset.dy % yStep).roundToDouble()), paint);
+    }
+
+    paint
+      ..color = Colors.red
+      ..isAntiAlias = true
+      ..strokeWidth = 2.0;
+
+    var children = controller.project.value.children;
+
+    for (var child in children) {
+      for (var next in child.value.nexts) {
+        var from = child.value.position;
+        var to = next.value.position;
+        canvas.drawLine(
+            Offset(from.dx * xStep + offset.dx + xStep,
+                from.dy * yStep + offset.dy + yStep / 2),
+            Offset(to.dx * xStep + offset.dx,
+                to.dy * yStep + offset.dy + yStep / 2),
+            paint);
+      }
     }
   }
 
@@ -107,51 +156,3 @@ class GridPainter extends CustomPainter {
     return false;
   }
 }
-
-// class TestDemoState extends State<Demo> {
-//   Offset position = const Offset(100, 100);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Stack(
-//         children: [
-//           Positioned(
-//             left: position.dx,
-//             top: position.dy,
-//             child: GestureDetector(
-//               onPanUpdate: (details) {
-//                 setState(() {
-//                   position += details.delta;
-//                 });
-//               },
-//               child: Container(
-//                 width: 600,
-//                 height: 600,
-//                 decoration: BoxDecoration(
-//                   color: Theme.of(context).colorScheme.primary,
-//                   borderRadius: BorderRadius.circular(8),
-//                   boxShadow: [
-//                     BoxShadow(
-//                       color: Colors.black.withAlpha(64),
-//                       blurRadius: 4,
-//                       offset: const Offset(0, 2),
-//                     ),
-//                   ],
-//                 ),
-//                 child: Center(
-//                   child: Text(
-//                     '拖拽我',
-//                     style: TextStyle(
-//                       color: Theme.of(context).colorScheme.onPrimary,
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
