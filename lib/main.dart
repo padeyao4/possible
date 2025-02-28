@@ -12,17 +12,18 @@ void main() {
 
 ThemeData darkTheme = ThemeData.dark().copyWith(
   colorScheme: ColorScheme.dark().copyWith(),
-  dividerColor: Colors.grey.shade400,
   splashFactory: NoSplash.splashFactory,
   highlightColor: Colors.transparent,
+  dividerTheme: const DividerThemeData(
+    thickness: 0.5,
+  ),
 );
 
 ThemeData lightTheme = ThemeData.light().copyWith(
-  colorScheme: ColorScheme.light(),
-  dividerColor: Colors.grey.shade400,
+  colorScheme: ColorScheme.light().copyWith(),
   dividerTheme: const DividerThemeData(
-    space: 1,
     thickness: 0.5,
+    color: Colors.grey,
   ),
   splashFactory: NoSplash.splashFactory,
   highlightColor: Colors.transparent,

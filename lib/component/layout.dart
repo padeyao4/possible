@@ -39,8 +39,6 @@ class DefaultLayout extends StatelessWidget {
                   ),
                   VerticalDivider(
                     width: 1,
-                    thickness: 0.5,
-                    color: Theme.of(context).dividerColor,
                   ),
                   Expanded(
                       child: Scaffold(
