@@ -1,18 +1,4 @@
-import 'package:flutter/material.dart';
-
 enum MyPage { today, backLog, project, test, demo }
-
-ThemeData darkTheme = ThemeData.dark().copyWith(
-    colorScheme: ColorScheme.dark(),
-    dividerColor: Colors.grey.shade300,
-    splashFactory: NoSplash.splashFactory,
-    highlightColor: Colors.transparent);
-
-ThemeData lightTheme = ThemeData.light().copyWith(
-    colorScheme: ColorScheme.light(),
-    dividerColor: Colors.grey.shade300,
-    splashFactory: NoSplash.splashFactory,
-    highlightColor: Colors.transparent);
 
 class MyIcons {
   static const String home =
