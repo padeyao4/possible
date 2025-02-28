@@ -5,6 +5,7 @@ import 'package:possible/model/node.dart';
 import 'package:possible/page/backlog.dart';
 import 'package:possible/page/demo.dart';
 import 'package:possible/page/project.dart';
+import 'package:possible/page/settings.dart';
 import 'package:possible/page/test.dart';
 import 'package:possible/page/today.dart';
 import 'package:possible/state/state.dart';
@@ -118,7 +119,9 @@ class NavBottom extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.to(() => SettingsPage());
+              },
               icon: const Icon(Icons.settings),
             ),
           ),
