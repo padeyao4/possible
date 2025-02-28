@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:possible/component/icons.dart';
-import 'package:possible/model/assets.dart';
-import 'package:possible/model/node.dart';
-import 'package:possible/state/state.dart';
-import 'package:provider/provider.dart';
+
+import '../model/assets.dart';
+import '../model/node.dart';
+
+const double kGridWidth = 120.0;
+const double kGridHeight = 80.0;
 
 class GraphWidget extends StatelessWidget {
-  final Node project;
-
+  final Rx<Plan> project;
   const GraphWidget({
     super.key,
     required this.project,
@@ -36,7 +38,7 @@ class GraphWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.secondaryContainer,
                 ),
-                child: GraphHeader(offset: project.offset),
+                child: Obx(() => GraphHeader(offset: project.value.offset)),
               ))
             ],
           ),
@@ -48,37 +50,62 @@ class GraphWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.secondaryContainer,
                   ),
-                  child: GraphRuler(offset: project.offset),
+                  child: Obx(() => GraphRuler(offset: project.value.offset)),
                 ),
                 Expanded(
                     child: GestureDetector(
                   onPanUpdate: (details) {
-                    project.offset += details.delta;
-                    context.read<MyState>().notify();
+                    project.update((value) {
+                      value?.offset += details.delta;
+                    });
                   },
-                  child: CustomPaint(
-                      painter: GridPainter(
-                          offset: project.offset, context: context),
-                      child: Stack(
-                        children: [
-                          for (var child in project.children)
-                            Positioned(
-                              left: child.position.dx * 120 + project.offset.dx,
-                              top: child.position.dy * 80 + project.offset.dy,
-                              child: Container(
-                                width: 120,
-                                height: 80,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Center(child: Text(child.name))
-                              )
-                            )
-                        ]
-                      )),
+                  child: Obx(() => Stack(children: [
+                        CustomPaint(
+                          painter: GridBackground(
+                              offset: project.value.offset, context: context),
+                          child: Stack(children: [
+                            for (var child in project.value.children)
+                              Positioned(
+                                  left: child.position.dx * kGridWidth +
+                                      project.value.offset.dx,
+                                  top: child.position.dy * kGridHeight +
+                                      project.value.offset.dy,
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        debugPrint('hello');
+                                      },
+                                      onPanUpdate: (details) {
+                                        // 更新 child.position
+                                        project.update((value) {
+                                          child.position += Offset(
+                                              details.delta.dx / kGridWidth,
+                                              details.delta.dy / kGridHeight);
+                                        });
+                                      },
+                                      onPanEnd: (details) {
+                                        // 确保 position 是整数
+                                        project.update((value) {
+                                          child.position = Offset(
+                                              child.position.dx.roundToDouble(),
+                                              child.position.dy
+                                                  .roundToDouble());
+                                        });
+                                      },
+                                      child: Container(
+                                          width: kGridWidth,
+                                          height: kGridHeight,
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primaryContainer,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: Center(
+                                              child: Text(child.name))))),
+                          ]),
+                        ),
+                      ])),
                 )),
               ],
             ),
@@ -98,8 +125,9 @@ class GraphWidget extends StatelessWidget {
                   IconButton(
                     style: ButtonStyle(),
                     onPressed: () {
-                      project.offset = Offset.zero;
-                      context.read<MyState>().notify();
+                      project.update((value) {
+                        value?.offset = Offset.zero;
+                      });
                     },
                     icon: Iconify(MyIcons.home),
                   )
@@ -121,14 +149,14 @@ class GraphHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      final itemCount = (constraints.maxWidth / 120).ceil() + 2;
-      var realValue = offset.dx / 120;
+      final itemCount = (constraints.maxWidth / kGridWidth).ceil() + 2;
+      var realValue = offset.dx / kGridWidth;
       var delta = realValue.toInt();
       delta = (realValue < 0 ? delta - 1 : delta);
       return Stack(
         children: [
           Positioned(
-            left: (offset.dx % 120).roundToDouble() - 120,
+            left: (offset.dx % kGridWidth).roundToDouble() - kGridWidth,
             child: Row(
               children: List.generate(
                 itemCount,
@@ -137,7 +165,7 @@ class GraphHeader extends StatelessWidget {
                     decoration: BoxDecoration(
                         border:
                             Border(right: BorderSide(color: Colors.black12))),
-                    width: 120,
+                    width: kGridWidth,
                     height: 40,
                     alignment: Alignment.center,
                     child: Text(
@@ -162,20 +190,20 @@ class GraphRuler extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      final itemCount = (constraints.maxHeight / 80).ceil() + 2;
-      var realValue = offset.dy / 80;
+      final itemCount = (constraints.maxHeight / kGridHeight).ceil() + 2;
+      var realValue = offset.dy / kGridHeight;
       var delta = realValue.toInt();
       delta = (realValue < 0 ? delta - 1 : delta);
       return Stack(
         children: [
           Positioned(
-            top: (offset.dy % 80).roundToDouble() - 80,
+            top: (offset.dy % kGridHeight).roundToDouble() - kGridHeight,
             child: Column(
               children: List.generate(
                 itemCount,
                 (index) => Container(
                   width: 40,
-                  height: 80,
+                  height: kGridHeight,
                   alignment: Alignment.center,
                   child: Text(
                     (index - delta).toString(),
@@ -190,11 +218,11 @@ class GraphRuler extends StatelessWidget {
   }
 }
 
-class GridPainter extends CustomPainter {
+class GridBackground extends CustomPainter {
   Offset offset;
   BuildContext context;
 
-  GridPainter({required this.offset, required this.context});
+  GridBackground({required this.offset, required this.context});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -204,19 +232,18 @@ class GridPainter extends CustomPainter {
       ..isAntiAlias = false
       ..strokeWidth = 1;
 
-    const double xStep = 120.0;
-    const double yStep = 80;
-
-    for (double x = 0; x < size.width; x += xStep) {
+    for (double x = 0; x < size.width; x += kGridWidth) {
       canvas.drawLine(
-          Offset((x + offset.dx % xStep).roundToDouble(), 0),
-          Offset((x + offset.dx % xStep).roundToDouble(), size.height),
+          Offset((x + offset.dx % kGridWidth).roundToDouble(), 0),
+          Offset((x + offset.dx % kGridWidth).roundToDouble(), size.height),
           paint);
     }
 
-    for (double y = 0; y < size.height; y += yStep) {
-      canvas.drawLine(Offset(0, (y + offset.dy % yStep).roundToDouble()),
-          Offset(size.width, (y + offset.dy % yStep).roundToDouble()), paint);
+    for (double y = 0; y < size.height; y += kGridHeight) {
+      canvas.drawLine(
+          Offset(0, (y + offset.dy % kGridHeight).roundToDouble()),
+          Offset(size.width, (y + offset.dy % kGridHeight).roundToDouble()),
+          paint);
     }
   }
 

@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class Node {
+class Plan {
   String id;
   String name;
   int index;
-  Offset position = Offset.zero;// 位置坐标
+  Offset position = Offset.zero; // 位置坐标
   Offset offset = Offset.zero; // 显示窗口偏移
-  Node? parent;
-  List<Node> children = [];
-  List<Node> pres = [];
-  List<Node> nexts = [];
+  Plan? parent;
+  RxList<Plan> children = RxList<Plan>();
+  RxList<Plan> pres = RxList<Plan>();
+  RxList<Plan> nexts = RxList<Plan>();
   bool completed = false;
 
-  Node({required this.id, required this.name, required this.index});
+  Plan({required this.id, required this.name, required this.index});
 
-  void addChild(Node node) {
+  void addChild(Plan node) {
     node.parent = this;
     children.add(node);
   }

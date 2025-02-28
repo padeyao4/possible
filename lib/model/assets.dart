@@ -1,4 +1,4 @@
-enum MyPage { home, backLog, project, test, demo }
+enum MyPage { today, backLog, project, test, demo }
 
 class MyIcons {
   static const String home =

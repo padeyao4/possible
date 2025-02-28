@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:possible/component/layout.dart';
 
-class Demo extends StatefulWidget {
-  const Demo({super.key});
+class DemoPage extends StatefulWidget {
+  const DemoPage({super.key});
 
   @override
-  State<Demo> createState() => _DemoState();
+  State<DemoPage> createState() => _DemoPageState();
 }
 
-class _DemoState extends State<Demo> {
+class _DemoPageState extends State<DemoPage> {
   Offset position = const Offset(100, 100);
 
   @override
@@ -18,54 +19,53 @@ class _DemoState extends State<Demo> {
     var size = MediaQuery.of(context).size;
     debugPrint('width: $width, height: $height');
     debugPrint('size: $size');
-    return Scaffold(
-      body: GestureDetector(
-        onPanUpdate: (details) {
-          setState(() {
-            position += details.delta;
-          });
-        },
-        child: CustomPaint(
-          painter: GridPainter(position: position),
-          child: Container(
-            width: width,
-            height: height,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black,
-                width: 1,
-              ),
-            ),
-            child: Stack(
-              alignment: Alignment.topLeft,
-              children: [
-                Positioned(
-                  left: position.dx,
-                  top: position.dy,
-                  child: SizedBox(
-                    width: 600,
-                    height: 600,
-                    child: Stack(
-                      alignment: Alignment.topLeft,
-                      children: [
-                        Positioned(
-                          left: 10,
-                          top: 10,
-                          child: Container(
-                            width: 100,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primaryContainer,
-                              borderRadius: BorderRadius.circular(8),
+    return DefaultLayout(
+      title: '例子',
+      child: Scaffold(
+        body: GestureDetector(
+          onPanUpdate: (details) {
+            setState(() {
+              position += details.delta;
+            });
+          },
+          child: CustomPaint(
+            painter: GridPainter(position: position),
+            child: Container(
+                width: width,
+                height: height,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 1,
+                  ),
+                ),
+                child: Stack(
+                  alignment: Alignment.topLeft,
+                  children: [
+                    Positioned(
+                        left: position.dx,
+                        top: position.dy,
+                        child: SizedBox(
+                          width: 600,
+                          height: 600,
+                          child: Stack(alignment: Alignment.topLeft, children: [
+                            Positioned(
+                              left: 10,
+                              top: 10,
+                              child: Container(
+                                  width: 100,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer,
+                                    borderRadius: BorderRadius.circular(8),
+                                  )),
                             )
-                          ),
-                        )
-                      ]
-                    ),
-                  )
-                )
-              ],
-            )
+                          ]),
+                        ))
+                  ],
+                )),
           ),
         ),
       ),
