@@ -141,12 +141,27 @@ class GridBackground extends CustomPainter {
       for (var next in child.value.nexts) {
         var from = child.value.position;
         var to = next.value.position;
-        canvas.drawLine(
-            Offset(from.dx * xStep + offset.dx + xStep,
-                from.dy * yStep + offset.dy + yStep / 2),
-            Offset(to.dx * xStep + offset.dx,
-                to.dy * yStep + offset.dy + yStep / 2),
-            paint);
+        var controlPoint1 = Offset(
+            (from.dx * xStep + offset.dx + xStep + to.dx * xStep + offset.dx) /
+                2,
+            from.dy * yStep + offset.dy + yStep / 2);
+        var controlPoint2 = Offset(
+            (from.dx * xStep + offset.dx + xStep + to.dx * xStep + offset.dx) /
+                2,
+            to.dy * yStep + offset.dy + yStep / 2);
+
+        var path = Path()
+          ..moveTo(from.dx * xStep + offset.dx + xStep,
+              from.dy * yStep + offset.dy + yStep / 2)
+          ..cubicTo(
+              controlPoint1.dx,
+              controlPoint1.dy,
+              controlPoint2.dx,
+              controlPoint2.dy,
+              to.dx * xStep + offset.dx,
+              to.dy * yStep + offset.dy + yStep / 2);
+
+        canvas.drawPath(path, paint);
       }
     }
   }
