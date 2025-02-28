@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:possible/page/today.dart';
 import 'package:possible/state/state.dart';
-import 'package:provider/provider.dart';
 
 void main() {
   // 设置本地时区
@@ -28,17 +27,14 @@ class MyApp extends StatelessWidget {
         splashFactory: NoSplash.splashFactory,
         highlightColor: Colors.transparent);
 
-    return ChangeNotifierProvider(
-      create: (context) => MyState(),
-      child: GetMaterialApp(
-        title: 'Possible',
-        debugShowCheckedModeBanner: false,
-        theme: context.isDarkMode ? darkTheme : lightTheme,
-        initialBinding: BindingsBuilder(() {
-          Get.put(DataController());
-        }),
-        home: TodayPage(),
-      ),
+    return GetMaterialApp(
+      title: 'Possible',
+      debugShowCheckedModeBanner: false,
+      theme: context.isDarkMode ? darkTheme : lightTheme,
+      initialBinding: BindingsBuilder(() {
+        Get.put(DataController());
+      }),
+      home: TodayPage(),
     );
   }
 }

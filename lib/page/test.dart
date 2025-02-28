@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:possible/component/layout.dart';
 import 'package:possible/model/node.dart';
 import 'package:possible/state/state.dart';
-import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 Plan createNode(Offset position) {
@@ -34,8 +33,6 @@ class TestPage extends StatelessWidget {
             children: [
               TextButton(
                   onPressed: () {
-                    // context.read<MyState>().cleanProjects();
-                    // context.read<MyState>().cleanBacklogs();
                     controller.cleanAll();
                   },
                   style: TextButton.styleFrom(

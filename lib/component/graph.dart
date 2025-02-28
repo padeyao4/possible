@@ -53,57 +53,60 @@ class GraphWidget extends StatelessWidget {
                   child: Obx(() => GraphRuler(offset: project.value.offset)),
                 ),
                 Expanded(
-                    child: Obx(() => GestureDetector(
-                          onPanUpdate: (details) {
-                            project.value.offset += details.delta;
-                          },
-                          child: CustomPaint(
-                              painter: GridPainter(
-                                  offset: project.value.offset,
-                                  context: context),
-                              child: Obx(() => (Stack(children: [
-                                    for (var child in project.value.children)
-                                      Positioned(
-                                          left: child.position.dx * kGridWidth +
-                                              project.value.offset.dx,
-                                          top: child.position.dy * kGridHeight +
-                                              project.value.offset.dy,
-                                          child: GestureDetector(
-                                              onTap: () {
-                                                debugPrint('hello');
-                                              },
-                                              onPanUpdate: (details) {
-                                                // 更新 child.position
-                                                child.position += Offset(
-                                                    details.delta.dx /
-                                                        kGridWidth,
-                                                    details.delta.dy /
-                                                        kGridHeight);
-                                              },
-                                              onPanEnd: (details) {
-                                                // 确保 position 是整数
-                                                child.position = Offset(
-                                                    child.position.dx
-                                                        .roundToDouble(),
-                                                    child.position.dy
-                                                        .roundToDouble());
-                                              },
-                                              child: Container(
-                                                  width: kGridWidth,
-                                                  height: kGridHeight,
-                                                  decoration: BoxDecoration(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .primaryContainer,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                  ),
-                                                  child: Center(
-                                                      child:
-                                                          Text(child.name))))),
-                                  ])))),
-                        ))),
+                    child: GestureDetector(
+                  onPanUpdate: (details) {
+                    project.update((value) {
+                      value?.offset += details.delta;
+                    });
+                  },
+                  child: Obx(() => Stack(children: [
+                        CustomPaint(
+                          painter: GridBackground(
+                              offset: project.value.offset, context: context),
+                          child: Stack(children: [
+                            for (var child in project.value.children)
+                              Positioned(
+                                  left: child.position.dx * kGridWidth +
+                                      project.value.offset.dx,
+                                  top: child.position.dy * kGridHeight +
+                                      project.value.offset.dy,
+                                  child: GestureDetector(
+                                      onTap: () {
+                                        debugPrint('hello');
+                                      },
+                                      onPanUpdate: (details) {
+                                        // 更新 child.position
+                                        project.update((value) {
+                                          child.position += Offset(
+                                              details.delta.dx / kGridWidth,
+                                              details.delta.dy / kGridHeight);
+                                        });
+                                      },
+                                      onPanEnd: (details) {
+                                        // 确保 position 是整数
+                                        project.update((value) {
+                                          child.position = Offset(
+                                              child.position.dx.roundToDouble(),
+                                              child.position.dy
+                                                  .roundToDouble());
+                                        });
+                                      },
+                                      child: Container(
+                                          width: kGridWidth,
+                                          height: kGridHeight,
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primaryContainer,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: Center(
+                                              child: Text(child.name))))),
+                          ]),
+                        ),
+                      ])),
+                )),
               ],
             ),
           ),
@@ -122,8 +125,9 @@ class GraphWidget extends StatelessWidget {
                   IconButton(
                     style: ButtonStyle(),
                     onPressed: () {
-                      project.value.offset = Offset.zero;
-                      // context.read<MyState>().notify();
+                      project.update((value) {
+                        value?.offset = Offset.zero;
+                      });
                     },
                     icon: Iconify(MyIcons.home),
                   )
@@ -214,11 +218,11 @@ class GraphRuler extends StatelessWidget {
   }
 }
 
-class GridPainter extends CustomPainter {
+class GridBackground extends CustomPainter {
   Offset offset;
   BuildContext context;
 
-  GridPainter({required this.offset, required this.context});
+  GridBackground({required this.offset, required this.context});
 
   @override
   void paint(Canvas canvas, Size size) {
