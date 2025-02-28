@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:possible/component/layout.dart';
-import 'package:possible/state/state.dart';
-import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 import 'package:possible/model/node.dart';
+import 'package:possible/state/state.dart';
+import 'package:uuid/uuid.dart';
 
 class ExpendController extends GetxController {
   var isExpend = false.obs;
@@ -47,7 +46,6 @@ class BottomInput extends GetView<DataController> {
   @override
   Widget build(BuildContext context) {
     var textController = TextEditingController();
-    DataController controller = Get.find();
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
       child: TextField(
@@ -81,11 +79,10 @@ class CountButton extends GetView<DataController> {
 
   @override
   Widget build(BuildContext context) {
-    ExpendController controller = Get.find();
-    DataController dataController = Get.find();
+    ExpendController expendController = Get.find();
 
     return Obx(() {
-      var backlogs = dataController.backlogs
+      var backlogs = controller.backlogs
           .where((element) => element.value.completed)
           .toList();
       return Visibility(
@@ -104,14 +101,14 @@ class CountButton extends GetView<DataController> {
                       horizontal: 12.0, vertical: 12.0),
                 ),
                 onPressed: () {
-                  controller.changeValue();
+                  expendController.changeValue();
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Obx(() {
-                      return Icon(controller.isExpend.value
+                      return Icon(expendController.isExpend.value
                           ? Icons.arrow_drop_down
                           : Icons.arrow_right);
                     }),
@@ -136,8 +133,6 @@ class BacklogItems extends GetView<DataController> {
 
   @override
   Widget build(BuildContext context) {
-    DataController controller = Get.find();
-
     return Visibility(
       visible: show,
       child: Obx(() {

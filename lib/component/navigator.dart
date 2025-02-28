@@ -8,7 +8,6 @@ import 'package:possible/page/project.dart';
 import 'package:possible/page/test.dart';
 import 'package:possible/page/today.dart';
 import 'package:possible/state/state.dart';
-import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import 'icons.dart';
@@ -134,7 +133,6 @@ class NavBodyList extends GetView<DataController> {
 
   @override
   Widget build(BuildContext context) {
-    DataController controller = Get.find();
     return Expanded(
         child: Obx(
       () => ReorderableListView.builder(
@@ -205,7 +203,6 @@ class ReorderItem extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           onTap: () {
-            // todo 传递参数
             Get.offAll(() => ProjectPage(),
                 arguments: {'id': project.id},
                 transition: Transition.noTransition);

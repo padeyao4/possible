@@ -9,7 +9,6 @@ class ProjectPage extends GetView<DataController> {
 
   @override
   Widget build(BuildContext context) {
-    DataController controller = Get.find();
     var projects = controller.projects
         .where((element) => element.value.id == Get.arguments['id'])
         .toList();
