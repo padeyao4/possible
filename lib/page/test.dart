@@ -76,12 +76,13 @@ class TestPage extends StatelessWidget {
                           .randomGenerator; // 优化点：减少重复调用faker.randomGenerator
                       for (var j = 0; j < 10; j++) {
                         node.addChild(createNode(Offset(
-                            randomGenerator
-                                .integer(20, min: -20)
-                                .toDouble(), // 优化点：使用randomGenerator减少重复调用
-                            randomGenerator
-                                .integer(20, min: -20)
-                                .toDouble()))); // 优化点：使用randomGenerator减少重复调用
+                                randomGenerator
+                                    .integer(20, min: -20)
+                                    .toDouble(), // 优化点：使用randomGenerator减少重复调用
+                                randomGenerator
+                                    .integer(20, min: -20)
+                                    .toDouble()))
+                            .obs); // 优化点：使用randomGenerator减少重复调用
                       }
                       controller.projects.add(node.obs);
                     }

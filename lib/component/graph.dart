@@ -65,44 +65,7 @@ class GraphWidget extends StatelessWidget {
                               offset: project.value.offset, context: context),
                           child: Stack(children: [
                             for (var child in project.value.children)
-                              Positioned(
-                                  left: child.position.dx * kGridWidth +
-                                      project.value.offset.dx,
-                                  top: child.position.dy * kGridHeight +
-                                      project.value.offset.dy,
-                                  child: GestureDetector(
-                                      onTap: () {
-                                        debugPrint('hello');
-                                      },
-                                      onPanUpdate: (details) {
-                                        // 更新 child.position
-                                        project.update((value) {
-                                          child.position += Offset(
-                                              details.delta.dx / kGridWidth,
-                                              details.delta.dy / kGridHeight);
-                                        });
-                                      },
-                                      onPanEnd: (details) {
-                                        // 确保 position 是整数
-                                        project.update((value) {
-                                          child.position = Offset(
-                                              child.position.dx.roundToDouble(),
-                                              child.position.dy
-                                                  .roundToDouble());
-                                        });
-                                      },
-                                      child: Container(
-                                          width: kGridWidth,
-                                          height: kGridHeight,
-                                          decoration: BoxDecoration(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primaryContainer,
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          child: Center(
-                                              child: Text(child.name))))),
+                              PlanCard(child: child),
                           ]),
                         ),
                       ])),
@@ -138,6 +101,50 @@ class GraphWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class PlanCard extends StatelessWidget {
+  const PlanCard({
+    super.key,
+    required this.child,
+  });
+
+  final Rx<Plan> child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() => Positioned(
+        left: child.value.position.dx * kGridWidth +
+            (child.value.parent?.offset.dx ?? 0),
+        top: child.value.position.dy * kGridHeight +
+            (child.value.parent?.offset.dy ?? 0),
+        child: GestureDetector(
+            onTap: () {
+              debugPrint('hello');
+            },
+            onPanUpdate: (details) {
+              // 更新 child.position
+              child.update((value) {
+                value?.position += Offset(details.delta.dx / kGridWidth,
+                    details.delta.dy / kGridHeight);
+              });
+            },
+            onPanEnd: (details) {
+              // 确保 position 是整数
+              child.update((value) {
+                value?.position = Offset(value.position.dx.roundToDouble(),
+                    value.position.dy.roundToDouble());
+              });
+            },
+            child: Container(
+                width: kGridWidth,
+                height: kGridHeight,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Center(child: Text(child.value.name))))));
   }
 }
 

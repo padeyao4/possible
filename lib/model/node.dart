@@ -8,15 +8,15 @@ class Plan {
   Offset position = Offset.zero; // 位置坐标
   Offset offset = Offset.zero; // 显示窗口偏移
   Plan? parent;
-  RxList<Plan> children = RxList<Plan>();
-  RxList<Plan> pres = RxList<Plan>();
-  RxList<Plan> nexts = RxList<Plan>();
+  RxList<Rx<Plan>> children = RxList();
+  RxList<Rx<Plan>> pres = RxList();
+  RxList<Rx<Plan>> nexts = RxList();
   bool completed = false;
 
   Plan({required this.id, required this.name, required this.index});
 
-  void addChild(Plan node) {
-    node.parent = this;
+  void addChild(Rx<Plan> node) {
+    node.value.parent = this;
     children.add(node);
   }
 }
