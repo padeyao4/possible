@@ -11,9 +11,13 @@ class Plan {
   RxList<Rx<Plan>> children = RxList();
   RxList<Rx<Plan>> pres = RxList();
   RxList<Rx<Plan>> nexts = RxList();
-  bool completed = false;
+  bool completed;
 
-  Plan({required this.id, required this.name, required this.index});
+  Plan(
+      {required this.id,
+      required this.name,
+      required this.index,
+      this.completed = false});
 
   void addChild(Rx<Plan> node) {
     node.value.parent = this;

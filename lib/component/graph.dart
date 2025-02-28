@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:possible/component/icons.dart';
-
-import '../model/assets.dart';
-import '../model/node.dart';
+import 'package:possible/model/assets.dart';
+import 'package:possible/model/node.dart';
 
 const double kGridWidth = 120.0;
 const double kGridHeight = 80.0;
