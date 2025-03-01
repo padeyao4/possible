@@ -18,21 +18,18 @@ class NavigatorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        color: Theme.of(context).colorScheme.surfaceContainerLow,
-        child: Column(children: [
-          NavHeaderList(),
-          Divider(
-            height: 1,
-          ),
-          NavBodyList(),
-          Divider(
-            height: 1,
-          ),
-          NavBottom(),
-        ]),
-      ),
+    return Scaffold(
+      body: Column(children: [
+        NavHeaderList(),
+        Divider(
+          height: 1,
+        ),
+        NavBodyList(),
+        Divider(
+          height: 1,
+        ),
+        NavBottom(),
+      ]),
     );
   }
 }
@@ -204,7 +201,8 @@ class ReorderItem extends StatelessWidget {
           onTap: () {
             Get.offAll(() => ProjectPage(),
                 arguments: {'id': project.id},
-                transition: Transition.noTransition);
+                transition: Transition.noTransition,
+                duration: const Duration(milliseconds: 0));
           },
         ),
       ),
@@ -232,7 +230,8 @@ class NavHeaderList extends StatelessWidget {
               title: const Text('我的一天'),
               onTap: () {
                 Get.offAll(() => TodayPage(),
-                    transition: Transition.noTransition);
+                    transition: Transition.noTransition,
+                    duration: const Duration(milliseconds: 0));
               },
             ),
             SizedBox(height: 4),
@@ -244,7 +243,8 @@ class NavHeaderList extends StatelessWidget {
               title: const Text('备忘录'),
               onTap: () {
                 Get.offAll(() => BackLogPage(),
-                    transition: Transition.noTransition);
+                    transition: Transition.noTransition,
+                    duration: const Duration(milliseconds: 0));
               },
             ),
             SizedBox(height: 4),
@@ -256,7 +256,8 @@ class NavHeaderList extends StatelessWidget {
               title: const Text('测试'),
               onTap: () {
                 Get.offAll(() => TestPage(),
-                    transition: Transition.noTransition);
+                    transition: Transition.noTransition,
+                    duration: const Duration(milliseconds: 0));
               },
             ),
             SizedBox(height: 4),
@@ -268,7 +269,8 @@ class NavHeaderList extends StatelessWidget {
               title: const Text('例子'),
               onTap: () {
                 Get.offAll(() => DemoPage(),
-                    transition: Transition.noTransition);
+                    transition: Transition.noTransition,
+                    duration: const Duration(milliseconds: 0));
               },
             ),
           ],

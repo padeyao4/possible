@@ -7,27 +7,16 @@ class DefaultLayout extends StatelessWidget {
 
   const DefaultLayout({super.key, required this.title, required this.child});
 
-  Widget _buildDrawer() {
-    return const Drawer(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.zero,
-      ),
-      child: NavigatorWidget(),
-    );
-  }
-
   PreferredSizeWidget _buildAppBar(bool isPhone) {
     return AppBar(
-      title: isPhone ? Center(child: Text(title)) : Text(title),
-      elevation: 0,
+      title: Text(title),
     );
   }
 
   Widget _buildMobileLayout() {
     return Scaffold(
       appBar: _buildAppBar(true),
-      drawer: _buildDrawer(),
+      drawer: NavigatorWidget(),
       drawerEnableOpenDragGesture: true,
       body: child,
     );
