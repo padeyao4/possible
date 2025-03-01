@@ -9,17 +9,13 @@ class DefaultLayout extends GetView<DataController> {
 
   const DefaultLayout({super.key, required this.title, required this.child});
 
-  PreferredSizeWidget _buildAppBar(bool isPhone) {
-    return AppBar(
-      title: Text(title),
-    );
-  }
-
   Widget _buildMobileLayout() {
     return Scaffold(
-      appBar: _buildAppBar(true),
+      appBar: AppBar(
+        title: Text(title),
+      ),
       drawer: NavigatorWidget(),
-      endDrawer: DetailWidget(),
+      endDrawer: Obx(() => DetailWidget()),
       drawerEnableOpenDragGesture: true,
       body: child,
     );
@@ -28,23 +24,18 @@ class DefaultLayout extends GetView<DataController> {
   Widget _buildDesktopLayout() {
     return Row(
       children: [
-        const Card(
-          margin: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.zero,
-          ),
-          elevation: 0,
-          child: SizedBox(width: 240, child: NavigatorWidget()),
-        ),
+        SizedBox(width: 250, child: NavigatorWidget()),
         const VerticalDivider(width: 0.5),
         Expanded(
           child: Scaffold(
-            appBar: _buildAppBar(false),
+            appBar: AppBar(
+              title: Text(title),
+            ),
             body: child,
           ),
         ),
         Obx(() => Visibility(
-              visible: controller.showRightZoo.value,
+              visible: controller.isDetailOpen.value,
               child: Row(
                 children: [
                   const VerticalDivider(width: 0.5),
@@ -59,12 +50,38 @@ class DefaultLayout extends GetView<DataController> {
     );
   }
 
+  Widget _buildSmallDesktopLayout() {
+    return Scaffold(
+      key: controller.scaffoldKey,
+      appBar: AppBar(
+        title: Text(title),
+        actions: [SizedBox()],
+      ),
+      body: child,
+      drawer: SizedBox(
+        width: 250,
+        child: NavigatorWidget(),
+      ),
+      endDrawer: Drawer(
+          width: 320,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.zero,
+          ),
+          child: DetailWidget()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isPhone = constraints.maxWidth < 800;
-        return isPhone ? _buildMobileLayout() : _buildDesktopLayout();
+        if (GetPlatform.isDesktop) {
+          if (constraints.maxWidth < 790) {
+            return _buildSmallDesktopLayout();
+          }
+          return _buildDesktopLayout();
+        }
+        return _buildMobileLayout();
       },
     );
   }
@@ -78,7 +95,7 @@ class DetailWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text("hello"),
+      body: Container(color: Colors.grey, child: Text("hello")),
     );
   }
 }
