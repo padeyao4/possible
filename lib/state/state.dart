@@ -4,6 +4,7 @@ import 'package:possible/model/node.dart';
 class DataController extends GetxController {
   final projects = RxList<Rx<Plan>>();
   final backlogs = RxList<Rx<Plan>>();
+  var showRightZoo = false.obs;
 
   void cleanAll() {
     projects.clear();

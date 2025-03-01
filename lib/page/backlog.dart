@@ -197,6 +197,8 @@ class BacklogItems extends GetView<DataController> {
                   ),
                   onTap: () {
                     debugPrint('Tapped on: ${backlogs[index].value.name}');
+                    controller.showRightZoo.value =
+                        !controller.showRightZoo.value;
                   },
                 ),
               ),

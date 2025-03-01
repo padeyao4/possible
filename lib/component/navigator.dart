@@ -10,8 +10,7 @@ import 'package:possible/page/test.dart';
 import 'package:possible/page/today.dart';
 import 'package:possible/state/state.dart';
 import 'package:uuid/uuid.dart';
-
-import 'icons.dart';
+import 'package:possible/component/icons.dart';
 
 class NavigatorWidget extends StatelessWidget {
   const NavigatorWidget({super.key});

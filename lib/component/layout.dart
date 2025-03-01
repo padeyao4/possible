@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:possible/component/navigator.dart';
+import 'package:possible/state/state.dart';
 
-class DefaultLayout extends StatelessWidget {
+class DefaultLayout extends GetView<DataController> {
   final String title;
   final Widget child;
 
@@ -17,6 +19,7 @@ class DefaultLayout extends StatelessWidget {
     return Scaffold(
       appBar: _buildAppBar(true),
       drawer: NavigatorWidget(),
+      endDrawer: DetailWidget(),
       drawerEnableOpenDragGesture: true,
       body: child,
     );
@@ -40,6 +43,18 @@ class DefaultLayout extends StatelessWidget {
             body: child,
           ),
         ),
+        Obx(() => Visibility(
+              visible: controller.showRightZoo.value,
+              child: Row(
+                children: [
+                  const VerticalDivider(width: 0.5),
+                  SizedBox(
+                    width: 360,
+                    child: DetailWidget(),
+                  ),
+                ],
+              ),
+            ))
       ],
     );
   }
@@ -51,6 +66,19 @@ class DefaultLayout extends StatelessWidget {
         final isPhone = constraints.maxWidth < 800;
         return isPhone ? _buildMobileLayout() : _buildDesktopLayout();
       },
+    );
+  }
+}
+
+class DetailWidget extends StatelessWidget {
+  const DetailWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Text("hello"),
     );
   }
 }
