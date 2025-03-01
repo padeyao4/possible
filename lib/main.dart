@@ -15,7 +15,7 @@ ThemeData darkTheme = ThemeData.dark().copyWith(
   splashFactory: NoSplash.splashFactory,
   highlightColor: Colors.transparent,
   dividerTheme: const DividerThemeData(
-    thickness: 0.5,
+    thickness: 1,
   ),
 );
 
