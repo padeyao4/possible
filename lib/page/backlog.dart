@@ -30,9 +30,13 @@ class BackLogPage extends StatelessWidget {
               shape: const CircleBorder(),
               onPressed: () {
                 controller.isFloatButton.value = false;
-                Get.bottomSheet(const BottomInput(),
-                        barrierColor: Colors.transparent)
-                    .whenComplete(() {
+                Get.bottomSheet(
+                  const BottomInput(),
+                  barrierColor: Theme.of(context)
+                      .colorScheme
+                      .surfaceContainerLow
+                      .withAlpha(128),
+                ).whenComplete(() {
                   controller.isFloatButton.value = true;
                 });
               },
@@ -60,10 +64,12 @@ class BottomInput extends GetView<DataController> {
   @override
   Widget build(BuildContext context) {
     var textController = TextEditingController();
+    final focusNode = FocusNode();
     return Container(
-      color: Colors.transparent,
+      color: Theme.of(context).colorScheme.surface,
       padding: const EdgeInsets.all(16.0),
       child: TextField(
+        focusNode: focusNode,
         autofocus: true,
         decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -82,6 +88,7 @@ class BottomInput extends GetView<DataController> {
             );
             controller.backlogs.add(node.obs);
             textController.clear();
+            focusNode.requestFocus();
           }
         },
       ),
@@ -217,37 +224,42 @@ class BacklogDetail extends GetView<DataController> {
   const BacklogDetail({super.key, required this.plan});
   @override
   Widget build(BuildContext context) {
-    var textController = TextEditingController(text: plan.name);
-
     return Scaffold(
       backgroundColor: Colors.amber,
       appBar: AppBar(
-        actions: [],
+        title: Text("备忘录"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: textController,
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                const Text('完成状态'),
-                Checkbox(
-                  value: plan.completed,
-                  onChanged: (value) {
-                    plan.completed = value!;
-                    controller.updateBacklog(plan);
-                  },
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("data"),
+          Expanded(
+              child: ListView(
+            children: [
+              Card(
+                child: Text("111"),
+              )
+            ],
+          )),
+          Divider(
+            height: 1,
+          ),
+          SizedBox(
+              height: 48,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: EdgeInsets.only(right: 16),
+                  child: IconButton(
+                      onPressed: () {
+                        controller.backlogs
+                            .removeWhere((item) => item.value.id == plan.id);
+                        Get.back();
+                      },
+                      icon: Icon(Icons.delete_outline)),
                 ),
-              ],
-            ),
-            // 可以根据需要添加更多的信息展示和编辑字段
-          ],
-        ),
+              ))
+        ],
       ),
     );
   }

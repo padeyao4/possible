@@ -12,6 +12,7 @@ class Plan {
   RxList<Rx<Plan>> pres = RxList();
   RxList<Rx<Plan>> nexts = RxList();
   bool completed;
+  String? note; // 添加备注属性
 
   Plan(
       {required this.id,
