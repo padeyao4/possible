@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:possible/model/node.dart';
 import 'package:possible/page/backlog.dart';
 import 'package:possible/page/test.dart';
 import 'package:possible/page/today.dart';
 import 'package:possible/state/state.dart';
+import 'package:uuid/uuid.dart';
 
 // 定义常量，用于设置间距
 const double itemSpacing = 4;
@@ -51,16 +53,20 @@ class HomePage extends GetView<DataController> {
               ),
               SizedBox(height: itemSpacing / 2),
               Expanded(
-                child: ListView.separated(
-                  itemBuilder: (context, index) => ListTile(
-                    leading: Icon(Icons.list),
-                    title: Text('$index'),
-                    onTap: () => {},
-                  ),
-                  separatorBuilder: (context, index) =>
-                      SizedBox(height: itemSpacing),
-                  itemCount: 2,
-                ),
+                child: Obx(() => ListView.builder(
+                      itemCount: controller.projects.length,
+                      itemBuilder: (context, index) {
+                        var project = controller.projects[index].value;
+                        return ListTile(
+                          key: ValueKey(project.id),
+                          leading: Icon(Icons.list),
+                          title: Text(project.name),
+                          onTap: () {
+                            // todo 跳转到project
+                          },
+                        );
+                      },
+                    )),
               ),
               SizedBox(
                 height: itemSpacing,
@@ -71,6 +77,52 @@ class HomePage extends GetView<DataController> {
                   color: Colors.blue,
                 ),
                 title: Text('新建项目', style: TextStyle(color: Colors.blue)),
+                onTap: () {
+                  var textController = TextEditingController();
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('新建项目'),
+                        content: TextField(
+                          controller: textController,
+                          autofocus: true,
+                          decoration: InputDecoration(
+                            hintText: '请输入项目名称',
+                          ),
+                          onSubmitted: (value) {
+                            var project = Plan(
+                                id: const Uuid().v4(),
+                                name: textController.text,
+                                index: DateTime.now().millisecondsSinceEpoch);
+                            controller.projects.add(project.obs);
+                            Get.back();
+                          },
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Get.back(); // 使用GetX关闭对话框
+                            },
+                            child: Text('取消'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              var project = Plan(
+                                  id: const Uuid().v4(),
+                                  name: textController.text,
+                                  index: DateTime.now().millisecondsSinceEpoch);
+                              controller.projects.add(project.obs);
+                              // 处理新建项目的逻辑
+                              Get.back(); // 使用GetX关闭对话框
+                            },
+                            child: Text('确定'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
               )
             ],
           ),
