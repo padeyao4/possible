@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:possible/page/today.dart';
+import 'package:possible/page/home.dart';
 import 'package:possible/state/state.dart';
 
 void main() {
@@ -45,16 +46,24 @@ class MyApp extends StatelessWidget {
       );
     }
 
+    // 设置状态栏颜色与背景颜色一致
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Theme.of(context).colorScheme.surface,
+      statusBarIconBrightness: Theme.of(context).brightness == Brightness.light
+          ? Brightness.dark
+          : Brightness.light,
+    ));
+
     return GetMaterialApp(
       title: 'Possible',
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
       darkTheme: darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       initialBinding: BindingsBuilder(() {
         Get.put(DataController());
       }),
-      home: TodayPage(),
+      home: HomePage(),
     );
   }
 }

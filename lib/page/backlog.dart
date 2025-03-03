@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:possible/component/layout.dart';
 import 'package:possible/model/node.dart';
 import 'package:possible/state/state.dart';
 import 'package:uuid/uuid.dart';
 
-class ExpendController extends GetxController {
+class BackLogPageController extends GetxController {
   var isExpend = false.obs;
+  var isFloatButton = true.obs;
 
   void changeValue() {
     isExpend.value = !isExpend.value;
@@ -18,23 +18,37 @@ class BackLogPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final expendController = Get.put(ExpendController());
+    final controller = Get.put(BackLogPageController());
 
-    return DefaultLayout(
-      title: '备忘录',
-      child: Scaffold(
-        body: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-          children: [
-            const BacklogItems(),
-            const CountButton(),
-            Obx(() => BacklogItems(
-                  completed: true,
-                  show: expendController.isExpend.value,
-                )),
-          ],
-        ),
-        bottomNavigationBar: BottomInput(),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('备忘录'),
+      ),
+      floatingActionButton: Obx(() => Visibility(
+            visible: controller.isFloatButton.value,
+            child: FloatingActionButton(
+              onPressed: () {
+                controller.isFloatButton.value = false;
+                Get.bottomSheet(const BottomInput(),
+                        backgroundColor: Theme.of(context).colorScheme.surface,
+                        barrierColor: Colors.transparent)
+                    .whenComplete(() {
+                  controller.isFloatButton.value = true;
+                });
+              },
+              child: const Icon(Icons.add),
+            ),
+          )),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+        children: [
+          const BacklogItems(),
+          const CountButton(),
+          Obx(() => BacklogItems(
+                completed: true,
+                show: controller.isExpend.value,
+              )),
+        ],
       ),
     );
   }
@@ -46,8 +60,10 @@ class BottomInput extends GetView<DataController> {
   @override
   Widget build(BuildContext context) {
     var textController = TextEditingController();
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+    return Container(
+      width: double.infinity,
+      color: Theme.of(context).colorScheme.surface,
+      padding: const EdgeInsets.all(16.0),
       child: TextField(
         autofocus: true,
         decoration: InputDecoration(
@@ -79,7 +95,7 @@ class CountButton extends GetView<DataController> {
 
   @override
   Widget build(BuildContext context) {
-    ExpendController expendController = Get.find();
+    BackLogPageController expendController = Get.find();
 
     return Obx(() {
       var backlogs = controller.backlogs
@@ -140,19 +156,9 @@ class BacklogItems extends GetView<DataController> {
             .where((element) => element.value.completed == completed)
             .toList();
 
-        return ReorderableListView.builder(
+        return ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          proxyDecorator: (child, index, animation) {
-            return child;
-          },
-          onReorder: (oldIndex, newIndex) {
-            if (newIndex > oldIndex) {
-              newIndex -= 1;
-            }
-            final item = backlogs.removeAt(oldIndex);
-            backlogs.insert(newIndex, item);
-          },
           itemCount: backlogs.length,
           itemBuilder: (context, index) {
             return Material(
@@ -183,18 +189,15 @@ class BacklogItems extends GetView<DataController> {
                       });
                     },
                   ),
-                  title: Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: Obx(() => Text(
-                          backlogs[index].value.name,
-                          style: TextStyle(
-                            decoration: backlogs[index].value.completed
-                                ? TextDecoration.lineThrough
-                                : TextDecoration.none,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        )),
-                  ),
+                  title: Obx(() => Text(
+                        backlogs[index].value.name,
+                        style: TextStyle(
+                          decoration: backlogs[index].value.completed
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      )),
                   onTap: () {
                     debugPrint('Tapped on: ${backlogs[index].value.name}');
                     controller.changeDetailState();
