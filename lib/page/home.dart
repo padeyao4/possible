@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:possible/model/node.dart';
 import 'package:possible/page/backlog.dart';
+import 'package:possible/page/demo.dart';
 import 'package:possible/page/project.dart';
 import 'package:possible/page/test.dart';
 import 'package:possible/page/today.dart';
@@ -121,14 +122,19 @@ class HomePage extends GetView<DataController> {
                     onTap: () => Get.to(() => TestPage(),
                         transition: Transition.rightToLeft),
                   ),
+                  buildNavigationListTile(
+                      icon: Icons.abc_outlined,
+                      title: "例子",
+                      onTap: () => Get.to(() => DemoPage(),
+                          transition: Transition.rightToLeft))
                 ],
               ),
               SizedBox(height: itemSpacing / 2),
               Divider(height: 1),
-              SizedBox(height: itemSpacing / 2),
+              SizedBox(height: itemSpacing),
               // 构建项目列表
               Expanded(
-                child: Obx(() => ListView.builder(
+                child: Obx(() => ListView.separated(
                       itemCount: controller.projects.length,
                       itemBuilder: (context, index) {
                         var project = controller.projects[index];
@@ -142,6 +148,11 @@ class HomePage extends GetView<DataController> {
                                 arguments: project,
                                 transition: Transition.rightToLeft);
                           },
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return SizedBox(
+                          height: itemSpacing,
                         );
                       },
                     )),

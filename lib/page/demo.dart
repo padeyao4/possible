@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:possible/component/layout.dart';
 import 'package:possible/model/node.dart';
 
 final double xStep = 120.0;
@@ -35,34 +34,34 @@ class DemoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultLayout(
-      title: '例子',
-      child: Scaffold(
-        body: GestureDetector(
-          onPanUpdate: (details) {
-            controller.project.update((value) {
-              value?.offset += details.delta;
-            });
-          },
-          child: Obx(() => CustomPaint(
-                painter: GridBackground(),
-                child: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 1,
-                      ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("例子"),
+      ),
+      body: GestureDetector(
+        onPanUpdate: (details) {
+          controller.project.update((value) {
+            value?.offset += details.delta;
+          });
+        },
+        child: Obx(() => CustomPaint(
+              painter: GridBackground(),
+              child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 1,
                     ),
-                    child: Stack(
-                      children: [
-                        ...controller.project.value.children
-                            .map((child) => DemoCard(plan: child)),
-                      ],
-                    )),
-              )),
-        ),
+                  ),
+                  child: Stack(
+                    children: [
+                      ...controller.project.value.children
+                          .map((child) => DemoCard(plan: child)),
+                    ],
+                  )),
+            )),
       ),
     );
   }

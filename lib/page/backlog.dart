@@ -30,7 +30,6 @@ class BackLogPage extends StatelessWidget {
               onPressed: () {
                 controller.isFloatButton.value = false;
                 Get.bottomSheet(const BottomInput(),
-                        backgroundColor: Theme.of(context).colorScheme.surface,
                         barrierColor: Colors.transparent)
                     .whenComplete(() {
                   controller.isFloatButton.value = true;
@@ -61,8 +60,7 @@ class BottomInput extends GetView<DataController> {
   Widget build(BuildContext context) {
     var textController = TextEditingController();
     return Container(
-      width: double.infinity,
-      color: Theme.of(context).colorScheme.surface,
+      color: Colors.transparent,
       padding: const EdgeInsets.all(16.0),
       child: TextField(
         autofocus: true,
