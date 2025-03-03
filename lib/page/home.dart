@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:possible/model/node.dart';
 import 'package:possible/page/backlog.dart';
+import 'package:possible/page/project.dart';
 import 'package:possible/page/test.dart';
 import 'package:possible/page/today.dart';
 import 'package:possible/state/state.dart';
@@ -130,13 +131,16 @@ class HomePage extends GetView<DataController> {
                 child: Obx(() => ListView.builder(
                       itemCount: controller.projects.length,
                       itemBuilder: (context, index) {
-                        var project = controller.projects[index].value;
+                        var project = controller.projects[index];
                         return ListTile(
-                          key: ValueKey(project.id),
+                          key: ValueKey(project.value.id),
                           leading: Icon(Icons.list),
-                          title: Text(project.name),
+                          title: Text(project.value.name),
                           onTap: () {
                             // todo 跳转到project
+                            Get.to(() => ProjectPage(),
+                                arguments: project,
+                                transition: Transition.rightToLeft);
                           },
                         );
                       },
