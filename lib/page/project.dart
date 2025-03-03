@@ -159,6 +159,16 @@ class GraphHeader extends StatelessWidget {
 
   const GraphHeader({super.key, required this.offset});
 
+  String formatDate(DateTime date) {
+    return '${date.year}/${date.month.toString()}/${date.day.toString()}';
+  }
+
+  String getWeekdayInfo(int index, int delta) {
+    final date = DateTime.fromMillisecondsSinceEpoch(0)
+        .add(Duration(days: index - delta));
+    return '星期${date.weekday}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
@@ -177,28 +187,19 @@ class GraphHeader extends StatelessWidget {
                   return Container(
                     width: kGridWidth,
                     height: 40,
+                    color: Colors.transparent,
                     alignment: Alignment.center,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          () {
-                            // 计算从1970年1月1日开始的日期
-                            final date = DateTime.fromMillisecondsSinceEpoch(0)
-                                .add(Duration(days: index - delta));
-                            // 格式化日期
-                            final formattedDate =
-                                '${date.year}/${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')}';
-                            return formattedDate;
-                          }(),
+                          formatDate(DateTime.fromMillisecondsSinceEpoch(0)
+                              .add(Duration(days: index - delta))),
+                          style: TextStyle(fontSize: 13), // 设置文本大小为中
                         ),
                         Text(
-                          () {
-                            final date = DateTime.fromMillisecondsSinceEpoch(0)
-                                .add(Duration(days: index - delta));
-                            final n = index - delta;
-                            return '星期${date.weekday} ${n}';
-                          }(),
+                          getWeekdayInfo(index, delta),
+                          style: TextStyle(fontSize: 13), // 设置文本大小为中
                         ),
                       ],
                     ),
