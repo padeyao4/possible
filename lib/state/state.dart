@@ -24,6 +24,14 @@ class DataController extends GetxController {
     scaffoldKey.currentState?.closeEndDrawer();
   }
 
+  void updateBacklog(Plan plan) {
+    var index = backlogs.indexWhere((element) => element.value.id == plan.id);
+    if (index != -1) {
+      backlogs[index].value = plan;
+      backlogs[index].refresh();
+    }
+  }
+
   void changeDetailState() {
     if (scaffoldKey.currentState != null) {
       scaffoldKey.currentState!.isEndDrawerOpen

@@ -27,6 +27,7 @@ class BackLogPage extends StatelessWidget {
       floatingActionButton: Obx(() => Visibility(
             visible: controller.isFloatButton.value,
             child: FloatingActionButton(
+              shape: const CircleBorder(),
               onPressed: () {
                 controller.isFloatButton.value = false;
                 Get.bottomSheet(const BottomInput(),
@@ -159,11 +160,12 @@ class BacklogItems extends GetView<DataController> {
           shrinkWrap: true,
           itemCount: backlogs.length,
           itemBuilder: (context, index) {
+            var backlog = backlogs[index];
             return Material(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),
               ),
-              key: ValueKey(backlogs[index]),
+              key: ValueKey(backlog.value.id),
               child: Container(
                 margin: const EdgeInsets.symmetric(vertical: 2.0),
                 decoration: BoxDecoration(
@@ -178,11 +180,11 @@ class BacklogItems extends GetView<DataController> {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   leading: IconButton(
-                    icon: Obx(() => Icon(backlogs[index].value.completed
+                    icon: Obx(() => Icon(backlog.value.completed
                         ? Icons.check_circle_outline
                         : Icons.circle_outlined)),
                     onPressed: () {
-                      backlogs[index].update((value) {
+                      backlog.update((value) {
                         value!.completed = !value.completed;
                       });
                     },
@@ -197,8 +199,8 @@ class BacklogItems extends GetView<DataController> {
                         overflow: TextOverflow.ellipsis,
                       )),
                   onTap: () {
-                    debugPrint('Tapped on: ${backlogs[index].value.name}');
-                    controller.changeDetailState();
+                    Get.to(() => BacklogDetail(plan: backlog.value),
+                        transition: Transition.size);
                   },
                 ),
               ),
@@ -206,6 +208,47 @@ class BacklogItems extends GetView<DataController> {
           },
         );
       }),
+    );
+  }
+}
+
+class BacklogDetail extends GetView<DataController> {
+  final Plan plan;
+  const BacklogDetail({super.key, required this.plan});
+  @override
+  Widget build(BuildContext context) {
+    var textController = TextEditingController(text: plan.name);
+
+    return Scaffold(
+      backgroundColor: Colors.amber,
+      appBar: AppBar(
+        actions: [],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: textController,
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const Text('完成状态'),
+                Checkbox(
+                  value: plan.completed,
+                  onChanged: (value) {
+                    plan.completed = value!;
+                    controller.updateBacklog(plan);
+                  },
+                ),
+              ],
+            ),
+            // 可以根据需要添加更多的信息展示和编辑字段
+          ],
+        ),
+      ),
     );
   }
 }
