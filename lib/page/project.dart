@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:possible/component/icons.dart';
-import 'package:possible/model/assets.dart';
 import 'package:possible/model/node.dart';
 import 'package:possible/state/state.dart';
 
@@ -95,7 +93,10 @@ class ProjectPage extends GetView<DataController> {
                           value?.offset = Offset.zero;
                         });
                       },
-                      icon: Iconify(MyIcons.home),
+                      icon: Transform.scale(
+                        scale: 1.2, // 可以调整此值来改变图标大小
+                        child: Icon(Icons.refresh_outlined),
+                      ),
                     )
                   ],
                 ),
@@ -164,7 +165,7 @@ class GraphHeader extends StatelessWidget {
       final itemCount = (constraints.maxWidth / kGridWidth).ceil() + 2;
       var realValue = offset.dx / kGridWidth;
       var delta = realValue.toInt();
-      delta = (realValue < 0 ? delta - 1 : delta);
+      delta = (realValue < 0 ? delta - 1 : delta) + 1;
       return Stack(
         children: [
           Positioned(
@@ -177,8 +178,29 @@ class GraphHeader extends StatelessWidget {
                     width: kGridWidth,
                     height: 40,
                     alignment: Alignment.center,
-                    child: Text(
-                      (index - delta).toString(),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          () {
+                            // 计算从1970年1月1日开始的日期
+                            final date = DateTime.fromMillisecondsSinceEpoch(0)
+                                .add(Duration(days: index - delta));
+                            // 格式化日期
+                            final formattedDate =
+                                '${date.year}/${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')}';
+                            return formattedDate;
+                          }(),
+                        ),
+                        Text(
+                          () {
+                            final date = DateTime.fromMillisecondsSinceEpoch(0)
+                                .add(Duration(days: index - delta));
+                            final n = index - delta;
+                            return '星期${date.weekday} ${n}';
+                          }(),
+                        ),
+                      ],
                     ),
                   );
                 },
