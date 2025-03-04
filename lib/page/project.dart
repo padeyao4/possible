@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:possible/model/node.dart';
+import 'package:possible/page/demo.dart';
 import 'package:possible/state/state.dart';
+import 'package:uuid/uuid.dart';
+import 'package:uuid/v4.dart';
 
 class ProjectPage extends GetView<DataController> {
   const ProjectPage({super.key});
@@ -59,27 +62,7 @@ class ProjectPage extends GetView<DataController> {
                     ),
                     child: Obx(() => GraphRuler(offset: project.value.offset)),
                   ),
-                  Expanded(
-                      child: GestureDetector(
-                    onPanUpdate: (details) {
-                      project.update((value) {
-                        value?.offset += details.delta;
-                        if (value?.offset.dy != null && value!.offset.dy > 0) {
-                          value.offset = Offset(value.offset.dx, 0);
-                        }
-                      });
-                    },
-                    child: Obx(() => Stack(children: [
-                          CustomPaint(
-                            painter: GridBackground(
-                                offset: project.value.offset, context: context),
-                            child: Stack(children: [
-                              for (var child in project.value.children)
-                                PlanCard(child: child),
-                            ]),
-                          ),
-                        ])),
-                  )),
+                  Expanded(child: ContentCanvas(project: project)),
                 ],
               ),
             ),
@@ -113,6 +96,56 @@ class ProjectPage extends GetView<DataController> {
             ),
           ],
         ));
+  }
+}
+
+class ContentCanvas extends StatelessWidget {
+  ContentCanvas({
+    super.key,
+    required this.project,
+  });
+
+  final Rx<Plan> project;
+
+  final Rx<Offset> keyDownPosition = Rx(Offset.zero);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onPanUpdate: (details) {
+        project.update((value) {
+          value?.offset += details.delta;
+          if (value?.offset.dy != null && value!.offset.dy > 0) {
+            value.offset = Offset(value.offset.dx, 0);
+          }
+        });
+      },
+      onTapDown: (details) {
+        keyDownPosition.value = details.localPosition;
+      },
+      onTap: () {
+        var newPlan = Plan(
+            id: UuidV4().toString(),
+            name: "",
+            index: DateTime.now().millisecondsSinceEpoch);
+        newPlan.position = Offset(
+            ((keyDownPosition.value.dx - project.value.offset.dx) / xStep)
+                .floorToDouble(),
+            ((keyDownPosition.value.dy - project.value.offset.dy) / yStep)
+                .floorToDouble());
+        project.value.addChild(newPlan.obs);
+      },
+      child: Obx(() => Stack(children: [
+            CustomPaint(
+              painter: GridBackground(
+                  offset: project.value.offset, context: context),
+              child: Obx(() => Stack(children: [
+                    for (var child in project.value.children)
+                      PlanCard(child: child),
+                  ])),
+            ),
+          ])),
+    );
   }
 }
 
