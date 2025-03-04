@@ -183,8 +183,7 @@ class GraphHeader extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       final itemCount = (constraints.maxWidth / kGridWidth).ceil() + 2;
       var realValue = offset.dx / kGridWidth;
-      var delta = realValue.toInt();
-      delta = (realValue < 0 ? delta - 1 : delta) + 1;
+      var delta = realValue < 0 ? realValue.floor() + 1 : realValue.toInt() + 1;
       return Stack(
         children: [
           Positioned(
@@ -233,8 +232,9 @@ class GraphRuler extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       final itemCount = (constraints.maxHeight / kGridHeight).ceil() + 2;
       var realValue = offset.dy / kGridHeight;
-      var delta = realValue.toInt();
-      delta = (realValue < 0 ? delta - 1 : delta) + 1;
+      // 计算垂直偏移量相对于网格高度的倍数，并向下取整
+      var delta = realValue < 0 ? realValue.floor() : realValue.truncate();
+      // delta = (realValue < 0 ? delta - 1 : delta) + 1;
       return Stack(
         children: [
           Positioned(
