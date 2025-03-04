@@ -267,27 +267,36 @@ class GridBackground extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
+    final gridPaint = Paint()
       ..color = Theme.of(context).dividerColor.withAlpha(64)
       ..style = PaintingStyle.stroke
       ..isAntiAlias = false
       ..strokeWidth = 1;
 
-    canvas.drawLine(Offset.zero, Offset(0, size.height), paint);
-    canvas.drawLine(Offset.zero, Offset(size.width, 0), paint);
+    final rectPaint = Paint()
+      ..color = Colors.green.withAlpha(32)
+      ..style = PaintingStyle.fill;
+
+    canvas.drawLine(Offset.zero, Offset(0, size.height), gridPaint);
+    canvas.drawLine(Offset.zero, Offset(size.width, 0), gridPaint);
 
     for (double x = 0; x < size.width; x += kGridWidth) {
-      canvas.drawLine(
-          Offset((x + offset.dx % kGridWidth).roundToDouble(), 0),
-          Offset((x + offset.dx % kGridWidth).roundToDouble(), size.height),
-          paint);
+      var rx = (x + offset.dx % kGridWidth).roundToDouble();
+      canvas.drawLine(Offset(rx, 0), Offset(rx, size.height), gridPaint);
+
+      // 绘制矩形示例，假设矩形的左上角坐标为 (100, 100)，宽度为 200，高度为 150
+      var round = ((x - offset.dx) / kGridWidth).ceil();
+      if (round % 7 == 2) {
+        final rect = Rect.fromLTWH(rx, 0, 2 * kGridWidth, size.height);
+        canvas.drawRect(rect, rectPaint);
+      }
     }
 
     for (double y = 0; y < size.height; y += kGridHeight) {
       canvas.drawLine(
           Offset(0, (y + offset.dy % kGridHeight).roundToDouble()),
           Offset(size.width, (y + offset.dy % kGridHeight).roundToDouble()),
-          paint);
+          gridPaint);
     }
   }
 
