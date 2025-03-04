@@ -136,7 +136,7 @@ class PlanCard extends StatelessWidget {
             (child.value.parent?.offset.dy ?? 0),
         child: GestureDetector(
             onTap: () {
-              debugPrint('hello');
+              Get.to(() => ProjectDetail(), transition: Transition.size);
             },
             onPanUpdate: (details) {
               // 更新 child.position
@@ -307,5 +307,19 @@ class GridBackground extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false;
+  }
+}
+
+class ProjectDetail extends StatelessWidget {
+  const ProjectDetail({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("project"),
+      ),
+      body: Text("data"),
+    );
   }
 }
