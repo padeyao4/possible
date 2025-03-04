@@ -286,9 +286,13 @@ class GridBackground extends CustomPainter {
 
       // 绘制矩形示例，假设矩形的左上角坐标为 (100, 100)，宽度为 200，高度为 150
       var round = ((x - offset.dx) / kGridWidth).ceil();
-      if (round % 7 == 2) {
-        final rect = Rect.fromLTWH(rx, 0, 2 * kGridWidth, size.height);
-        canvas.drawRect(rect, rectPaint);
+      if (round % 7 == 2 || round % 7 == 3) {
+        canvas.drawRect(
+            Rect.fromLTWH(rx, 0, kGridWidth, size.height), rectPaint);
+      }
+      if (x == kGridWidth && (round % 7 == 4 || round % 7 == 5)) {
+        canvas.drawRect(
+            Rect.fromLTWH(0, 0, rx - kGridWidth, size.height), rectPaint);
       }
     }
 
