@@ -25,17 +25,23 @@ class ProjectPage extends GetView<DataController> {
             ),
             Row(
               children: [
-                SizedBox(
-                  width: 40,
-                  height: 40,
+                Container(
+                  width: 56,
+                  height: 56,
+                  padding: EdgeInsets.only(left: 16),
+                  alignment: Alignment.centerLeft,
                   child: Transform.scale(
-                    scale: 0.8, // 可以调整此值来改变图标大小
-                    child: Icon(Icons.lock_open_outlined),
+                    scale: 1, // 可以调整此值来改变图标大小
+                    child: Icon(
+                      Icons.lock_open_outlined,
+                      weight: 10,
+                      color: Colors.black.withAlpha(196),
+                    ),
                   ),
                 ),
                 Expanded(
                     child: Container(
-                  height: 40,
+                  height: 56,
                   decoration: BoxDecoration(
                     color: Colors.transparent,
                   ),
@@ -47,7 +53,7 @@ class ProjectPage extends GetView<DataController> {
               child: Row(
                 children: [
                   Container(
-                    width: 40,
+                    width: 56,
                     decoration: BoxDecoration(
                       color: Colors.transparent,
                     ),
@@ -186,7 +192,7 @@ class GraphHeader extends StatelessWidget {
                 (index) {
                   return Container(
                     width: kGridWidth,
-                    height: 40,
+                    height: 56,
                     color: Colors.transparent,
                     alignment: Alignment.center,
                     child: Column(
@@ -234,7 +240,7 @@ class GraphRuler extends StatelessWidget {
               children: List.generate(
                 itemCount,
                 (index) => Container(
-                  width: 40,
+                  width: 56,
                   height: kGridHeight,
                   alignment: Alignment.center,
                   child: Text(
