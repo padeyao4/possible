@@ -64,6 +64,9 @@ class ProjectPage extends GetView<DataController> {
                     onPanUpdate: (details) {
                       project.update((value) {
                         value?.offset += details.delta;
+                        if (value?.offset.dy != null && value!.offset.dy > 0) {
+                          value.offset = Offset(value.offset.dx, 0);
+                        }
                       });
                     },
                     child: Obx(() => Stack(children: [
@@ -231,7 +234,7 @@ class GraphRuler extends StatelessWidget {
       final itemCount = (constraints.maxHeight / kGridHeight).ceil() + 2;
       var realValue = offset.dy / kGridHeight;
       var delta = realValue.toInt();
-      delta = (realValue < 0 ? delta - 1 : delta);
+      delta = (realValue < 0 ? delta - 1 : delta) + 1;
       return Stack(
         children: [
           Positioned(
