@@ -14,17 +14,18 @@ import 'package:uuid/uuid.dart';
 const double itemSpacing = 4;
 
 // 提取通用 ListTile 构建函数
-Widget buildNavigationListTile({
-  required IconData icon,
-  required String title,
-  required VoidCallback onTap,
-}) {
+Widget buildNavigationListTile(
+    {required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    Widget? trailing}) {
   return Column(
     children: [
       ListTile(
         leading: Icon(icon),
         title: Text(title),
         onTap: onTap,
+        trailing: trailing,
       ),
       SizedBox(height: itemSpacing),
     ],
@@ -111,11 +112,26 @@ class HomePage extends GetView<DataController> {
                         transition: Transition.rightToLeft),
                   ),
                   buildNavigationListTile(
-                    icon: Icons.notes_outlined,
-                    title: '备忘录',
-                    onTap: () => Get.to(() => BackLogPage(),
-                        transition: Transition.rightToLeft),
-                  ),
+                      icon: Icons.notes_outlined,
+                      title: '备忘录',
+                      onTap: () => Get.to(() => BackLogPage(),
+                          transition: Transition.rightToLeft),
+                      trailing: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withAlpha(126),
+                            borderRadius:
+                                BorderRadius.circular(12), // 24 / 2 = 12，形成圆圈
+                          ),
+                          alignment: Alignment.center,
+                          width: 24,
+                          height: 24,
+                          child: Obx(() {
+                            var size = controller.backlogs
+                                .where((p0) => !p0.value.completed)
+                                .toList()
+                                .length;
+                            return Text(size.toString());
+                          }))),
                   buildNavigationListTile(
                     icon: Icons.science_outlined,
                     title: '测试设置',
