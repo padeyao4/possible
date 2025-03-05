@@ -6,17 +6,117 @@ import 'package:possible/state/state.dart';
 import 'package:uuid/v4.dart';
 
 class ProjectPage extends GetView<DataController> {
-  const ProjectPage({super.key});
+  final Rx<Plan> project; // 将 project 字段标记为 final
+
+  const ProjectPage(this.project, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    // 获取传递过来的项目对象
-    final Rx<Plan> project = Get.arguments;
-
     return Scaffold(
         appBar: AppBar(
           // 使用项目名称作为标题
-          title: Text(project.value.name),
+          title: Obx(() => Text(project.value.name)),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  showMenu(
+                    context: context,
+                    position: RelativeRect.fromLTRB(
+                      MediaQuery.of(context).size.width - 100,
+                      kToolbarHeight,
+                      MediaQuery.of(context).size.width,
+                      kToolbarHeight + 100,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    elevation: 8,
+                    color: Theme.of(context).colorScheme.surface,
+                    items: [
+                      PopupMenuItem(
+                        value: 'rename',
+                        child: Row(
+                          children: [
+                            Transform.scale(
+                              scale: 0.8,
+                              child: Icon(
+                                Icons.edit_outlined,
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Text('重命名',
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface)),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            Transform.scale(
+                              scale: 0.8, // 调整图标大小，可根据需要修改此值
+                              child: Icon(
+                                Icons.delete_outline,
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Text('删除',
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ).then((value) {
+                    if (value != null) {
+                      if (value == 'rename') {
+                        final TextEditingController nameController =
+                            TextEditingController(text: project.value.name);
+                        Get.dialog(
+                          AlertDialog(
+                            title: const Text('重命名项目'),
+                            content: TextField(
+                              controller: nameController,
+                              decoration: const InputDecoration(
+                                hintText: '请输入新的项目名称',
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                child: const Text('取消'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  final newName = nameController.text;
+                                  if (newName.isNotEmpty) {
+                                    project.update((value) {
+                                      value?.name = newName;
+                                    });
+                                  }
+                                  Get.back();
+                                },
+                                child: const Text('确定'),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else if (value == 'delete') {
+                        controller.projects.remove(project);
+                        Get.back();
+                      }
+                    }
+                  });
+                },
+                icon: Icon(Icons.more_vert_outlined))
+          ],
         ),
         body: Column(
           children: [

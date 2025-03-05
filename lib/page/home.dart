@@ -160,8 +160,7 @@ class HomePage extends GetView<DataController> {
                           title: Text(project.value.name),
                           onTap: () {
                             // todo 跳转到project
-                            Get.to(() => ProjectPage(),
-                                arguments: project,
+                            Get.to(() => ProjectPage(project),
                                 transition: Transition.rightToLeft);
                           },
                         );
