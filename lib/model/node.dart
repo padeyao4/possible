@@ -8,6 +8,7 @@ class Plan {
   Offset position = Offset.zero; // 位置坐标
   Offset offset = Offset.zero; // 显示窗口偏移
   Plan? parent;
+  DateTime createdAt = DateTime.now(); // 添加创建时间属性
   RxList<Rx<Plan>> children = RxList();
   RxList<Rx<Plan>> pres = RxList();
   RxList<Rx<Plan>> nexts = RxList();

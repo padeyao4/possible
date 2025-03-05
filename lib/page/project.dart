@@ -181,14 +181,40 @@ class ProjectPage extends GetView<DataController> {
                       style: ButtonStyle(),
                       onPressed: () {
                         project.update((value) {
-                          value?.offset = Offset.zero;
+                          var days =
+                              ((value?.createdAt.microsecondsSinceEpoch ?? 0) /
+                                      86400000000)
+                                  .floor();
+                          value?.offset = Offset(-days * xStep, 0);
                         });
                       },
-                      icon: Transform.scale(
-                        scale: 1.2, // 可以调整此值来改变图标大小
-                        child: Icon(Icons.refresh_outlined),
-                      ),
-                    )
+                      icon: Icon(Icons.refresh_outlined),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          Get.dialog(
+                            DatePickerDialog(
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2100),
+                              cancelText: "取消",
+                              confirmText: "确定",
+                            ),
+                          ).then((selectedDate) {
+                            if (selectedDate != null) {
+                              // 当用户点击确定时，selectedDate 会是所选的日期
+                              project.update((value) {
+                                var days =
+                                    ((selectedDate.microsecondsSinceEpoch) /
+                                                86400000000)
+                                            .floor() +
+                                        1;
+                                value?.offset = Offset(-days * xStep, 0);
+                              });
+                            }
+                          });
+                        },
+                        icon: Icon(Icons.location_on_outlined))
                   ],
                 ),
               ),

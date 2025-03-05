@@ -70,6 +70,7 @@ void showNewProjectDialog(BuildContext context, DataController controller) {
                 name: textController.text,
                 index: DateTime.now().millisecondsSinceEpoch,
               );
+
               controller.projects.add(project.obs);
               Get.back();
             },
