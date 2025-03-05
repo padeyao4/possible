@@ -11,7 +11,7 @@ class ProjectPage extends GetView<DataController> {
   @override
   Widget build(BuildContext context) {
     // 获取传递过来的项目对象
-    final project = Get.arguments as Rx<Plan>;
+    final Rx<Plan> project = Get.arguments;
 
     return Scaffold(
         appBar: AppBar(
@@ -345,54 +345,27 @@ class GridBackground extends CustomPainter {
   }
 }
 
+// 定义常量，用于设置样式
+const double borderRadiusValue = 8;
+const double borderWidth = 1.0;
+const double iconScale = 0.8;
+const int hintTextAlpha = 64;
+
 class ProjectDetail extends StatelessWidget {
   final Rx<Plan> plan;
 
   const ProjectDetail({super.key, required this.plan});
-
-  Widget titleItem() {
-    var focuseNode = FocusNode();
-
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: Colors.grey[100],
-            border: Border.all(
-              color: Colors.grey.shade300, // 边框颜色
-              width: 1.0, // 边框宽度
-            ),
-          ),
-          child: ListTile(
-            leading: Transform.scale(
-              scale: 0.8, // 调整此值来改变图标大小，0.8 可以让图标变小
-              child: IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.check_circle_outline),
-              ),
-            ),
-            title: Obx(() {
-              return TextField(
-                focusNode: focuseNode,
-                // 设置文本控制器，根据 plan.value.name 初始化文本
-                controller: TextEditingController(text: plan.value.name),
-                decoration: InputDecoration(
-                  hintText: '请输入内容',
-                  hintStyle: TextStyle(color: Colors.black.withAlpha(64)),
-                ),
-                onSubmitted: (newValue) {
-                  plan.update((value) {
-                    value?.name = newValue;
-                  });
-                },
-                // 根据焦点状态设置只读属性
-                readOnly: !focuseNode.hasFocus,
-              );
-            }),
-          )),
-    );
+  // 焦点监听逻辑
+  void setupFocusListener(
+      FocusNode focusNode, TextEditingController controller) {
+    focusNode.addListener(() {
+      if (!focusNode.hasFocus) {
+        final newValue = controller.text;
+        plan.update((value) {
+          value?.name = newValue;
+        });
+      }
+    });
   }
 
   @override
@@ -406,24 +379,85 @@ class ProjectDetail extends StatelessWidget {
           children: [
             Expanded(
               child: Column(
-                children: [titleItem()],
+                children: [
+                  Obx(() {
+                    var focusNode = FocusNode();
+                    var textEditingController =
+                        TextEditingController(text: plan.value.name);
+                    setupFocusListener(focusNode, textEditingController);
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(borderRadiusValue),
+                          color: Colors.grey[100],
+                          border: Border.all(
+                            color: Colors.grey.shade300,
+                            width: borderWidth,
+                          ),
+                        ),
+                        child: ListTile(
+                          leading: Transform.scale(
+                            scale: iconScale,
+                            child: IconButton(
+                              onPressed: () {
+                                plan.update((value) {
+                                  value?.completed = !value.completed;
+                                });
+                              },
+                              icon: Icon(plan.value.completed
+                                  ? Icons.check_circle_outline
+                                  : Icons.circle_outlined),
+                            ),
+                          ),
+                          title: TextField(
+                            focusNode: focusNode,
+                            controller: textEditingController,
+                            decoration: InputDecoration(
+                              hintText: '请输入内容',
+                              hintStyle: TextStyle(
+                                  color: Colors.black.withAlpha(hintTextAlpha)),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
+                            ),
+                            onSubmitted: (newValue) {
+                              plan.update((value) {
+                                value?.name = newValue;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    );
+                  })
+                ],
               ),
             ),
             Divider(
               height: 1,
             ),
             Container(
-                height: 48,
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: IconButton(
-                      onPressed: () {
-                        plan.value.parent?.removeChild(plan);
-                        Get.back();
-                      },
-                      icon: Icon(Icons.delete_outline)),
-                )),
+              height: 48,
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: IconButton(
+                  onPressed: () {
+                    plan.value.parent?.removeChild(plan);
+                    Get.back();
+                  },
+                  icon: Icon(Icons.delete_outline),
+                ),
+              ),
+            ),
           ],
         ),
       ),
