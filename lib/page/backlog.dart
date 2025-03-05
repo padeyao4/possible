@@ -206,7 +206,7 @@ class BacklogItems extends GetView<DataController> {
                         overflow: TextOverflow.ellipsis,
                       )),
                   onTap: () {
-                    Get.to(() => BacklogDetail(plan: backlog.value),
+                    Get.to(() => BacklogDetail(backlog),
                         transition: Transition.size);
                   },
                 ),
@@ -220,46 +220,118 @@ class BacklogItems extends GetView<DataController> {
 }
 
 class BacklogDetail extends GetView<DataController> {
-  final Plan plan;
-  const BacklogDetail({super.key, required this.plan});
+  final Rx<Plan> plan;
+
+  static const double borderRadiusValue = 8;
+  static const double borderWidth = 1.0;
+  static const int hintTextAlpha = 64;
+
+  const BacklogDetail(this.plan, {super.key});
+  // 焦点监听逻辑
+  void setupFocusListener(
+      FocusNode focusNode, TextEditingController controller) {
+    focusNode.addListener(() {
+      if (!focusNode.hasFocus) {
+        final newValue = controller.text;
+        plan.update((value) {
+          value?.name = newValue;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.amber,
-      appBar: AppBar(
-        title: Text("备忘录"),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("data"),
-          Expanded(
-              child: ListView(
-            children: [
-              Card(
-                child: Text("111"),
-              )
-            ],
-          )),
-          Divider(
-            height: 1,
-          ),
-          SizedBox(
+      backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
+      appBar: AppBar(),
+      body: Container(
+        decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
+        child: Column(
+          children: [
+            Expanded(
+              child: Column(
+                children: [
+                  Obx(() {
+                    var focusNode = FocusNode();
+                    var textEditingController =
+                        TextEditingController(text: plan.value.name);
+                    setupFocusListener(focusNode, textEditingController);
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(borderRadiusValue),
+                          color: Colors.grey[100],
+                          border: Border.all(
+                            color: Colors.grey.shade300,
+                            width: borderWidth,
+                          ),
+                        ),
+                        child: ListTile(
+                          leading: Transform.scale(
+                            scale: 1.0,
+                            child: IconButton(
+                              onPressed: () {
+                                plan.update((value) {
+                                  value?.completed = !value.completed;
+                                });
+                              },
+                              icon: Icon(plan.value.completed
+                                  ? Icons.check_circle_outline
+                                  : Icons.circle_outlined),
+                            ),
+                          ),
+                          title: TextField(
+                            focusNode: focusNode,
+                            controller: textEditingController,
+                            decoration: InputDecoration(
+                              hintText: '请输入内容',
+                              hintStyle: TextStyle(
+                                  color: Colors.black.withAlpha(hintTextAlpha)),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent),
+                              ),
+                            ),
+                            onSubmitted: (newValue) {
+                              plan.update((value) {
+                                value?.name = newValue;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    );
+                  })
+                ],
+              ),
+            ),
+            Divider(
+              height: 1,
+            ),
+            Container(
               height: 48,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: EdgeInsets.only(right: 16),
-                  child: IconButton(
-                      onPressed: () {
-                        controller.backlogs
-                            .removeWhere((item) => item.value.id == plan.id);
-                        Get.back();
-                      },
-                      icon: Icon(Icons.delete_outline)),
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: IconButton(
+                  onPressed: () {
+                    controller.backlogs.remove(plan);
+                    Get.back();
+                  },
+                  icon: Icon(Icons.delete_outline),
                 ),
-              ))
-        ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

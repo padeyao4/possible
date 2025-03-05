@@ -346,13 +346,13 @@ class GridBackground extends CustomPainter {
 }
 
 // 定义常量，用于设置样式
-const double borderRadiusValue = 8;
-const double borderWidth = 1.0;
-const double iconScale = 0.8;
-const int hintTextAlpha = 64;
 
 class ProjectDetail extends StatelessWidget {
   final Rx<Plan> plan;
+
+  static const double borderRadiusValue = 8;
+  static const double borderWidth = 1.0;
+  static const int hintTextAlpha = 64;
 
   const ProjectDetail({super.key, required this.plan});
   // 焦点监听逻辑
@@ -399,18 +399,15 @@ class ProjectDetail extends StatelessWidget {
                           ),
                         ),
                         child: ListTile(
-                          leading: Transform.scale(
-                            scale: iconScale,
-                            child: IconButton(
-                              onPressed: () {
-                                plan.update((value) {
-                                  value?.completed = !value.completed;
-                                });
-                              },
-                              icon: Icon(plan.value.completed
-                                  ? Icons.check_circle_outline
-                                  : Icons.circle_outlined),
-                            ),
+                          leading: IconButton(
+                            onPressed: () {
+                              plan.update((value) {
+                                value?.completed = !value.completed;
+                              });
+                            },
+                            icon: Icon(plan.value.completed
+                                ? Icons.check_circle_outline
+                                : Icons.circle_outlined),
                           ),
                           title: TextField(
                             focusNode: focusNode,
