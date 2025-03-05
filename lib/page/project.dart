@@ -119,10 +119,10 @@ class ContentCanvas extends StatelessWidget {
           }
         });
       },
-      onTapDown: (details) {
+      onLongPressDown: (details) {
         keyDownPosition.value = details.localPosition;
       },
-      onTap: () {
+      onLongPress: () {
         var newPlan = Plan(
             id: UuidV4().toString(),
             name: "",
@@ -132,7 +132,9 @@ class ContentCanvas extends StatelessWidget {
                 .floorToDouble(),
             ((keyDownPosition.value.dy - project.value.offset.dy) / yStep)
                 .floorToDouble());
-        project.value.addChild(newPlan.obs);
+        var obsPlan = newPlan.obs;
+        project.value.addChild(obsPlan);
+        Get.to(() => CardDetail(plan: obsPlan));
       },
       child: Obx(() => Stack(children: [
             CustomPaint(
@@ -169,7 +171,7 @@ class PlanCard extends StatelessWidget {
           child: GestureDetector(
             onTap: () {
               Get.to(
-                () => ProjectDetail(
+                () => CardDetail(
                   plan: child,
                 ),
                 transition: Transition.size,
@@ -437,14 +439,14 @@ class GridBackground extends CustomPainter {
 
 // 定义常量，用于设置样式
 
-class ProjectDetail extends StatelessWidget {
+class CardDetail extends StatelessWidget {
   final Rx<Plan> plan;
 
   static const double borderRadiusValue = 8;
   static const double borderWidth = 1.0;
   static const int hintTextAlpha = 64;
 
-  const ProjectDetail({super.key, required this.plan});
+  const CardDetail({super.key, required this.plan});
   // 焦点监听逻辑
   void setupFocusListener(
       FocusNode focusNode, TextEditingController controller) {
