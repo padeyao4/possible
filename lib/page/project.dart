@@ -139,11 +139,11 @@ class ContentCanvas extends StatelessWidget {
             CustomPaint(
               painter: GridBackground(
                   offset: project.value.offset, context: context),
-              child: Obx(() => Stack(children: [
-                    for (var child in project.value.children)
-                      PlanCard(child: child),
-                  ])),
-            ),
+              child: Stack(children: [
+                for (var child in project.value.children)
+                  PlanCard(child: child),
+              ]),
+            )
           ])),
     );
   }
