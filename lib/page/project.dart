@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:possible/model/node.dart';
 import 'package:possible/page/demo.dart';
 import 'package:possible/state/state.dart';
-import 'package:uuid/uuid.dart';
 import 'package:uuid/v4.dart';
 
 class ProjectPage extends GetView<DataController> {
@@ -267,7 +266,6 @@ class GraphRuler extends StatelessWidget {
       var realValue = offset.dy / kGridHeight;
       // 计算垂直偏移量相对于网格高度的倍数，并向下取整
       var delta = realValue < 0 ? realValue.floor() : realValue.truncate();
-      // delta = (realValue < 0 ? delta - 1 : delta) + 1;
       return Stack(
         children: [
           Positioned(
