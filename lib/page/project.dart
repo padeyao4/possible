@@ -258,7 +258,7 @@ class ContentCanvas extends StatelessWidget {
                 .floorToDouble());
         var obsPlan = newPlan.obs;
         project.value.addChild(obsPlan);
-        Get.to(() => CardDetail(plan: obsPlan));
+        Get.to(() => CardDetail(obsPlan));
       },
       child: Obx(() => Stack(children: [
             CustomPaint(
@@ -295,9 +295,7 @@ class PlanCard extends StatelessWidget {
           child: GestureDetector(
             onTap: () {
               Get.to(
-                () => CardDetail(
-                  plan: child,
-                ),
+                () => CardDetail(child),
                 transition: Transition.size,
               );
             },
@@ -320,7 +318,7 @@ class PlanCard extends StatelessWidget {
               });
             },
             onLongPress: () {
-              Get.bottomSheet(CardBottomSheet());
+              Get.bottomSheet(CardBottomSheet(child));
             },
             child: Container(
               width: kGridWidth,
@@ -357,7 +355,9 @@ class PlanCard extends StatelessWidget {
 }
 
 class CardBottomSheet extends StatelessWidget {
-  const CardBottomSheet({super.key});
+  final Rx<Plan> plan;
+
+  const CardBottomSheet(this.plan, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -385,7 +385,10 @@ class CardBottomSheet extends StatelessWidget {
             ),
             onTap: () {
               // 处理编辑操作
-              Get.back();
+              Get.off(
+                () => CardDetail(plan),
+                transition: Transition.size,
+              );
             },
           ),
           const Divider(
@@ -406,7 +409,8 @@ class CardBottomSheet extends StatelessWidget {
             ),
             onTap: () {
               // 处理删除操作
-              Navigator.pop(context);
+              plan.value.parent?.children.remove(plan);
+              Get.back();
             },
           ),
         ],
@@ -583,7 +587,7 @@ class CardDetail extends StatelessWidget {
   static const double borderWidth = 1.0;
   static const int hintTextAlpha = 64;
 
-  const CardDetail({super.key, required this.plan});
+  const CardDetail(this.plan, {super.key});
   // 焦点监听逻辑
   void setupFocusListener(
       FocusNode focusNode, TextEditingController controller) {
