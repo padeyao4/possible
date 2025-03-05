@@ -434,8 +434,8 @@ class GraphHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final itemCount = (constraints.maxWidth / kGridWidth).ceil() + 2;
-      var realValue = offset.dx / kGridWidth;
-      var delta = realValue < 0 ? realValue.floor() + 1 : realValue.toInt() + 1;
+      var value = offset.dx / kGridWidth;
+      var dayOffset = value < 0 ? value.floor() + 1 : value.toInt() + 1;
       return Stack(
         children: [
           Positioned(
@@ -444,21 +444,34 @@ class GraphHeader extends StatelessWidget {
               children: List.generate(
                 itemCount,
                 (index) {
+                  var current = DateTime.fromMillisecondsSinceEpoch(0)
+                      .add(Duration(days: index - dayOffset));
+                  // 计算 current 距离 1970 年 1 月 1 日的天数
+                  var currentDaysSinceEpoch = current
+                      .difference(DateTime.fromMillisecondsSinceEpoch(0))
+                      .inDays;
+                  // 计算当前日期距离 1970 年 1 月 1 日的天数
+                  var nowDaysSinceEpoch = DateTime.now()
+                      .difference(DateTime.fromMillisecondsSinceEpoch(0))
+                      .inDays;
+                  // 判断两个日期距离 1970 年的天数是否相同
+                  var active = currentDaysSinceEpoch == nowDaysSinceEpoch;
                   return Container(
                     width: kGridWidth,
                     height: 56,
-                    color: Colors.transparent,
+                    color: active
+                        ? Colors.yellow.withAlpha(64)
+                        : Colors.transparent,
                     alignment: Alignment.center,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          formatDate(DateTime.fromMillisecondsSinceEpoch(0)
-                              .add(Duration(days: index - delta))),
+                          formatDate(current),
                           style: TextStyle(fontSize: 13), // 设置文本大小为中
                         ),
                         Text(
-                          getWeekdayInfo(index, delta),
+                          getWeekdayInfo(index, dayOffset),
                           style: TextStyle(fontSize: 13), // 设置文本大小为中
                         ),
                       ],
