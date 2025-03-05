@@ -168,7 +168,11 @@ class PlanCard extends StatelessWidget {
             (child.value.parent?.offset.dy ?? 0),
         child: GestureDetector(
             onTap: () {
-              Get.to(() => ProjectDetail(), transition: Transition.size);
+              Get.to(
+                  () => ProjectDetail(
+                        plan: child,
+                      ),
+                  transition: Transition.size);
             },
             onPanUpdate: (details) {
               // 更新 child.position
@@ -342,15 +346,87 @@ class GridBackground extends CustomPainter {
 }
 
 class ProjectDetail extends StatelessWidget {
-  const ProjectDetail({super.key});
+  final Rx<Plan> plan;
+
+  const ProjectDetail({super.key, required this.plan});
+
+  Widget titleItem() {
+    var focuseNode = FocusNode();
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.grey[100],
+            border: Border.all(
+              color: Colors.grey.shade300, // 边框颜色
+              width: 1.0, // 边框宽度
+            ),
+          ),
+          child: ListTile(
+            leading: Transform.scale(
+              scale: 0.8, // 调整此值来改变图标大小，0.8 可以让图标变小
+              child: IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.check_circle_outline),
+              ),
+            ),
+            title: Obx(() {
+              return TextField(
+                focusNode: focuseNode,
+                // 设置文本控制器，根据 plan.value.name 初始化文本
+                controller: TextEditingController(text: plan.value.name),
+                decoration: InputDecoration(
+                  hintText: '请输入内容',
+                  hintStyle: TextStyle(color: Colors.black.withAlpha(64)),
+                ),
+                onSubmitted: (newValue) {
+                  plan.update((value) {
+                    value?.name = newValue;
+                  });
+                },
+                // 根据焦点状态设置只读属性
+                readOnly: !focuseNode.hasFocus,
+              );
+            }),
+          )),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("project"),
+      backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
+      appBar: AppBar(),
+      body: Container(
+        decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
+        child: Column(
+          children: [
+            Expanded(
+              child: Column(
+                children: [titleItem()],
+              ),
+            ),
+            Divider(
+              height: 1,
+            ),
+            Container(
+                height: 48,
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: IconButton(
+                      onPressed: () {
+                        plan.value.parent?.removeChild(plan);
+                        Get.back();
+                      },
+                      icon: Icon(Icons.delete_outline)),
+                )),
+          ],
+        ),
       ),
-      body: Text("data"),
     );
   }
 }

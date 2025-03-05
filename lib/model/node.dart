@@ -29,4 +29,8 @@ class Plan {
     nexts.add(obs);
     obs.value.pres.add(this.obs);
   }
+
+  void removeChild(Rx<Plan> plan) {
+    children.remove(plan);
+  }
 }
