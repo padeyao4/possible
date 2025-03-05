@@ -162,40 +162,130 @@ class PlanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() => Positioned(
-        left: child.value.position.dx * kGridWidth +
-            (child.value.parent?.offset.dx ?? 0),
-        top: child.value.position.dy * kGridHeight +
-            (child.value.parent?.offset.dy ?? 0),
-        child: GestureDetector(
+          left: child.value.position.dx * kGridWidth +
+              (child.value.parent?.offset.dx ?? 0),
+          top: child.value.position.dy * kGridHeight +
+              (child.value.parent?.offset.dy ?? 0),
+          child: GestureDetector(
             onTap: () {
               Get.to(
-                  () => ProjectDetail(
-                        plan: child,
-                      ),
-                  transition: Transition.size);
+                () => ProjectDetail(
+                  plan: child,
+                ),
+                transition: Transition.size,
+              );
             },
             onPanUpdate: (details) {
               // 更新 child.position
               child.update((value) {
-                value?.position += Offset(details.delta.dx / kGridWidth,
-                    details.delta.dy / kGridHeight);
+                value?.position += Offset(
+                  details.delta.dx / kGridWidth,
+                  details.delta.dy / kGridHeight,
+                );
               });
             },
             onPanEnd: (details) {
               // 确保 position 是整数
               child.update((value) {
-                value?.position = Offset(value.position.dx.roundToDouble(),
-                    value.position.dy.roundToDouble());
+                value?.position = Offset(
+                  value.position.dx.roundToDouble(),
+                  value.position.dy.roundToDouble(),
+                );
               });
             },
+            onLongPress: () {
+              Get.bottomSheet(CardBottomSheet());
+            },
             child: Container(
-                width: kGridWidth,
-                height: kGridHeight,
+              width: kGridWidth,
+              height: kGridHeight,
+              alignment: Alignment.center,
+              child: Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(8),
+                  color: Colors.grey[100],
+                  border: Border.all(
+                    color: Colors.black.withAlpha(128),
+                    width: 1.5,
+                  ),
                 ),
-                child: Center(child: Text(child.value.name))))));
+                width: kGridWidth - 20,
+                height: kGridHeight - 20,
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  child.value.name,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
+        ));
+  }
+}
+
+class CardBottomSheet extends StatelessWidget {
+  const CardBottomSheet({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(16),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: Icon(
+              Icons.edit,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            title: Text(
+              '编辑',
+              style: TextStyle(
+                fontSize: 16,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            onTap: () {
+              // 处理编辑操作
+              Get.back();
+            },
+          ),
+          const Divider(
+            height: 1,
+            thickness: 0.5,
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.delete,
+              color: Theme.of(context).colorScheme.error,
+            ),
+            title: Text(
+              '删除',
+              style: TextStyle(
+                fontSize: 16,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            onTap: () {
+              // 处理删除操作
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
 
