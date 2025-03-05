@@ -197,8 +197,6 @@ class ProjectPage extends GetView<DataController> {
                               initialDate: DateTime.now(),
                               firstDate: DateTime(2000),
                               lastDate: DateTime(2100),
-                              cancelText: "取消",
-                              confirmText: "确定",
                             ),
                           ).then((selectedDate) {
                             if (selectedDate != null) {

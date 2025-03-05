@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:possible/page/home.dart';
 import 'package:possible/state/state.dart';
@@ -57,6 +58,14 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Possible',
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate
+      ],
+      supportedLocales: [
+        Locale('zh', 'CN'),
+      ],
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: ThemeMode.light,
