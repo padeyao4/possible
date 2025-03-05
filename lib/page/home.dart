@@ -70,7 +70,11 @@ void showNewProjectDialog(BuildContext context, DataController controller) {
                 name: textController.text,
                 index: DateTime.now().millisecondsSinceEpoch,
               );
-
+              project.offset = Offset(
+                  -(project.createdAt.microsecondsSinceEpoch / 86400000000)
+                          .floorToDouble() *
+                      120,
+                  0);
               controller.projects.add(project.obs);
               Get.back();
             },
