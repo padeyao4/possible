@@ -121,22 +121,28 @@ class HomePage extends GetView<DataController> {
                       title: '备忘录',
                       onTap: () => Get.to(() => BackLogPage(),
                           transition: Transition.rightToLeft),
-                      trailing: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.withAlpha(126),
-                            borderRadius:
-                                BorderRadius.circular(12), // 24 / 2 = 12，形成圆圈
-                          ),
-                          alignment: Alignment.center,
-                          width: 24,
-                          height: 24,
-                          child: Obx(() {
-                            var size = controller.backlogs
+                      trailing: Obx(() => Visibility(
+                            visible: controller.backlogs
                                 .where((p0) => !p0.value.completed)
                                 .toList()
-                                .length;
-                            return Text(size.toString());
-                          }))),
+                                .isNotEmpty,
+                            child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.withAlpha(126),
+                                  borderRadius: BorderRadius.circular(
+                                      12), // 24 / 2 = 12，形成圆圈
+                                ),
+                                alignment: Alignment.center,
+                                width: 24,
+                                height: 24,
+                                child: Obx(() {
+                                  var size = controller.backlogs
+                                      .where((p0) => !p0.value.completed)
+                                      .toList()
+                                      .length;
+                                  return Text(size.toString());
+                                })),
+                          ))),
                   buildNavigationListTile(
                     icon: Icons.science_outlined,
                     title: '测试设置',
