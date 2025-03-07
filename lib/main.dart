@@ -42,6 +42,12 @@ ThemeData lightTheme = ThemeData.light().copyWith(
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // 添加延迟加载方法
+  Future<void> _initialization() async {
+    // 模拟初始化过程
+    await Future.delayed(const Duration(seconds: 2));
+  }
+
   @override
   Widget build(BuildContext context) {
     // Windows平台字体配置
@@ -86,7 +92,52 @@ class MyApp extends StatelessWidget {
       initialBinding: BindingsBuilder(() {
         Get.put(DataController());
       }),
-      home: const HomePage(),
+      home: FutureBuilder(
+        future: _initialization(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return const HomePage();
+          }
+          return const SplashScreen();
+        },
+      ),
+    );
+  }
+}
+
+/// 启动屏幕组件
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Theme.of(context).colorScheme.surface,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // 应用图标
+            Icon(
+              Icons.track_changes_outlined,
+              size: 80,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(height: 24),
+            // 应用名称
+            Text(
+              'Possible',
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 8),
+            // 加载指示器
+            const CircularProgressIndicator(),
+          ],
+        ),
+      ),
     );
   }
 }
