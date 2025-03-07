@@ -238,7 +238,7 @@ class BacklogItems extends GetView<DataController> {
           Icon(
             Icons.note_alt_outlined,
             size: _emptyIconSize,
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+            color: Theme.of(context).colorScheme.primary.withAlpha(128),
           ),
           const SizedBox(height: _emptySpacing),
           Text(
