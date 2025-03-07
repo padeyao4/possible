@@ -194,6 +194,12 @@ class BacklogItems extends GetView<DataController> {
   static const double _borderRadius = 8.0;
   static const double _verticalMargin = 2.0;
 
+  // 新增空状态提示文本常量
+  static const String _emptyTitle = '暂无待办事项';
+  static const String _emptySubtitle = '点击右下角按钮添加新的待办事项';
+  static const double _emptyIconSize = 80.0;
+  static const double _emptySpacing = 16.0;
+
   const BacklogItems({super.key, this.completed = false, this.show = true});
 
   @override
@@ -206,6 +212,11 @@ class BacklogItems extends GetView<DataController> {
             .where((element) => element.value.completed == completed)
             .toList();
 
+        // 如果列表为空且是未完成列表，显示空状态提示
+        if (backlogs.isEmpty && !completed) {
+          return _buildEmptyState(context);
+        }
+
         return ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -214,6 +225,39 @@ class BacklogItems extends GetView<DataController> {
               _buildBacklogItem(context, backlogs[index]),
         );
       }),
+    );
+  }
+
+  /// 构建空状态提示界面
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: _emptySpacing * 2),
+          Icon(
+            Icons.note_alt_outlined,
+            size: _emptyIconSize,
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+          ),
+          const SizedBox(height: _emptySpacing),
+          Text(
+            _emptyTitle,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(height: _emptySpacing / 2),
+          Text(
+            _emptySubtitle,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.outline,
+                ),
+          ),
+          const SizedBox(height: _emptySpacing * 2),
+        ],
+      ),
     );
   }
 
